@@ -2,21 +2,22 @@
 #include "XSCommon/XSFormat.h"
 #include "XSCommon/XSConsole.h"
 
-#include <hash_map>
+#include <unordered_map>
 #include <stdlib.h>
 
 namespace XS {
 
-	std::hash_map<const std::string, Cvar*> cvars;
+	std::unordered_map<std::string, Cvar*> cvars;
 
 	void Cvar::LoadConfig( void ) {
 		// ...
 	}
 
 	void Cvar::WriteConfig( void ) {
-		std::hash_map<const std::string, Cvar*>::iterator itr;
-		for ( itr=cvars.begin(); itr != cvars.end(); ++itr ) {
-			Print( "Saving Cvar '%s' with value '%s'\n", (*itr).first.c_str(), (*itr).second->String().c_str() );
+		for ( auto itr=cvars.begin(); itr != cvars.end(); ++itr ) {
+#ifdef _DEBUG
+			Print( "Saving Cvar '%s' with value '%s'\n", itr->first.c_str(), itr->second->String().c_str() );
+#endif
 		}
 	}
 

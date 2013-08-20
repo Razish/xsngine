@@ -4,12 +4,12 @@
 
 #include <string>
 #include <vector>
-#include <hash_map>
+#include <unordered_map>
 #include <assert.h>
 
 namespace XS {
 
-	extern std::hash_map<const std::string, class Cvar*> cvars;
+	extern std::unordered_map<std::string, class Cvar*> cvars;
 
 	class Cvar {
 	public:
@@ -44,10 +44,7 @@ namespace XS {
 		static void LockInit( void ) { /*initialised = true;*/ }
 
 		// xtors
-		Cvar() { assert( false && "Cvar default constructor called!" ); this->Set( "" ); }
 		Cvar( std::string &value ) { this->Set( value ); }
-		~Cvar() {}
-
 		static Cvar *Create( std::string name, std::string value, uint32_t flags );
 
 		// get/set
