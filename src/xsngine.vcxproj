@@ -191,10 +191,13 @@
   <ItemGroup>
     <ClCompile Include="System\XSMain.cpp" />
     <ClCompile Include="XSClient\XSInput.cpp" />
+    <ClCompile Include="XSClient\XSKeys.cpp" />
     <ClCompile Include="XSClient\XSVideo.cpp" />
+    <ClCompile Include="XSCommon\XSColours.cpp" />
+    <ClCompile Include="XSCommon\XSEvent.cpp" />
     <ClCompile Include="XSCommon\XSConsole.cpp" />
     <ClCompile Include="XSCommon\XSCvar.cpp" />
-    <ClCompile Include="XSCommon\XSFormat.cpp" />
+    <ClCompile Include="XSCommon\XSString.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SDL2\begin_code.h" />
@@ -264,9 +267,12 @@
     <ClInclude Include="System\XSTypes.h" />
     <ClInclude Include="XSClient\XSInput.h" />
     <ClInclude Include="XSClient\XSVideo.h" />
+    <ClInclude Include="XSCommon\XSColours.h" />
+    <ClInclude Include="XSCommon\XSEvent.h" />
     <ClInclude Include="XSCommon\XSConsole.h" />
     <ClInclude Include="XSCommon\XSCvar.h" />
-    <ClInclude Include="XSCommon\XSFormat.h" />
+    <ClInclude Include="XSCommon\XSString.h" />
+    <ClInclude Include="XSCommon\XSVector.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

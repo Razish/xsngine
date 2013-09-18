@@ -11,8 +11,8 @@ FLAGS += -msse3
 
 # source files
 FILES += System/XSMain.o
-FILES += XSClient/XSInput.o XSClient/XSVideo.o
-FILES += XSCommon/XSConsole.o XSCommon/XSCvar.o XSCommon/XSFormat.o
+FILES += XSClient/XSInput.o XSClient/XSKeys.o XSClient/XSVideo.o
+FILES += XSCommon/XSColours.o XSCommon/XSConsole.o XSCommon/XSCvar.o XSCommon/XSEvent.o XSCommon/XSString.o
 
 # libraries
 LIBS = $(shell sdl2-config --libs) -lGL  -lm

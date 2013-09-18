@@ -1,10 +1,11 @@
 #include "XSClient/XSVideo.h"
+#include "XSCommon/XSConsole.h"
 #include "XSCommon/XSCvar.h"
+#include "XSCommon/XSString.h"
 #include "System/XSPlatform.h"
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_opengl.h>
-#include <math.h>
 
 namespace XS {
 

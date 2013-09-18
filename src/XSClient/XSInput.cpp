@@ -1,7 +1,6 @@
 #include "XSClient/XSInput.h"
-#include "XSCommon/XSFormat.h"
-
-#include <SDL2/SDL_events.h>
+#include "XSCommon/XSString.h"
+#include "XSCommon/XSEvent.h"
 
 namespace XS {
 
@@ -20,15 +19,24 @@ namespace XS {
 					break;
 
 				case SDL_KEYDOWN:
-					//TODO: key binds
-					if ( e.key.keysym.sym == SDLK_ESCAPE ) {
-						throw( "User quit" );
-						break;
+					{
+						SDL_Keycode key = e.key.keysym.sym;
+						keystate[key] = true;
+						Common::QueueEvent( Common::KEYEVENT, key, true );
+					//	Command::buffer.Append( bind[key] );
+					}
+					break;
+
+				case SDL_KEYUP:
+					{
+						SDL_Keycode key = e.key.keysym.sym;
+						keystate[key] = false;
+						Common::QueueEvent( Common::KEYEVENT, key, false );
 					}
 					break;
 
 				default:
-				//	throw( Format( "Unhandled SDL event %d", e.type ) );
+				//	throw( String::Format( "Unhandled SDL event %d", e.type ).c_str() );
 					break;
 				}
 			}

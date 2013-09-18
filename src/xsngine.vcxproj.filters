@@ -18,9 +18,6 @@
     <ClCompile Include="XSCommon\XSCvar.cpp">
       <Filter>XSCommon</Filter>
     </ClCompile>
-    <ClCompile Include="XSCommon\XSFormat.cpp">
-      <Filter>XSCommon</Filter>
-    </ClCompile>
     <ClCompile Include="XSCommon\XSConsole.cpp">
       <Filter>XSCommon</Filter>
     </ClCompile>
@@ -32,6 +29,18 @@
     </ClCompile>
     <ClCompile Include="XSClient\XSVideo.cpp">
       <Filter>XSClient</Filter>
+    </ClCompile>
+    <ClCompile Include="XSCommon\XSString.cpp">
+      <Filter>XSCommon</Filter>
+    </ClCompile>
+    <ClCompile Include="XSCommon\XSEvent.cpp">
+      <Filter>XSCommon</Filter>
+    </ClCompile>
+    <ClCompile Include="XSClient\XSKeys.cpp">
+      <Filter>XSClient</Filter>
+    </ClCompile>
+    <ClCompile Include="XSCommon\XSColours.cpp">
+      <Filter>XSCommon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -227,9 +236,6 @@
     <ClInclude Include="XSCommon\XSCvar.h">
       <Filter>XSCommon</Filter>
     </ClInclude>
-    <ClInclude Include="XSCommon\XSFormat.h">
-      <Filter>XSCommon</Filter>
-    </ClInclude>
     <ClInclude Include="XSCommon\XSConsole.h">
       <Filter>XSCommon</Filter>
     </ClInclude>
@@ -244,6 +250,18 @@
     </ClInclude>
     <ClInclude Include="System\XSPlatform.h">
       <Filter>XSSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="XSCommon\XSString.h">
+      <Filter>XSCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="XSCommon\XSEvent.h">
+      <Filter>XSCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="XSCommon\XSColours.h">
+      <Filter>XSCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="XSCommon\XSVector.h">
+      <Filter>XSCommon</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

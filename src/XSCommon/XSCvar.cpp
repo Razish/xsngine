@@ -1,5 +1,5 @@
 #include "XSCommon/XSCvar.h"
-#include "XSCommon/XSFormat.h"
+#include "XSCommon/XSString.h"
 #include "XSCommon/XSConsole.h"
 
 #include <unordered_map>
@@ -57,7 +57,7 @@ namespace XS {
 		this->value.number = (float)atof( value );
 		this->value.integer = atoi( value );
 		this->value.boolean = !!this->value.integer;
-		this->value.tokens = split( value, ' ' );
+		this->value.tokens = String::Split( value, ' ' );
 
 		return true;
 	}
@@ -67,11 +67,11 @@ namespace XS {
 	}
 
 	bool Cvar::Set( const int value ) {
-		return this->Set( Format( "%i", value ) );
+		return this->Set( String::Format( "%i", value ) );
 	}
 
 	bool Cvar::Set( const float value ) {
-		return this->Set( Format( "%f", value ) );
+		return this->Set( String::Format( "%f", value ) );
 	}
 
 }; // namespace XS
