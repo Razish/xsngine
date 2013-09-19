@@ -7,6 +7,8 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_opengl.h>
 
+#include <math.h>
+
 namespace XS {
 
 	namespace Client {

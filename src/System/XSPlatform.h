@@ -2,7 +2,7 @@
 
 #define PRODUCT_NAME			"xsngine"
 #define PRODUCT_VERSION			"0.1"
-#define WINDOW_TITLE			"xsngine ["PRODUCT_VERSION"] "ARCH_STRING
+#define WINDOW_TITLE			"xsngine [" PRODUCT_VERSION "] " ARCH_STRING
 
 
 #define XSDECL

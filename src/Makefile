@@ -8,6 +8,7 @@ FLAGS += -g3 -D_DEBUG
 FLAGS += -I./
 FLAGS += -Wall
 FLAGS += -msse3
+FLAGS += -std=c++11
 
 # source files
 FILES += System/XSMain.o

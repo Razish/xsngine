@@ -4,6 +4,7 @@
 #include <stdio.h>
 
 #include "XSCommon/XSCvar.h"
+#include "XSCommon/XSEvent.h"
 #include "XSClient/XSInput.h"
 #include "XSClient/XSVideo.h"
 
@@ -33,22 +34,21 @@ int main( int argc, char **argv ) {
 	try {
 		while ( 1 ) {
 			// input
-			if ( !com_dedicated->Bool() ) {
+			if ( !com_dedicated->Bool() )
 				Client::input.Poll();
-			}
-	
+
 			// event pump
-		//	Common::EventPump();
+			Common::EventPump();
 		//	Command::ExecuteBuffer();
-	
+
 			// server frame, then network (snapshot)
 		//	Server::RunFrame();
 		//	Server::NetworkPump();
-	
+
 			// event pump
-		//	Common::EventPump();
+			Common::EventPump();
 		//	Command::ExecuteBuffer();
-	
+
 			// outgoing network (client command), then client frame
 		//	Client::NetworkPump();
 		//	Client::RunFrame();

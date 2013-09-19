@@ -1,11 +1,13 @@
 #pragma once
 
 #include "System/XSTypes.h"
+#include <SDL2/SDL_keycode.h>
 
 // XS event pump
 
 //	events are generated throughout the frame and timestamped (i.e. keyboard/mouse input)
 //	They are processed at key points in the frame, such as before executing the command buffer and before running a client frame or server frame
+//	Internal functions are encapsulated in XSEvent.cpp
 
 namespace XS {
 
@@ -13,9 +15,27 @@ namespace XS {
 
 		enum EventType {
 			KEYEVENT=0,
+			NUM_EVENTS
 		};
 
-		void QueueEvent( EventType ev, uint32_t value1, uint32_t value2 );
+		struct XSEvent {
+			// these will be set internally
+			EventType	type;
+			uint32_t	time;
+
+			union {
+				// Each field must be no more than 8 bytes long.
+				struct {
+					SDL_Keycode	key;
+					bool		down;
+				} keyEvent;
+
+				struct { uint32_t value1, value2; };
+			} data;
+		};
+
+		void QueueEvent( EventType type, XSEvent ev );
+		void EventPump( void );
 
 	} // Common
 

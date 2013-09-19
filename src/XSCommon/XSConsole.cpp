@@ -3,6 +3,7 @@
 #include "XSCommon/XSColours.h"
 
 #include <string>
+#include <cstring>
 #include <cstdarg>
 #include <cstdio>
 #include <iostream>

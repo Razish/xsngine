@@ -14,7 +14,7 @@ namespace XS {
 		private:
 			std::map<SDL_Keycode, bool> keystate;
 			std::map<SDL_Keycode, std::string> bind;
-	
+
 		public:
 			Input() {
 				// raw input
