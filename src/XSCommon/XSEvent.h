@@ -24,14 +24,11 @@ namespace XS {
 			uint32_t	time;
 
 			union {
-				// Each field must be no more than 8 bytes long.
 				struct {
 					SDL_Keycode	key;
 					bool		down;
 				} keyEvent;
-
-				struct { uint32_t value1, value2; };
-			} data;
+			};
 		};
 
 		void QueueEvent( EventType type, XSEvent ev );

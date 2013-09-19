@@ -1,5 +1,6 @@
 #include "XSCommon/XSEvent.h"
 #include "XSCommon/XSConsole.h"
+#include "XSCommon/XSString.h"
 
 #include <list>
 
@@ -21,13 +22,28 @@ namespace XS {
 			ev.time = 0; // FIXME
 			ev.type = type;
 
-			Print( "Pushing event %s (%i) values %i and %i\n", eventNames[type], type, ev.data.value1, ev.data.value2 );
+			switch( type ) {
+				case KEYEVENT:
+					Print( "QueueEvent: %s (%i) key: %i, down: %i\n", eventNames[type], type, ev.keyEvent.key, ev.keyEvent.down );
+					break;
+				default:
+					throw( String::Format( "QueueEvent: Unknown event %i", type ).c_str() );
+					break;
+			}
+
 			events.push_back( ev );
 		}
 
 		void EventPump( void ) {
 			for ( auto it=events.begin(); it != events.end(); ++it ) {
-				Print( "Pumping event %s (%i) values %i and %i\n", eventNames[(*it).type], it->type, it->data.value1, it->data.value2 );
+				switch( it->type ) {
+					case KEYEVENT:
+						Print( "EventPump: %s (%i) key: %i, down: %i\n", eventNames[it->type], it->type, it->keyEvent.key, it->keyEvent.down );
+						break;
+					default:
+						throw( String::Format( "EventPump: Unknown event %i", it->type ).c_str() );
+						break;
+				}
 			}
 			events.clear();
 		}

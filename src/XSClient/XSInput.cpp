@@ -25,8 +25,8 @@ namespace XS {
 						keystate[key] = true;
 
 						Common::XSEvent ev;
-						ev.data.keyEvent.key = key;
-						ev.data.keyEvent.down = true;
+						ev.keyEvent.key = key;
+						ev.keyEvent.down = true;
 
 						Common::QueueEvent( Common::KEYEVENT, ev );
 					//	Command::buffer.Append( bind[key] );
@@ -40,8 +40,8 @@ namespace XS {
 						keystate[key] = false;
 
 						Common::XSEvent ev;
-						ev.data.keyEvent.key = key;
-						ev.data.keyEvent.down = false;
+						ev.keyEvent.key = key;
+						ev.keyEvent.down = false;
 
 						Common::QueueEvent( Common::KEYEVENT, ev );
 					}
