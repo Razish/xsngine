@@ -1,8 +1,4 @@
-#include <string>
-#include <vector>
-#include <sstream>
-#include <cstdarg>
-#include <cstdio>
+#include "System/XSInclude.h"
 
 namespace XS {
 

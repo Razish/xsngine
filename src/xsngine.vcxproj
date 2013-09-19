@@ -263,9 +263,10 @@
     <ClInclude Include="SDL2\SDL_types.h" />
     <ClInclude Include="SDL2\SDL_version.h" />
     <ClInclude Include="SDL2\SDL_video.h" />
+    <ClInclude Include="System\XSInclude.h" />
     <ClInclude Include="System\XSPlatform.h" />
-    <ClInclude Include="System\XSTypes.h" />
     <ClInclude Include="XSClient\XSInput.h" />
+    <ClInclude Include="XSClient\XSKeys.h" />
     <ClInclude Include="XSClient\XSVideo.h" />
     <ClInclude Include="XSCommon\XSColours.h" />
     <ClInclude Include="XSCommon\XSEvent.h" />

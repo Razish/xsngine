@@ -1,16 +1,24 @@
-#include <stdlib.h>
-#include <stdio.h>
+#include "System/XSInclude.h"
+
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_keycode.h>
 
 #include "XSCommon/XSCvar.h"
 #include "XSCommon/XSEvent.h"
+#include "XSCommon/XSConsole.h"
 #include "XSClient/XSInput.h"
 #include "XSClient/XSVideo.h"
 
 using namespace XS;
 
-Cvar *com_dedicated = NULL;
+namespace XS {
+	Cvar *com_dedicated = NULL;
+	Cvar *debug_events = NULL;
+}
+
 static void RegisterCvars( void ) {
-	com_dedicated = Cvar::Create( "com_dedicated", "0", Cvar::INIT );
+	XS::com_dedicated	= Cvar::Create( "com_dedicated", "0", Cvar::INIT );
+	XS::debug_events	= Cvar::Create( "debug_events", "0", Cvar::DEVELOPER );
 }
 
 int main( int argc, char **argv ) {

@@ -2,8 +2,6 @@
 
 #include "XSCommon/XSCvar.h"
 
-#include <SDL2/SDL.h>
-
 namespace XS {
 
 	namespace Client {

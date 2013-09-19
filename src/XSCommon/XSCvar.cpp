@@ -1,9 +1,8 @@
+#include "System/XSInclude.h"
+
 #include "XSCommon/XSCvar.h"
 #include "XSCommon/XSString.h"
 #include "XSCommon/XSConsole.h"
-
-#include <unordered_map>
-#include <stdlib.h>
 
 namespace XS {
 

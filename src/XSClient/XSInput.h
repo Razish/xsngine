@@ -1,10 +1,5 @@
 #pragma once
 
-#include <map>
-#include <SDL2/SDL_events.h>
-#include <SDL2/SDL_keycode.h>
-#include "XSCommon/XSConsole.h"
-
 namespace XS {
 
 	namespace Client {
@@ -16,10 +11,7 @@ namespace XS {
 			std::map<SDL_Keycode, std::string> bind;
 
 		public:
-			Input() {
-				// raw input
-				SDL_SetRelativeMouseMode( SDL_TRUE );
-			}
+			Input();
 			void Poll( void );
 		} input;
 

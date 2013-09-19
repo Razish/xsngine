@@ -1,3 +1,8 @@
+#include "System/XSInclude.h"
+
+#include <SDL2/SDL_events.h>
+#include <SDL2/SDL_keycode.h>
+
 #include "XSClient/XSInput.h"
 #include "XSCommon/XSString.h"
 #include "XSCommon/XSEvent.h"
@@ -8,6 +13,12 @@ namespace XS {
 
 		// Client input instance. Access via Client::input.Blah()
 		Input input;
+
+		// constructor
+		Input::Input() {
+			// raw input
+			SDL_SetRelativeMouseMode( SDL_TRUE );
+		}
 
 		void Input::Poll( void ) {
 			SDL_Event e;
@@ -29,7 +40,6 @@ namespace XS {
 						ev.keyEvent.down = true;
 
 						Common::QueueEvent( Common::KEYEVENT, ev );
-					//	Command::buffer.Append( bind[key] );
 					}
 					break;
 

@@ -1,17 +1,13 @@
-#include "XSCommon/XSConsole.h"
-#include "XSCommon/XSString.h"
-#include "XSCommon/XSColours.h"
-
-#include <string>
-#include <cstring>
-#include <cstdarg>
-#include <cstdio>
-#include <iostream>
+#include "System/XSInclude.h"
 
 #ifdef _WIN32
 	#define VC_EXTRALEAN
 	#include <Windows.h>
 #endif
+
+#include "XSCommon/XSConsole.h"
+#include "XSCommon/XSString.h"
+#include "XSCommon/XSColours.h"
 
 namespace XS {
 

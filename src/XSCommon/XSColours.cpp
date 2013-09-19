@@ -1,6 +1,6 @@
-#include "XSCommon/XSColours.h"
+#include "System/XSInclude.h"
 
-#include <ctype.h>
+#include "XSCommon/XSColours.h"
 
 namespace XS {
 

@@ -1,8 +1,5 @@
 #pragma once
 
-#include <string>
-
-
 #define CONSOLE_BUFFER_SIZE (1024*64)
 
 namespace XS {

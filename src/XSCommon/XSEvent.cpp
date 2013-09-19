@@ -1,10 +1,16 @@
+#include "System/XSInclude.h"
+
+#include <SDL2/SDL_keycode.h>
+
 #include "XSCommon/XSEvent.h"
 #include "XSCommon/XSConsole.h"
 #include "XSCommon/XSString.h"
-
-#include <list>
+#include "XSCommon/XSCvar.h"
+#include "XSClient/XSKeys.h"
 
 namespace XS {
+
+	extern Cvar *debug_events;
 
 	namespace Common {
 
@@ -22,13 +28,15 @@ namespace XS {
 			ev.time = 0; // FIXME
 			ev.type = type;
 
-			switch( type ) {
+			if ( debug_events->Bool() ) {
+				switch( type ) {
 				case KEYEVENT:
 					Print( "QueueEvent: %s (%i) key: %i, down: %i\n", eventNames[type], type, ev.keyEvent.key, ev.keyEvent.down );
 					break;
 				default:
 					throw( String::Format( "QueueEvent: Unknown event %i", type ).c_str() );
 					break;
+				}
 			}
 
 			events.push_back( ev );
@@ -38,7 +46,7 @@ namespace XS {
 			for ( auto it=events.begin(); it != events.end(); ++it ) {
 				switch( it->type ) {
 					case KEYEVENT:
-						Print( "EventPump: %s (%i) key: %i, down: %i\n", eventNames[it->type], it->type, it->keyEvent.key, it->keyEvent.down );
+						Client::KeyEvent( it->keyEvent.key, it->keyEvent.down );
 						break;
 					default:
 						throw( String::Format( "EventPump: Unknown event %i", it->type ).c_str() );

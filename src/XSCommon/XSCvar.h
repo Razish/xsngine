@@ -1,12 +1,5 @@
 #pragma once
 
-#include "System/XSTypes.h"
-
-#include <string>
-#include <vector>
-#include <unordered_map>
-#include <assert.h>
-
 namespace XS {
 
 	extern std::unordered_map<std::string, class Cvar*> cvars;

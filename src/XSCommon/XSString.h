@@ -1,10 +1,5 @@
 #pragma once
 
-#include <string>
-#include <vector>
-#include <sstream>
-#include <stdarg.h>
-
 namespace XS {
 
 	namespace String {

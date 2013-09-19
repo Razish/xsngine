@@ -239,9 +239,6 @@
     <ClInclude Include="XSCommon\XSConsole.h">
       <Filter>XSCommon</Filter>
     </ClInclude>
-    <ClInclude Include="System\XSTypes.h">
-      <Filter>XSSystem</Filter>
-    </ClInclude>
     <ClInclude Include="XSClient\XSInput.h">
       <Filter>XSClient</Filter>
     </ClInclude>
@@ -262,6 +259,12 @@
     </ClInclude>
     <ClInclude Include="XSCommon\XSVector.h">
       <Filter>XSCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="XSClient\XSKeys.h">
+      <Filter>XSClient</Filter>
+    </ClInclude>
+    <ClInclude Include="System\XSInclude.h">
+      <Filter>XSSystem</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

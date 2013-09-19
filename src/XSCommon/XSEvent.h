@@ -1,8 +1,5 @@
 #pragma once
 
-#include "System/XSTypes.h"
-#include <SDL2/SDL_keycode.h>
-
 // XS event pump
 
 //	events are generated throughout the frame and timestamped (i.e. keyboard/mouse input)
