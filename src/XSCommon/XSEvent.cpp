@@ -1,6 +1,5 @@
 #include "XSCommon/XSEvent.h"
 #include "XSCommon/XSConsole.h"
-#include <SDL2/SDL_keycode.h>
 
 #include <list>
 
