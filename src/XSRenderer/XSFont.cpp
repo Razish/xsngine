@@ -6,10 +6,10 @@
 #include FT_FREETYPE_H
 #include "freetype/ftglyph.h"
 
+#include "XSCommon/XSCommon.h"
 #include "XSCommon/XSCvar.h"
 #include "XSCommon/XSConsole.h"
 #include "XSCommon/XSString.h"
-#include "XSCommon/XSCommon.h"
 #include "XSCommon/XSVector.h"
 #include "XSRenderer/XSFont.h"
 #include "XSRenderer/XSShaderProgram.h"
@@ -52,7 +52,7 @@ namespace XS {
 			for ( auto it = fonts.begin(); it != fonts.end(); ++it ) {
 				font_s *font = it->second;
 				FT_Face face = NULL;
-				if ( FT_New_Face( ft, String::Format( "%s/%s", com_path->String().c_str(), font->file.c_str() ).c_str(), 0, &face ) ) {
+				if ( FT_New_Face( ft, String::Format( "%s/%s", com_path->GetCString(), font->file.c_str() ).c_str(), 0, &face ) ) {
 					Print( String::Format( "WARNING: Could not register font %s\n", font->file.c_str() ) );
 					continue;
 				}

@@ -71,12 +71,12 @@ static void Shutdown( const char *msg ) {
 	Print( "\n*** XSNGINE Shutdown: %s\n\n"
 			"Cleaning up...\n", msg );
 
-	console.Indent( 1 );
+	// indent the console for this scope
+	Indent indent(1);
 		Renderer::Shutdown();
 		// shutdown
 		Cvar::WriteConfig();
 		Cvar::Clean();
-	console.Indent( -1 );
 }
 
 int main( int argc, char **argv ) {
@@ -97,7 +97,7 @@ int main( int argc, char **argv ) {
 		// frame
 		while ( 1 ) {
 			// input
-			if ( !com_dedicated->Bool() )
+			if ( !com_dedicated->GetBool() )
 				Client::input.Poll();
 
 			// event pump

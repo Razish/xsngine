@@ -70,19 +70,19 @@ namespace XS {
 			GLSL_Init();
 			Framebuffer_Init();
 
-			SetViewport( vid_width->Int(), vid_height->Int() );
+			SetViewport( vid_width->GetInt(), vid_height->GetInt() );
 			Font::Init();
 		}
 
 		void Shutdown( void ) {
 			Print( "Shutting down renderer...\n" );
 
-			console.Indent( 1 );
+			// indent the console for this scope
+			Indent ind( 1 );
 				DestroyDisplay();
 				Framebuffer_Cleanup();
 				GLSL_Cleanup();
 				Texture_Cleanup();
-			console.Indent( -1 );
 		}
 	
 		void RegisterCvars( void ) {
@@ -98,16 +98,16 @@ namespace XS {
 		void CreateDisplay( void ) {
 			Uint32 windowFlags = SDL_WINDOW_OPENGL;
 	
-			if ( vid_noBorder->Int() )
+			if ( vid_noBorder->GetInt() )
 				windowFlags |= SDL_WINDOW_BORDERLESS;
 	
 			SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 3 );
 			SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 2 );
 
-			window = SDL_CreateWindow( WINDOW_TITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, vid_width->Int(), vid_height->Int(), windowFlags );
+			window = SDL_CreateWindow( WINDOW_TITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, vid_width->GetInt(), vid_height->GetInt(), windowFlags );
 			context = SDL_GL_CreateContext( window );
 
-			SDL_GL_SetSwapInterval( r_swapInterval->Int() );
+			SDL_GL_SetSwapInterval( r_swapInterval->GetInt() );
 		}
 
 		void DestroyDisplay( void ) {
@@ -148,7 +148,7 @@ namespace XS {
 			glMatrixMode( GL_PROJECTION );
 			glLoadIdentity();
 	
-			XS_gluPerspective( r_fov->Float(), ratio, 0.1, 1000.0 );
+			XS_gluPerspective( r_fov->GetFloat(), ratio, 0.1, 1000.0 );
 	
 			glMatrixMode( GL_MODELVIEW );
 			glLoadIdentity();

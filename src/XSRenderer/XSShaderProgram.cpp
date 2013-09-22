@@ -96,6 +96,8 @@ namespace XS {
 		static void GLSL_OutputInfoLog( int objectID ) {
 			int logLength = 0;
 			char *logText = NULL;
+			
+			Indent indent(1);
 
 			glGetObjectParameterivARB( objectID, GL_OBJECT_INFO_LOG_LENGTH_ARB, &logLength );
 
@@ -161,13 +163,13 @@ namespace XS {
 				throw( "GLSL_CreateProgram: GLSL extension not initialised" );
 
 			if ( numPrograms >= MAX_GLSL_PROGRAMS )
-				throw( "Maximum number of GLSL programs exceeded" );
+				throw( "GLSL_CreateProgram: Maximum number of GLSL programs exceeded" );
 
 			program = &glslPrograms[numPrograms];
 
 			program->id = glCreateProgramObjectARB();
 			if ( !program->id )
-				Print( String::Format( "Failed to create program with internal ID %d\n", numPrograms ) );
+				Print( String::Format( "GLSL_CreateProgram: Failed to create program with internal ID %d\n", numPrograms ) );
 
 			program->fragmentShader = NULL;
 			program->vertexShader = NULL;
@@ -183,13 +185,13 @@ namespace XS {
 			int statusCode = 0;
 
 			if ( numShaders >= MAX_GLSL_SHADERS ) {
-				Print( "Maximum number of GLSL shaders exceeded.\n" );
+				Print( "GLSL_CreateShader: Maximum number of GLSL shaders exceeded.\n" );
 				return NULL;
 			}
 
 			shaderCode = (char *)malloc( MAX_SHADER_LENGTH );
 			if ( !shaderCode ) {
-				Print( String::Format( "Unable to allocate memory for shader code for shader file %s.\n", path ) );
+				Print( String::Format( "GLSL_CreateShader: Unable to allocate memory for shader code for shader file '%s'.\n", path ) );
 				return NULL;
 			}
 			String::Copy( shaderCode, source, MAX_SHADER_LENGTH );
@@ -200,7 +202,7 @@ namespace XS {
 			shader->type = (shaderType == GL_VERTEX_SHADER_ARB) ? VERTEX_SHADER : FRAGMENT_SHADER;
 
 			if ( !shader->id ) {
-				Print( String::Format( "Failed to create vertex shader object for shader %s.\n", path ) );
+				Print( String::Format( "GLSL_CreateShader: Failed to create shader object for shader '%s'.\n", path ) );
 
 				free( (void *)shaderCode );
 				r_glsl->Set( false );
@@ -210,7 +212,8 @@ namespace XS {
 
 			glShaderSourceARB( shader->id, 1, (const GLcharARB **)&shaderCode, NULL );
 			if ( glGetError() == GL_INVALID_OPERATION ) {
-				Print( String::Format( "Invalid source code in shader %s\n", path ) );
+				Print( String::Format( "GLSL_CreateShader: Invalid source code in shader '%s'\n", path ) );
+
 				GLSL_OutputInfoLog( shader->id );
 
 				glDeleteObjectARB( shader->id );
@@ -226,7 +229,7 @@ namespace XS {
 			glGetObjectParameterivARB( shader->id, GL_OBJECT_COMPILE_STATUS_ARB, &statusCode );
 
 			if ( statusCode == GL_FALSE ) {
-				Print( String::Format( "Failed to compile shader source for shader %s\n", path ) );
+				Print( String::Format( "GLSL_CreateShader: Failed to compile shader source for shader '%s'\n", path ) );
 				GLSL_OutputInfoLog( shader->id );
 
 				glDeleteObjectARB( shader->id );
@@ -262,7 +265,7 @@ namespace XS {
 			
 			if ( !file.is_open() ) {
 				Print( String::Format( "GLSL_LoadSource: failed to open %s for reading\n", path ) );
-				return NULL;
+				return "";
 			}
 
 			std::string line;

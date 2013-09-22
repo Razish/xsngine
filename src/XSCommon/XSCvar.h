@@ -49,11 +49,13 @@ namespace XS {
 		bool Set( const float value );
 		bool Set( const bool value );
 
-		inline const std::string &String( void ) { return this->value.str; }
-		inline const int Int( void ) { return this->value.integer; }
-		inline const float Float( void ) { return this->value.number; }
-		inline const bool Bool( void ) { return this->value.boolean; }
-		inline const std::string &Token( int idx ) { return this->value.tokens[idx]; }
+		inline const std::string &GetString( void ) { return this->value.str; }
+		inline const char *GetCString( void ) { return this->value.str.c_str(); }
+		inline const int GetInt( void ) { return this->value.integer; }
+		inline const float GetFloat( void ) { return this->value.number; }
+		inline bool GetBool( void ) { return this->value.boolean; }
+
+		inline const std::string& operator[]( const int idx ) { return this->value.tokens[idx]; }
 	};
 
 }; // namespace XS

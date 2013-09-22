@@ -32,7 +32,7 @@ namespace XS {
 			ev.time = 0; // FIXME
 			ev.type = type;
 
-			if ( debug_events->Bool() ) {
+			if ( debug_events->GetBool() ) {
 				switch( type ) {
 				case KEYEVENT:
 					Print( "Event::Queue: %s (%i) key: %i, down: %i\n", eventNames[type], type, ev.keyEvent.key, ev.keyEvent.down );

@@ -34,5 +34,14 @@ namespace XS {
 		void Indent( int level );
 		unsigned int GetIndentation( void ) { return indentation; }
 	} console; // class Console
+	
+	class Indent {
+	private:
+		Indent(){}
+		int level;
+	public:
+		Indent( int level ) { this->level = level; console.Indent( this->level ); }
+		~Indent() { console.Indent( -level ); }
+	};
 
 }; // namespace XS

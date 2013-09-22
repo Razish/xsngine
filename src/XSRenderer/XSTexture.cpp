@@ -66,7 +66,7 @@ namespace XS {
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
 
-			if ( r_textureFilterAnisotropic->Int() )
+			if ( r_textureFilterAnisotropic->GetInt() )
 				glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, (GLfloat)glConfig.maxAnisotropy );
 
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filterTable[minFilter] );
@@ -106,7 +106,7 @@ namespace XS {
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
 
-			if ( r_textureFilterAnisotropic->Int() )
+			if ( r_textureFilterAnisotropic->GetInt() )
 				glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, (GLfloat)glConfig.maxAnisotropy );
 
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filterMode );

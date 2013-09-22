@@ -12,8 +12,10 @@
 #include <cstdlib>
 #include <cstring>
 
-#ifdef _WIN32
+#if defined(_WIN32)
 	#include <direct.h>
+#elif defined(__linux__)
+	#include <unistd.h>
 #endif
 
 #include <iostream>
