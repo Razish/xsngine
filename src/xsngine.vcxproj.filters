@@ -63,6 +63,9 @@
     <ClCompile Include="XSRenderer\XSInternalFormat.cpp">
       <Filter>XSRenderer</Filter>
     </ClCompile>
+    <ClCompile Include="XSCommon\XSCommand.cpp">
+      <Filter>XSCommon</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SDL2\begin_code.h">
@@ -304,6 +307,9 @@
     </ClInclude>
     <ClInclude Include="XSRenderer\XSInternalFormat.h">
       <Filter>XSRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="XSCommon\XSCommand.h">
+      <Filter>XSCommon</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

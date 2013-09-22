@@ -7,6 +7,7 @@
 #include "XSCommon/XSEvent.h"
 #include "XSCommon/XSConsole.h"
 #include "XSCommon/XSString.h"
+#include "XSCommon/XSCommand.h"
 #include "XSClient/XSInput.h"
 #include "XSRenderer/XSRenderer.h"
 
@@ -64,9 +65,8 @@ namespace XS {
 			size_t start = commandLine.find( delim );
 			std::vector<std::string> args = String::Split( &commandLine[start+1], delim );
 			for ( auto it = args.begin(); it != args.end(); ++it ) {
-			//	Command::Append( it->c_str() );
+				Command::Append( it->c_str() );
 			}
-		//	Command::ExecuteBuffer();
 		}
 
 		static void Shutdown( const char *msg ) {
@@ -88,12 +88,15 @@ namespace XS {
 int main( int argc, char **argv ) {
 	try {
 		// init
-	//	XS::Command::Init(); // register commands like exec, vstr
+		XS::Command::Init(); // register commands like exec, vstr
 		XS::Common::ParseCommandLine( argc, argv );
 
 		XS::Common::RegisterCvars();
-
 		XS::Cvar::LoadConfig();
+
+		// now execute the command line args
+		XS::Command::ExecuteBuffer();
+
 	//	XS::FileSystem::Init(); // probably don't need. maybe. yet.
 		XS::Renderer::Init();
 
@@ -108,7 +111,7 @@ int main( int argc, char **argv ) {
 
 			// event pump
 			XS::Event::Pump();
-		//	XS::Command::ExecuteBuffer();
+			XS::Command::ExecuteBuffer();
 
 			// server frame, then network (snapshot)
 		//	XS::Server::RunFrame();
@@ -116,7 +119,7 @@ int main( int argc, char **argv ) {
 
 			// event pump
 			XS::Event::Pump();
-		//	XS::Command::ExecuteBuffer();
+			XS::Command::ExecuteBuffer();
 
 			// outgoing network (client command), then client frame
 		//	XS::Client::NetworkPump();

@@ -193,6 +193,7 @@
     <ClCompile Include="XSClient\XSInput.cpp" />
     <ClCompile Include="XSClient\XSKeys.cpp" />
     <ClCompile Include="XSCommon\XSColours.cpp" />
+    <ClCompile Include="XSCommon\XSCommand.cpp" />
     <ClCompile Include="XSCommon\XSConsole.cpp" />
     <ClCompile Include="XSCommon\XSCvar.cpp" />
     <ClCompile Include="XSCommon\XSCommon.cpp" />
@@ -272,6 +273,7 @@
     <ClInclude Include="XSClient\XSInput.h" />
     <ClInclude Include="XSClient\XSKeys.h" />
     <ClInclude Include="XSCommon\XSColours.h" />
+    <ClInclude Include="XSCommon\XSCommand.h" />
     <ClInclude Include="XSCommon\XSCommon.h" />
     <ClInclude Include="XSCommon\XSConsole.h" />
     <ClInclude Include="XSCommon\XSCvar.h" />

@@ -46,7 +46,9 @@ namespace XS {
 				// INIT cvars should not be initialised with differing values
 				if ( cvar->flags & INIT )
 					Print( String::Format( "WARNING: INIT Cvar '%s' was created twice with values '%s' and '%s'\n", name.c_str(), cvar->value.str.c_str(), value.c_str() ) );
-				else
+
+				// don't initialise a cvar if it already exists/has been set
+				else if ( !cvar->modified )
 					cvar->Set( value );
 			}
 
