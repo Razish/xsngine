@@ -5,6 +5,7 @@
 	#include <Windows.h>
 #endif
 
+#include "XSCommon/XSCommon.h"
 #include "XSCommon/XSConsole.h"
 #include "XSCommon/XSString.h"
 #include "XSCommon/XSColours.h"
@@ -37,13 +38,20 @@ namespace XS {
 				size *= 2;
 		}
 
+		//FIXME: care about printing twice on same line
+		unsigned int indentation = console.GetIndentation();
+		std::string final = "";
+		for ( unsigned int i=0; i<indentation; i++ )
+			final += "\t";
+		final += str;
+
 		//TODO: strip colours?
-		std::cout << str;
-		console.Append( str.c_str() );
+		std::cout << final;
+		console.Append( final.c_str() );
 
 		#if defined(_WIN32) && defined( _DEBUG )
-			if ( str[0] )
-				OutputDebugString( str.c_str() );
+			if ( !final.empty() )
+				OutputDebugString( final.c_str() );
 		#endif
 	}
 
@@ -71,6 +79,12 @@ namespace XS {
 		for ( size_t i=0; i<len; i++ ) {
 			tmp[i].raw = EncodeCharacter( lastColour, text[i] );
 		}
+	}
+
+	void Console::Indent( int level ) {
+		indentation += level;
+		if ( indentation < 0 )
+			indentation = 0;
 	}
 
 }; // namespace XS

@@ -2,8 +2,6 @@
 
 namespace XS {
 
-	extern std::unordered_map<std::string, class Cvar*> cvars;
-
 	class Cvar {
 	public:
 		enum Flags {
@@ -16,6 +14,8 @@ namespace XS {
 		};
 
 	private:
+		Cvar(){}
+
 		// store the value in these formats
 		struct {
 			std::string str, defaultStr;
@@ -31,14 +31,13 @@ namespace XS {
 		bool modified;
 
 	public:
-		// static funcs
 		static void LoadConfig( void );
 		static void WriteConfig( void );
-		static void LockInit( void ) { /*initialised = true;*/ }
+		static void Clean( void );
 
 		// xtors
 		Cvar( std::string &value ) { this->Set( value ); }
-		static Cvar *Create( std::string name, std::string value, uint32_t flags );
+		static Cvar *Create( std::string name, std::string value="", uint32_t flags=NONE );
 
 		// get/set
 		void SetFlags( uint32_t flags );
@@ -48,6 +47,7 @@ namespace XS {
 		bool Set( const char *value );
 		bool Set( const int value );
 		bool Set( const float value );
+		bool Set( const bool value );
 
 		inline const std::string &String( void ) { return this->value.str; }
 		inline const int Int( void ) { return this->value.integer; }

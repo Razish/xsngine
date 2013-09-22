@@ -1,5 +1,6 @@
 #include "System/XSInclude.h"
 
+#include "XSCommon/XSCommon.h"
 #include "XSCommon/XSColours.h"
 
 namespace XS {

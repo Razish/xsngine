@@ -1,7 +1,7 @@
 #include "System/XSInclude.h"
 
-#include <SDL2/SDL_events.h>
-#include <SDL2/SDL_keycode.h>
+#include "SDL2/SDL_events.h"
+#include "SDL2/SDL_keycode.h"
 
 #include "XSClient/XSInput.h"
 #include "XSCommon/XSString.h"
@@ -35,11 +35,11 @@ namespace XS {
 
 						keystate[key] = true;
 
-						Common::XSEvent ev;
+						Event::XSEvent ev;
 						ev.keyEvent.key = key;
 						ev.keyEvent.down = true;
 
-						Common::QueueEvent( Common::KEYEVENT, ev );
+						Event::Queue( Event::KEYEVENT, ev );
 					}
 					break;
 
@@ -49,16 +49,16 @@ namespace XS {
 
 						keystate[key] = false;
 
-						Common::XSEvent ev;
+						Event::XSEvent ev;
 						ev.keyEvent.key = key;
 						ev.keyEvent.down = false;
 
-						Common::QueueEvent( Common::KEYEVENT, ev );
+						Event::Queue( Event::KEYEVENT, ev );
 					}
 					break;
 
 				default:
-				//	throw( String::Format( "Unhandled SDL event %d", e.type ).c_str() );
+				//	throw( String::Format( "Unhandled SDL event %d", e.type ) );
 					break;
 				}
 			}

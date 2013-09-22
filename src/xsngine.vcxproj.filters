@@ -13,6 +13,9 @@
     <Filter Include="XSClient">
       <UniqueIdentifier>{9e090e70-283b-4fad-9444-b8a034ec8970}</UniqueIdentifier>
     </Filter>
+    <Filter Include="XSRenderer">
+      <UniqueIdentifier>{55285326-3198-45d6-96db-6e3608ec1eec}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="XSCommon\XSCvar.cpp">
@@ -27,9 +30,6 @@
     <ClCompile Include="XSClient\XSInput.cpp">
       <Filter>XSClient</Filter>
     </ClCompile>
-    <ClCompile Include="XSClient\XSVideo.cpp">
-      <Filter>XSClient</Filter>
-    </ClCompile>
     <ClCompile Include="XSCommon\XSString.cpp">
       <Filter>XSCommon</Filter>
     </ClCompile>
@@ -41,6 +41,27 @@
     </ClCompile>
     <ClCompile Include="XSCommon\XSColours.cpp">
       <Filter>XSCommon</Filter>
+    </ClCompile>
+    <ClCompile Include="XSRenderer\XSFont.cpp">
+      <Filter>XSRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="XSRenderer\XSFramebuffer.cpp">
+      <Filter>XSRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="XSRenderer\XSShaderProgram.cpp">
+      <Filter>XSRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="XSRenderer\XSRenderer.cpp">
+      <Filter>XSRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="GLee\GLee.c">
+      <Filter>XSRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="XSRenderer\XSTexture.cpp">
+      <Filter>XSRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="XSRenderer\XSInternalFormat.cpp">
+      <Filter>XSRenderer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -242,9 +263,6 @@
     <ClInclude Include="XSClient\XSInput.h">
       <Filter>XSClient</Filter>
     </ClInclude>
-    <ClInclude Include="XSClient\XSVideo.h">
-      <Filter>XSClient</Filter>
-    </ClInclude>
     <ClInclude Include="System\XSPlatform.h">
       <Filter>XSSystem</Filter>
     </ClInclude>
@@ -265,6 +283,27 @@
     </ClInclude>
     <ClInclude Include="System\XSInclude.h">
       <Filter>XSSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="XSRenderer\XSFont.h">
+      <Filter>XSRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="XSRenderer\XSFramebuffer.h">
+      <Filter>XSRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="XSRenderer\XSShaderProgram.h">
+      <Filter>XSRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="XSCommon\XSCommon.h">
+      <Filter>XSCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="XSRenderer\XSRenderer.h">
+      <Filter>XSRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="XSRenderer\XSTexture.h">
+      <Filter>XSRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="XSRenderer\XSInternalFormat.h">
+      <Filter>XSRenderer</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

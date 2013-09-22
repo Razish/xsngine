@@ -6,6 +6,6 @@ namespace XS {
 		
 		void KeyEvent( SDL_Keycode key, bool down );
 
-	}
+	} // namespace Client
 
-}
+} // namespace XS

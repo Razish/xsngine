@@ -8,16 +8,16 @@
 
 namespace XS {
 
-	namespace Common {
+	namespace Event {
 
-		enum EventType {
+		enum Type {
 			KEYEVENT=0,
 			NUM_EVENTS
 		};
 
 		struct XSEvent {
 			// these will be set internally
-			EventType	type;
+			Type	type;
 			uint32_t	time;
 
 			union {
@@ -28,8 +28,9 @@ namespace XS {
 			};
 		};
 
-		void QueueEvent( EventType type, XSEvent ev );
-		void EventPump( void );
+		void Init( void );
+		void Queue( Type type, XSEvent ev );
+		void Pump( void );
 
 	} // Common
 

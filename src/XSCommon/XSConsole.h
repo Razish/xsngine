@@ -22,6 +22,7 @@ namespace XS {
 		consoleText_s text[CONSOLE_BUFFER_SIZE];
 		char *tail; // points to next free byte
 
+		unsigned int indentation;
 		bool visible;
 
 		short EncodeCharacter( char lastColour, char c );
@@ -29,6 +30,9 @@ namespace XS {
 	public:
 		void Display( void );
 		void Append( const char *text );
+
+		void Indent( int level );
+		unsigned int GetIndentation( void ) { return indentation; }
 	} console; // class Console
 
 }; // namespace XS

@@ -1,8 +1,34 @@
 #include "System/XSInclude.h"
+#include "XSCommon/XSString.h"
 
 namespace XS {
 
 	namespace String {
+
+		void Concatenate( char *dst, size_t len, const char *src ) {
+			size_t l1 = strlen( dst );
+
+			if ( l1 >= len )
+				throw( "XS::String::Concatenate: already overflowed" );
+
+			Copy( dst+l1, src, len-l1 );
+		}
+
+		// safe strncpy that ensures a trailing zero
+		void Copy( char *dst, const char *src, size_t len ) {
+			if ( !dst )
+				throw( "XS::String::Copy: NULL dest" );
+
+			if ( !src )
+				throw( "XS::String::Copy: NULL src" );
+
+			if ( len < 1 )
+				throw( "XS::String::Copy: destsize < 1" );
+
+			strncpy( dst, src, len-1 );
+			dst[len-1] = 0;
+		}
+
 		// by Erik Aronesty http://stackoverflow.com/a/8098080
 		std::string Format( const std::string fmt, ... ) {
 			int size = 100;

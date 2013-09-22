@@ -93,14 +93,14 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;freetype</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4127;4100</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>../lib/x86/</AdditionalLibraryDirectories>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;SDL2.lib;SDL2main.lib;OpenGL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;SDL2.lib;SDL2main.lib;OpenGL32.lib;freetype250_D.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <CustomBuildStep>
       <Command>
@@ -118,14 +118,14 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;freetype</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4127;4100</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>../lib/x64/</AdditionalLibraryDirectories>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;SDL2.lib;SDL2main.lib;OpenGL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;SDL2.lib;SDL2main.lib;OpenGL32.lib;freetype250_D.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <CustomBuildStep>
       <Command>
@@ -145,7 +145,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;freetype</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <DisableSpecificWarnings>4127;4100</DisableSpecificWarnings>
     </ClCompile>
@@ -154,7 +154,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;SDL2.lib;SDL2main.lib;OpenGL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;SDL2.lib;SDL2main.lib;OpenGL32.lib;freetype250.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>../lib/x86/</AdditionalLibraryDirectories>
     </Link>
     <CustomBuildStep>
@@ -171,7 +171,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;freetype</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <DisableSpecificWarnings>4127;4100</DisableSpecificWarnings>
     </ClCompile>
@@ -180,7 +180,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;SDL2.lib;SDL2main.lib;OpenGL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;SDL2.lib;SDL2main.lib;OpenGL32.lib;freetype250.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>../lib/x64/</AdditionalLibraryDirectories>
     </Link>
     <CustomBuildStep>
@@ -189,15 +189,21 @@
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="GLee\GLee.c" />
     <ClCompile Include="System\XSMain.cpp" />
     <ClCompile Include="XSClient\XSInput.cpp" />
     <ClCompile Include="XSClient\XSKeys.cpp" />
-    <ClCompile Include="XSClient\XSVideo.cpp" />
     <ClCompile Include="XSCommon\XSColours.cpp" />
     <ClCompile Include="XSCommon\XSEvent.cpp" />
     <ClCompile Include="XSCommon\XSConsole.cpp" />
     <ClCompile Include="XSCommon\XSCvar.cpp" />
     <ClCompile Include="XSCommon\XSString.cpp" />
+    <ClCompile Include="XSRenderer\XSFont.cpp" />
+    <ClCompile Include="XSRenderer\XSFramebuffer.cpp" />
+    <ClCompile Include="XSRenderer\XSInternalFormat.cpp" />
+    <ClCompile Include="XSRenderer\XSShaderProgram.cpp" />
+    <ClCompile Include="XSRenderer\XSRenderer.cpp" />
+    <ClCompile Include="XSRenderer\XSTexture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SDL2\begin_code.h" />
@@ -267,13 +273,19 @@
     <ClInclude Include="System\XSPlatform.h" />
     <ClInclude Include="XSClient\XSInput.h" />
     <ClInclude Include="XSClient\XSKeys.h" />
-    <ClInclude Include="XSClient\XSVideo.h" />
     <ClInclude Include="XSCommon\XSColours.h" />
+    <ClInclude Include="XSCommon\XSCommon.h" />
     <ClInclude Include="XSCommon\XSEvent.h" />
     <ClInclude Include="XSCommon\XSConsole.h" />
     <ClInclude Include="XSCommon\XSCvar.h" />
     <ClInclude Include="XSCommon\XSString.h" />
     <ClInclude Include="XSCommon\XSVector.h" />
+    <ClInclude Include="XSRenderer\XSFont.h" />
+    <ClInclude Include="XSRenderer\XSFramebuffer.h" />
+    <ClInclude Include="XSRenderer\XSShaderProgram.h" />
+    <ClInclude Include="XSRenderer\XSRenderer.h" />
+    <ClInclude Include="XSRenderer\XSTexture.h" />
+    <ClInclude Include="XSRenderer\XSInternalFormat.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -7,8 +7,118 @@
 
 namespace XS {
 
-	typedef float number;
-	typedef int integer;
+	class vector2 {
+	private:
+
+	public:
+		union {
+			struct { number x, y; };
+			struct { number w, h; };
+			number _raw[2];
+		};
+
+		// xtors
+		vector2() {
+			this->x = this->y = 0.0f;
+		}
+
+		vector2( number x, number y ) {
+			this->x = x;
+			this->y = y;
+		}
+
+		// access operators
+		inline number& operator[]( const int idx ) {
+			return _raw[idx];
+		}
+
+		// clear
+		inline void clear( void ) {
+			this->x = this->y = 0.0f;
+		}
+
+		// compare
+		static inline bool compare( const vector2 &lhs, const vector2 &rhs ) {
+			return ( lhs.x == rhs.x && lhs.y == rhs.y );
+		}
+
+		// addition
+		inline vector2 operator+( const vector2 &rhs ) const {
+			return vector2( this->x + rhs.x, this->y + rhs.y );
+		}
+        inline vector2& operator+=( const vector2& rhs ) {
+			this->x += rhs.x;
+			this->y += rhs.y;
+			return *this;
+		}
+
+		// subtraction
+		inline vector2 operator-( const vector2 &rhs ) const {
+			return vector2( this->x - rhs.x, this->y - rhs.y );
+		}
+        inline vector2& operator-=( const vector2& rhs ) {
+			this->x -= rhs.x;
+			this->y -= rhs.y;
+			return *this;
+		}
+
+		// increment
+		inline void increment( void ) {
+			this->x += 1.0f;
+			this->y += 1.0f;
+		}
+
+		// decrement
+		inline void decrement( void ) {
+			this->x -= 1.0f;
+			this->y -= 1.0f;
+		}
+
+		// inverse
+		inline void inverse( void ) {
+			x = -x;
+			y = -y;
+		}
+		static inline vector2 inverse( const vector2 &in ) {
+			return vector2( -in.x, -in.y );
+		}
+
+		// scalar multiplication
+		inline vector2 operator*( const number scalar ) const {
+			return vector2( this->x * scalar, this->y * scalar );
+		}
+		inline vector2& operator*=( const number scalar ) {
+			this->x *= scalar;
+			this->y *= scalar;
+			return *this;
+		}
+
+		// vector multiplication
+		inline vector2 operator*( const vector2 &rhs ) const {
+			return vector2( this->x * rhs.x, this->y * rhs.y );
+		}
+		inline vector2& operator*=( const vector2 &rhs ) {
+			this->x *= rhs.x;
+			this->y *= rhs.y;
+			return *this;
+		}
+
+		// ???
+		static inline vector2 ma( const vector2 &a, number scale, const vector2 &b ) {
+			vector2 result;
+			result.x = a.x + b.x*scale;
+			result.y = a.y + b.y*scale;
+			return result;
+		}
+
+		// linear interpolation
+		static inline vector2 lerp( const vector2 &a, number scale, const vector2 &b ) {
+			vector2 result;
+			result.x = a.x + (b.x-a.x)*scale;
+			result.y = a.y + (b.y-a.y)*scale;
+			return result;
+		}
+	};
 
 	class vector3 {
 	private:
@@ -17,6 +127,7 @@ namespace XS {
 		union {
 			struct { number x, y, z; };
 			struct { number r, g, b; }; // red, green, blue?
+			number _raw[3];
 		};
 
 		// xtors
@@ -28,6 +139,11 @@ namespace XS {
 			this->x = x;
 			this->y = y;
 			this->z = z;
+		}
+
+		// access operators
+		inline number& operator[]( const int idx ) {
+			return _raw[idx];
 		}
 
 		// clear
@@ -202,6 +318,7 @@ namespace XS {
 		union {
 			struct { number x, y, z, w; };
 			struct { number r, g, b, a; }; // red, green, blue?
+			number _raw[4];
 		};
 
 		// xtors
@@ -214,6 +331,11 @@ namespace XS {
 			this->y = y;
 			this->z = z;
 			this->w = w;
+		}
+
+		// access operators
+		inline number& operator[]( const int idx ) {
+			return _raw[idx];
 		}
 
 		// clear
