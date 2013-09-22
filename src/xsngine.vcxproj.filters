@@ -21,11 +21,11 @@
     <ClCompile Include="XSCommon\XSCvar.cpp">
       <Filter>XSCommon</Filter>
     </ClCompile>
-    <ClCompile Include="XSCommon\XSConsole.cpp">
+    <ClCompile Include="XSCommon\XSCommon.cpp">
       <Filter>XSCommon</Filter>
     </ClCompile>
-    <ClCompile Include="System\XSMain.cpp">
-      <Filter>XSSystem</Filter>
+    <ClCompile Include="XSCommon\XSConsole.cpp">
+      <Filter>XSCommon</Filter>
     </ClCompile>
     <ClCompile Include="XSClient\XSInput.cpp">
       <Filter>XSClient</Filter>
@@ -263,7 +263,7 @@
     <ClInclude Include="XSClient\XSInput.h">
       <Filter>XSClient</Filter>
     </ClInclude>
-    <ClInclude Include="System\XSPlatform.h">
+    <ClInclude Include="XSSystem\XSPlatform.h">
       <Filter>XSSystem</Filter>
     </ClInclude>
     <ClInclude Include="XSCommon\XSString.h">
@@ -281,7 +281,7 @@
     <ClInclude Include="XSClient\XSKeys.h">
       <Filter>XSClient</Filter>
     </ClInclude>
-    <ClInclude Include="System\XSInclude.h">
+    <ClInclude Include="XSSystem\XSInclude.h">
       <Filter>XSSystem</Filter>
     </ClInclude>
     <ClInclude Include="XSRenderer\XSFont.h">
