@@ -19,7 +19,7 @@ namespace XS {
 		for ( auto itr=cvars.begin(); itr != cvars.end(); ++itr ) {
 			const char *name = itr->first.c_str();
 			Cvar *cv = itr->second;
-			if ( (cv->flags & ARCHIVE) && cv->value.str != cv->value.defaultStr ) {
+			if ( (cv->flags & ARCHIVE) && cv->modified ) {
 				#ifdef _DEBUG
 					Print( "Saving Cvar '%s' with value '%s'\n", name, cv->value.str.c_str() );
 				#endif
@@ -54,6 +54,7 @@ namespace XS {
 
 			if ( flags != NONE )
 				cvar->SetFlags( flags );
+
 			return cvar;
 		}
 
@@ -63,6 +64,20 @@ namespace XS {
 		cvars[name] = cvar;
 
 		return cvar;
+	}
+
+	Cvar *Cvar::Get( const std::string &name ) {
+		Cvar *cv = cvars[name];
+		std::string val = "";
+		
+		if ( cv )
+			return cv;
+
+		cv = new Cvar( val );
+		cv->value.defaultStr = val;
+		cvars[name] = cv;
+		
+		return cv;
 	}
 
 	void Cvar::SetFlags( uint32_t flags ) {
@@ -81,6 +96,8 @@ namespace XS {
 		this->value.integer = atoi( value );
 		this->value.boolean = !!this->value.integer;
 		this->value.tokens = String::Split( value, ' ' );
+		
+		this->modified = true;
 
 		return true;
 	}

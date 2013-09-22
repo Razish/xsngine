@@ -64,9 +64,8 @@ namespace XS {
 			const char delim = '+';
 			size_t start = commandLine.find( delim );
 			std::vector<std::string> args = String::Split( &commandLine[start+1], delim );
-			for ( auto it = args.begin(); it != args.end(); ++it ) {
+			for ( auto it = args.begin(); it != args.end(); ++it )
 				Command::Append( it->c_str() );
-			}
 		}
 
 		static void Shutdown( const char *msg ) {

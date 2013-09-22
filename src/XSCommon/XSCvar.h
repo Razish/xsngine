@@ -38,6 +38,7 @@ namespace XS {
 		// xtors
 		Cvar( std::string &value ) { this->Set( value ); }
 		static Cvar *Create( std::string name, std::string value="", uint32_t flags=NONE );
+		static Cvar *Get( const std::string &name );
 
 		// get/set
 		void SetFlags( uint32_t flags );

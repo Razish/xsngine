@@ -3,6 +3,7 @@
 #include "XSCommon/XSCommand.h"
 #include "XSCommon/XSString.h"
 #include "XSCommon/XSCvar.h"
+#include "XSCommon/XSConsole.h"
 
 namespace XS {
 
@@ -19,7 +20,8 @@ namespace XS {
 
 
 		static void Cmd_SetCvar( const commandContext *context ) {
-			Cvar::Create( context->args[1], context->args[2] );
+			Cvar *cv = Cvar::Get( context->args[1] );
+			cv->Set( context->args[2] );
 		}
 
 		void Init( void ) {
