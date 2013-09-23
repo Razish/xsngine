@@ -13,8 +13,7 @@ namespace XS {
 
 	namespace Renderer {
 
-		static int numTextures = 0;
-		static texture_t textures[MAX_TEXTURES] = { {0} };
+		static std::vector<Texture*> textures;
 
 		//TODO: filter lookup for Texture_Create
 		static const GLint filterTable[] = {
@@ -23,48 +22,37 @@ namespace XS {
 			GL_LINEAR_MIPMAP_LINEAR
 		};
 
-		void Texture_Init( void ) {
+		void Texture::Init( void ) {
 			if ( SDL_GL_ExtensionSupported( "GL_EXT_texture_filter_anisotropic" ) )
 				glConfig.supports.anisotropy = true;
 		}
 
-		void Texture_Cleanup( void ) {
-			texture_t *texture = NULL;
-			int i = 0;
-
+		void Texture::Cleanup( void ) {
 			Print( "Cleaning up textures\n" );
 
-			for ( i=0, texture=textures; i<numTextures; i++, texture++ ) {
-				if ( !texture->id )
+			for ( auto it = textures.begin(); it != textures.end(); ++it ) {
+				if ( !(*it)->id )
 					continue;
 
-				glDeleteTextures( 1, &texture->id );
+				glDeleteTextures( 1, &(*it)->id );
+
+				delete *it;
 				CheckGLErrors( __FILE__, __LINE__ );
 			}
 
-			numTextures = 0;
-			memset( textures, 0, sizeof( textures ) );
+			textures.clear();
 		}
 
-		texture_t *Texture_Create( unsigned int width, unsigned int height, internalFormat_t internalFormat, unsigned int minFilter, unsigned int magFilter ) {
+		Texture::Texture( unsigned int width, unsigned int height, internalFormat_t internalFormat, unsigned int minFilter, unsigned int magFilter ) {
 			unsigned int textureId = 0;
-			texture_t *texture = NULL;
-
-			if ( numTextures >= MAX_TEXTURES ) {
-				Print( "Exceeded maximum number of textures.\n" );
-				return NULL;
-			}
 
 			glGenTextures( 1, &textureId );
-			if ( !textureId ) {
-				Print( String::Format( "Failed to create texture with internal ID %d.\n", numTextures ) );
-				return NULL;
-			}
+			if ( !textureId )
+				throw( String::Format( "Failed to create texture with internal ID %d.\n", textures.size() ) );
 
-			texture = &textures[numTextures++];
-			texture->id = textureId;
-			texture->width = width;
-			texture->height = height;
+			this->id = textureId;
+			this->width = width;
+			this->height = height;
 
 			glBindTexture( GL_TEXTURE_2D, textureId );
 
@@ -82,25 +70,20 @@ namespace XS {
 
 			CheckGLErrors (__FILE__, __LINE__);
 
-			return texture;
+			textures.push_back( this );
 		}
 
-		texture_t *Texture_CreateBlank( unsigned int width, unsigned int height, internalFormat_t internalFormat ) {
+		Texture::Texture( unsigned int width, unsigned int height, internalFormat_t internalFormat ) {
 			unsigned int textureId=0;
 			unsigned int filterMode = GL_LINEAR_MIPMAP_LINEAR;
-			texture_t *texture = NULL;
-
-			if ( numTextures >= MAX_TEXTURES )
-				throw( "CreateBlankTexture: Exceeded maximum number of textures" );
 
 			glGenTextures( 1, &textureId );
 			if ( !textureId )
-				throw( String::Format( "CreateBlankTexture: Failed to create texture with internal ID %d", numTextures ) );
+				throw( String::Format( "Failed to create blank texture with internal ID %d", textures.size() ) );
 
-			texture			= &textures[numTextures++];
-			texture->id		= textureId;
-			texture->width	= width;
-			texture->height	= height;
+			this->id		= textureId;
+			this->width		= width;
+			this->height	= height;
 
 			// fp16 textures don't play nicely with filtering (performance, support)
 			//	if ( internalFormat == IF_RGBA16F )
@@ -123,7 +106,7 @@ namespace XS {
 
 			CheckGLErrors( __FILE__, __LINE__ );
 
-			return texture;
+			textures.push_back( this );
 		}
 
 	}

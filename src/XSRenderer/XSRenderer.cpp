@@ -69,12 +69,13 @@ namespace XS {
 
 			CreateDisplay();
 			InitGL();
-			Texture_Init();
+
+			Texture::Init();
 			GLSL_Init();
-			Framebuffer_Init();
+			Framebuffer::Init();
+			Font::Init();
 
 			SetViewport( vid_width->GetInt(), vid_height->GetInt() );
-			Font::Init();
 		}
 
 		void Shutdown( void ) {
@@ -83,9 +84,9 @@ namespace XS {
 			// indent the console for this scope
 			Indent ind( 1 );
 				DestroyDisplay();
-				Texture_Cleanup();
+				Texture::Cleanup();
 				GLSL_Cleanup();
-				Framebuffer_Cleanup();
+				Framebuffer::Cleanup();
 		}
 	
 		void RegisterCvars( void ) {

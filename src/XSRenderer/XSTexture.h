@@ -6,16 +6,22 @@ namespace XS {
 
 		#define MAX_TEXTURES (256)
 
-		typedef struct texture_s {
-			unsigned int	id;
-			unsigned int	width;
-			unsigned int	height;
-		} texture_t;
+		class Texture {
+		private:
+			Texture(){}
 
-		void			Texture_Init( void );
-		void			Texture_Cleanup( void );
-		texture_t *		Texture_Create( unsigned int width, unsigned int height, internalFormat_t internalFormat, unsigned int minFilter, unsigned int magFilter );
-		texture_t *		Texture_CreateBlank( unsigned int width, unsigned int height, internalFormat_t internalFormat );
+		public:
+
+			uint32_t id;
+			unsigned int width, height;
+
+			static void Init( void );
+			static void	Cleanup( void );
+
+			Texture( unsigned int width, unsigned int height, internalFormat_t internalFormat, unsigned int minFilter, unsigned int magFilter );
+			Texture( unsigned int width, unsigned int height, internalFormat_t internalFormat );
+		};
+
 	}
 
 }
