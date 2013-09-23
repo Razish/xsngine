@@ -72,7 +72,7 @@ namespace XS {
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
 
 			if ( glConfig.supports.anisotropy && r_textureAnisotropy->GetBool() )
-				glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, min( r_textureAnisotropyMax->GetFloat(), glConfig.maxAnisotropy ) );
+				glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, std::min( r_textureAnisotropyMax->GetFloat(), glConfig.maxAnisotropy ) );
 
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filterTable[minFilter] );
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filterTable[magFilter] );
@@ -112,7 +112,7 @@ namespace XS {
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
 
 			if ( glConfig.supports.anisotropy && r_textureAnisotropy->GetBool() )
-				glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, min( r_textureAnisotropyMax->GetFloat(), glConfig.maxAnisotropy ) );
+				glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, std::min( r_textureAnisotropyMax->GetFloat(), glConfig.maxAnisotropy ) );
 
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filterMode );
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filterMode );
