@@ -14,7 +14,7 @@ namespace XS {
 		};
 
 	private:
-		Cvar(){}
+		Cvar();
 
 		// store the value in these formats
 		struct {
@@ -36,7 +36,7 @@ namespace XS {
 		static void Clean( void );
 
 		// xtors
-		Cvar( std::string &value ) { this->Set( value ); }
+		Cvar( std::string &value );
 		static Cvar *Create( std::string name, std::string value="", uint32_t flags=NONE );
 		static Cvar *Get( const std::string &name );
 

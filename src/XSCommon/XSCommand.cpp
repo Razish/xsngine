@@ -12,16 +12,21 @@ namespace XS {
 		// commands
 		static std::unordered_map<std::string, commandFunc_t> commands;
 
-		// command context (i.e. args)
-		commandContext *context = NULL;
-
 		// command buffer
 		static std::vector<std::string> buffer;
 
 
 		static void Cmd_SetCvar( const commandContext *context ) {
-			Cvar *cv = Cvar::Get( context->args[1] );
-			cv->Set( context->args[2] );
+			Cvar *cv = Cvar::Get( context->args[0] );
+
+			size_t size = context->args.size();
+			std::string value;
+			for ( size_t i=1; i<size; i++ ) {
+				value += context->args[i];
+				if ( i != size )
+					value += " ";
+			}
+			cv->Set( value );
 		}
 
 		void Init( void ) {
@@ -36,20 +41,21 @@ namespace XS {
 
 		void ExecuteBuffer( void ) {
 			for ( auto it = buffer.begin(); it != buffer.end(); ++it ) {
-				context = new commandContext;
+				commandContext context;
 
-				context->args = String::Split( *it, ' ' );
+				const char delim = ' ';
+				size_t start = it->find( delim );
+				std::string name = it->substr( 0, start );
+				context.args = String::Split( &(*it)[start+1], ' ' );
 
-				if ( context->args.size() == 0 )
+				if ( context.args.size() == 0 )
 					continue;
 
-				commandFunc_t func = commands[context->args[0]];
+				commandFunc_t func = commands[name];
 				if ( func ) {
-					func( context );
+					func( &context );
 					continue;
 				}
-
-				delete context;
 			}
 			buffer.clear();
 		}

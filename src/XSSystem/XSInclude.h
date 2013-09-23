@@ -22,6 +22,7 @@
 #include <fstream>
 #include <list>
 #include <map>
+#include <numeric>
 #include <sstream>
 #include <string>
 #include <unordered_map>

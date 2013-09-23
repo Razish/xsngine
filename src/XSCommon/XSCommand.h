@@ -7,10 +7,8 @@ namespace XS {
 		struct commandContext {
 			std::vector<std::string> args;
 		};
-		extern commandContext *context;
 
 		typedef void (*commandFunc_t)( const commandContext *context );
-
 
 		void Init( void );
 

@@ -35,6 +35,19 @@ namespace XS {
 		cvars.clear();
 	}
 
+	// private
+	Cvar::Cvar() {
+		this->flags = NONE;
+		this->modified = false;
+	}
+
+	// public
+	Cvar::Cvar( std::string &value ) {
+		this->flags = NONE;
+		this->modified = false;
+		Set( value );
+	}
+
 	Cvar *Cvar::Create( std::string name, std::string value, uint32_t flags ) {
 		Cvar *cvar = cvars[name];
 		if ( initialised )
@@ -68,15 +81,13 @@ namespace XS {
 
 	Cvar *Cvar::Get( const std::string &name ) {
 		Cvar *cv = cvars[name];
-		std::string val = "";
 		
 		if ( cv )
 			return cv;
 
-		cv = new Cvar( val );
-		cv->value.defaultStr = val;
+		cv = new Cvar();
 		cvars[name] = cv;
-		
+	
 		return cv;
 	}
 
@@ -91,11 +102,11 @@ namespace XS {
 		if ( this->flags & READONLY )
 			return false;
 
-		this->value.str = value;
-		this->value.number = (float)atof( value );
-		this->value.integer = atoi( value );
-		this->value.boolean = !!this->value.integer;
 		this->value.tokens = String::Split( value, ' ' );
+		this->value.str = this->value.tokens[0];
+		this->value.number = (float)atof( this->value.str.c_str() );
+		this->value.integer = atoi( this->value.str.c_str() );
+		this->value.boolean = !!this->value.integer;
 		
 		this->modified = true;
 
