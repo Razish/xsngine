@@ -12,9 +12,10 @@ namespace XS {
 			unsigned int	height;
 		} texture_t;
 
-		void					Texture_Cleanup( void );
-		texture_t *				Texture_Create( unsigned int width, unsigned int height, internalFormat_t internalFormat, unsigned int minFilter, unsigned int magFilter );
-		texture_t *				Texture_CreateBlank( unsigned int width, unsigned int height, internalFormat_t internalFormat );
+		void			Texture_Init( void );
+		void			Texture_Cleanup( void );
+		texture_t *		Texture_Create( unsigned int width, unsigned int height, internalFormat_t internalFormat, unsigned int minFilter, unsigned int magFilter );
+		texture_t *		Texture_CreateBlank( unsigned int width, unsigned int height, internalFormat_t internalFormat );
 	}
 
 }

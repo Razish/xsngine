@@ -23,6 +23,11 @@ namespace XS {
 			GL_LINEAR_MIPMAP_LINEAR
 		};
 
+		void Texture_Init( void ) {
+			if ( SDL_GL_ExtensionSupported( "GL_EXT_texture_filter_anisotropic" ) )
+				glConfig.supports.anisotropy = true;
+		}
+
 		void Texture_Cleanup( void ) {
 			texture_t *texture = NULL;
 			int i = 0;
@@ -66,8 +71,8 @@ namespace XS {
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
 
-			if ( r_textureFilterAnisotropic->GetInt() )
-				glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, (GLfloat)glConfig.maxAnisotropy );
+			if ( glConfig.supports.anisotropy && r_textureAnisotropy->GetBool() )
+				glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, min( r_textureAnisotropyMax->GetFloat(), glConfig.maxAnisotropy ) );
 
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filterTable[minFilter] );
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filterTable[magFilter] );
@@ -106,8 +111,8 @@ namespace XS {
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
 
-			if ( r_textureFilterAnisotropic->GetInt() )
-				glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, (GLfloat)glConfig.maxAnisotropy );
+			if ( glConfig.supports.anisotropy && r_textureAnisotropy->GetBool() )
+				glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, min( r_textureAnisotropyMax->GetFloat(), glConfig.maxAnisotropy ) );
 
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filterMode );
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filterMode );

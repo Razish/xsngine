@@ -25,8 +25,10 @@ namespace XS {
 
 		Cvar *r_fov,
 			*r_glsl,
+			*r_multisample,
 			*r_swapInterval,
-			*r_textureFilterAnisotropic,
+			*r_textureAnisotropy,
+			*r_textureAnisotropyMax,
 			*vid_height,
 			*vid_noBorder,
 			*vid_width;
@@ -67,6 +69,7 @@ namespace XS {
 
 			CreateDisplay();
 			InitGL();
+			Texture_Init();
 			GLSL_Init();
 			Framebuffer_Init();
 
@@ -80,19 +83,21 @@ namespace XS {
 			// indent the console for this scope
 			Indent ind( 1 );
 				DestroyDisplay();
-				Framebuffer_Cleanup();
-				GLSL_Cleanup();
 				Texture_Cleanup();
+				GLSL_Cleanup();
+				Framebuffer_Cleanup();
 		}
 	
 		void RegisterCvars( void ) {
-			r_fov						= Cvar::Create( "r_fov", "110", Cvar::ARCHIVE );
-			r_glsl						= Cvar::Create( "r_glsl", "1", Cvar::ARCHIVE );
-			r_swapInterval				= Cvar::Create( "r_swapInterval", "0", Cvar::ARCHIVE );
-			r_textureFilterAnisotropic	= Cvar::Create( "r_textureFilterAnisotropic", "1", Cvar::ARCHIVE );
-			vid_height					= Cvar::Create( "vid_height", "720", Cvar::ARCHIVE );
-			vid_noBorder				= Cvar::Create( "vid_noBorder", "0", Cvar::ARCHIVE );
-			vid_width					= Cvar::Create( "vid_width", "1280", Cvar::ARCHIVE );
+			r_fov					= Cvar::Create( "r_fov", "110", Cvar::ARCHIVE );
+			r_glsl					= Cvar::Create( "r_glsl", "1", Cvar::ARCHIVE );
+			r_multisample			= Cvar::Create( "r_multisample", "2", Cvar::ARCHIVE );
+			r_swapInterval			= Cvar::Create( "r_swapInterval", "0", Cvar::ARCHIVE );
+			r_textureAnisotropy		= Cvar::Create( "r_textureAnisotropy", "1", Cvar::ARCHIVE );
+			r_textureAnisotropyMax	= Cvar::Create( "r_textureAnisotropyMax", "16.0", Cvar::ARCHIVE );
+			vid_height				= Cvar::Create( "vid_height", "720", Cvar::ARCHIVE );
+			vid_noBorder			= Cvar::Create( "vid_noBorder", "0", Cvar::ARCHIVE );
+			vid_width				= Cvar::Create( "vid_width", "1280", Cvar::ARCHIVE );
 		}
 	
 		void CreateDisplay( void ) {
@@ -103,6 +108,12 @@ namespace XS {
 	
 			SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 3 );
 			SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 2 );
+
+			int multisample = r_multisample->GetInt();
+			if ( multisample ) {
+				SDL_GL_SetAttribute( SDL_GL_MULTISAMPLEBUFFERS, 1 );
+				SDL_GL_SetAttribute( SDL_GL_MULTISAMPLESAMPLES, multisample );
+			}
 
 			window = SDL_CreateWindow( WINDOW_TITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, vid_width->GetInt(), vid_height->GetInt(), windowFlags );
 			context = SDL_GL_CreateContext( window );
@@ -115,6 +126,8 @@ namespace XS {
 		}
 	
 		void InitGL( void ) {
+
+			glGetFloatv( GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &glConfig.maxAnisotropy );
 			glShadeModel( GL_SMOOTH );
 	
 			glClearColor( 0.5f, 0.125f, 0.125f, 1.0f );
@@ -126,7 +139,6 @@ namespace XS {
 			glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST );
 		}
 	
-		// by Dranith http://glprogramming.com/dgs.php?dg=1
 		static void XS_gluPerspective( GLdouble fovy, GLdouble aspect, GLdouble zNear, GLdouble zFar ) {
 			double f = 1.0 / tan(fovy * M_PI / 360);  // convert degrees to radians and divide by 2
 			double xform[16] = {
