@@ -29,8 +29,15 @@ namespace XS {
 			cv->Set( value );
 		}
 
+		static void Cmd_ToggleCvar( const commandContext *context ) {
+			Cvar *cv = Cvar::Get( context->args[0] );
+
+			cv->Set( !cv->GetBool() );
+		}
+
 		void Init( void ) {
 			AddCommand( "set", Cmd_SetCvar );
+			AddCommand( "toggle", Cmd_ToggleCvar );
 		}
 
 		// command buffer
