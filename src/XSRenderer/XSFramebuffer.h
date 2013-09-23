@@ -22,7 +22,7 @@ namespace XS {
 			static void BlitColor( const Framebuffer *source, const Framebuffer *destination, int sourceWidth, int sourceHeight, int destWidth, int destHeight );
 			static void BlitColorAndDepth( const Framebuffer *source, const Framebuffer *destination, int sourceWidth, int sourceHeight, int destWidth, int destHeight );
 
-			Framebuffer::Framebuffer();
+			Framebuffer();
 			void AttachColorTexture( const Texture *texture, unsigned int slot );
 			void AttachDepthTexture( const Texture *texture );
 			void AttachDepthStencilTexture( const Texture *texture );
