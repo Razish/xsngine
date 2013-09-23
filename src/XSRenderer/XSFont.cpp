@@ -20,7 +20,7 @@ namespace XS {
 
 		static FT_Library ft;
 		static std::unordered_map<const char *, font_s *> fonts;
-		static glslProgram_t *fontProgram = NULL;
+		static ShaderProgram *fontProgram = NULL;
 
 		static Cvar *com_path = NULL;
 
@@ -47,7 +47,7 @@ namespace XS {
 			fonts["console"] = new font_s( "console", 24 );
 			fonts["menu"] = new font_s( "menu", 48 );
 
-			fontProgram = GLSL_CreateProgram( "text", "text" );
+			fontProgram = new ShaderProgram( "text", "text" );
 
 			for ( auto it = fonts.begin(); it != fonts.end(); ++it ) {
 				font_s *font = it->second;

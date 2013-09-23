@@ -14,22 +14,22 @@ namespace XS {
 			unsigned int	stencilTexture;
 		
 		public:
-			static void					Init( void );
-			static void					Cleanup( void );
-			static void					BindDefault( void );
-			static const Framebuffer *	GetCurrent( void );
-			static void					Blit( const Framebuffer *source, const Framebuffer *destination, int sourceWidth, int sourceHeight, int destWidth, int destHeight, unsigned int bufferBits );
-			static void					BlitColor( const Framebuffer *source, const Framebuffer *destination, int sourceWidth, int sourceHeight, int destWidth, int destHeight );
-			static void					BlitColorAndDepth( const Framebuffer *source, const Framebuffer *destination, int sourceWidth, int sourceHeight, int destWidth, int destHeight );
+			static void Init( void );
+			static void Cleanup( void );
+			static void BindDefault( void );
+			static const Framebuffer *GetCurrent( void );
+			static void Blit( const Framebuffer *source, const Framebuffer *destination, int sourceWidth, int sourceHeight, int destWidth, int destHeight, unsigned int bufferBits );
+			static void BlitColor( const Framebuffer *source, const Framebuffer *destination, int sourceWidth, int sourceHeight, int destWidth, int destHeight );
+			static void BlitColorAndDepth( const Framebuffer *source, const Framebuffer *destination, int sourceWidth, int sourceHeight, int destWidth, int destHeight );
 
-			Framebuffer();
-			void		AttachColorTexture( const Texture *texture, unsigned int slot );
-			void		AttachDepthTexture( const Texture *texture );
-			void		AttachDepthStencilTexture( const Texture *texture );
-			void		AttachDepthRenderbuffer( unsigned int renderbufferId );
-			void		AttachStencilRenderbuffer( unsigned int renderbufferId );
-			void		Bind( void );
-			void		Check( void );
+			Framebuffer::Framebuffer();
+			void AttachColorTexture( const Texture *texture, unsigned int slot );
+			void AttachDepthTexture( const Texture *texture );
+			void AttachDepthStencilTexture( const Texture *texture );
+			void AttachDepthRenderbuffer( unsigned int renderbufferId );
+			void AttachStencilRenderbuffer( unsigned int renderbufferId );
+			void Bind( void );
+			void Check( void );
 		};
 
 	} // namespace Renderer

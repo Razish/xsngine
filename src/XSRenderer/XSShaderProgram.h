@@ -4,48 +4,62 @@ namespace XS {
 
 	namespace Renderer {
 
-		typedef enum glslShaderType_e {
-			VERTEX_SHADER=0,
-			FRAGMENT_SHADER
-		} glslShaderType_t;
+		enum ShaderType {
+			VertexShader=0,
+			FragmentShader
+		};
 
-		typedef struct glslShader_s {
-			int					id;
-			char				name[XS_MAX_FILENAME];
-			glslShaderType_t	type; // fragment/vertex
-		} glslShader_t;
+		class Shader {
+			friend class ShaderProgram;
+		private:
+			int			id;
+			char		name[XS_MAX_FILENAME];
+			ShaderType	type; // fragment/vertex
 
-		typedef struct glslProgramVariable_s {
-			const char	*name;
-			int			location;
+			Shader(){}
+			void Create( const char *path, const char *source, int shaderType );
 
-			struct glslProgramVariable_s *next;
-		} glslProgramVariable_t;
+		public:
+			Shader( ShaderType type, const char *name );
+			~Shader();
+		};
 
-		typedef struct glslProgram_s {
-			int						id;
+		class ProgramVariable {
+			friend class ShaderProgram;
+		private:
+			const char		*name;
+			int				location;
+			ProgramVariable	*next;
+		public:
+			~ProgramVariable() { if ( next ) delete next; };
+		};
 
-			glslShader_t			*vertexShader, *fragmentShader;
-			glslProgramVariable_t	*uniforms, *attributes;
-		} glslProgram_t;
+		class ShaderProgram {
+		private:
+			uint32_t		id;
+			Shader			*vertexShader, *fragmentShader;
+			// TODO: vector
+			ProgramVariable	*uniforms, *attributes;
+
+			ProgramVariable *GetUniformLocation( const char *name );
+
+		public:
+			ShaderProgram();
+			~ShaderProgram();
+			ShaderProgram( const char *vertexShaderName, const char *fragmentShaderName );
+			void AttachShader( Shader *shader );
+			void Link( void );
+			void Bind( void );
+			void SetUniform1( const char *name, int i );
+			void SetUniform1( const char *name, float f );
+			void SetUniform2( const char *name, float f1, float f2 );
+			void SetUniform3( const char *name, float f1, float f2, float f3 );
+			void SetUniform4( const char *name, float f1, float f2, float f3, float f4 );
+		};
 
 		// Function prototypes
 		void			GLSL_Init( void );
 		void			GLSL_Cleanup( void );
-
-		glslProgram_t *	GLSL_CreateProgram( void );
-		glslProgram_t *	GLSL_CreateProgram( const char *vertexShader, const char *fragmentShader );
-		glslShader_t *	GLSL_CreateFragmentShader( const char *name );
-		glslShader_t *	GLSL_CreateVertexShader( const char *name );
-		void			GLSL_AttachShader( glslProgram_t *program, glslShader_t *shader );
-		void			GLSL_LinkProgram( const glslProgram_t *program );
-		void			GLSL_UseProgram( const glslProgram_t *program );
-
-		void			GLSL_SetUniform1i( glslProgram_t *program, const char *name, int i );
-		void			GLSL_SetUniform1f( glslProgram_t *program, const char *name, float f );
-		void			GLSL_SetUniform2f( glslProgram_t *program, const char *name, float f1, float f2 );
-		void			GLSL_SetUniform3f( glslProgram_t *program, const char *name, float f1, float f2, float f3 );
-		void			GLSL_SetUniform4f( glslProgram_t *program, const char *name, float f1, float f2, float f3, float f4 );
 
 	} // namespace Renderer
 

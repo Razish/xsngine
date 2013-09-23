@@ -136,7 +136,7 @@ namespace XS {
 
 		void Framebuffer::Bind( void ) {
 			if ( currentReadFramebuffer != this || currentWriteFramebuffer != this ) {
-				glBindFramebufferEXT( GL_FRAMEBUFFER_EXT, this->id );
+				glBindFramebufferEXT( GL_FRAMEBUFFER_EXT, id );
 				currentReadFramebuffer	= this;
 				currentWriteFramebuffer	= this;
 			}
