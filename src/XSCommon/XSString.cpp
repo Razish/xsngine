@@ -36,7 +36,7 @@ namespace XS {
 			int outLen = vsnprintf( dst, len, fmt, ap );
 			va_end( ap );
 
-			if ( outLen >= len )
+			if ( outLen >= (signed)len )
 				throw( String::Format( "sprintf: Output length %d too short, requires %d bytes.", len, outLen+1 ) );
 
 			return outLen;
@@ -55,7 +55,7 @@ namespace XS {
 				int n = vsnprintf( (char *)str.c_str(), size, fmt.c_str(), ap );
 				va_end( ap );
 
-				if ( n > -1 && n < size ) {
+				if ( n > -1 && n < (signed)size ) {
 					str.resize( n );
 					return str;
 				}
