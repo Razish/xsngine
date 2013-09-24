@@ -5,6 +5,7 @@
 
 #include "XSCommon/XSConsole.h"
 #include "XSCommon/XSString.h"
+#include "XSCommon/XSCommon.h"
 #include "XSRenderer/XSRenderer.h"
 #include "XSRenderer/XSInternalFormat.h"
 #include "XSRenderer/XSTexture.h"
@@ -15,44 +16,41 @@ namespace XS {
 	namespace Renderer {
 
 		static std::vector<Framebuffer*> framebuffers;
-		static const Framebuffer *currentReadFramebuffer;
-		static const Framebuffer *currentWriteFramebuffer;
-		static bool initialised;
+		
+		static Cvar *r_fbo;
+		const Framebuffer *Framebuffer::currentReadFramebuffer = NULL;
+		const Framebuffer *Framebuffer::currentWriteFramebuffer = NULL;
+
+		static const char *extensionsRequired[] = {
+			"GL_EXT_framebuffer_object",
+			"GL_EXT_framebuffer_blit",
+		};
+		static const size_t numExtensionsRequired = ARRAY_LEN( extensionsRequired );
 
 		void Framebuffer::Init( void ) {
-			if ( !SDL_GL_ExtensionSupported( "GL_EXT_framebuffer_object" ) ||
-				 !SDL_GL_ExtensionSupported( "GL_EXT_framebuffer_blit" ) )
-			{
-				Print( "Framebuffer extension NOT loaded.\n"
-						"Required OpenGL extensions not available.\n" );
+			r_fbo = Cvar::Create( "r_fbo", "1", Cvar::ARCHIVE );
+
+			// let them disable GLSL entirely
+			if ( !r_fbo->GetBool() ) {
+				Print( "Not using framebuffer extension\n" );
 				return;
 			}
 
-			Print( "Framebuffer extension loaded\n" );
-
-			CheckGLErrors( __FILE__, __LINE__ );
-
-			initialised = true;
-			return;
-		}
-
-		void Framebuffer::Cleanup( void ) {
-			Print( "Cleaning up framebuffers\n" );
-
-			for ( auto it = framebuffers.begin(); it != framebuffers.end(); ++it ) {
-				if ( !(*it)->id )
-					continue;
-
-				glDeleteFramebuffersEXT( 1, &(*it)->id );
-
-				delete *it;
-				CheckGLErrors( __FILE__, __LINE__ );
+			bool supported = true;
+			for ( size_t i=0; i<numExtensionsRequired; i++ ) {
+				if ( !SDL_GL_ExtensionSupported( extensionsRequired[i] ) ) {
+					supported = false;
+					Print( "Warning: Required OpenGL extension '%s' not available\n", extensionsRequired[i] );
+				}
 			}
-			framebuffers.clear();
+
+			if ( supported )
+				Print( "Framebuffer extension loaded\n" );
+			else
+				Print( "Framebuffer extension unavailable\n" );
+			r_fbo->Set( supported );
 
 			currentReadFramebuffer = currentWriteFramebuffer = NULL;
-
-			initialised = false;
 		}
 
 		void Framebuffer::BindDefault( void ) {
@@ -95,21 +93,27 @@ namespace XS {
 
 		// instance functions
 		Framebuffer::Framebuffer() {
-			if ( !initialised )
-				throw( "CreateFramebuffer: Framebuffer extension not initialised" );
+			id = 0;
+
+			if ( !r_fbo->GetBool() )
+				return;
 
 			glGenFramebuffersEXT( 1, &id );
 
 			if ( !id )
-				throw( String::Format( "CreateFramebuffer: Failed to create framebuffer with internal ID %d", framebuffers.size() ) );
+				throw( "Failed to create framebuffer" );
 
-			framebuffers.push_back( this );
+			CheckGLErrors( __FILE__, __LINE__ );
+		}
+
+		Framebuffer::~Framebuffer() {
+			glDeleteFramebuffersEXT( 1, &id );
 			CheckGLErrors( __FILE__, __LINE__ );
 		}
 
 		void Framebuffer::AttachColorTexture( const Texture *texture, unsigned int slot ) {
-			if ( slot >= MAX_FBO_COLOR_TEXTURES ) {
-				Print( String::Format( "Invalid slot number given (%d), valid range is 0 - %d", slot, MAX_FBO_COLOR_TEXTURES-1 ) );
+			if ( slot < 0 || slot >= MAX_FBO_COLOR_TEXTURES ) {
+				Print( "Invalid slot number given (%d), valid range is 0 - %d", slot, MAX_FBO_COLOR_TEXTURES-1 );
 				return;
 			}
 
@@ -177,7 +181,7 @@ namespace XS {
 			}
 
 			if ( status != GL_FRAMEBUFFER_COMPLETE_EXT )
-				Print( String::Format( "Creation of framebuffer %d could not be completed.\n", id ) );
+				Print( "Creation of framebuffer %d could not be completed.\n", id );
 
 			CheckGLErrors( __FILE__, __LINE__ );
 		}

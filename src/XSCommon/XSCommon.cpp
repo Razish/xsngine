@@ -3,6 +3,7 @@
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_keycode.h"
 
+#include "XSSystem/XSPlatform.h"
 #include "XSCommon/XSCvar.h"
 #include "XSCommon/XSEvent.h"
 #include "XSCommon/XSConsole.h"
@@ -64,8 +65,13 @@ namespace XS {
 			const char delim = '+';
 			size_t start = commandLine.find( delim );
 			std::vector<std::string> args = String::Split( &commandLine[start+1], delim );
-			for ( auto it = args.begin(); it != args.end(); ++it )
+
+			Print( "Startup parameters:\n" );
+			Indent indent(1);
+			for ( auto it = args.begin(); it != args.end(); ++it ) {
 				Command::Append( it->c_str() );
+				Print( "%s\n", it->c_str() );
+			}
 		}
 
 		static void Shutdown( const char *msg ) {
@@ -86,6 +92,8 @@ namespace XS {
 
 int main( int argc, char **argv ) {
 	try {
+		XS::Print( WINDOW_TITLE " built on " __DATE__ "\n" );
+
 		// init
 		XS::Command::Init(); // register commands like exec, vstr
 		XS::Common::ParseCommandLine( argc, argv );

@@ -19,7 +19,7 @@ namespace XS {
 		for ( auto itr=cvars.begin(); itr != cvars.end(); ++itr ) {
 			const char *name = itr->first.c_str();
 			Cvar *cv = itr->second;
-			if ( (cv->flags & ARCHIVE) && cv->modified ) {
+			if ( (cv->flags & ARCHIVE) && cv->modified && cv->value.str != cv->value.defaultStr ) {
 				#ifdef _DEBUG
 					Print( "Saving Cvar '%s' with value '%s'\n", name, cv->value.str.c_str() );
 				#endif
@@ -58,7 +58,7 @@ namespace XS {
 			if ( !value.empty() ) {
 				// INIT cvars should not be initialised with differing values
 				if ( cvar->flags & INIT )
-					Print( String::Format( "WARNING: INIT Cvar '%s' was created twice with values '%s' and '%s'\n", name.c_str(), cvar->value.str.c_str(), value.c_str() ) );
+					Print( "WARNING: INIT Cvar '%s' was created twice with values '%s' and '%s'\n", name.c_str(), cvar->value.str.c_str(), value.c_str() );
 
 				// don't initialise a cvar if it already exists/has been set
 				else if ( !cvar->modified )

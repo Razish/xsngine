@@ -24,41 +24,36 @@ namespace XS {
 		static SDL_GLContext context;
 
 		Cvar *r_fov,
-			*r_glsl,
 			*r_multisample,
 			*r_swapInterval,
-			*r_textureAnisotropy,
-			*r_textureAnisotropyMax,
 			*vid_height,
 			*vid_noBorder,
 			*vid_width;
-
-		glConfig_s glConfig;
 
 		void CheckGLErrors( const char *filename, int line ) {
 			unsigned int error = glGetError();
 			if ( error != GL_NO_ERROR ) {
 				switch ( error ) {
 				case GL_INVALID_ENUM:
-					Print( String::Format( "GL_INVALID_ENUM in file %s:%d.\n", filename, line ) );
+					Print( "GL_INVALID_ENUM in file %s:%d.\n", filename, line );
 					break;
 				case GL_INVALID_VALUE:
-					Print( String::Format( "GL_INVALID_VALUE in file %s:%d.\n", filename, line ) );
+					Print( "GL_INVALID_VALUE in file %s:%d.\n", filename, line );
 					break;
 				case GL_INVALID_OPERATION:
-					Print( String::Format( "GL_INVALID_OPERATION in file %s:%d.\n", filename, line ) );
+					Print( "GL_INVALID_OPERATION in file %s:%d.\n", filename, line );
 					break;
 				case GL_STACK_OVERFLOW:
-					Print( String::Format( "GL_STACK_OVERFLOW in file %s:%d.\n", filename, line ) );
+					Print( "GL_STACK_OVERFLOW in file %s:%d.\n", filename, line );
 					break;
 				case GL_STACK_UNDERFLOW:
-					Print( String::Format( "GL_STACK_UNDERFLOW in file %s:%d.\n", filename, line ) );
+					Print( "GL_STACK_UNDERFLOW in file %s:%d.\n", filename, line );
 					break;
 				case GL_OUT_OF_MEMORY:
-					Print( String::Format( "GL_OUT_OF_MEMORY in file %s:%d.\n", filename, line ) );
+					Print( "GL_OUT_OF_MEMORY in file %s:%d.\n", filename, line );
 					break;
 				default:
-					Print( String::Format( "Error code 0x%X on line %d.\n", error, line ) );
+					Print( "Error code 0x%X on line %d.\n", error, line );
 					break;
 				}
 			}
@@ -71,7 +66,7 @@ namespace XS {
 			InitGL();
 
 			Texture::Init();
-			GLSL_Init();
+			ShaderProgram::Init();
 			Framebuffer::Init();
 			Font::Init();
 
@@ -81,21 +76,13 @@ namespace XS {
 		void Shutdown( void ) {
 			Print( "Shutting down renderer...\n" );
 
-			// indent the console for this scope
-			Indent ind( 1 );
-				DestroyDisplay();
-				Texture::Cleanup();
-				GLSL_Cleanup();
-				Framebuffer::Cleanup();
+			DestroyDisplay();
 		}
 	
 		void RegisterCvars( void ) {
 			r_fov					= Cvar::Create( "r_fov", "110", Cvar::ARCHIVE );
-			r_glsl					= Cvar::Create( "r_glsl", "1", Cvar::ARCHIVE );
 			r_multisample			= Cvar::Create( "r_multisample", "2", Cvar::ARCHIVE );
 			r_swapInterval			= Cvar::Create( "r_swapInterval", "0", Cvar::ARCHIVE );
-			r_textureAnisotropy		= Cvar::Create( "r_textureAnisotropy", "1", Cvar::ARCHIVE );
-			r_textureAnisotropyMax	= Cvar::Create( "r_textureAnisotropyMax", "16.0", Cvar::ARCHIVE );
 			vid_height				= Cvar::Create( "vid_height", "720", Cvar::ARCHIVE );
 			vid_noBorder			= Cvar::Create( "vid_noBorder", "0", Cvar::ARCHIVE );
 			vid_width				= Cvar::Create( "vid_width", "1280", Cvar::ARCHIVE );
@@ -128,7 +115,6 @@ namespace XS {
 	
 		void InitGL( void ) {
 
-			glGetFloatv( GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &glConfig.maxAnisotropy );
 			glShadeModel( GL_SMOOTH );
 	
 			glClearColor( 0.5f, 0.125f, 0.125f, 1.0f );

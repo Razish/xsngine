@@ -1,6 +1,6 @@
 #include "XSSystem/XSInclude.h"
 
-#ifdef _WIN32
+#if defined(_WIN32) && defined(_DEBUG)
 	#define VC_EXTRALEAN
 	#include <Windows.h>
 #endif
@@ -49,7 +49,7 @@ namespace XS {
 		std::cout << final;
 		console.Append( final.c_str() );
 
-		#if defined(_WIN32) && defined( _DEBUG )
+		#if defined(_WIN32) && defined(_DEBUG)
 			if ( !final.empty() )
 				OutputDebugString( final.c_str() );
 		#endif

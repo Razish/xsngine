@@ -15,45 +15,43 @@ namespace XS {
 
 	namespace Renderer {
 
-		#define MAX_SHADER_LENGTH (1024*32)
+		#define MAX_SHADER_LENGTH (1024*32) // 32kb
 
-		static std::vector<ShaderProgram*> programs;
-		static std::vector<Shader*> shaders;
+		static Cvar *r_glsl;
+		const ShaderProgram *ShaderProgram::lastProgramUsed = NULL;
 
-		static const ShaderProgram *lastProgramUsed = NULL;
+		static const char *extensionsRequired[] = {
+			"GL_ARB_shader_objects",
+		};
+		static const size_t numExtensionsRequired = ARRAY_LEN( extensionsRequired );
 
-		static bool initialised = false;
+		void ShaderProgram::Init( void ) {
+			r_glsl = Cvar::Create( "r_glsl", "1", Cvar::ARCHIVE );
 
-		void GLSL_Init( void ) {
-			if ( !SDL_GL_ExtensionSupported( "GL_ARB_shader_objects" ) )
-			{
-				Print( "...GLSL extension NOT loaded.\n"
-						"Required OpenGL extensions not available.\n" );
+			// let them disable GLSL entirely
+			if ( !r_glsl->GetBool() ) {
+				Print( "Not using GLSL extension\n" );
 				return;
 			}
 
-			Print( "GLSL extension loaded\n" );
+			bool supported = true;
+			for ( size_t i=0; i<numExtensionsRequired; i++ ) {
+				if ( !SDL_GL_ExtensionSupported( extensionsRequired[i] ) ) {
+					supported = false;
+					Print( "Warning: Required OpenGL extension '%s' not available\n", extensionsRequired[i] );
+				}
+			}
 
-			initialised = true;
-		}
-
-		void GLSL_Cleanup( void ) {
-			Print( "Cleaning up GLSL shaders\n" );
-
-			for ( auto it = programs.begin(); it != programs.end(); ++it )
-				delete *it;
-			programs.clear();
-
-			for ( auto it = shaders.begin(); it != shaders.end(); ++it ) 
-				delete *it;
-			shaders.clear();
+			if ( supported )
+				Print( "GLSL extension loaded\n" );
+			else
+				Print( "GLSL extension unavailable\n" );
+			r_glsl->Set( supported );
 
 			lastProgramUsed = NULL;
-
-			initialised = false;
 		}
 
-		static void GLSL_OutputInfoLog( int objectID ) {
+		static void OutputInfoLog( int objectID ) {
 			int logLength = 0;
 			char *logText = NULL;
 			
@@ -61,11 +59,11 @@ namespace XS {
 
 			glGetObjectParameterivARB( objectID, GL_OBJECT_INFO_LOG_LENGTH_ARB, &logLength );
 
-			if ( logLength > 0 ) {
+			if ( logLength > 1 ) {
 				logText = new char[logLength];
 				glGetInfoLogARB( objectID, logLength, NULL, logText );
 
-				Print( String::Format( "%s\n", logText ) );
+				Print( "%s\n", logText );
 
 				delete[] logText;
 			}
@@ -79,7 +77,7 @@ namespace XS {
 			std::ifstream file( path, std::ios::in );
 			
 			if ( !file.is_open() ) {
-				Print( String::Format( "LoadSource: failed to open %s for reading\n", path ) );
+				Print( "LoadSource: failed to open %s for reading\n", path );
 				return "";
 			}
 
@@ -95,9 +93,6 @@ namespace XS {
 		void Shader::Create( const char *path, const char *source, int shaderType ) {
 			char *shaderCode = NULL;
 			int statusCode = 0;
-
-			if ( !initialised )
-				throw( "ShaderProgram(): GLSL extension not initialised" );
 
 			shaderCode = new char[MAX_SHADER_LENGTH];
 			String::Copy( shaderCode, source, MAX_SHADER_LENGTH );
@@ -115,7 +110,7 @@ namespace XS {
 
 			glShaderSourceARB( id, 1, (const GLcharARB **)&shaderCode, NULL );
 			if ( glGetError() == GL_INVALID_OPERATION ) {
-				GLSL_OutputInfoLog( id );
+				OutputInfoLog( id );
 
 				glDeleteObjectARB( id );
 				delete[] shaderCode;
@@ -130,7 +125,7 @@ namespace XS {
 			glGetObjectParameterivARB( id, GL_OBJECT_COMPILE_STATUS_ARB, &statusCode );
 
 			if ( statusCode == GL_FALSE ) {
-				GLSL_OutputInfoLog( id );
+				OutputInfoLog( id );
 
 				glDeleteObjectARB( id );
 				r_glsl->Set( false );
@@ -138,9 +133,7 @@ namespace XS {
 				throw( String::Format( "Shader(): Failed to compile shader source for shader '%s'\n", path ) );
 			}
 
-			GLSL_OutputInfoLog( id );
-
-			shaders.push_back( this );
+			OutputInfoLog( id );
 		}
 
 		Shader::Shader( ShaderType type, const char *name ) {
@@ -167,54 +160,58 @@ namespace XS {
 		//
 
 		ShaderProgram::ShaderProgram() {
-			if ( !initialised )
-				throw( "ShaderProgram(): GLSL extension not initialised" );
-
-			id = glCreateProgramObjectARB();
-			if ( !id )
-				Print( String::Format( "ShaderProgram(): Failed to create program with internal ID %d\n", programs.size() ) );
-
+			id = 0;
 			fragmentShader = vertexShader = NULL;
 			uniforms = attributes = NULL;
 
-			programs.push_back( this );
+			if ( !r_glsl->GetBool() )
+				return;
+
+			id = glCreateProgramObjectARB();
+			if ( !id )
+				throw( "Failed to create shader program" );
 		}
 
 		// save some typing..
 		ShaderProgram::ShaderProgram( const char *vertexShaderName, const char *fragmentShaderName ) {
-			if ( !initialised )
-				throw( "ShaderProgram(): GLSL extension not initialised" );
-
-			id = glCreateProgramObjectARB();
-			if ( !id )
-				Print( String::Format( "ShaderProgram(): Failed to create program with internal ID %d\n", programs.size() ) );
-
+			id = 0;
 			fragmentShader = vertexShader = NULL;
 			uniforms = attributes = NULL;
 
-			if ( vertexShaderName )
+			if ( !r_glsl->GetBool() )
+				return;
+
+			id = glCreateProgramObjectARB();
+			if ( !id )
+				throw( "Failed to create shader program" );
+
+			if ( vertexShaderName && !vertexShader )
 				AttachShader( new Shader( VertexShader, vertexShaderName ) );
-			if ( fragmentShaderName )
+			if ( fragmentShaderName && !fragmentShader )
 				AttachShader( new Shader( FragmentShader, fragmentShaderName ) );
 
 			Link();
 			Bind();
-
-			programs.push_back( this );
 		}
 
 		ShaderProgram::~ShaderProgram() {
-			if ( fragmentShader )
+			if ( lastProgramUsed == this )
+				lastProgramUsed = NULL;
+
+			if ( fragmentShader ) {
 				glDetachObjectARB( id, fragmentShader->id );
-			if ( vertexShader )
+				delete fragmentShader;
+			}
+
+			if ( vertexShader ) {
 				glDetachObjectARB( id, vertexShader->id );
+				delete vertexShader;
+			}
 
 			glDeleteObjectARB( id );
 
-			if ( uniforms )
-				delete uniforms;
-			if ( attributes )
-				delete attributes;
+			delete uniforms;
+			delete attributes;
 		}
 
 		ProgramVariable *ShaderProgram::GetUniformLocation( const char *name ) {
@@ -274,8 +271,8 @@ namespace XS {
 			glGetObjectParameterivARB( id, GL_OBJECT_LINK_STATUS_ARB, &statusCode );
 
 			if ( statusCode == GL_FALSE ) {
-				Print( String::Format( "Failed to link program %d\n", id ) );
-				GLSL_OutputInfoLog( id );
+				Print( "Failed to link program %d\n", id );
+				OutputInfoLog( id );
 			}
 		}
 

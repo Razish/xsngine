@@ -7,19 +7,18 @@ namespace XS {
 		#define MAX_TEXTURES (256)
 
 		class Texture {
+			friend class Framebuffer;
 		private:
 			Texture(){}
-
-		public:
 
 			uint32_t id;
 			unsigned int width, height;
 
+		public:
 			static void Init( void );
-			static void	Cleanup( void );
 
-			Texture( unsigned int width, unsigned int height, internalFormat_t internalFormat, unsigned int minFilter, unsigned int magFilter );
 			Texture( unsigned int width, unsigned int height, internalFormat_t internalFormat );
+			~Texture();
 		};
 
 	}

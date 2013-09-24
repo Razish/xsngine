@@ -7,23 +7,12 @@ namespace XS {
 	namespace Renderer {
 
 		extern Cvar *r_fov,
-			*r_glsl,
 			*r_multisample,
 			*r_swapInterval,
-			*r_textureAnisotropy,
-			*r_textureAnisotropyMax,
 			*vid_height,
 			*vid_noBorder,
 			*vid_width;
 
-		extern struct glConfig_s {
-			struct {
-				bool	anisotropy;
-			} supports;
-
-			float		maxAnisotropy;
-		} glConfig;
-		
 		// private
 		void CheckGLErrors( const char *filename, int line );
 		void RegisterCvars( void );

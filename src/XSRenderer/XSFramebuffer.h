@@ -14,6 +14,9 @@ namespace XS {
 			unsigned int	stencilTexture;
 		
 		public:
+			static const Framebuffer *currentReadFramebuffer;
+			static const Framebuffer *currentWriteFramebuffer;
+
 			static void Init( void );
 			static void Cleanup( void );
 			static void BindDefault( void );
@@ -23,6 +26,7 @@ namespace XS {
 			static void BlitColorAndDepth( const Framebuffer *source, const Framebuffer *destination, int sourceWidth, int sourceHeight, int destWidth, int destHeight );
 
 			Framebuffer();
+			~Framebuffer();
 			void AttachColorTexture( const Texture *texture, unsigned int slot );
 			void AttachDepthTexture( const Texture *texture );
 			void AttachDepthStencilTexture( const Texture *texture );

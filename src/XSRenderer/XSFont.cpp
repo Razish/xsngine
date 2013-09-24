@@ -53,7 +53,7 @@ namespace XS {
 				font_s *font = it->second;
 				FT_Face face = NULL;
 				if ( FT_New_Face( ft, String::Format( "%s/%s", com_path->GetCString(), font->file.c_str() ).c_str(), 0, &face ) ) {
-					Print( String::Format( "WARNING: Could not register font %s\n", font->file.c_str() ) );
+					Print( "WARNING: Could not register font %s\n", font->file.c_str() );
 					continue;
 				}
 

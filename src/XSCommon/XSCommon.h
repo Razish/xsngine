@@ -8,4 +8,5 @@ namespace XS {
 	typedef float			number;		//   signed 32 bits
 	typedef signed int		integer;	//   signed 32 bits
 
+	#define ARRAY_LEN( x ) (sizeof( (x) ) / sizeof( (*x) ))
 } // namespace XS

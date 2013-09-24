@@ -12,6 +12,7 @@
 #include <cstdlib>
 #include <cstring>
 
+// for getcwd
 #if defined(_WIN32)
 	#include <direct.h>
 #elif defined(__linux__)

@@ -9,6 +9,7 @@ namespace XS {
 			FragmentShader
 		};
 
+
 		class Shader {
 			friend class ShaderProgram;
 		private:
@@ -24,6 +25,7 @@ namespace XS {
 			~Shader();
 		};
 
+
 		class ProgramVariable {
 			friend class ShaderProgram;
 		private:
@@ -31,8 +33,9 @@ namespace XS {
 			int				location;
 			ProgramVariable	*next;
 		public:
-			~ProgramVariable() { if ( next ) delete next; };
+			~ProgramVariable() { delete next; };
 		};
+
 
 		class ShaderProgram {
 		private:
@@ -44,6 +47,10 @@ namespace XS {
 			ProgramVariable *GetUniformLocation( const char *name );
 
 		public:
+			static const ShaderProgram *lastProgramUsed;
+
+			static void Init( void );
+
 			ShaderProgram();
 			~ShaderProgram();
 			ShaderProgram( const char *vertexShaderName, const char *fragmentShaderName );
@@ -56,10 +63,6 @@ namespace XS {
 			void SetUniform3( const char *name, float f1, float f2, float f3 );
 			void SetUniform4( const char *name, float f1, float f2, float f3, float f4 );
 		};
-
-		// Function prototypes
-		void			GLSL_Init( void );
-		void			GLSL_Cleanup( void );
 
 	} // namespace Renderer
 
