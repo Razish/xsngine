@@ -15970,7 +15970,7 @@ GLboolean __GLeeGetExtensions(ExtensionList* extList)
 	char * extStr;
 	char emptyString[1] = ""; 
 	char extensionName[1024];
-	int a,b;
+	size_t a,b;
 	size_t totalExtStrLen;
 	size_t platExtStrLen;
 	int addASpace;

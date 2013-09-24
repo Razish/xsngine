@@ -23,12 +23,12 @@ namespace XS {
 		static SDL_Window *window;
 		static SDL_GLContext context;
 
-		Cvar *r_fov,
-			*r_multisample,
-			*r_swapInterval,
-			*vid_height,
-			*vid_noBorder,
-			*vid_width;
+		static Cvar *r_fov;
+		static Cvar *r_multisample;
+		static Cvar *r_swapInterval;
+		static Cvar *vid_height;
+		static Cvar *vid_noBorder;
+		static Cvar *vid_width;
 
 		void CheckGLErrors( const char *filename, int line ) {
 			unsigned int error = glGetError();

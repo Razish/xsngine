@@ -64,6 +64,8 @@ namespace XS {
 
 			const char delim = '+';
 			size_t start = commandLine.find( delim );
+			if ( start == std::string::npos )
+				return;
 			std::vector<std::string> args = String::Split( &commandLine[start+1], delim );
 
 			Print( "Startup parameters:\n" );

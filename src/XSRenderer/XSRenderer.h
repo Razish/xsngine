@@ -6,13 +6,6 @@ namespace XS {
 
 	namespace Renderer {
 
-		extern Cvar *r_fov,
-			*r_multisample,
-			*r_swapInterval,
-			*vid_height,
-			*vid_noBorder,
-			*vid_width;
-
 		// private
 		void CheckGLErrors( const char *filename, int line );
 		void RegisterCvars( void );

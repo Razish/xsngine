@@ -17,6 +17,10 @@ namespace XS {
 
 
 		static void Cmd_SetCvar( const commandContext *context ) {
+			// must specify a cvar and a value
+			if ( context->args.size() < 2 )
+				return;
+
 			Cvar *cv = Cvar::Get( context->args[0] );
 
 			size_t size = context->args.size();
@@ -54,14 +58,17 @@ namespace XS {
 				const char delim = ' ';
 				size_t start = it->find( delim );
 				std::string name = it->substr( 0, start );
-				context.args = String::Split( &(*it)[start+1], ' ' );
 
-				// strip any quotes around the arguments
-				for ( auto tok = context.args.begin(); tok != context.args.end(); ++tok )
-					tok->erase( std::remove( tok->begin(), tok->end(), '"' ), tok->end() );
+				if ( start != std::string::npos && start != it->size()-1 ) {
+					context.args = String::Split( &(*it)[start+1], ' ' );
 
-				if ( context.args.size() == 0 )
-					continue;
+					// strip any quotes around the arguments
+					for ( auto tok = context.args.begin(); tok != context.args.end(); ++tok )
+						tok->erase( std::remove( tok->begin(), tok->end(), '"' ), tok->end() );
+
+				//	if ( context.args.size() == 0 )
+				//		continue;
+				}
 
 				commandFunc_t func = commands[name];
 				if ( func ) {
