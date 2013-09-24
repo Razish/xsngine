@@ -4,12 +4,17 @@
 #include "SDL2/SDL_keycode.h"
 
 #include "XSSystem/XSPlatform.h"
+#include "XSCommon/XSCommon.h"
 #include "XSCommon/XSCvar.h"
 #include "XSCommon/XSEvent.h"
 #include "XSCommon/XSConsole.h"
 #include "XSCommon/XSString.h"
 #include "XSCommon/XSCommand.h"
+#include "XSCommon/XSFile.h"
 #include "XSClient/XSInput.h"
+#include "XSClient/XSClient.h"
+#include "XSRenderer/XSInternalFormat.h"
+#include "XSRenderer/XSTexture.h"
 #include "XSRenderer/XSRenderer.h"
 
 namespace XS {
@@ -68,16 +73,16 @@ namespace XS {
 				return;
 			std::vector<std::string> args = String::Split( &commandLine[start+1], delim );
 
-			Print( "Startup parameters:\n" );
+			Console::Print( "Startup parameters:\n" );
 			Indent indent(1);
 			for ( auto it = args.begin(); it != args.end(); ++it ) {
 				Command::Append( it->c_str() );
-				Print( "%s\n", it->c_str() );
+				Console::Print( "%s\n", it->c_str() );
 			}
 		}
 
 		static void Shutdown( const char *msg ) {
-			Print( "\n*** XSNGINE Shutdown: %s\n\n"
+			Console::Print( "\n*** XSNGINE Shutdown: %s\n\n"
 				"Cleaning up...\n", msg );
 
 			// indent the console for this scope
@@ -94,7 +99,7 @@ namespace XS {
 
 int main( int argc, char **argv ) {
 	try {
-		XS::Print( WINDOW_TITLE " built on " __DATE__ "\n" );
+		XS::Console::Print( WINDOW_TITLE " built on " __DATE__ "\n" );
 
 		// init
 		XS::Command::Init(); // register commands like exec, vstr
@@ -106,7 +111,7 @@ int main( int argc, char **argv ) {
 		// now execute the command line args
 		XS::Command::ExecuteBuffer();
 
-	//	XS::FileSystem::Init(); // probably don't need. maybe. yet.
+		XS::File::Init();
 		XS::Renderer::Init();
 
 		XS::Event::Init();
@@ -131,8 +136,8 @@ int main( int argc, char **argv ) {
 			XS::Command::ExecuteBuffer();
 
 			// outgoing network (client command), then client frame
-		//	XS::Client::NetworkPump();
-		//	XS::Client::RunFrame();
+			XS::Client::NetworkPump();
+			XS::Client::RunFrame();
 			XS::Renderer::Update();
 		}
 	}

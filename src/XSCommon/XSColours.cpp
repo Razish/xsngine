@@ -24,7 +24,7 @@ namespace XS {
 	16	f	*white, to be changed
 	*/
 
-	const vector4 g_colour_table[COLOUR_BITS+1] = {
+	const vector4 colourTable[COLOUR_BITS+1] = {
 		vector4( 0.0f, 0.0f, 0.0f, 1.0f ), // black
 		vector4( 0.5f, 0.5f, 0.5f, 1.0f ), // grey
 		vector4( 1.0f, 1.0f, 1.0f, 1.0f ), // white
@@ -43,11 +43,39 @@ namespace XS {
 		vector4( 1.0f, 1.0f, 1.0f, 1.0f ), // *white
 	};
 
-	bool IsColourString( char *p ) {
+	bool IsColourString( const char *s ) {
+		if ( s && s[0] && s[1] && s[0] == COLOUR_ESCAPE ) {
+			int lowc = tolower( s[1] );
+			if ( (s[1] >= '0' && s[1] <= '9') || (lowc >= 'a' && lowc <= 'e') )
+				return true;
+		}
+
 		return false;
 	}
 
-	int ColourIndex( char c ) {
+	size_t ColourStringLength( const char *text ) {
+		size_t len = 0;
+
+		if ( !text )
+			return 0;
+
+		for ( const char *p=text; *p; p++ ) {
+			if ( IsColourString( p ) ) {
+				p++;
+				continue;
+			}
+
+			if ( p[0] == COLOUR_ESCAPE &&
+				 p[1] == COLOUR_ESCAPE )
+				p++;
+
+			len++;
+		}
+
+		return len;
+	}
+
+	unsigned int ColourIndex( char c ) {
 		int lowc = tolower( c );
 	
 		if ( c >= '0' && c <= '9' )
@@ -58,4 +86,4 @@ namespace XS {
 		return ColourIndex( COLOUR_WHITE );
 	}
 
-}; // namespace XS
+} // namespace XS

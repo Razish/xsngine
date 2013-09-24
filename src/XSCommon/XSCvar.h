@@ -62,4 +62,4 @@ namespace XS {
 		inline bool GetBool( size_t index = 0 ) { return this->values[index].boolean; }
 	};
 
-}; // namespace XS
+} // namespace XS

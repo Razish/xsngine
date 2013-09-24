@@ -11,6 +11,7 @@
 #include "XSCommon/XSConsole.h"
 #include "XSCommon/XSString.h"
 #include "XSCommon/XSVector.h"
+#include "XSCommon/XSFile.h"
 #include "XSRenderer/XSFont.h"
 #include "XSRenderer/XSShaderProgram.h"
 
@@ -21,9 +22,6 @@ namespace XS {
 		static FT_Library ft;
 		static std::unordered_map<const char *, font_s *> fonts;
 		static ShaderProgram *fontProgram = NULL;
-
-		static Cvar *com_path = NULL;
-
 
 		font_s::font_s( const char *name, uint16_t size ) {
 			this->file = String::Format( "fonts/%s.ttf", name );
@@ -37,14 +35,11 @@ namespace XS {
 		}
 
 		void Font::Init( void ) {
-			com_path = Cvar::Create( "com_path" );
-
 			if ( FT_Init_FreeType( &ft ) ) {
 				throw( "Could not initialise freetype library" );
 				return;
 			}
 
-			fonts["console"] = new font_s( "console", 24 );
 			fonts["menu"] = new font_s( "menu", 48 );
 
 			fontProgram = new ShaderProgram( "text", "text" );
@@ -52,10 +47,22 @@ namespace XS {
 			for ( auto it = fonts.begin(); it != fonts.end(); ++it ) {
 				font_s *font = it->second;
 				FT_Face face = NULL;
-				if ( FT_New_Face( ft, String::Format( "%s/%s", com_path->GetCString(), font->file.c_str() ).c_str(), 0, &face ) ) {
-					Print( "WARNING: Could not register font %s\n", font->file.c_str() );
+				
+				File file( font->file.c_str(), File::READ );
+				if ( file.length == 0 ) {
+					Console::Print( "WARNING: Could not load font file '%s'\n", file.path );
 					continue;
 				}
+
+				byte *buf = new byte[file.length];
+				file.Read( buf );
+
+				if ( FT_New_Memory_Face( ft, buf, file.length, 0, &face ) ) {
+					Console::Print( "WARNING: Could not register font '%s'\n", font->file.c_str() );
+					delete[] buf;
+					continue;
+				}
+				delete[] buf;
 
 				if ( FT_Set_Char_Size( face, font->size << 6, font->size << 6, 96, 96 ) ) {
 					//TODO: appropriate warning message

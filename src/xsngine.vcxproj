@@ -190,6 +190,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="GLee\GLee.c" />
+    <ClCompile Include="XSClient\XSClient.cpp" />
     <ClCompile Include="XSClient\XSInput.cpp" />
     <ClCompile Include="XSClient\XSKeys.cpp" />
     <ClCompile Include="XSCommon\XSColours.cpp" />
@@ -198,9 +199,11 @@
     <ClCompile Include="XSCommon\XSCvar.cpp" />
     <ClCompile Include="XSCommon\XSCommon.cpp" />
     <ClCompile Include="XSCommon\XSEvent.cpp" />
+    <ClCompile Include="XSCommon\XSFile.cpp" />
     <ClCompile Include="XSCommon\XSString.cpp" />
     <ClCompile Include="XSRenderer\XSFont.cpp" />
     <ClCompile Include="XSRenderer\XSFramebuffer.cpp" />
+    <ClCompile Include="XSRenderer\XSImagePNG.cpp" />
     <ClCompile Include="XSRenderer\XSInternalFormat.cpp" />
     <ClCompile Include="XSRenderer\XSRenderer.cpp" />
     <ClCompile Include="XSRenderer\XSShaderProgram.cpp" />
@@ -270,6 +273,7 @@
     <ClInclude Include="SDL2\SDL_types.h" />
     <ClInclude Include="SDL2\SDL_version.h" />
     <ClInclude Include="SDL2\SDL_video.h" />
+    <ClInclude Include="XSClient\XSClient.h" />
     <ClInclude Include="XSClient\XSInput.h" />
     <ClInclude Include="XSClient\XSKeys.h" />
     <ClInclude Include="XSCommon\XSColours.h" />
@@ -278,11 +282,14 @@
     <ClInclude Include="XSCommon\XSConsole.h" />
     <ClInclude Include="XSCommon\XSCvar.h" />
     <ClInclude Include="XSCommon\XSEvent.h" />
+    <ClInclude Include="XSCommon\XSFile.h" />
     <ClInclude Include="XSCommon\XSString.h" />
     <ClInclude Include="XSCommon\XSVector.h" />
     <ClInclude Include="XSRenderer\XSFont.h" />
     <ClInclude Include="XSRenderer\XSFramebuffer.h" />
+    <ClInclude Include="XSRenderer\XSImagePNG.h" />
     <ClInclude Include="XSRenderer\XSInternalFormat.h" />
+    <ClInclude Include="XSRenderer\XSRenderCommand.h" />
     <ClInclude Include="XSRenderer\XSRenderer.h" />
     <ClInclude Include="XSRenderer\XSShaderProgram.h" />
     <ClInclude Include="XSRenderer\XSTexture.h" />

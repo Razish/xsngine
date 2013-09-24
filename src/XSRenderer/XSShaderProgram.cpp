@@ -9,6 +9,8 @@
 #include "XSCommon/XSConsole.h"
 #include "XSCommon/XSString.h"
 #include "XSRenderer/XSShaderProgram.h"
+#include "XSRenderer/XSInternalFormat.h"
+#include "XSRenderer/XSTexture.h"
 #include "XSRenderer/XSRenderer.h"
 
 namespace XS {
@@ -30,7 +32,7 @@ namespace XS {
 
 			// let them disable GLSL entirely
 			if ( !r_glsl->GetBool() ) {
-				Print( "Not using GLSL extension\n" );
+				Console::Print( "Not using GLSL extension\n" );
 				return;
 			}
 
@@ -38,14 +40,14 @@ namespace XS {
 			for ( size_t i=0; i<numExtensionsRequired; i++ ) {
 				if ( !SDL_GL_ExtensionSupported( extensionsRequired[i] ) ) {
 					supported = false;
-					Print( "Warning: Required OpenGL extension '%s' not available\n", extensionsRequired[i] );
+					Console::Print( "Warning: Required OpenGL extension '%s' not available\n", extensionsRequired[i] );
 				}
 			}
 
 			if ( supported )
-				Print( "GLSL extension loaded\n" );
+				Console::Print( "GLSL extension loaded\n" );
 			else
-				Print( "GLSL extension unavailable\n" );
+				Console::Print( "GLSL extension unavailable\n" );
 			r_glsl->Set( supported );
 
 			lastProgramUsed = NULL;
@@ -63,7 +65,7 @@ namespace XS {
 				logText = new char[logLength];
 				glGetInfoLogARB( objectID, logLength, NULL, logText );
 
-				Print( "%s\n", logText );
+				Console::Print( "%s\n", logText );
 
 				delete[] logText;
 			}
@@ -77,7 +79,7 @@ namespace XS {
 			std::ifstream file( path, std::ios::in );
 			
 			if ( !file.is_open() ) {
-				Print( "LoadSource: failed to open %s for reading\n", path );
+				Console::Print( "LoadSource: failed to open %s for reading\n", path );
 				return "";
 			}
 
@@ -271,7 +273,7 @@ namespace XS {
 			glGetObjectParameterivARB( id, GL_OBJECT_LINK_STATUS_ARB, &statusCode );
 
 			if ( statusCode == GL_FALSE ) {
-				Print( "Failed to link program %d\n", id );
+				Console::Print( "Failed to link program %d\n", id );
 				OutputInfoLog( id );
 			}
 		}

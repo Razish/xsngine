@@ -6,17 +6,15 @@
 #include "XSCommon/XSConsole.h"
 #include "XSCommon/XSString.h"
 #include "XSCommon/XSCommon.h"
-#include "XSRenderer/XSRenderer.h"
 #include "XSRenderer/XSInternalFormat.h"
 #include "XSRenderer/XSTexture.h"
+#include "XSRenderer/XSRenderer.h"
 #include "XSRenderer/XSFramebuffer.h"
 
 namespace XS {
 
 	namespace Renderer {
 
-		static std::vector<Framebuffer*> framebuffers;
-		
 		static Cvar *r_fbo;
 		const Framebuffer *Framebuffer::currentReadFramebuffer = NULL;
 		const Framebuffer *Framebuffer::currentWriteFramebuffer = NULL;
@@ -32,7 +30,7 @@ namespace XS {
 
 			// let them disable GLSL entirely
 			if ( !r_fbo->GetBool() ) {
-				Print( "Not using framebuffer extension\n" );
+				Console::Print( "Not using framebuffer extension\n" );
 				return;
 			}
 
@@ -40,14 +38,14 @@ namespace XS {
 			for ( size_t i=0; i<numExtensionsRequired; i++ ) {
 				if ( !SDL_GL_ExtensionSupported( extensionsRequired[i] ) ) {
 					supported = false;
-					Print( "Warning: Required OpenGL extension '%s' not available\n", extensionsRequired[i] );
+					Console::Print( "Warning: Required OpenGL extension '%s' not available\n", extensionsRequired[i] );
 				}
 			}
 
 			if ( supported )
-				Print( "Framebuffer extension loaded\n" );
+				Console::Print( "Framebuffer extension loaded\n" );
 			else
-				Print( "Framebuffer extension unavailable\n" );
+				Console::Print( "Framebuffer extension unavailable\n" );
 			r_fbo->Set( supported );
 
 			currentReadFramebuffer = currentWriteFramebuffer = NULL;
@@ -113,7 +111,7 @@ namespace XS {
 
 		void Framebuffer::AttachColorTexture( const Texture *texture, unsigned int slot ) {
 			if ( slot < 0 || slot >= MAX_FBO_COLOR_TEXTURES ) {
-				Print( "Invalid slot number given (%d), valid range is 0 - %d", slot, MAX_FBO_COLOR_TEXTURES-1 );
+				Console::Print( "Invalid slot number given (%d), valid range is 0 - %d", slot, MAX_FBO_COLOR_TEXTURES-1 );
 				return;
 			}
 
@@ -153,27 +151,27 @@ namespace XS {
 
 			switch ( status ) {
 			case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT_EXT:
-				Print( "One or more framebuffer attachment points are not complete.\n" );
+				Console::Print( "One or more framebuffer attachment points are not complete.\n" );
 				break;
 
 			case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_EXT:
-				Print( "One or more attached images have different dimensions.\n" );
+				Console::Print( "One or more attached images have different dimensions.\n" );
 				break;
 
 			case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER_EXT:
-				Print( "Invalid framebuffer attachment object type used.\n" );
+				Console::Print( "Invalid framebuffer attachment object type used.\n" );
 				break;
 
 			case GL_FRAMEBUFFER_INCOMPLETE_FORMATS_EXT:
-				Print( "More than one internal format was used in the color attachments.\n" );
+				Console::Print( "More than one internal format was used in the color attachments.\n" );
 				break;
 
 			case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER_EXT:
-				Print( "Missing a read buffer.\n" );
+				Console::Print( "Missing a read buffer.\n" );
 				break;
 
 			case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT_EXT:
-				Print( "No images were attached to the framebuffer.\n" );
+				Console::Print( "No images were attached to the framebuffer.\n" );
 				break;
 
 			case GL_FRAMEBUFFER_COMPLETE_EXT:
@@ -181,7 +179,7 @@ namespace XS {
 			}
 
 			if ( status != GL_FRAMEBUFFER_COMPLETE_EXT )
-				Print( "Creation of framebuffer %d could not be completed.\n", id );
+				Console::Print( "Creation of framebuffer %d could not be completed.\n", id );
 
 			CheckGLErrors( __FILE__, __LINE__ );
 		}

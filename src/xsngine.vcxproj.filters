@@ -66,6 +66,15 @@
     <ClCompile Include="XSCommon\XSCommand.cpp">
       <Filter>XSCommon</Filter>
     </ClCompile>
+    <ClCompile Include="XSClient\XSClient.cpp">
+      <Filter>XSClient</Filter>
+    </ClCompile>
+    <ClCompile Include="XSCommon\XSFile.cpp">
+      <Filter>XSCommon</Filter>
+    </ClCompile>
+    <ClCompile Include="XSRenderer\XSImagePNG.cpp">
+      <Filter>XSRenderer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SDL2\begin_code.h">
@@ -309,6 +318,18 @@
       <Filter>XSRenderer</Filter>
     </ClInclude>
     <ClInclude Include="XSCommon\XSCommand.h">
+      <Filter>XSCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="XSClient\XSClient.h">
+      <Filter>XSClient</Filter>
+    </ClInclude>
+    <ClInclude Include="XSRenderer\XSRenderCommand.h">
+      <Filter>XSRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="XSRenderer\XSImagePNG.h">
+      <Filter>XSRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="XSCommon\XSFile.h">
       <Filter>XSCommon</Filter>
     </ClInclude>
   </ItemGroup>

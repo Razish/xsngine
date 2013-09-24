@@ -7,65 +7,65 @@ namespace XS {
 
 	namespace Renderer {
 
-		unsigned int GetGLInternalFormat( internalFormat_t internalFormat ) {
+		unsigned int GetGLInternalFormat( InternalFormat internalFormat ) {
 			switch ( internalFormat ) {
 			default:
-			case IF_RGBA8:
+			case RGBA8:
 				return GL_RGBA8;
 
-			case IF_RGBA16F:
+			case RGBA16F:
 				return GL_RGBA16F_ARB;
 
-			case IF_DEPTH_COMPONENT16:
+			case DEPTH_COMPONENT16:
 				return GL_DEPTH_COMPONENT16;
 
-			case IF_DEPTH_COMPONENT24:
+			case DEPTH_COMPONENT24:
 				return GL_DEPTH_COMPONENT24;
 
-			case IF_STENCIL_INDEX4:
+			case STENCIL_INDEX4:
 				return GL_STENCIL_INDEX4_EXT;
 
-			case IF_STENCIL_INDEX8:
+			case STENCIL_INDEX8:
 				return GL_STENCIL_INDEX8_EXT;
 
-			case IF_DEPTH24_STENCIL8:
+			case DEPTH24_STENCIL8:
 				return GL_DEPTH24_STENCIL8_EXT;
 			}
 		}
 
-		unsigned int GetGLFormat( internalFormat_t internalFormat ) {
+		unsigned int GetGLFormat( InternalFormat internalFormat ) {
 			switch ( internalFormat ) {
 			default:
-			case IF_RGBA8:
-			case IF_RGBA16F:
+			case RGBA8:
+			case RGBA16F:
 				return GL_RGBA;
 
-			case IF_DEPTH_COMPONENT16:
-			case IF_DEPTH_COMPONENT24:
+			case DEPTH_COMPONENT16:
+			case DEPTH_COMPONENT24:
 				return GL_DEPTH_COMPONENT;
 
-			case IF_STENCIL_INDEX4:
-			case IF_STENCIL_INDEX8:
+			case STENCIL_INDEX4:
+			case STENCIL_INDEX8:
 				return GL_STENCIL_INDEX;
 
-			case IF_DEPTH24_STENCIL8:
+			case DEPTH24_STENCIL8:
 				return GL_DEPTH_STENCIL_EXT;
 			}
 		}
 
-		unsigned int GetDataTypeForFormat( internalFormat_t internalFormat ) {
+		unsigned int GetDataTypeForFormat( InternalFormat internalFormat ) {
 			switch ( internalFormat ) {
 			default:
 				return GL_UNSIGNED_BYTE;
 
-			case IF_RGBA16F:
+			case RGBA16F:
 				return GL_FLOAT;
 
-			case IF_DEPTH24_STENCIL8:
+			case DEPTH24_STENCIL8:
 				return GL_UNSIGNED_INT_24_8_EXT;
 			}
 		}
 
-	}
+	} // namespace Renderer
 
-}
+} // namespace XS

@@ -32,6 +32,6 @@ namespace XS {
 		void Queue( Type type, XSEvent ev );
 		void Pump( void );
 
-	} // Common
+	} // Event
 
 } // XS

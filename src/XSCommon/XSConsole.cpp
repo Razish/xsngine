@@ -1,7 +1,11 @@
 #include "XSSystem/XSInclude.h"
 
 #if defined(_WIN32) && defined(_DEBUG)
+	#define WIN32_LEAN_AND_MEAN
 	#define VC_EXTRALEAN
+	#ifndef NOMINMAX
+		#define NOMINMAX /* Don't define min() and max() */
+	#endif
 	#include <Windows.h>
 #endif
 
@@ -9,82 +13,167 @@
 #include "XSCommon/XSConsole.h"
 #include "XSCommon/XSString.h"
 #include "XSCommon/XSColours.h"
+#include "XSCommon/XSCvar.h"
+#include "XSRenderer/XSInternalFormat.h"
+#include "XSRenderer/XSTexture.h"
+#include "XSRenderer/XSRenderer.h"
+#include "XSRenderer/XSImagePNG.h"
 
 namespace XS {
 
-	//
-	// Public interface
-	//
+	namespace Console {
 
-	void Print( std::string fmt, ... ) {
-		int size = 100;
-		std::string str;
-		va_list ap;
+		static unsigned int indentation = 0;
+		static bool visible = false;
 
-		while ( 1 ) {
-			str.resize( size );
+		static std::vector<char*> consoleText;
+		static int scrollAmount = 0;
+		static unsigned int lineLength = 128; // changes at runtime based on window width
+		static const uint32_t characterSize = 32;
+		static const unsigned int lineCount = 24;
 
-			va_start( ap, fmt );
-			int n = vsnprintf( (char *)str.c_str(), size, fmt.c_str(), ap );
-			va_end( ap );
+		static Renderer::Texture *fontTexture;
 
-			if ( n > -1 && n < size ) {
-				str.resize( n );
-				break;
+		void Init( void ) {
+			fontTexture = new Renderer::Texture( 16*characterSize, 16*characterSize, Renderer::RGBA8, Renderer::LoadPNG( "fonts/console.png" ) );
+		}
+
+		static void Append( const char *text, bool multiLine ) {
+			size_t len = strlen( text );
+			size_t accumLength = 0;
+			size_t i = 0;
+			char *insert = new char[len];
+			String::Copy( insert, text, len );
+			std::string tmp = insert;
+			
+			if ( scrollAmount < 0 ) {
+				if ( consoleText.size() >= lineCount )
+					scrollAmount = std::max<int>( scrollAmount-1, (signed)(consoleText.size()-lineCount) * -1 );
+				else
+					scrollAmount = std::max<int>( scrollAmount-1, 0U );
 			}
-			if ( n > -1 )
-				size = n + 1;
-			else
-				size *= 2;
+
+			for (  i=0; i<len; i++ ) {
+				char *p = (char *)&text[i];
+
+				if ( !IsColourString( p ) && (i>0 && !IsColourString( p-1 )) )
+					accumLength++;
+
+				if ( accumLength > lineLength && (i>0 && !IsColourString( p-1 )) ) {
+					char lastColour = COLOUR_GREEN;
+					size_t j = i;
+					size_t savedOffset = i;
+					char *tempMessage = new char[len];
+
+					// attempt to back-track, find a space (' ') within X characters
+					while ( text[i] != ' ' ) {
+						if ( i <= 0 || i < savedOffset-16 ) {
+							i = j = savedOffset;
+							break;
+						}
+						i--;
+						j--;
+					}
+
+					String::Copy( insert, text, i+1 );
+					consoleText.push_back( insert );
+
+					for ( j=i; j>0; j-- ) {
+						if ( IsColourString( &text[j] ) ) {
+							lastColour = text[j+1];
+							break;
+						}
+					}
+
+					String::sprintf( tempMessage, len, "%c%c%s", COLOUR_ESCAPE, lastColour, text + i );
+					Append( tempMessage, true );
+					return;
+				}
+			}
+
+			String::Copy( insert, text, i+1 );
+			consoleText.push_back( insert );
 		}
 
-		//FIXME: care about printing twice on same line
-		unsigned int indentation = console.GetIndentation();
-		std::string final = "";
-		for ( unsigned int i=0; i<indentation; i++ )
-			final += "\t";
-		final += str;
+		void Print( std::string fmt, ... ) {
+			size_t size = 128;
+			std::string str;
+			va_list ap;
 
-		//TODO: strip colours?
-		std::cout << final;
-		console.Append( final.c_str() );
+			while ( 1 ) {
+				str.resize( size );
 
-		#if defined(_WIN32) && defined(_DEBUG)
-			if ( !final.empty() )
-				OutputDebugString( final.c_str() );
-		#endif
-	}
+				va_start( ap, fmt );
+				int n = vsnprintf( (char *)str.c_str(), size, fmt.c_str(), ap );
+				va_end( ap );
 
-	//
-	// Console class
-	//	Access via XS::console.blah()
-	//
-	Console console;
+				if ( n > -1 && n < size ) {
+					str.resize( n );
+					break;
+				}
+				if ( n > -1 )
+					size = n + 1;
+				else
+					size *= 2;
+			}
 
-	// private member functions
-	short Console::EncodeCharacter( char lastColour, char c ) {
-		return (lastColour << 8) | c;
-	}
+			//FIXME: care about printing twice on same line
+			std::string final = "";
+			for ( unsigned int i=0; i<indentation; i++ )
+				final += "\t";
+			final += str;
 
-	// public member functions
-	void Console::Display( void ) {
-		// ...
-	}
+			//TODO: strip colours?
+			std::cout << final;
+			Append( final.c_str(), false );
 
-	void Console::Append( const char *text ) {
-		size_t len = strlen( text );
-		consoleText_s tmp[CONSOLE_BUFFER_SIZE];
-		char lastColour = COLOUR_WHITE;
-
-		for ( size_t i=0; i<len; i++ ) {
-			tmp[i].raw = EncodeCharacter( lastColour, text[i] );
+			#if defined(_WIN32) && defined(_DEBUG)
+				if ( !final.empty() )
+					OutputDebugString( final.c_str() );
+			#endif
 		}
-	}
 
-	void Console::Indent( int level ) {
-		indentation += level;
-		if ( indentation < 0 )
-			indentation = 0;
-	}
+		static void AdjustWidth( void ) {
+			Cvar *cv = Cvar::Get( "vid_width" );
+			if ( cv )
+				lineLength = cv->GetInt() / characterSize;
+		}
 
-}; // namespace XS
+		static void DrawChar( float x, float y, char c ) {
+			int row, col;
+			float frow, fcol;
+			const float size = 0.0625f;
+
+			if ( c == ' ' )
+				return;
+
+			// assumes 16x16
+			// sqrt( 256 ) = 16
+			row = c>>4;
+			col = c&15;
+
+			frow = row*size;
+			fcol = col*size;
+
+			Renderer::DrawQuad( x, y, (float)characterSize, (float)characterSize,
+				fcol, frow, 
+				fcol+size, frow+size, 
+				fontTexture );
+		}
+
+		void Display( void ) {
+			if ( !visible )
+				return;
+
+			AdjustWidth();
+		}
+
+		void Indent( int level ) {
+			indentation += level;
+			if ( indentation < 0 )
+				indentation = 0;
+		}
+
+	} // namespace Console
+
+} // namespace XS

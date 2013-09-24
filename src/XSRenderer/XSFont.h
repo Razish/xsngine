@@ -13,6 +13,7 @@ namespace XS {
 			std::string		file;
 			uint16_t		size;
 			struct {
+				//FIXME: XSTexture
 				uint32_t		texture;
 				vector4			dimensions;
 			} glyph[0xff];
@@ -29,6 +30,6 @@ namespace XS {
 			static void Draw( const vector2 pos, const std::string &text, const font_s *font );
 		};
 
-	}
+	} // namespace Renderer
 
-}
+} // namespace XS

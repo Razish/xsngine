@@ -39,8 +39,9 @@ namespace XS {
 	#define S_COLOUR_PURPLE		"^d"
 	#define S_COLOUR_PINK		"^e"
 	
-	bool IsColourString( char *p );
-	int ColourIndex( char c );
+	bool IsColourString( const char *p );
+	size_t ColourStringLength( const char *text );
+	unsigned int ColourIndex( char c );
 	extern const vector4 g_colour_table[COLOUR_BITS+1];
 
-}; // namespace XS
+} // namespace XS

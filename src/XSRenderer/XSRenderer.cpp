@@ -9,10 +9,10 @@
 #include "XSCommon/XSCvar.h"
 #include "XSCommon/XSString.h"
 #include "XSCommon/XSVector.h"
-#include "XSRenderer/XSRenderer.h"
-#include "XSRenderer/XSFont.h"
 #include "XSRenderer/XSInternalFormat.h"
 #include "XSRenderer/XSTexture.h"
+#include "XSRenderer/XSRenderer.h"
+#include "XSRenderer/XSFont.h"
 #include "XSRenderer/XSShaderProgram.h"
 #include "XSRenderer/XSFramebuffer.h"
 
@@ -35,25 +35,25 @@ namespace XS {
 			if ( error != GL_NO_ERROR ) {
 				switch ( error ) {
 				case GL_INVALID_ENUM:
-					Print( "GL_INVALID_ENUM in file %s:%d.\n", filename, line );
+					Console::Print( "GL_INVALID_ENUM in file %s:%d.\n", filename, line );
 					break;
 				case GL_INVALID_VALUE:
-					Print( "GL_INVALID_VALUE in file %s:%d.\n", filename, line );
+					Console::Print( "GL_INVALID_VALUE in file %s:%d.\n", filename, line );
 					break;
 				case GL_INVALID_OPERATION:
-					Print( "GL_INVALID_OPERATION in file %s:%d.\n", filename, line );
+					Console::Print( "GL_INVALID_OPERATION in file %s:%d.\n", filename, line );
 					break;
 				case GL_STACK_OVERFLOW:
-					Print( "GL_STACK_OVERFLOW in file %s:%d.\n", filename, line );
+					Console::Print( "GL_STACK_OVERFLOW in file %s:%d.\n", filename, line );
 					break;
 				case GL_STACK_UNDERFLOW:
-					Print( "GL_STACK_UNDERFLOW in file %s:%d.\n", filename, line );
+					Console::Print( "GL_STACK_UNDERFLOW in file %s:%d.\n", filename, line );
 					break;
 				case GL_OUT_OF_MEMORY:
-					Print( "GL_OUT_OF_MEMORY in file %s:%d.\n", filename, line );
+					Console::Print( "GL_OUT_OF_MEMORY in file %s:%d.\n", filename, line );
 					break;
 				default:
-					Print( "Error code 0x%X on line %d.\n", error, line );
+					Console::Print( "Error code 0x%X on line %d.\n", error, line );
 					break;
 				}
 			}
@@ -74,7 +74,7 @@ namespace XS {
 		}
 
 		void Shutdown( void ) {
-			Print( "Shutting down renderer...\n" );
+			Console::Print( "Shutting down renderer...\n" );
 
 			DestroyDisplay();
 		}
@@ -114,7 +114,6 @@ namespace XS {
 		}
 	
 		void InitGL( void ) {
-
 			glShadeModel( GL_SMOOTH );
 	
 			glClearColor( 0.5f, 0.125f, 0.125f, 1.0f );
@@ -188,6 +187,10 @@ namespace XS {
 			SDL_GL_SwapWindow( window );
 		}
 
-	}; // namespace Renderer
+		void DrawQuad ( float x, float y, float w, float h, float s1, float t1, float s2, float t2, const Texture *texture ) {
+			// ...
+		}
 
-}; // namespace XS
+	} // namespace Renderer
+
+} // namespace XS

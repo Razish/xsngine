@@ -29,9 +29,22 @@ namespace XS {
 			dst[len-1] = 0;
 		}
 
+		int sprintf( char *dst, size_t len, const char *fmt, ... ) {
+			va_list ap;
+
+			va_start( ap, fmt );
+			int outLen = vsnprintf( dst, len, fmt, ap );
+			va_end( ap );
+
+			if ( outLen >= len )
+				throw( String::Format( "sprintf: Output length %d too short, requires %d bytes.", len, outLen+1 ) );
+
+			return outLen;
+		}
+
 		// by Erik Aronesty http://stackoverflow.com/a/8098080
 		std::string Format( const std::string fmt, ... ) {
-			int size = 100;
+			size_t size = 128;
 			std::string str;
 			va_list ap;
 
@@ -86,6 +99,6 @@ namespace XS {
 			return ss.str();
 		}
 	
-	}; // namespace String
+	} // namespace String
 
-}; // namespace XS
+} // namespace XS

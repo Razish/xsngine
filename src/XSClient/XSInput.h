@@ -15,6 +15,6 @@ namespace XS {
 			void Poll( void );
 		} input;
 
-	}; // namespace Client
+	} // namespace Client
 
-}; // namespace XS
+} // namespace XS

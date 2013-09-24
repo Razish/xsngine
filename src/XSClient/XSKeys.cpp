@@ -10,9 +10,9 @@ namespace XS {
 	namespace Client {
 		
 		void KeyEvent( SDL_Keycode key, bool down ) {
-			Print( "KeyEvent: key: %i, down: %i\n", key, down );
+			Console::Print( "KeyEvent: key: %i, down: %i\n", key, down );
 		}
 
-	}
+	} // namespace Client
 
-}
+} // namespace XS

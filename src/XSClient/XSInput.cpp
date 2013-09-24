@@ -64,6 +64,6 @@ namespace XS {
 			}
 		}
 
-	}; // namespace Client
+	} // namespace Client
 
-}; // namespace XS
+} // namespace XS

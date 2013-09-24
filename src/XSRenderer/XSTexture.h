@@ -13,14 +13,15 @@ namespace XS {
 
 			uint32_t id;
 			unsigned int width, height;
+			InternalFormat internalFormat;
 
 		public:
 			static void Init( void );
 
-			Texture( unsigned int width, unsigned int height, internalFormat_t internalFormat );
+			Texture( unsigned int width, unsigned int height, InternalFormat internalFormat = RGBA8, byte *data = NULL );
 			~Texture();
 		};
 
-	}
+	} // namespace Renderer
 
-}
+} // namespace XS

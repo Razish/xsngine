@@ -3,6 +3,7 @@
 #include "GLee/GLee.h"
 #include "SDL2/SDL.h"
 
+#include "XSCommon/XSCommon.h"
 #include "XSCommon/XSConsole.h"
 #include "XSCommon/XSString.h"
 #include "XSRenderer/XSInternalFormat.h"
@@ -36,7 +37,7 @@ namespace XS {
 			glGetFloatv( GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maxAnisotropy );
 		}
 
-		Texture::Texture( unsigned int width, unsigned int height, internalFormat_t internalFormat ) {
+		Texture::Texture( unsigned int width, unsigned int height, InternalFormat internalFormat, byte *data ) {
 			GLint filterMode = filterTable[r_textureFilter->GetCString()];
 			if ( !filterMode )
 				filterMode = GL_LINEAR_MIPMAP_LINEAR;
@@ -63,7 +64,7 @@ namespace XS {
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filterMode );
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filterMode );
 
-			glTexImage2D( GL_TEXTURE_2D, 0, GetGLInternalFormat( internalFormat ), width, height, 0, GetGLFormat( internalFormat ), GetDataTypeForFormat( internalFormat ), NULL );
+			glTexImage2D( GL_TEXTURE_2D, 0, GetGLInternalFormat( internalFormat ), width, height, 0, GetGLFormat( internalFormat ), GetDataTypeForFormat( internalFormat ), data );
 			glBindTexture( GL_TEXTURE_2D, 0 );
 
 			CheckGLErrors( __FILE__, __LINE__ );
@@ -74,6 +75,6 @@ namespace XS {
 			CheckGLErrors( __FILE__, __LINE__ );
 		}
 
-	}
+	} // namespace Renderer
 
-}
+} // namespace XS

@@ -56,7 +56,7 @@
 	#define WIN32_LEAN_AND_MEAN
 	#define VC_EXTRALEAN
 	#ifndef NOMINMAX
-		#define NOMINMAX /* Don't defined min() and max() */
+		#define NOMINMAX /* Don't define min() and max() */
 	#endif
 	#include <windows.h>
 	#include <GL/gl.h>

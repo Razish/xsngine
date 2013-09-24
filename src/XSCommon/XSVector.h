@@ -443,7 +443,7 @@ namespace XS {
 		}
 	};
 
-}; // namespace XS
+} // namespace XS
 
 #ifdef _MSC_VER
 	#pragma warning( pop )

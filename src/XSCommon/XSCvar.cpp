@@ -21,14 +21,14 @@ namespace XS {
 			Cvar *cv = itr->second;
 			if ( (cv->flags & ARCHIVE) && cv->modified && cv->fullString != cv->defaultStr ) {
 				#ifdef _DEBUG
-					Print( "Saving Cvar '%s' with value '%s'\n", name, cv->fullString.c_str() );
+					Console::Print( "Saving Cvar '%s' with value '%s'\n", name, cv->fullString.c_str() );
 				#endif
 			}
 		}
 	}
 
 	void Cvar::Clean( void ) {
-		Print( "Cleaning up cvars\n" );
+		Console::Print( "Cleaning up cvars\n" );
 		for ( auto it=cvars.begin(); it != cvars.end(); ++it ) {
 			delete it->second;
 		}
@@ -63,7 +63,7 @@ namespace XS {
 			if ( !value.empty() ) {
 				// INIT cvars should not be initialised with differing values
 				if ( cvar->flags & INIT )
-					Print( "WARNING: INIT Cvar '%s' was created twice with values '%s' and '%s'\n", name.c_str(), cvar->fullString.c_str(), value.c_str() );
+					Console::Print( "WARNING: INIT Cvar '%s' was created twice with values '%s' and '%s'\n", name.c_str(), cvar->fullString.c_str(), value.c_str() );
 
 				// don't initialise a cvar if it already exists/has been set
 				else if ( !cvar->modified )
@@ -140,4 +140,4 @@ namespace XS {
 		return Set( String::Format( "%i", value ), initial ); // good enough
 	}
 
-}; // namespace XS
+} // namespace XS
