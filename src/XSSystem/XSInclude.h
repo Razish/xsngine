@@ -5,6 +5,7 @@
 #include <cassert>
 #include <cstdarg>
 #include <cstdint>
+#include <cstring>
 
 // for getcwd
 #if defined(_WIN32)
