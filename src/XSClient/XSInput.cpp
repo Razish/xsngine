@@ -4,7 +4,6 @@
 #include "SDL2/SDL_keycode.h"
 
 #include "XSClient/XSInput.h"
-#include "XSCommon/XSString.h"
 #include "XSCommon/XSEvent.h"
 
 namespace XS {

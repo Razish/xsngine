@@ -7,11 +7,10 @@
 #include "XSCommon/XSCommon.h"
 #include "XSCommon/XSString.h"
 #include "XSCommon/XSConsole.h"
-#include "XSCommon/XSString.h"
+#include "XSCommon/XSFile.h"
 #include "XSRenderer/XSShaderProgram.h"
 #include "XSRenderer/XSInternalFormat.h"
 #include "XSRenderer/XSTexture.h"
-#include "XSRenderer/XSRenderer.h"
 
 namespace XS {
 
@@ -26,6 +25,11 @@ namespace XS {
 			"GL_ARB_shader_objects",
 		};
 		static const size_t numExtensionsRequired = ARRAY_LEN( extensionsRequired );
+
+		static const int shaderTypes[NUM_SHADER_TYPES] = {
+			GL_VERTEX_SHADER_ARB,
+			GL_FRAGMENT_SHADER_ARB
+		};
 
 		void ShaderProgram::Init( void ) {
 			r_glsl = Cvar::Create( "r_glsl", "1", Cvar::ARCHIVE );
@@ -75,23 +79,6 @@ namespace XS {
 		// Shaders
 		//
 
-		static std::string LoadSource( const char *path ) {
-			std::ifstream file( path, std::ios::in );
-			
-			if ( !file.is_open() ) {
-				Console::Print( "LoadSource: failed to open %s for reading\n", path );
-				return "";
-			}
-
-			std::string line;
-			std::stringstream source;
-			while ( std::getline( file, line ) )
-				source << line << std::endl;
-			file.close();
-
-			return source.str();
-		}
-
 		void Shader::Create( const char *path, const char *source, int shaderType ) {
 			char *shaderCode = NULL;
 			int statusCode = 0;
@@ -139,18 +126,26 @@ namespace XS {
 		}
 
 		Shader::Shader( ShaderType type, const char *name ) {
+			const char *path = NULL;
+
 			switch( type ) {
-			case FragmentShader:
-				Create( name, LoadSource( String::Format( "shaders/f_%s.glsl", name ).c_str() ).c_str(), GL_FRAGMENT_SHADER_ARB );
-				break;
-
 			case VertexShader:
-				Create( name, LoadSource( String::Format( "shaders/v_%s.glsl", name ).c_str() ).c_str(), GL_VERTEX_SHADER_ARB );
+				path = String::Format( "shaders/v_%s.glsl", name ).c_str();
 				break;
-
+			case FragmentShader:
+				path = String::Format( "shaders/f_%s.glsl", name ).c_str();
+				break;
 			default:
-				throw( String::Format( "Shader(): Unknown type %d", type ) );
+				throw( String::Format( "Shader(): Unknown shader type %d", type ) );
 			}
+
+			File file( String::Format( "shaders/f_%s.glsl", name ).c_str(), File::READ );
+			if ( file.length == 0 )
+				throw( String::Format( "Shader(): Could not open file '%s'", name ) );
+
+			const char *contents = new char[file.length];
+			file.Read( (byte *)contents );
+			Create( name, contents, shaderTypes[type] );
 		}
 
 		Shader::~Shader() {

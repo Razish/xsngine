@@ -7,7 +7,6 @@
 #include "XSCommon/XSCommon.h"
 #include "XSCommon/XSConsole.h"
 #include "XSCommon/XSCvar.h"
-#include "XSCommon/XSString.h"
 #include "XSCommon/XSVector.h"
 #include "XSRenderer/XSInternalFormat.h"
 #include "XSRenderer/XSTexture.h"

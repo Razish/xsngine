@@ -2,7 +2,6 @@
 
 #include "SDL2/SDL_keycode.h"
 
-#include "XSClient/XSKeys.h"
 #include "XSCommon/XSConsole.h"
 
 namespace XS {

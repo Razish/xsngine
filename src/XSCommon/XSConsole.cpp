@@ -10,8 +10,8 @@
 #endif
 
 #include "XSCommon/XSCommon.h"
-#include "XSCommon/XSConsole.h"
 #include "XSCommon/XSString.h"
+#include "XSCommon/XSVector.h"
 #include "XSCommon/XSColours.h"
 #include "XSCommon/XSCvar.h"
 #include "XSRenderer/XSInternalFormat.h"

@@ -3,7 +3,6 @@
 #include "XSCommon/XSCommand.h"
 #include "XSCommon/XSString.h"
 #include "XSCommon/XSCvar.h"
-#include "XSCommon/XSConsole.h"
 
 namespace XS {
 

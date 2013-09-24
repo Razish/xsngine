@@ -4,8 +4,7 @@
 #include "SDL2/SDL.h"
 
 #include "XSCommon/XSCommon.h"
-#include "XSCommon/XSConsole.h"
-#include "XSCommon/XSString.h"
+#include "XSCommon/XSCvar.h"
 #include "XSRenderer/XSInternalFormat.h"
 #include "XSRenderer/XSTexture.h"
 #include "XSRenderer/XSRenderer.h"

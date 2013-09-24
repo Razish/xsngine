@@ -6,7 +6,8 @@ namespace XS {
 
 		enum ShaderType {
 			VertexShader=0,
-			FragmentShader
+			FragmentShader,
+			NUM_SHADER_TYPES
 		};
 
 

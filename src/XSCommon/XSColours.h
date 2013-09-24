@@ -1,7 +1,5 @@
 #pragma once
 
-#include "XSCommon/XSVector.h"
-
 namespace XS {
 
 	#define COLOUR_ESCAPE	'^'

@@ -1,7 +1,5 @@
 #pragma once
 
-#include "XSCommon/XSCvar.h"
-
 namespace XS {
 
 	namespace Renderer {

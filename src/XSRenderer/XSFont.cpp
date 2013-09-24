@@ -28,17 +28,9 @@ namespace XS {
 			this->size = size;
 		}
 
-		font_s *Font::Register( const std::string &name, uint16_t size ) {
-			font_s *font = new font_s( name.c_str(), size );
-			fonts[name.c_str()] = font;
-			return font;
-		}
-
 		void Font::Init( void ) {
-			if ( FT_Init_FreeType( &ft ) ) {
+			if ( FT_Init_FreeType( &ft ) )
 				throw( "Could not initialise freetype library" );
-				return;
-			}
 
 			fonts["menu"] = new font_s( "menu", 48 );
 
@@ -54,15 +46,15 @@ namespace XS {
 					continue;
 				}
 
-				byte *buf = new byte[file.length];
-				file.Read( buf );
+				byte *contents = new byte[file.length];
+				file.Read( contents );
 
-				if ( FT_New_Memory_Face( ft, buf, file.length, 0, &face ) ) {
+				if ( FT_New_Memory_Face( ft, contents, file.length, 0, &face ) ) {
 					Console::Print( "WARNING: Could not register font '%s'\n", font->file.c_str() );
-					delete[] buf;
+					delete[] contents;
 					continue;
 				}
-				delete[] buf;
+				delete[] contents;
 
 				if ( FT_Set_Char_Size( face, font->size << 6, font->size << 6, 96, 96 ) ) {
 					//TODO: appropriate warning message
