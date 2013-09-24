@@ -37,12 +37,17 @@ namespace XS {
 
 	// private
 	Cvar::Cvar() {
-		this->flags = NONE;
-		this->modified = false;
+		cvars[name] = this;
+
+		flags = NONE;
+		modified = false;
 	}
 
 	// public
-	Cvar::Cvar( std::string &value ) {
+	Cvar::Cvar( const std::string &name, const std::string &value ) {
+		cvars[name] = this;
+
+		this->name = name;
 		flags = NONE;
 		modified = false;
 		Set( value, true );
@@ -72,10 +77,8 @@ namespace XS {
 		}
 
 		// allocate and add to map
-		cvar = new Cvar( value );
+		cvar = new Cvar( name, value );
 		cvar->defaultStr = value;
-		cvar->Set( value, true );
-		cvars[name] = cvar;
 
 		return cvar;
 	}
@@ -86,10 +89,7 @@ namespace XS {
 		if ( cv )
 			return cv;
 
-		cv = new Cvar();
-		cvars[name] = cv;
-	
-		return cv;
+		return new Cvar( name );
 	}
 
 	void Cvar::SetFlags( uint32_t flags ) {
@@ -100,7 +100,7 @@ namespace XS {
 	}
 
 	bool Cvar::Set( const char *value, bool initial ) {
-		if ( this->flags & READONLY )
+		if ( flags & READONLY )
 			return false;
 
 		fullString = value;
@@ -119,25 +119,25 @@ namespace XS {
 		}
 		
 		if ( !initial )
-			this->modified = true;
+			modified = true;
 
 		return true;
 	}
 
 	bool Cvar::Set( const std::string &value, bool initial ) {
-		return this->Set( value.c_str(), initial );
+		return Set( value.c_str(), initial );
 	}
 
 	bool Cvar::Set( const int value, bool initial ) {
-		return this->Set( String::Format( "%i", value ), initial );
+		return Set( String::Format( "%i", value ), initial );
 	}
 
 	bool Cvar::Set( const float value, bool initial ) {
-		return this->Set( String::Format( "%f", value ), initial );
+		return Set( String::Format( "%f", value ), initial );
 	}
 
 	bool Cvar::Set( const bool value, bool initial ) {
-		return this->Set( String::Format( "%i", value ), initial ); // good enough
+		return Set( String::Format( "%i", value ), initial ); // good enough
 	}
 
 }; // namespace XS

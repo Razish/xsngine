@@ -17,6 +17,8 @@ namespace XS {
 		Cvar();
 		static bool initialised;
 
+		std::string name;
+
 		// store the value in these formats
 		std::string defaultStr;
 		std::string fullString;
@@ -39,7 +41,7 @@ namespace XS {
 		static void Clean( void );
 
 		// xtors
-		Cvar( std::string &value );
+		Cvar( const std::string &name, const std::string &value = "" );
 		static Cvar *Create( std::string name, std::string value="", uint32_t flags=NONE );
 		static Cvar *Get( const std::string &name );
 
