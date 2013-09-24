@@ -7,7 +7,7 @@
 namespace XS {
 
 	static std::unordered_map<std::string, Cvar*> cvars;
-	static bool initialised = false;
+	bool Cvar::initialised = false;
 
 	void Cvar::LoadConfig( void ) {
 		// ...
@@ -19,9 +19,9 @@ namespace XS {
 		for ( auto itr=cvars.begin(); itr != cvars.end(); ++itr ) {
 			const char *name = itr->first.c_str();
 			Cvar *cv = itr->second;
-			if ( (cv->flags & ARCHIVE) && cv->modified && cv->value.str != cv->value.defaultStr ) {
+			if ( (cv->flags & ARCHIVE) && cv->modified && cv->fullString != cv->defaultStr ) {
 				#ifdef _DEBUG
-					Print( "Saving Cvar '%s' with value '%s'\n", name, cv->value.str.c_str() );
+					Print( "Saving Cvar '%s' with value '%s'\n", name, cv->fullString.c_str() );
 				#endif
 			}
 		}
@@ -43,9 +43,9 @@ namespace XS {
 
 	// public
 	Cvar::Cvar( std::string &value ) {
-		this->flags = NONE;
-		this->modified = false;
-		Set( value );
+		flags = NONE;
+		modified = false;
+		Set( value, true );
 	}
 
 	Cvar *Cvar::Create( std::string name, std::string value, uint32_t flags ) {
@@ -58,11 +58,11 @@ namespace XS {
 			if ( !value.empty() ) {
 				// INIT cvars should not be initialised with differing values
 				if ( cvar->flags & INIT )
-					Print( "WARNING: INIT Cvar '%s' was created twice with values '%s' and '%s'\n", name.c_str(), cvar->value.str.c_str(), value.c_str() );
+					Print( "WARNING: INIT Cvar '%s' was created twice with values '%s' and '%s'\n", name.c_str(), cvar->fullString.c_str(), value.c_str() );
 
 				// don't initialise a cvar if it already exists/has been set
 				else if ( !cvar->modified )
-					cvar->Set( value );
+					cvar->Set( value, true );
 			}
 
 			if ( flags != NONE )
@@ -73,7 +73,8 @@ namespace XS {
 
 		// allocate and add to map
 		cvar = new Cvar( value );
-		cvar->value.defaultStr = value;
+		cvar->defaultStr = value;
+		cvar->Set( value, true );
 		cvars[name] = cvar;
 
 		return cvar;
@@ -98,35 +99,45 @@ namespace XS {
 		this->flags = flags;
 	}
 
-	bool Cvar::Set( const char *value ) {
+	bool Cvar::Set( const char *value, bool initial ) {
 		if ( this->flags & READONLY )
 			return false;
 
-		this->value.tokens = String::Split( value, ' ' );
-		this->value.str = this->value.tokens[0];
-		this->value.number = (float)atof( this->value.str.c_str() );
-		this->value.integer = atoi( this->value.str.c_str() );
-		this->value.boolean = !!this->value.integer;
+		fullString = value;
+
+		const char delim = ' ';
+		std::vector<std::string> tokens = String::Split( value, delim );
+		for ( auto it = tokens.begin(); it != tokens.end(); ++it ) {
+			CvarValue newValue;
+
+			newValue.str = *it;
+			newValue.number = (float)atof( newValue.str.c_str() );
+			newValue.integer = atoi( newValue.str.c_str() );
+			newValue.boolean = !!newValue.integer;
+
+			values.push_back( newValue );
+		}
 		
-		this->modified = true;
+		if ( !initial )
+			this->modified = true;
 
 		return true;
 	}
 
-	bool Cvar::Set( const std::string &value ) {
-		return this->Set( value.c_str() );
+	bool Cvar::Set( const std::string &value, bool initial ) {
+		return this->Set( value.c_str(), initial );
 	}
 
-	bool Cvar::Set( const int value ) {
-		return this->Set( String::Format( "%i", value ) );
+	bool Cvar::Set( const int value, bool initial ) {
+		return this->Set( String::Format( "%i", value ), initial );
 	}
 
-	bool Cvar::Set( const float value ) {
-		return this->Set( String::Format( "%f", value ) );
+	bool Cvar::Set( const float value, bool initial ) {
+		return this->Set( String::Format( "%f", value ), initial );
 	}
 
-	bool Cvar::Set( const bool value ) {
-		return this->Set( String::Format( "%i", value ) ); // good enough
+	bool Cvar::Set( const bool value, bool initial ) {
+		return this->Set( String::Format( "%i", value ), initial ); // good enough
 	}
 
 }; // namespace XS

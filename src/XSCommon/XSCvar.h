@@ -15,15 +15,18 @@ namespace XS {
 
 	private:
 		Cvar();
+		static bool initialised;
 
 		// store the value in these formats
-		struct {
-			std::string str, defaultStr;
-			std::vector<std::string> tokens; // separated by whitespace
+		std::string defaultStr;
+		std::string fullString;
+		struct CvarValue {
+			std::string str;
 			int integer;
 			float number;
 			bool boolean;
-		} value;
+		};
+		std::vector<CvarValue> values; // separated by whitespace
 
 		uint32_t flags;
 
@@ -44,19 +47,17 @@ namespace XS {
 		void SetFlags( uint32_t flags );
 		const uint32_t Flags( void ) { return flags; }
 
-		bool Set( const std::string &value );
-		bool Set( const char *value );
-		bool Set( const int value );
-		bool Set( const float value );
-		bool Set( const bool value );
+		bool Set( const std::string &value, bool initial = false );
+		bool Set( const char *value, bool initial = false );
+		bool Set( const int value, bool initial = false );
+		bool Set( const float value, bool initial = false );
+		bool Set( const bool value, bool initial = false );
 
-		inline const std::string &GetString( void ) { return this->value.str; }
-		inline const char *GetCString( void ) { return this->value.str.c_str(); }
-		inline const int GetInt( void ) { return this->value.integer; }
-		inline const float GetFloat( void ) { return this->value.number; }
-		inline bool GetBool( void ) { return this->value.boolean; }
-
-		inline const std::string& operator[]( const int idx ) { return this->value.tokens[idx]; }
+		inline const std::string &GetString( size_t index = 0 ) { return this->values[index].str; }
+		inline const char *GetCString( size_t index = 0 ) { return this->values[index].str.c_str(); }
+		inline const int GetInt( size_t index = 0 ) { return this->values[index].integer; }
+		inline const float GetFloat( size_t index = 0 ) { return this->values[index].number; }
+		inline bool GetBool( size_t index = 0 ) { return this->values[index].boolean; }
 	};
 
 }; // namespace XS

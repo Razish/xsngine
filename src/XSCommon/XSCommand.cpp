@@ -23,7 +23,7 @@ namespace XS {
 			std::string value;
 			for ( size_t i=1; i<size; i++ ) {
 				value += context->args[i];
-				if ( i != size )
+				if ( i != size-1 )
 					value += " ";
 			}
 			cv->Set( value );
@@ -50,10 +50,15 @@ namespace XS {
 			for ( auto it = buffer.begin(); it != buffer.end(); ++it ) {
 				commandContext context;
 
+				// tokenise the arguments
 				const char delim = ' ';
 				size_t start = it->find( delim );
 				std::string name = it->substr( 0, start );
 				context.args = String::Split( &(*it)[start+1], ' ' );
+
+				// strip any quotes around the arguments
+				for ( auto tok = context.args.begin(); tok != context.args.end(); ++tok )
+					tok->erase( std::remove( tok->begin(), tok->end(), '"' ), tok->end() );
 
 				if ( context.args.size() == 0 )
 					continue;

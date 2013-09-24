@@ -3,14 +3,8 @@
 // commonly included headers from stl/stdlib
 
 #include <cassert>
-#include <cctype>
-#include <climits>
-#include <cmath>
 #include <cstdarg>
 #include <cstdint>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
 
 // for getcwd
 #if defined(_WIN32)
@@ -19,6 +13,7 @@
 	#include <unistd.h>
 #endif
 
+#include <algorithm>
 #include <iostream>
 #include <fstream>
 #include <list>
