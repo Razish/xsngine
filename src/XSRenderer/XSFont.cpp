@@ -40,13 +40,14 @@ namespace XS {
 				font_s *font = it->second;
 				FT_Face face = NULL;
 				
-				File file( font->file.c_str(), File::READ );
+				File file( font->file.c_str(), File::READ_BINARY );
 				if ( file.length == 0 ) {
 					Console::Print( "WARNING: Could not load font file '%s'\n", file.path );
 					continue;
 				}
 
 				byte *contents = new byte[file.length];
+				memset( contents, 0, file.length );
 				file.Read( contents );
 
 				if ( FT_New_Memory_Face( ft, contents, file.length, 0, &face ) ) {
@@ -54,10 +55,10 @@ namespace XS {
 					delete[] contents;
 					continue;
 				}
-				delete[] contents;
 
 				if ( FT_Set_Char_Size( face, font->size << 6, font->size << 6, 96, 96 ) ) {
 					//TODO: appropriate warning message
+					delete[] contents;
 					continue;
 				}
 
@@ -103,6 +104,7 @@ namespace XS {
 				}
 
 				FT_Done_Face( face );
+				delete[] contents;
 			}
 		}
 

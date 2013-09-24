@@ -10,8 +10,10 @@ namespace XS {
 
 	Cvar *File::com_path;
 	static const char *modes[File::NUM_MODES] = {
-		"rb+",
+		"r",
+		"rb",
 		"w",
+		"wb"
 		"a"
 	};
 
@@ -34,12 +36,15 @@ namespace XS {
 			return;
 		}
 
+		fseek( file, 0L, SEEK_END );
 		length = ftell( file );
+		fseek( file, 0L, SEEK_SET );
 	}
 
 	void File::Read( byte *buf, size_t len ) {
 		if ( len == 0 )
 			len = length;
+
 		fread( (void *)buf, 1, len, file );
 	}
 

@@ -7,7 +7,9 @@ namespace XS {
 
 		enum Mode {
 			READ=0,
+			READ_BINARY,
 			WRITE,
+			WRITE_BINARY,
 			APPEND,
 			NUM_MODES
 		};

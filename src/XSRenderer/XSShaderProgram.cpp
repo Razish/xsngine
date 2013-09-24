@@ -126,26 +126,28 @@ namespace XS {
 		}
 
 		Shader::Shader( ShaderType type, const char *name ) {
-			const char *path = NULL;
+			std::string path;
 
 			switch( type ) {
 			case VertexShader:
-				path = String::Format( "shaders/v_%s.glsl", name ).c_str();
+				path = String::Format( "shaders/v_%s.glsl", name );
 				break;
 			case FragmentShader:
-				path = String::Format( "shaders/f_%s.glsl", name ).c_str();
+				path = String::Format( "shaders/f_%s.glsl", name );
 				break;
 			default:
 				throw( String::Format( "Shader(): Unknown shader type %d", type ) );
 			}
 
-			File file( String::Format( "shaders/f_%s.glsl", name ).c_str(), File::READ );
+			File file( path.c_str(), File::READ );
 			if ( file.length == 0 )
 				throw( String::Format( "Shader(): Could not open file '%s'", name ) );
 
-			const char *contents = new char[file.length];
-			file.Read( (byte *)contents );
-			Create( name, contents, shaderTypes[type] );
+			char *contents = new char[file.length];
+				memset( contents, 0, file.length );
+				file.Read( (byte *)contents );
+				Create( name, contents, shaderTypes[type] );
+			delete[] contents;
 		}
 
 		Shader::~Shader() {
