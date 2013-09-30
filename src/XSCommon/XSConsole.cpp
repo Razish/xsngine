@@ -107,7 +107,7 @@ namespace XS {
 				int n = vsnprintf( (char *)str.c_str(), size, fmt.c_str(), ap );
 				va_end( ap );
 
-				if ( n > -1 && n < size ) {
+				if ( n > -1 && n < (signed)size ) {
 					str.resize( n );
 					break;
 				}
