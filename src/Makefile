@@ -17,7 +17,7 @@ FILES += XSCommon/XSColours.o XSCommon/XSCommand.o XSCommon/XSCommon.o XSCommon/
 FILES += GLee/GLee.o XSRenderer/XSFont.o XSRenderer/XSFramebuffer.o XSRenderer/XSImagePNG.o XSRenderer/XSInternalFormat.o XSRenderer/XSRenderer.o XSRenderer/XSShaderProgram.o XSRenderer/XSTexture.o
 
 # libraries
-LIBS = $(shell sdl2-config --libs) $(shell freetype-config --libs) -lGL  -lm
+LIBS = $(shell sdl2-config --libs) $(shell freetype-config --libs) $(shell libpng-config --libs) -lGL  -lm
 
 # targets
 
