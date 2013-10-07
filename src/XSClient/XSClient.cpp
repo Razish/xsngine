@@ -1,5 +1,6 @@
 #include "XSSystem/XSInclude.h"
 
+#include "XSCommon/XSCommand.h"
 #include "XSCommon/XSConsole.h"
 
 namespace XS {

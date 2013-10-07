@@ -3,11 +3,14 @@
 #include "GLee/GLee.h"
 #include "SDL2/SDL.h"
 
+#include "XSCommon/XSCommand.h"
 #include "XSCommon/XSConsole.h"
 #include "XSCommon/XSCommon.h"
 #include "XSCommon/XSCvar.h"
 #include "XSRenderer/XSInternalFormat.h"
 #include "XSRenderer/XSTexture.h"
+#include "XSRenderer/XSRenderCommand.h"
+#include "XSRenderer/XSView.h"
 #include "XSRenderer/XSRenderer.h"
 #include "XSRenderer/XSFramebuffer.h"
 
@@ -57,8 +60,6 @@ namespace XS {
 				currentReadFramebuffer	= NULL;
 				currentWriteFramebuffer	= NULL;
 			}
-
-			CheckGLErrors( __FILE__, __LINE__ );
 		}
 
 		const Framebuffer *Framebuffer::GetCurrent( void ) {
@@ -77,8 +78,6 @@ namespace XS {
 			}
 
 			glBlitFramebufferEXT( sourceWidth, sourceHeight, 0, 0, destWidth, destHeight, 0, 0, bufferBits, GL_NEAREST );
-
-			CheckGLErrors( __FILE__, __LINE__ );
 		}
 
 		void Framebuffer::BlitColor( const Framebuffer *source, const Framebuffer *destination, int sourceWidth, int sourceHeight, int destWidth, int destHeight ) {
@@ -100,13 +99,10 @@ namespace XS {
 
 			if ( !id )
 				throw( "Failed to create framebuffer" );
-
-			CheckGLErrors( __FILE__, __LINE__ );
 		}
 
 		Framebuffer::~Framebuffer() {
 			glDeleteFramebuffersEXT( 1, &id );
-			CheckGLErrors( __FILE__, __LINE__ );
 		}
 
 		void Framebuffer::AttachColorTexture( const Texture *texture, unsigned int slot ) {
@@ -118,22 +114,17 @@ namespace XS {
 			glFramebufferTexture2DEXT( GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT + slot, GL_TEXTURE_2D, texture->id, 0 );
 			colorTextures[slot] = texture;
 
-			CheckGLErrors( __FILE__, __LINE__ );
 		}
 
 		void Framebuffer::AttachDepthTexture( const Texture *texture ) {
 			glFramebufferTexture2DEXT( GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_TEXTURE_2D, texture->id, 0 );
 			depthTexture = texture;
-
-			CheckGLErrors( __FILE__, __LINE__ );
 		}
 
 		void Framebuffer::AttachDepthStencilTexture( const Texture *texture ) {
 			glFramebufferTexture2DEXT( GL_FRAMEBUFFER_EXT, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, texture->id, 0 );
 			depthTexture = texture;
 			stencilTexture = texture->id;
-
-			CheckGLErrors( __FILE__, __LINE__ );
 		}
 
 		void Framebuffer::Bind( void ) {
@@ -142,8 +133,6 @@ namespace XS {
 				currentReadFramebuffer	= this;
 				currentWriteFramebuffer	= this;
 			}
-
-			CheckGLErrors( __FILE__, __LINE__ );
 		}
 
 		void Framebuffer::Check( void ) {
@@ -180,8 +169,6 @@ namespace XS {
 
 			if ( status != GL_FRAMEBUFFER_COMPLETE_EXT )
 				Console::Print( "Creation of framebuffer %d could not be completed.\n", id );
-
-			CheckGLErrors( __FILE__, __LINE__ );
 		}
 
 	}

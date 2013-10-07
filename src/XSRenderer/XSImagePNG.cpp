@@ -3,6 +3,7 @@
 #include <png.h>
 
 #include "XSCommon/XSCommon.h"
+#include "XSCommon/XSCommand.h"
 #include "XSCommon/XSConsole.h"
 #include "XSCommon/XSCvar.h"
 #include "XSCommon/XSFile.h"
@@ -24,8 +25,6 @@ namespace XS {
 
 			PNGFileReader( byte *buf ) : buf( buf ), offset( 0 ), png_ptr( NULL ), info_ptr( NULL ){}
 			~PNGFileReader() {
-			//	ri->FS_FreeFile( buf );
-
 				if ( info_ptr ) {
 					// destroys both structs
 					png_destroy_info_struct( png_ptr, &info_ptr );
@@ -158,7 +157,7 @@ namespace XS {
 		byte *LoadPNG( const char *filename, uint32_t *outWidth, uint32_t *outHeight ) {
 			byte *out = NULL;
 
-			File f = File( filename, File::READ );
+			File f = File( filename, File::READ_BINARY );
 			if ( f.length == 0 ) {
 				Console::Print( "Could not open PNG file '%s'\n", filename );
 				return NULL;

@@ -14,8 +14,11 @@
 #include "XSCommon/XSVector.h"
 #include "XSCommon/XSColours.h"
 #include "XSCommon/XSCvar.h"
+#include "XSCommon/XSCommand.h"
 #include "XSRenderer/XSInternalFormat.h"
 #include "XSRenderer/XSTexture.h"
+#include "XSRenderer/XSRenderCommand.h"
+#include "XSRenderer/XSView.h"
 #include "XSRenderer/XSRenderer.h"
 #include "XSRenderer/XSImagePNG.h"
 
@@ -29,13 +32,18 @@ namespace XS {
 		static std::vector<char*> consoleText;
 		static int scrollAmount = 0;
 		static unsigned int lineLength = 128; // changes at runtime based on window width
-		static const uint32_t characterSize = 32;
+		static const uint32_t characterSize = 16;
 		static const unsigned int lineCount = 24;
 
 		static Renderer::Texture *fontTexture;
+		static Renderer::View view;
 
 		void Init( void ) {
 			fontTexture = new Renderer::Texture( 16*characterSize, 16*characterSize, Renderer::RGBA8, Renderer::LoadPNG( "fonts/console.png" ) );
+			view.is2D = true;
+			view.width = Cvar::Get( "vid_width" )->GetInt();
+			view.height = Cvar::Get( "vid_height" )->GetInt();
+			view.Register();
 		}
 
 		static void Append( const char *text, bool multiLine ) {
@@ -165,7 +173,26 @@ namespace XS {
 			if ( !visible )
 				return;
 
+			if ( consoleText.size() == 0 )
+				return;
+
+			view.Bind();
+
 			AdjustWidth();
+
+			size_t i = consoleText.size() - std::min( lineCount, (unsigned)consoleText.size() );
+			i += scrollAmount;
+
+			for ( size_t line=0; line<lineCount && line<consoleText.size(); i++, line++ ) {
+				auto it = consoleText.at(i);
+				size_t len = strlen( it );
+				for ( size_t c=0; c<len; c++ )
+					DrawChar( (float)(c*characterSize), (float)(line*characterSize), it[c] );
+			}
+		}
+
+		void Toggle( const commandContext *context ) {
+			visible = !visible;
 		}
 
 		void Indent( int level ) {

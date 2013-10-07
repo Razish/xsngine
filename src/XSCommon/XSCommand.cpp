@@ -3,6 +3,7 @@
 #include "XSCommon/XSCommand.h"
 #include "XSCommon/XSString.h"
 #include "XSCommon/XSCvar.h"
+#include "XSCommon/XSConsole.h"
 
 namespace XS {
 
@@ -41,6 +42,7 @@ namespace XS {
 		void Init( void ) {
 			AddCommand( "set", Cmd_SetCvar );
 			AddCommand( "toggle", Cmd_ToggleCvar );
+			AddCommand( "toggleconsole", Console::Toggle );
 		}
 
 		// command buffer

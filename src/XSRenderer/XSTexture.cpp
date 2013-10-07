@@ -7,6 +7,8 @@
 #include "XSCommon/XSCvar.h"
 #include "XSRenderer/XSInternalFormat.h"
 #include "XSRenderer/XSTexture.h"
+#include "XSRenderer/XSRenderCommand.h"
+#include "XSRenderer/XSView.h"
 #include "XSRenderer/XSRenderer.h"
 
 namespace XS {
@@ -20,15 +22,30 @@ namespace XS {
 		static bool anisotropy;
 		static float maxAnisotropy;
 
-		static std::unordered_map<const char *, GLint> filterTable;
+		static const struct {
+			const char *name;
+			GLint min, mag;
+		} filterTable[] = {
+			{ "GL_NEAREST",					GL_NEAREST,					GL_NEAREST },
+			{ "GL_LINEAR",					GL_LINEAR,					GL_LINEAR },
+			{ "GL_NEAREST_MIPMAP_NEAREST",	GL_NEAREST_MIPMAP_NEAREST,	GL_NEAREST },
+			{ "GL_LINEAR_MIPMAP_NEAREST",	GL_LINEAR_MIPMAP_NEAREST,	GL_LINEAR },
+			{ "GL_NEAREST_MIPMAP_LINEAR",	GL_NEAREST_MIPMAP_LINEAR,	GL_NEAREST },
+			{ "GL_LINEAR_MIPMAP_LINEAR",	GL_LINEAR_MIPMAP_LINEAR,	GL_LINEAR }
+		};
+		static const size_t numFilters = ARRAY_LEN( filterTable );
+		static size_t GetTextureFilter( const char *string ) {
+			for ( size_t filter=0; filter<numFilters; filter++ ) {
+				if ( !stricmp( string, filterTable[filter].name ) )
+					return filter;
+			}
+			return 0;
+		}
 
 		void Texture::Init( void ) {
-			filterTable["GL_NEAREST"] = GL_NEAREST;
-			filterTable["GL_LINEAR"] = GL_LINEAR;
-			filterTable["GL_LINEAR_MIPMAP_LINEAR"] = GL_LINEAR_MIPMAP_LINEAR;
-
 			r_textureAnisotropy = Cvar::Create( "r_textureAnisotropy", "1", Cvar::ARCHIVE );
 			r_textureAnisotropyMax = Cvar::Create( "r_textureAnisotropyMax", "16.0", Cvar::ARCHIVE );
+			r_textureFilter = Cvar::Create( "r_textureFilter", "GL_LINEAR_MIPMAP_LINEAR", Cvar::ARCHIVE );
 
 			// get anisotropic filtering settings
 			if ( SDL_GL_ExtensionSupported( "GL_EXT_texture_filter_anisotropic" ) )
@@ -37,9 +54,7 @@ namespace XS {
 		}
 
 		Texture::Texture( unsigned int width, unsigned int height, InternalFormat internalFormat, byte *data ) {
-			GLint filterMode = filterTable[r_textureFilter->GetCString()];
-			if ( !filterMode )
-				filterMode = GL_LINEAR_MIPMAP_LINEAR;
+			size_t filterMode = GetTextureFilter( r_textureFilter->GetCString() );
 
 			glGenTextures( 1, &id );
 			if ( !id )
@@ -57,21 +72,19 @@ namespace XS {
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
 
-			if ( anisotropy && r_textureAnisotropy->GetBool() )
+			if ( anisotropy && r_textureAnisotropy->GetBool() ) {
 				glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, std::min( r_textureAnisotropyMax->GetFloat(), maxAnisotropy ) );
+			}
 
-			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filterMode );
-			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filterMode );
+			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filterTable[filterMode].min );
+			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filterTable[filterMode].mag );
 
 			glTexImage2D( GL_TEXTURE_2D, 0, GetGLInternalFormat( internalFormat ), width, height, 0, GetGLFormat( internalFormat ), GetDataTypeForFormat( internalFormat ), data );
 			glBindTexture( GL_TEXTURE_2D, 0 );
-
-			CheckGLErrors( __FILE__, __LINE__ );
-		}
+ 		}
 
 		Texture::~Texture() {
 			glDeleteTextures( 1, &id );
-			CheckGLErrors( __FILE__, __LINE__ );
 		}
 
 	} // namespace Renderer

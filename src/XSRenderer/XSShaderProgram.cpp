@@ -6,11 +6,15 @@
 #include "XSCommon/XSCvar.h"
 #include "XSCommon/XSCommon.h"
 #include "XSCommon/XSString.h"
+#include "XSCommon/XSCommand.h"
 #include "XSCommon/XSConsole.h"
 #include "XSCommon/XSFile.h"
 #include "XSRenderer/XSShaderProgram.h"
 #include "XSRenderer/XSInternalFormat.h"
 #include "XSRenderer/XSTexture.h"
+#include "XSRenderer/XSRenderCommand.h"
+#include "XSRenderer/XSView.h"
+#include "XSRenderer/XSRenderer.h"
 
 namespace XS {
 

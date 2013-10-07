@@ -7,14 +7,16 @@
 #include "XSCommon/XSCommon.h"
 #include "XSCommon/XSCvar.h"
 #include "XSCommon/XSEvent.h"
+#include "XSCommon/XSCommand.h"
 #include "XSCommon/XSConsole.h"
 #include "XSCommon/XSString.h"
-#include "XSCommon/XSCommand.h"
 #include "XSCommon/XSFile.h"
 #include "XSClient/XSInput.h"
 #include "XSClient/XSClient.h"
 #include "XSRenderer/XSInternalFormat.h"
 #include "XSRenderer/XSTexture.h"
+#include "XSRenderer/XSRenderCommand.h"
+#include "XSRenderer/XSView.h"
 #include "XSRenderer/XSRenderer.h"
 
 namespace XS {
@@ -116,6 +118,8 @@ int main( int argc, char **argv ) {
 
 		XS::Event::Init();
 	//	XS::Network::Init();
+
+		XS::Console::Init();
 
 		// frame
 		while ( 1 ) {

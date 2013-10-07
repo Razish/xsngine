@@ -7,11 +7,9 @@ namespace XS {
 		#define MAX_TEXTURES (256)
 
 		class Texture {
-			friend class Framebuffer;
 		private:
 			Texture(){}
 
-			uint32_t id;
 			unsigned int width, height;
 			InternalFormat internalFormat;
 
@@ -20,6 +18,8 @@ namespace XS {
 
 			Texture( unsigned int width, unsigned int height, InternalFormat internalFormat = RGBA8, byte *data = NULL );
 			~Texture();
+
+			uint32_t id;
 		};
 
 	} // namespace Renderer

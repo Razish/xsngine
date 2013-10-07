@@ -10,4 +10,8 @@ namespace XS {
 
 	#define ARRAY_LEN( x ) (sizeof( (x) ) / sizeof( (*x) ))
 
+	#ifndef M_PI
+		#define M_PI (4.0*atan(1.0))
+	#endif
+
 } // namespace XS

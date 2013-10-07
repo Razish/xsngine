@@ -6,6 +6,7 @@ namespace XS {
 
 		void	Init		( void );
 		void	Print		( std::string fmt, ... );
+		void	Toggle		( const commandContext *context );
 		void	Display		( void );
 		void	Indent		( int level );
 

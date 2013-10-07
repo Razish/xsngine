@@ -4,6 +4,7 @@
 #include "XSCommon/XSCommon.h"
 #include "XSCommon/XSFile.h"
 #include "XSCommon/XSString.h"
+#include "XSCommon/XSCommand.h"
 #include "XSCommon/XSConsole.h"
 
 namespace XS {

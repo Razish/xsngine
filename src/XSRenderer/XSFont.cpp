@@ -8,12 +8,18 @@
 
 #include "XSCommon/XSCommon.h"
 #include "XSCommon/XSCvar.h"
+#include "XSCommon/XSCommand.h"
 #include "XSCommon/XSConsole.h"
 #include "XSCommon/XSString.h"
 #include "XSCommon/XSVector.h"
 #include "XSCommon/XSFile.h"
 #include "XSRenderer/XSFont.h"
 #include "XSRenderer/XSShaderProgram.h"
+#include "XSRenderer/XSInternalFormat.h"
+#include "XSRenderer/XSTexture.h"
+#include "XSRenderer/XSRenderCommand.h"
+#include "XSRenderer/XSView.h"
+#include "XSRenderer/XSRenderer.h"
 
 namespace XS {
 	
@@ -93,7 +99,7 @@ namespace XS {
 					GLint alignment;
 					glGetIntegerv( GL_UNPACK_ALIGNMENT, &alignment );
 					glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
-						glTexImage2D( GL_TEXTURE_2D, 0, GL_R8, 0, GL_RED, w, h, GL_UNSIGNED_BYTE, data );
+						glTexImage2D( GL_TEXTURE_2D, 0, GL_R8, w, h, 0, GL_RED, GL_UNSIGNED_BYTE, data );
 					glPixelStorei( GL_UNPACK_ALIGNMENT, alignment );
 
 					delete[] data;

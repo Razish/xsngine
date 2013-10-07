@@ -5,15 +5,19 @@
 
 #include "XSSystem/XSPlatform.h"
 #include "XSCommon/XSCommon.h"
+#include "XSCommon/XSCommand.h"
 #include "XSCommon/XSConsole.h"
 #include "XSCommon/XSCvar.h"
 #include "XSCommon/XSVector.h"
 #include "XSRenderer/XSInternalFormat.h"
 #include "XSRenderer/XSTexture.h"
+#include "XSRenderer/XSRenderCommand.h"
+#include "XSRenderer/XSView.h"
 #include "XSRenderer/XSRenderer.h"
 #include "XSRenderer/XSFont.h"
 #include "XSRenderer/XSShaderProgram.h"
 #include "XSRenderer/XSFramebuffer.h"
+#include "XSRenderer/XSBackend.h"
 
 namespace XS {
 
@@ -28,6 +32,9 @@ namespace XS {
 		static Cvar *vid_height;
 		static Cvar *vid_noBorder;
 		static Cvar *vid_width;
+
+		std::vector<View*> views;
+		static View *currentView = NULL;
 
 		void CheckGLErrors( const char *filename, int line ) {
 			unsigned int error = glGetError();
@@ -62,14 +69,14 @@ namespace XS {
 			RegisterCvars();
 
 			CreateDisplay();
-			InitGL();
+			Backend::Init();
 
 			Texture::Init();
 			ShaderProgram::Init();
 			Framebuffer::Init();
 			Font::Init();
 
-			SetViewport( vid_width->GetInt(), vid_height->GetInt() );
+			Backend::Begin2D( vid_width->GetInt(), vid_height->GetInt() );
 		}
 
 		void Shutdown( void ) {
@@ -79,7 +86,6 @@ namespace XS {
 		}
 	
 		void RegisterCvars( void ) {
-			r_fov					= Cvar::Create( "r_fov", "110", Cvar::ARCHIVE );
 			r_multisample			= Cvar::Create( "r_multisample", "2", Cvar::ARCHIVE );
 			r_swapInterval			= Cvar::Create( "r_swapInterval", "0", Cvar::ARCHIVE );
 			vid_height				= Cvar::Create( "vid_height", "720", Cvar::ARCHIVE );
@@ -111,51 +117,6 @@ namespace XS {
 		void DestroyDisplay( void ) {
 			SDL_GL_DeleteContext( context );
 		}
-	
-		void InitGL( void ) {
-			glShadeModel( GL_SMOOTH );
-	
-			glClearColor( 0.5f, 0.125f, 0.125f, 1.0f );
-			glClear( GL_COLOR_BUFFER_BIT );
-			glClearDepth( 1.0f );
-			glEnable( GL_DEPTH_TEST );
-			glDepthFunc( GL_LEQUAL );
-	
-			glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST );
-		}
-	
-		static void XS_gluPerspective( GLdouble fovy, GLdouble aspect, GLdouble zNear, GLdouble zFar ) {
-			double f = 1.0 / tan(fovy * M_PI / 360);  // convert degrees to radians and divide by 2
-			double xform[16] = {
-				f / aspect, 0, 0, 0,
-				0,          f, 0, 0,
-				0,          0, (zFar + zNear)/(zFar - zNear), -1,
-				0,          0, 2*zFar*zNear/(zFar - zNear), 0
-			};
-			glMultMatrixd( xform );
-		}
-	
-		void SetViewport( const int width, const int height ) {
-			GLfloat ratio;
-	
-			ratio = (GLfloat)width / (GLfloat)height;
-	
-			glViewport( 0, 0, (GLsizei)width, (GLsizei)height );
-	
-			glMatrixMode( GL_PROJECTION );
-			glLoadIdentity();
-	
-			XS_gluPerspective( r_fov->GetFloat(), ratio, 0.1, 1000.0 );
-	
-			glMatrixMode( GL_MODELVIEW );
-			glLoadIdentity();
-		}
-	
-		static const GLfloat triangle[] = {
-			-1.0f, -1.0f, 0.0f,
-			 1.0f, -1.0f, 0.0f,
-			 0.0f,  1.0f, 0.0f,
-		};
 
 		void Update( void ) {
 			glClearColor( 0.5f, 0.125f, 0.125f, 1.0f );
@@ -163,31 +124,45 @@ namespace XS {
 	
 			glLoadIdentity();
 
-			// ugly hacks
-			static bool loaded = false;
-			static GLuint vbo;
-			static GLuint vao;
-			if ( !loaded ) {
-				glGenVertexArrays( 1, &vao );
-				glBindVertexArray( vao );
-
-				glGenBuffers( 1, &vbo );
-				glBindBuffer( GL_ARRAY_BUFFER, vbo );
-				glBufferData( GL_ARRAY_BUFFER, sizeof( triangle ), triangle, GL_STATIC_DRAW );
-				loaded = true;
+			for ( auto view = views.begin(); view != views.end(); ++view ) {
+				(*view)->PreRender();
+				for ( auto cmd = (*view)->renderCommands.begin(); cmd != (*view)->renderCommands.end(); ++cmd )
+					cmd->Execute();
+				(*view)->PostRender();
+				(*view)->renderCommands.clear();
 			}
-
-			glEnableVertexAttribArray( 0 );
-			glBindBuffer( GL_ARRAY_BUFFER, vbo );
-			glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 0, NULL );
-			glDrawArrays( GL_TRIANGLES, 0, 3 );
-			glDisableVertexAttribArray( 0 );
 
 			SDL_GL_SwapWindow( window );
 		}
 
-		void DrawQuad ( float x, float y, float w, float h, float s1, float t1, float s2, float t2, const Texture *texture ) {
-			// ...
+		void RegisterView( View *view ) {
+			views.push_back( view );
+		}
+
+		void SetView( View *view ) {
+			currentView = view;
+		}
+
+		void DrawQuad( float x, float y, float w, float h, float s1, float t1, float s2, float t2, const Texture *texture ) {
+			RenderCommand cmd;
+
+			//TODO: procedurally generated default/missing texture
+			if ( !texture )
+				return;
+
+			cmd.drawQuad.x = x / vid_width->GetInt();
+			cmd.drawQuad.y = y / vid_height->GetInt();
+			cmd.drawQuad.w = w;
+			cmd.drawQuad.h = h;
+			cmd.drawQuad.s1 = s1;
+			cmd.drawQuad.t1 = t2;
+			cmd.drawQuad.s2 = s2;
+			cmd.drawQuad.t2 = t2;
+			cmd.drawQuad.textureID = texture->id;
+
+			cmd.type = RC_DRAWQUAD;
+
+			currentView->renderCommands.push_back( cmd );
 		}
 
 	} // namespace Renderer
