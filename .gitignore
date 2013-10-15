@@ -1,4 +1,5 @@
 bin/
+.sconsign.dblite
 
 # Compiled Object files
 *.slo

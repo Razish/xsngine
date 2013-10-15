@@ -59,7 +59,10 @@ namespace XS {
 	}
 
 	File::~File() {
-		fclose( file );
+		if ( file ) {
+			fclose( file );
+			file = NULL;
+		}
 	}
 
 } // namespace XS

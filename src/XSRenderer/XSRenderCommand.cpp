@@ -73,6 +73,8 @@ namespace XS {
 			case RC_DRAWQUAD:
 				DrawQuad( &drawQuad );
 				break;
+			default:
+				break;
 			}
 		}
 

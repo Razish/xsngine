@@ -1,4 +1,5 @@
 #include "XSSystem/XSInclude.h"
+#include "XSSystem/XSPlatform.h"
 
 #include "GLee/GLee.h"
 #include "SDL2/SDL.h"

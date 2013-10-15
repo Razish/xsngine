@@ -86,6 +86,9 @@
 		#define XSINLINE inline
 	#endif
 
+	#define stricmp strcasecmp
+	#define strnicmp strncasecmp
+
 	#define PATH_SEP '/'
 
 	#if defined(__i386__)

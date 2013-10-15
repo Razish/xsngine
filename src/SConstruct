@@ -1,0 +1,74 @@
+import platform
+
+plat = platform.system()
+
+print( '\n********************************\n' )
+print( 'Configuring build environment...' )
+env = Environment()
+if env['PLATFORM'] == 'posix':
+	arch = platform.machine()
+	if ( arch != 'x86_64' ):
+		#HACK: pretend we're x86 for consistent naming schemes
+		arch = 'x86'
+#TODO: make sure windows is fine for x86/x64
+
+print( 'Building for ' + plat + '/' + platform.machine() )
+print( '\n********************************\n' )
+
+# file listing
+files = {}
+files['client'] = [
+	'XSClient/XSClient.cpp',
+	'XSClient/XSInput.cpp',
+	'XSClient/XSKeys.cpp',
+	'XSCommon/XSColours.cpp',
+	'XSCommon/XSCommand.cpp',
+	'XSCommon/XSCommon.cpp',
+	'XSCommon/XSConsole.cpp',
+	'XSCommon/XSCvar.cpp',
+	'XSCommon/XSEvent.cpp',
+	'XSCommon/XSFile.cpp',
+	'XSCommon/XSString.cpp',
+	'GLee/GLee.c',
+	'XSRenderer/XSBackend.cpp',
+	'XSRenderer/XSFont.cpp',
+	'XSRenderer/XSFramebuffer.cpp',
+	'XSRenderer/XSImagePNG.cpp',
+	'XSRenderer/XSInternalFormat.cpp',
+	'XSRenderer/XSRenderCommand.cpp',
+	'XSRenderer/XSRenderer.cpp',
+	'XSRenderer/XSShaderProgram.cpp',
+	'XSRenderer/XSTexture.cpp',
+	'XSRenderer/XSView.cpp' ]
+
+# set up libraries to link with
+libs = {}
+if plat == 'Linux':
+    libs['client'] = [ 'freetype', 'GL', 'm', 'png12', 'SDL2' ]
+else:
+    libs['client'] = [ 'OpenGL32', 'SDL2', 'SDL2main' ]
+
+# compiler options
+env['CPPPATH'] = [ '.', './freetype/' ]
+env['CPPDEFINES'] = []
+# windows/linux
+if plat == 'Linux':
+	env['CCFLAGS'] = [ '-std=c++11', '-march=k8', '-msse3', '-Wall', '-Wno-char-subscripts' ]
+else:
+	env['CCFLAGS'] = []
+# debug / release
+if int( ARGUMENTS.get( 'debug', 0 ) ):
+	env['CCFLAGS'] += [ '-g3' ]
+	env['CPPDEFINES'] += [ '_DEBUG' ]
+else:
+	env['CCFLAGS'] += [ '-O2' ]
+	env['CPPDEFINES'] += [ 'NDEBUG' ]
+
+#################
+#    TARGETS    #
+#################
+
+# client / all
+env['LIBS'] = libs['client']
+env['LIBPREFIX'] = ''
+env.Program( 'xsn'+'.'+arch, files['client'] )

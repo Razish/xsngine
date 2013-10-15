@@ -26,7 +26,6 @@ namespace XS {
 		static SDL_Window *window;
 		static SDL_GLContext context;
 
-		static Cvar *r_fov;
 		static Cvar *r_multisample;
 		static Cvar *r_swapInterval;
 		static Cvar *vid_height;
