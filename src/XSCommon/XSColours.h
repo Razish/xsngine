@@ -3,7 +3,7 @@
 namespace XS {
 
 	#define COLOUR_ESCAPE	'^'
-	#define COLOUR_BITS		0xF
+	#define COLOUR_BITS		(0xF)
 	
 	#define COLOUR_BLACK		'0'
 	#define COLOUR_GREY			'1'

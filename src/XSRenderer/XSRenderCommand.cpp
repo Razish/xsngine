@@ -10,7 +10,7 @@ namespace XS {
 
 	namespace Renderer {
 
-		static void DrawQuad( drawQuadStruct *quad ) {
+		static void DrawQuad( rcDrawQuad_t *quad ) {
 			static vector4 color = vector4( 1.0f, 1.0f, 1.0f, 1.0f );
 
 			glBindTexture( GL_TEXTURE_2D, quad->textureID );

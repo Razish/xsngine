@@ -18,25 +18,25 @@ namespace XS {
 		// this is cleared each pump. we may just want to expand
 		//	as necessary and set the head to 0 at the end of each pump
 		//	to avoid the overhead of clear()
-		static std::list<XSEvent> events;
+		static std::list<xsEvent_t> events;
 
 		// for debugging
-		static const char *eventNames[NUM_EVENTS] = {
-			"KEYEVENT",
+		static const char *eventNames[EVENT_NUM_EVENTS] = {
+			"EVENT_KEY",
 		};
 
 		void Init( void ) {
 			debug_events = Cvar::Create( "debug_events", "0", CVAR_INIT );
 		}
 
-		void Queue( Type type, XSEvent ev ) {
-			ev.time = 0; // FIXME
-			ev.type = type;
+		void Queue( eventType_t type, xsEvent_t *ev ) {
+			ev->time = 0; // FIXME
+			ev->type = type;
 
 			if ( debug_events->GetBool() ) {
 				switch( type ) {
-				case KEYEVENT:
-					Console::Print( "Event::Queue: %s (%i) key: %i, down: %i\n", eventNames[type], type, ev.keyEvent.key, ev.keyEvent.down );
+				case EVENT_KEY:
+					Console::Print( "Event::Queue: %s (%i) key: %i, down: %i\n", eventNames[type], type, ev->keyEvent.key, ev->keyEvent.down );
 					break;
 				default:
 					throw( String::Format( "Event::Queue: Unknown event %i", type ) );
@@ -44,13 +44,13 @@ namespace XS {
 				}
 			}
 
-			events.push_back( ev );
+			events.push_back( *ev );
 		}
 
 		void Pump( void ) {
 			for ( auto it=events.begin(); it != events.end(); ++it ) {
 				switch( it->type ) {
-					case KEYEVENT:
+					case EVENT_KEY:
 						Client::KeyEvent( it->keyEvent.key, it->keyEvent.down );
 						break;
 					default:

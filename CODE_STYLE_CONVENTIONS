@@ -120,9 +120,10 @@ Variables start with lower case. All consecutive words start with lower case.
 Classes and object-structs* should start with upper case, with some exceptions for common types.
 An object-struct is a struct which is treated as an object, not a POD type
 Object-structs shall only be used for the case where data encapsulation is not a goal, as default exposure is public.
-	class RenderCommand {};
+	class Font {}; // object, has font->Draw() method
+	struct RenderCommand {}; // object-struct, has cmd->Execute() method
 	struct commandContext_t {}; // POD type
-	struct vector3 {}; // object-struct, exception to the rule
+	struct vector3 {}; // object-struct, but is a common type. exception to the rule.
 
 Enums and structs that are not treated as objects (i.e. POD type) shall follow the next rule...
 
@@ -133,6 +134,7 @@ All non-primitive-esque types start with lower case and use the _t suffix to ind
 	typedef uint32_t fileHandle_t;
 
 Enumerated constants are all upper case. All consecutive words are separated by an underscore.
+Constants should generally use a shorthand prefix to avoid name clashing, e.g. IF_RGBA16F for internal texture formats
 Only the first constant may be assigned a value, enumeration will handle the rest.
 The last constant may be used to know the maximum amount of legitimate values
 
@@ -149,6 +151,16 @@ This includes literals, macros, conditional compiling
 	#define ARRAY_LEN( x ) (sizeof( (x) ) / sizeof( (*x) )) // macros
 	#define XS_LITTLE_ENDIAN // conditional compiling
 
+Preprocessor definitions shall be wrapped in parenthesis to enforce order of operations
+This includes all preprocessor definitions, not just those involving arithmetic
+	#define SOME_VALUE 32 + 32
+	int otherValue = 16 * SOME_VALUE; // (16*32) + 32
+
+	Should be...
+
+	#define SOME_VALUE (32 + 32)
+	int otherValue = 16 * SOME_VALUE; // 16 * (32 + 32)
+
 
 
 4. SCOPING / NAMESPACE
@@ -157,6 +169,8 @@ Never use 'using namespace xxx'
 This includes 'using namespace std' and 'using namespace XS'
 
 All engine code shall be encapsulated in the XS namespace, followed by the module namespace (e.g. XS::File::Read())
+
+Namespaces begin with upper case
 
 
 

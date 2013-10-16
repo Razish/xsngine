@@ -26,10 +26,10 @@ namespace XS {
 	namespace Renderer {
 
 		static FT_Library ft;
-		static std::unordered_map<const char *, font_s *> fonts;
+		static std::unordered_map<const char *, font_t *> fonts;
 		static ShaderProgram *fontProgram = NULL;
 
-		font_s::font_s( const char *name, uint16_t size ) {
+		font_t::font_t( const char *name, uint16_t size ) {
 			this->file = String::Format( "fonts/%s.ttf", name );
 			this->size = size;
 		}
@@ -38,15 +38,15 @@ namespace XS {
 			if ( FT_Init_FreeType( &ft ) )
 				throw( "Could not initialise freetype library" );
 
-			fonts["menu"] = new font_s( "menu", 48 );
+			fonts["menu"] = new font_t( "menu", 48 );
 
 			fontProgram = new ShaderProgram( "text", "text" );
 
 			for ( auto it = fonts.begin(); it != fonts.end(); ++it ) {
-				font_s *font = it->second;
+				font_t *font = it->second;
 				FT_Face face = NULL;
 
-				File file( font->file.c_str(), File::READ_BINARY );
+				File file( font->file.c_str(), FM_READ_BINARY );
 				if ( file.length == 0 ) {
 					Console::Print( "WARNING: Could not load font file '%s'\n", file.path );
 					continue;
@@ -114,7 +114,7 @@ namespace XS {
 			}
 		}
 
-		void Font::Draw( const vector2 pos, const std::string &text, const font_s *font ) {
+		void Font::Draw( const vector2 pos, const std::string &text, const font_t *font ) {
 			if ( text.empty() )
 				return;
 			//TODO: Font::Draw

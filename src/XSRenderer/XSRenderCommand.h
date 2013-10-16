@@ -4,12 +4,12 @@ namespace XS {
 
 	namespace Renderer {
 
-		enum CommandType {
+		enum renderCommandType_t {
 			RC_DRAWQUAD=0,
 			NUM_RCMDS
 		};
 
-		struct drawQuadStruct {
+		struct rcDrawQuad_t {
 			float x, y;
 			float w, h;
 			float s1, t1;
@@ -17,13 +17,11 @@ namespace XS {
 			uint32_t textureID;
 		};
 
-		class RenderCommand {
-		private:
-		public:
+		struct RenderCommand {
 			union {
-				drawQuadStruct drawQuad;
+				rcDrawQuad_t drawQuad;
 			};
-			CommandType type;
+			renderCommandType_t type;
 
 			void Execute( void );
 		};

@@ -54,7 +54,7 @@ namespace XS {
 			glGetFloatv( GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maxAnisotropy );
 		}
 
-		Texture::Texture( unsigned int width, unsigned int height, InternalFormat internalFormat, byte *data ) {
+		Texture::Texture( unsigned int width, unsigned int height, internalFormat_t internalFormat, byte *data ) {
 			size_t filterMode = GetTextureFilter( r_textureFilter->GetCString() );
 
 			glGenTextures( 1, &id );
@@ -73,9 +73,8 @@ namespace XS {
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
 
-			if ( anisotropy && r_textureAnisotropy->GetBool() ) {
+			if ( anisotropy && r_textureAnisotropy->GetBool() )
 				glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, std::min( r_textureAnisotropyMax->GetFloat(), maxAnisotropy ) );
-			}
 
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filterTable[filterMode].min );
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filterTable[filterMode].mag );

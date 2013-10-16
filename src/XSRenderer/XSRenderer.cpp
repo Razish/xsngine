@@ -1,9 +1,9 @@
 #include "XSSystem/XSInclude.h"
+#include "XSSystem/XSPlatform.h"
 
 #include "GLee/GLee.h"
 #include "SDL2/SDL.h"
 
-#include "XSSystem/XSPlatform.h"
 #include "XSCommon/XSCommon.h"
 #include "XSCommon/XSCommand.h"
 #include "XSCommon/XSConsole.h"

@@ -157,7 +157,7 @@ namespace XS {
 		byte *LoadPNG( const char *filename, uint32_t *outWidth, uint32_t *outHeight ) {
 			byte *out = NULL;
 
-			File f = File( filename, File::READ_BINARY );
+			File f = File( filename, FM_READ_BINARY );
 			if ( f.length == 0 ) {
 				Console::Print( "Could not open PNG file '%s'\n", filename );
 				return NULL;

@@ -6,7 +6,7 @@ namespace XS {
 	// XS Filesystem layer
 	//
 	//	All files are internally treated as binary files to avoid line ending conversions (i.e. \n -> \r\n)
-	//	When using non-binary file modes (e.g. File::READ) the file will be treated as text and space will be
+	//	When using non-binary file modes (e.g. FM_READ) the file will be treated as text and space will be
 	//		reserved for null terminator (i.e. file.length will be increased, file.read() will add null
 	//		terminator at buffer[length-1]
 	//
@@ -20,32 +20,30 @@ namespace XS {
 	//	TODO: restrict accessing files outside of com_path, including absolute paths and directory traversal
 	//
 	//	Example of file reading:
-	//		File f = File::Open( 'path/to.file', File::READ );
+	//		File f = File::Open( 'path/to.file', FM_READ );
 	//		char *buffer = new char[file.length];
 	//			f.Read( buffer, file.length );	// second argument is optional, defaults to file.length
 	//			// do things to buffer here
 	//		delete[] buffer;
 	//
 
+	enum fileMode_t {
+		FM_READ=0,
+		FM_READ_BINARY,
+		FM_WRITE,
+		FM_WRITE_BINARY,
+		FM_APPEND,
+		FM_NUM_MODES
+	};
+
 	class File {
-	public:
-
-		enum Mode {
-			READ=0,
-			READ_BINARY,
-			WRITE,
-			WRITE_BINARY,
-			APPEND,
-			NUM_MODES
-		};
-
 	private:
 		File(); // can not instantiate with default constructor
 
 		static Cvar *com_path;
 
 		FILE *file;
-		Mode mode;
+		fileMode_t mode;
 
 	public:
 		long length;
@@ -54,7 +52,7 @@ namespace XS {
 		static void Init( void );
 		static void GetPath( const char *gamePath, char *outPath, size_t outLen );
 
-		File( const char *gamePath, Mode mode = READ );
+		File( const char *gamePath, fileMode_t mode = FM_READ );
 		~File();
 		void Read( byte *buf, size_t len = 0U );
 		void AppendString( const char *str );

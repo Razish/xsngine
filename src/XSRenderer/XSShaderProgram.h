@@ -4,25 +4,25 @@ namespace XS {
 
 	namespace Renderer {
 
-		enum ShaderType {
-			VertexShader=0,
-			FragmentShader,
-			NUM_SHADER_TYPES
+		enum shaderType_t {
+			ST_VERTEX=0,
+			ST_FRAGMENT,
+			ST_NUM_SHADER_TYPES
 		};
 
 
 		class Shader {
 			friend class ShaderProgram;
 		private:
-			int			id;
-			char		name[XS_MAX_FILENAME];
-			ShaderType	type; // fragment/vertex
+			int				id;
+			char			name[XS_MAX_FILENAME];
+			shaderType_t	type; // fragment/vertex
 
 			Shader(){}
 			void Create( const char *path, const char *source, int shaderType );
 
 		public:
-			Shader( ShaderType type, const char *name );
+			Shader( shaderType_t type, const char *name );
 			~Shader();
 		};
 

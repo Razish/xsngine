@@ -11,12 +11,12 @@ namespace XS {
 			Texture(){}
 
 			unsigned int width, height;
-			InternalFormat internalFormat;
+			internalFormat_t internalFormat;
 
 		public:
 			static void Init( void );
 
-			Texture( unsigned int width, unsigned int height, InternalFormat internalFormat = RGBA8, byte *data = NULL );
+			Texture( unsigned int width, unsigned int height, internalFormat_t internalFormat = IF_RGBA8, byte *data = NULL );
 			~Texture();
 
 			uint32_t id;

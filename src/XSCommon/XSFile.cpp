@@ -10,12 +10,12 @@
 namespace XS {
 
 	Cvar *File::com_path;
-	static const char *modes[File::NUM_MODES] = {
-		"rb", // READ
-		"rb", // READ_BINARY
-		"wb", // WRITE
-		"wb" // WRITE_BINARY
-		"a" // APPEND
+	static const char *modes[FM_NUM_MODES] = {
+		"rb", // FM_READ
+		"rb", // FM_READ_BINARY
+		"wb", // FM_WRITE
+		"wb", // FM_WRITE_BINARY
+		"a" // FM_APPEND
 	};
 
 	void File::Init( void ) {
@@ -26,7 +26,7 @@ namespace XS {
 		String::sprintf( outPath, outLen, "%s/%s", com_path->GetCString(), gamePath );
 	}
 
-	File::File( const char *gamePath, Mode mode ) {
+	File::File( const char *gamePath, fileMode_t mode ) {
 		GetPath( gamePath, path, sizeof( path ) );
 
 		this->mode = mode;
@@ -42,7 +42,7 @@ namespace XS {
 		fseek( file, 0L, SEEK_SET );
 
 		// account for null terminator
-		if ( mode == READ )
+		if ( mode == FM_READ )
 			length++;
 	}
 
@@ -53,12 +53,12 @@ namespace XS {
 		fread( (void *)buf, 1, len, file );
 
 		// account for null terminator
-		if ( mode == READ )
+		if ( mode == FM_READ )
 			buf[len-1] = '\0';
 	}
 
 	void File::AppendString( const char *str ) {
-		if ( mode != APPEND ) {
+		if ( mode != FM_APPEND ) {
 			Console::Print( "Tried to append to file not opened with APPEND mode: %s", path );
 			return;
 		}

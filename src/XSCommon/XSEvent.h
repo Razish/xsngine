@@ -8,28 +8,28 @@
 
 namespace XS {
 
+	enum eventType_t {
+		EVENT_KEY=0,
+		EVENT_NUM_EVENTS
+	};
+
+	struct xsEvent_t {
+		// these will be set internally
+		eventType_t	type;
+		uint32_t	time;
+
+		union {
+			struct {
+				SDL_Keycode	key;
+				bool		down;
+			} keyEvent;
+		};
+	};
+
 	namespace Event {
 
-		enum Type {
-			KEYEVENT=0,
-			NUM_EVENTS
-		};
-
-		struct XSEvent {
-			// these will be set internally
-			Type	type;
-			uint32_t	time;
-
-			union {
-				struct {
-					SDL_Keycode	key;
-					bool		down;
-				} keyEvent;
-			};
-		};
-
 		void Init( void );
-		void Queue( Type type, XSEvent ev );
+		void Queue( eventType_t type, xsEvent_t *ev );
 		void Pump( void );
 
 	} // Event

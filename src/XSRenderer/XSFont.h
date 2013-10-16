@@ -4,12 +4,12 @@ namespace XS {
 
 	namespace Renderer {
 
-		struct font_s {
-			font_s() {
+		struct font_t {
+			font_t() {
 				file = "";
 				size = 24;
 			}
-			font_s( const char *name, uint16_t size );
+			font_t( const char *name, uint16_t size );
 			std::string		file;
 			uint16_t		size;
 			struct {
@@ -26,8 +26,8 @@ namespace XS {
 
 		public:
 			static void Init( void );
-			static font_s *Register( const std::string &name, uint16_t size );
-			static void Draw( const vector2 pos, const std::string &text, const font_s *font );
+			static font_t *Register( const std::string &name, uint16_t size );
+			static void Draw( const vector2 pos, const std::string &text, const font_t *font );
 		};
 
 	} // namespace Renderer

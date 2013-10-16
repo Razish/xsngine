@@ -1,9 +1,9 @@
 #include "XSSystem/XSInclude.h"
+#include "XSSystem/XSPlatform.h"
 
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_keycode.h"
 
-#include "XSSystem/XSPlatform.h"
 #include "XSCommon/XSCommon.h"
 #include "XSCommon/XSCvar.h"
 #include "XSCommon/XSEvent.h"
