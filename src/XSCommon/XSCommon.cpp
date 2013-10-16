@@ -26,11 +26,11 @@ namespace XS {
 		static Cvar *com_dedicated;
 
 		static void RegisterCvars( void ) {
-			Cvar::Create( "com_date", __DATE__, Cvar::READONLY );
+			Cvar::Create( "com_date", __DATE__, CVAR_READONLY );
 #ifdef DEDICATED
-			com_dedicated = Cvar::Create( "com_dedicated", "1", Cvar::INIT );
+			com_dedicated = Cvar::Create( "com_dedicated", "1", CVAR_INIT );
 #else
-			com_dedicated = Cvar::Create( "com_dedicated", "0", Cvar::INIT );
+			com_dedicated = Cvar::Create( "com_dedicated", "0", CVAR_INIT );
 #endif
 		}
 
@@ -45,7 +45,7 @@ namespace XS {
 #endif
 			cwd[FILENAME_MAX-1] = '\0';
 
-			Cvar::Create( "com_path", cwd, Cvar::INIT );
+			Cvar::Create( "com_path", cwd, CVAR_INIT );
 
 			// concatenate argv[] to commandLine
 			for ( int i=1; i<argc; i++ ) {

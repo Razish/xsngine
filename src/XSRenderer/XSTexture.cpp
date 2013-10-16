@@ -44,9 +44,9 @@ namespace XS {
 		}
 
 		void Texture::Init( void ) {
-			r_textureAnisotropy = Cvar::Create( "r_textureAnisotropy", "1", Cvar::ARCHIVE );
-			r_textureAnisotropyMax = Cvar::Create( "r_textureAnisotropyMax", "16.0", Cvar::ARCHIVE );
-			r_textureFilter = Cvar::Create( "r_textureFilter", "GL_LINEAR_MIPMAP_LINEAR", Cvar::ARCHIVE );
+			r_textureAnisotropy = Cvar::Create( "r_textureAnisotropy", "1", CVAR_ARCHIVE );
+			r_textureAnisotropyMax = Cvar::Create( "r_textureAnisotropyMax", "16.0", CVAR_ARCHIVE );
+			r_textureFilter = Cvar::Create( "r_textureFilter", "GL_LINEAR_MIPMAP_LINEAR", CVAR_ARCHIVE );
 
 			// get anisotropic filtering settings
 			if ( SDL_GL_ExtensionSupported( "GL_EXT_texture_filter_anisotropic" ) )

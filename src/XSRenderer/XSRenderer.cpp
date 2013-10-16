@@ -85,11 +85,11 @@ namespace XS {
 		}
 	
 		void RegisterCvars( void ) {
-			r_multisample			= Cvar::Create( "r_multisample", "2", Cvar::ARCHIVE );
-			r_swapInterval			= Cvar::Create( "r_swapInterval", "0", Cvar::ARCHIVE );
-			vid_height				= Cvar::Create( "vid_height", "720", Cvar::ARCHIVE );
-			vid_noBorder			= Cvar::Create( "vid_noBorder", "0", Cvar::ARCHIVE );
-			vid_width				= Cvar::Create( "vid_width", "1280", Cvar::ARCHIVE );
+			r_multisample			= Cvar::Create( "r_multisample", "2", CVAR_ARCHIVE );
+			r_swapInterval			= Cvar::Create( "r_swapInterval", "0", CVAR_ARCHIVE );
+			vid_height				= Cvar::Create( "vid_height", "720", CVAR_ARCHIVE );
+			vid_noBorder			= Cvar::Create( "vid_noBorder", "0", CVAR_ARCHIVE );
+			vid_width				= Cvar::Create( "vid_width", "1280", CVAR_ARCHIVE );
 		}
 	
 		void CreateDisplay( void ) {

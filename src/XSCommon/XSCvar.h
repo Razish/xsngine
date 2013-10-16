@@ -2,17 +2,15 @@
 
 namespace XS {
 
-	class Cvar {
-	public:
-		enum Flags {
-			NONE		= 0X0000,	// temporary storage
-			ARCHIVE		= 0x0001,	// will be saved to disk
-			INIT		= 0X0002,	// can only be set during initialisation (i.e. not runtime)
-			LATCH		= 0X0004,	// value will not be updated until relevant subsystem is restarted
-			READONLY	= 0X0010,	// can only be set by code
-			DEVELOPER	= 0x0020,	// can only be set in developer mode
-		};
+	// uint32_t
+	#define CVAR_NONE		(0x0000u)	// temporary storage
+	#define CVAR_ARCHIVE	(0x0001u)	// will be saved to disk
+	#define CVAR_INIT		(0x0002u)	// can only be set during initialisation (i.e. not runtime)
+	#define CVAR_LATCH		(0x0004u)	// value will not be updated until relevant subsystem is restarted
+	#define CVAR_READONLY	(0x0008u)	// can only be set by code
+	#define CVAR_DEVELOPER	(0x0010u)	// can only be set in developer mode
 
+	class Cvar {
 	private:
 		Cvar();
 		static bool initialised;
@@ -42,7 +40,7 @@ namespace XS {
 
 		// xtors
 		Cvar( const std::string &name, const std::string &value = "" );
-		static Cvar *Create( std::string name, std::string value="", uint32_t flags=NONE );
+		static Cvar *Create( std::string name, std::string value="", uint32_t flags=CVAR_NONE );
 		static Cvar *Get( const std::string &name );
 
 		// get/set

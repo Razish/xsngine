@@ -191,7 +191,7 @@ namespace XS {
 			}
 		}
 
-		void Toggle( const commandContext *context ) {
+		void Toggle( const commandContext_t *context ) {
 			visible = !visible;
 		}
 

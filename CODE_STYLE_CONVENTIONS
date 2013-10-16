@@ -1,0 +1,260 @@
+Table of contents:
+	0.	COMPILER / ENVIRONMENT ASSUMPTIONS
+	1.	SPACING / INDENTATION / LINE WRAPPING
+	2.	COMMENTS
+	3.	NAMING
+	4.	SCOPING / NAMESPACE
+	5.	C->C++: CLASSES / ITERATORS
+	6.	TYPES
+	7.	LITERALS
+	8.	FILE NAMES
+
+
+
+0.	COMPILER / ENVIRONMENT ASSUMPTIONS
+
+Do not use include guards.
+	#ifndef _MY_CLASS_H
+	#define _MY_CLASS_H
+	// ...
+	#endif // !_MY_CLASS_H
+
+	Should be...
+	
+	#pragma once
+	// ...
+
+Every file must have a trailing newline
+
+We can assume the only platforms are:
+	Win32 (x86) where XS_ARCH_WIDTH is 32
+	Win64 (x86_64) where XS_ARCH_WIDTH is 64
+	Linux32 (i386) where XS_ARCH_WIDTH is 32
+	Linux64 (x86_64) where XS_ARCH_WIDTH is 64
+
+Windows has a premade MSVC 2010 project.
+Other platforms have a SCons project, which is only guaranteed to work on Linux (32 and 64)
+
+
+
+1. SPACING / INDENTATION / LINE WRAPPING
+
+Use tabs with a width of 4
+Never indent with spaces
+
+Opening braces belong on the same line as the statement/definition, including functions and conditional expressions
+	void Function( void ) {
+	}
+	if ( x ) {
+	}
+	switch ( x ) {
+	}
+
+Pad parenthesised expressions as such...
+	for ( i=0; i<3; i++ ) {
+		if ( x )
+			Func( y );
+	}
+
+For multi-line if/else statements, the else keyword starts a new line
+	if ( x ) {
+		// ...
+	}
+	else { // <---
+		// ...
+	}
+
+Some projects wrap lines at 80 columns. This was due to UNIX terminals only supporting 80 columns.
+It is now common to see 24-27 inch monitors, but long statements/comments are easier to read if they are wrapped
+	Wrap statements at *roughly* 80 columns
+	Wrap comments at roughly 100 columns
+
+
+
+2. COMMENTS
+
+Do not over-comment code. This includes being exceedingly explicit and comment style.
+	// ================
+	// GetClientIDForName
+	// Returns: integer of the client's ID for the specified name,
+	//			or -1 if client is not found
+	// ================
+	int GetClientIDForName( const char *name ) {
+		// ...
+	}
+
+	Could simply be...
+
+	// returns -1 if client does not exist
+	int GetClientIDForName( const char *name ) {
+		// ...
+	}
+
+Recursive functions should be explicitly commented at both the point of recursion, and above the function definition
+
+Line comments should have a space at the start
+	// good
+	//bad
+
+Line comments that span multiple lines should be indented with tab for carry-on sentences
+	// line 1 starts here and
+	//	continues on here after wrapping
+	// line 2 starts here
+
+
+
+3.	NAMING
+
+Functions start with upper case. All consecutive words start with upper case.
+	void SomeFunction( void );
+	void Some_Function( void ); // BAD
+	void someFunction( void ); // BAD
+	void Somefunction( void ); // BAD
+
+Variables start with lower case. All consecutive words start with lower case.
+	int someInteger;
+	int some_integer; // BAD
+	int someinteger; // BAD
+	int SomeInteger; // BAD
+
+Classes and object-structs* should start with upper case, with some exceptions for common types.
+An object-struct is a struct which is treated as an object, not a POD type
+Object-structs shall only be used for the case where data encapsulation is not a goal, as default exposure is public.
+	class RenderCommand {};
+	struct commandContext_t {}; // POD type
+	struct vector3 {}; // object-struct, exception to the rule
+
+Enums and structs that are not treated as objects (i.e. POD type) shall follow the next rule...
+
+All non-primitive-esque types start with lower case and use the _t suffix to indicate a type
+	typedef float real; // primitive-esque, so this is fine
+	struct gameEntity_t {};
+	enum flags_t {};
+	typedef uint32_t fileHandle_t;
+
+Enumerated constants are all upper case. All consecutive words are separated by an underscore.
+Only the first constant may be assigned a value, enumeration will handle the rest.
+The last constant may be used to know the maximum amount of legitimate values
+
+	enum myEnum_t {
+		ENUM_ONE=0,
+		ENUM_TWO,
+		ENUM_THREE,
+		ENUM_MAX
+	};
+
+Preprocessor definitions are all upper case. All consecutive words are separated by an underscore.
+This includes literals, macros, conditional compiling
+	#define DLL_EXT ".dll" // literals
+	#define ARRAY_LEN( x ) (sizeof( (x) ) / sizeof( (*x) )) // macros
+	#define XS_LITTLE_ENDIAN // conditional compiling
+
+
+
+4. SCOPING / NAMESPACE
+
+Never use 'using namespace xxx'
+This includes 'using namespace std' and 'using namespace XS'
+
+All engine code shall be encapsulated in the XS namespace, followed by the module namespace (e.g. XS::File::Read())
+
+
+
+5. C->C++: CLASSES / ITERATORS
+
+Classes should avoid unnecessary one-line Get/Set methods.
+Get/Set shall only be used when there are side-effects such as announcing Cvar changes, updating a cache, etc
+
+	class X {
+	private:
+		int x;
+		// ...
+	public:
+		void SetX( int newX ) {
+			x = newX;
+		}
+		int GetX( void ) {
+			return x;
+		}
+	};
+
+	Or...
+
+	class X {
+	public:
+		int x;
+		// ...
+	};
+	X.x = 10;
+
+Iterators should always be named 'it' except for when they would alias another iterator in that scope
+
+Always use prefix increment operator on iterators for performance reasons
+	for ( /* ... */; ++it ) {}
+
+Use the 'auto' keyword when dealing with iterators
+	for ( auto it = x.begin(); it != x.end(); ++it ) {}
+
+
+
+6. TYPES
+
+Always consider 64 bit types when dealing with pointers, sizes, bit values, unsigned/signed comparisons
+	size_t bufferLen = sizeof( buffer );
+	ptrdiff_t d = p1-p2;
+	#define CONTENTS_LAVA (0x0040u)
+	uint32_t mask = CONTENTS_ENVIRONMENT & ~(CONTENTS_LAVA);
+	someInt = (int)"literal"; // can NOT store 64 bit pointers in 32 bit integers
+
+Do not typedef structs
+	typedef struct myStruct_s {} myStruct_t; // bad
+	struct myStruct_t {}; // good
+
+Avoid using enums for bit-values *in general* in favour of preprocessor definitions
+	if ( bits & (1<<ENUM_ONE) ) { // BAD, in most cases.
+	if ( bits & (1<<WP_ROCKET) ) { // acceptable, as WP_ is a list of weapons and not necessarily used for bit values
+	if ( bits & BIT_ONE ) { // good, if #define BIT_ONE (0x0001u)
+
+Use const as much as possible.
+
+USE CONST AS MUCH AS POSSIBLE!
+
+Do NOT cast away constness.
+
+Function parameters dealing with const pointers shall indicate what is being read, and what is being written
+	static void GetPath( const char *gamePath, char *outPath, size_t outLen );
+
+Use const as much as possible.
+
+
+
+7. LITERALS
+
+Always use precision specifier when dealing with floating point numbers
+	float f = 0.6f; // good
+	float f = 1.0; // BAD!
+	float f = 1.f; // BAD!
+
+Use sign specifier when defining literals to be used for bit values and such
+	#define MASK_ALL (0xFFFFFFFFU)
+
+	uint32_t Function( void ) {
+		// ...
+		return 0U;
+	}
+
+
+
+8.	FILE NAMES
+
+File names should follow this convention...
+
+	XSRenderer/XSRenderCommand.h
+	XSRenderer/XSRenderCommand.cpp
+
+	namespace XS {
+		namespace Renderer {
+			class RenderCommand {
+			};
+		}
+	}

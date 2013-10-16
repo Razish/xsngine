@@ -2,13 +2,13 @@
 
 namespace XS {
 
-	struct commandContext {
+	struct commandContext_t {
 		std::vector<std::string> args;
 	};
 
 	namespace Command {
-		
-		typedef void (*commandFunc_t)( const commandContext *context );
+
+		typedef void (*commandFunc_t)( const commandContext_t *context );
 
 		void Init( void );
 

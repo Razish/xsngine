@@ -29,7 +29,7 @@ namespace XS {
 		static const size_t numExtensionsRequired = ARRAY_LEN( extensionsRequired );
 
 		void Framebuffer::Init( void ) {
-			r_fbo = Cvar::Create( "r_fbo", "1", Cvar::ARCHIVE );
+			r_fbo = Cvar::Create( "r_fbo", "1", CVAR_ARCHIVE );
 
 			// let them disable GLSL entirely
 			if ( !r_fbo->GetBool() ) {

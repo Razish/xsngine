@@ -16,7 +16,7 @@ namespace XS {
 		static std::vector<std::string> buffer;
 
 
-		static void Cmd_SetCvar( const commandContext *context ) {
+		static void Cmd_SetCvar( const commandContext_t *context ) {
 			// must specify a cvar and a value
 			if ( context->args.size() < 2 )
 				return;
@@ -33,7 +33,7 @@ namespace XS {
 			cv->Set( value );
 		}
 
-		static void Cmd_ToggleCvar( const commandContext *context ) {
+		static void Cmd_ToggleCvar( const commandContext_t *context ) {
 			Cvar *cv = Cvar::Get( context->args[0] );
 
 			cv->Set( !cv->GetBool() );
@@ -53,7 +53,7 @@ namespace XS {
 
 		void ExecuteBuffer( void ) {
 			for ( auto it = buffer.begin(); it != buffer.end(); ++it ) {
-				commandContext context;
+				commandContext_t context;
 
 				// tokenise the arguments
 				const char delim = ' ';

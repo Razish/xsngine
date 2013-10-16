@@ -21,7 +21,7 @@ namespace XS {
 			static bool in2D = false;
 
 			static void RegisterCvars( void ) {
-				r_fov = Cvar::Create( "r_fov", "110", Cvar::ARCHIVE );
+				r_fov = Cvar::Create( "r_fov", "110", CVAR_ARCHIVE );
 			}
 
 			void Init( void ) {

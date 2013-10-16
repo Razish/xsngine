@@ -23,12 +23,11 @@
 		#define OS_STRING "win_mingw64"
 	#endif
 
-	#define XSINLINE __inline
 	#define PATH_SEP '\\'
 
 	#define ARCH_STRING "x64"
 
-	#define Q3_LITTLE_ENDIAN
+	#define XS_LITTLE_ENDIAN
 
 	#define DLL_EXT ".dll"
 
@@ -47,7 +46,6 @@
 		#define OS_STRING "win_mingw"
 	#endif
 
-	#define XSINLINE __inline
 	#define PATH_SEP '\\'
 
 	#if defined(_M_IX86) || defined(__i386__)
@@ -62,7 +60,6 @@
 #elif defined(MACOS_X) || defined(__APPLE_CC__)
 
 	#define OS_STRING "macosx"
-	#define XSINLINE inline
 	#define PATH_SEP '/'
 
 	#if defined(__ppc__)
@@ -79,12 +76,6 @@
 #elif defined(__linux__)
 
 	#define OS_STRING "linux"
-
-	#ifdef __clang__
-		#define XSINLINE static inline
-	#else
-		#define XSINLINE inline
-	#endif
 
 	#define stricmp strcasecmp
 	#define strnicmp strncasecmp
@@ -117,10 +108,6 @@
 	#error "Architecture not supported"
 #endif
 
-#if !defined(XSINLINE)
-	#error "XSINLINE not defined"
-#endif
-
 #if !defined(PATH_SEP)
 	#error "PATH_SEP not defined"
 #endif
@@ -135,4 +122,13 @@
 	#define PLATFORM_STRING OS_STRING "-" ARCH_STRING
 #else
 	#define PLATFORM_STRING OS_STRING "-" ARCH_STRING "-debug"
+#endif
+
+// architecture width
+#if UINTPTR_MAX == 0xffffffff
+	#define XS_ARCH_WIDTH 32
+#elif UINTPTR_MAX == 0xffffffffffffffff
+	#define XS_ARCH_WIDTH 64
+#else
+	#error "Could not determine architecture width"
 #endif

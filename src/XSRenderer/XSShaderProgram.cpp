@@ -36,7 +36,7 @@ namespace XS {
 		};
 
 		void ShaderProgram::Init( void ) {
-			r_glsl = Cvar::Create( "r_glsl", "1", Cvar::ARCHIVE );
+			r_glsl = Cvar::Create( "r_glsl", "1", CVAR_ARCHIVE );
 
 			// let them disable GLSL entirely
 			if ( !r_glsl->GetBool() ) {
@@ -148,7 +148,6 @@ namespace XS {
 				throw( String::Format( "Shader(): Could not open file '%s'", name ) );
 
 			char *contents = new char[file.length];
-				memset( contents, 0, file.length );
 				file.Read( (byte *)contents );
 				Create( name, contents, shaderTypes[type] );
 			delete[] contents;

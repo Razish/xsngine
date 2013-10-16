@@ -26,7 +26,7 @@ namespace XS {
 		};
 
 		void Init( void ) {
-			debug_events = Cvar::Create( "debug_events", "0", Cvar::INIT );
+			debug_events = Cvar::Create( "debug_events", "0", CVAR_INIT );
 		}
 
 		void Queue( Type type, XSEvent ev ) {

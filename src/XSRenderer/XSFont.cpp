@@ -45,7 +45,7 @@ namespace XS {
 			for ( auto it = fonts.begin(); it != fonts.end(); ++it ) {
 				font_s *font = it->second;
 				FT_Face face = NULL;
-				
+
 				File file( font->file.c_str(), File::READ_BINARY );
 				if ( file.length == 0 ) {
 					Console::Print( "WARNING: Could not load font file '%s'\n", file.path );

@@ -11,7 +11,7 @@ namespace XS {
 	bool Cvar::initialised = false;
 
 	void Cvar::LoadConfig( void ) {
-		// ...
+		//TODO: Cvar::LoadConfig
 
 		initialised = true;
 	}
@@ -20,7 +20,7 @@ namespace XS {
 		for ( auto itr=cvars.begin(); itr != cvars.end(); ++itr ) {
 			const char *name = itr->first.c_str();
 			Cvar *cv = itr->second;
-			if ( (cv->flags & ARCHIVE) && cv->modified && cv->fullString != cv->defaultStr ) {
+			if ( (cv->flags & CVAR_ARCHIVE) && cv->modified && cv->fullString != cv->defaultStr ) {
 				#ifdef _DEBUG
 					Console::Print( "Saving Cvar '%s' with value '%s'\n", name, cv->fullString.c_str() );
 				#endif
@@ -40,7 +40,7 @@ namespace XS {
 	Cvar::Cvar() {
 		cvars[name] = this;
 
-		flags = NONE;
+		flags = CVAR_NONE;
 		modified = false;
 	}
 
@@ -49,7 +49,7 @@ namespace XS {
 		cvars[name] = this;
 
 		this->name = name;
-		flags = NONE;
+		flags = CVAR_NONE;
 		modified = false;
 		Set( value, true );
 	}
@@ -57,21 +57,21 @@ namespace XS {
 	Cvar *Cvar::Create( std::string name, std::string value, uint32_t flags ) {
 		Cvar *cvar = cvars[name];
 		if ( initialised )
-			flags &= ~INIT;
+			flags &= ~CVAR_INIT;
 
 		// check for existing
 		if ( cvar ) {
 			if ( !value.empty() ) {
 				// INIT cvars should not be initialised with differing values
-				if ( cvar->flags & INIT )
-					Console::Print( "WARNING: INIT Cvar '%s' was created twice with values '%s' and '%s'\n", name.c_str(), cvar->fullString.c_str(), value.c_str() );
+				if ( cvar->flags & CVAR_INIT )
+					Console::Print( "WARNING: CVAR_INIT Cvar '%s' was created twice with values '%s' and '%s'\n", name.c_str(), cvar->fullString.c_str(), value.c_str() );
 
 				// don't initialise a cvar if it already exists/has been set
 				else if ( !cvar->modified )
 					cvar->Set( value, true );
 			}
 
-			if ( flags != NONE )
+			if ( flags != CVAR_NONE )
 				cvar->SetFlags( flags );
 
 			return cvar;
@@ -95,13 +95,13 @@ namespace XS {
 
 	void Cvar::SetFlags( uint32_t flags ) {
 		if ( initialised )
-			flags &= ~INIT;
+			flags &= ~CVAR_INIT;
 
 		this->flags = flags;
 	}
 
 	bool Cvar::Set( const char *value, bool initial ) {
-		if ( flags & READONLY )
+		if ( flags & CVAR_READONLY )
 			return false;
 
 		fullString = value;
