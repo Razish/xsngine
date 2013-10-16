@@ -11,11 +11,11 @@ namespace XS {
 
 	Cvar *File::com_path;
 	static const char *modes[File::NUM_MODES] = {
-		"r",
-		"rb",
-		"w",
-		"wb"
-		"a"
+		"rb", // READ
+		"rb", // READ_BINARY
+		"wb", // WRITE
+		"wb" // WRITE_BINARY
+		"a" // APPEND
 	};
 
 	void File::Init( void ) {
@@ -38,8 +38,12 @@ namespace XS {
 		}
 
 		fseek( file, 0L, SEEK_END );
-		length = ftell( file );
+			length = ftell( file );
 		fseek( file, 0L, SEEK_SET );
+
+		// account for null terminator
+		if ( mode == READ )
+			length++;
 	}
 
 	void File::Read( byte *buf, size_t len ) {
@@ -47,6 +51,10 @@ namespace XS {
 			len = length;
 
 		fread( (void *)buf, 1, len, file );
+
+		// account for null terminator
+		if ( mode == READ )
+			buf[len-1] = '\0';
 	}
 
 	void File::AppendString( const char *str ) {
