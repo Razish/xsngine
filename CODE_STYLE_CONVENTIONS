@@ -111,7 +111,7 @@ Functions start with upper case. All consecutive words start with upper case.
 	void someFunction( void ); // BAD
 	void Somefunction( void ); // BAD
 
-Variables start with lower case. All consecutive words start with lower case.
+Variables start with lower case. All consecutive words start with upper case.
 	int someInteger;
 	int some_integer; // BAD
 	int someinteger; // BAD
@@ -191,8 +191,9 @@ Get/Set shall only be used when there are side-effects such as announcing Cvar c
 			return x;
 		}
 	};
+	X.SetX( 10 );
 
-	Or...
+	Should be...
 
 	class X {
 	public:
