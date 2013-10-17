@@ -45,11 +45,11 @@ namespace XS {
 	}
 
 	// public
-	Cvar::Cvar( const std::string &name, const std::string &value ) {
+	Cvar::Cvar( const std::string &name, const std::string &value, uint32_t flags ) {
 		cvars[name] = this;
 
 		this->name = name;
-		flags = CVAR_NONE;
+		this->flags = flags;
 		modified = false;
 		Set( value, true );
 	}
@@ -64,7 +64,8 @@ namespace XS {
 			if ( !value.empty() ) {
 				// INIT cvars should not be initialised with differing values
 				if ( cvar->flags & CVAR_INIT )
-					Console::Print( "WARNING: CVAR_INIT Cvar '%s' was created twice with values '%s' and '%s'\n", name.c_str(), cvar->fullString.c_str(), value.c_str() );
+					Console::Print( "WARNING: CVAR_INIT Cvar '%s' was created twice with values '%s' and '%s'\n",
+						name.c_str(), cvar->fullString.c_str(), value.c_str() );
 
 				// don't initialise a cvar if it already exists/has been set
 				else if ( !cvar->modified )
@@ -93,6 +94,12 @@ namespace XS {
 		return new Cvar( name );
 	}
 
+	void Cvar::List( void ) {
+		for ( auto itr=cvars.begin(); itr != cvars.end(); ++itr ) {
+			Console::Print( "%-32s : %s\n", itr->first.c_str(), itr->second->fullString.c_str() );
+		}
+	}
+
 	void Cvar::SetFlags( uint32_t flags ) {
 		if ( initialised )
 			flags &= ~CVAR_INIT;
@@ -101,11 +108,14 @@ namespace XS {
 	}
 
 	bool Cvar::Set( const char *value, bool initial ) {
-		if ( flags & CVAR_READONLY )
+		if ( flags & CVAR_READONLY ) {
+			Console::Print( "Attempt to set read-only cvar '%s'\n", name.c_str() );
 			return false;
+		}
 
 		fullString = value;
 
+		values.clear();
 		const char delim = ' ';
 		std::vector<std::string> tokens = String::Split( value, delim );
 		for ( auto it = tokens.begin(); it != tokens.end(); ++it ) {

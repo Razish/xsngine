@@ -13,6 +13,8 @@ namespace XS {
 	class Cvar {
 	private:
 		Cvar();
+		Cvar( const std::string &name, const std::string &value = "", uint32_t flags = CVAR_NONE );
+
 		static bool initialised;
 
 		std::string name;
@@ -38,10 +40,9 @@ namespace XS {
 		static void WriteConfig( void );
 		static void Clean( void );
 
-		// xtors
-		Cvar( const std::string &name, const std::string &value = "" );
 		static Cvar *Create( std::string name, std::string value="", uint32_t flags=CVAR_NONE );
 		static Cvar *Get( const std::string &name );
+		static void List( void );
 
 		// get/set
 		void SetFlags( uint32_t flags );
