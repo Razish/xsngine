@@ -66,7 +66,8 @@ namespace XS {
 			return currentReadFramebuffer;
 		}
 
-		void Framebuffer::Blit( const Framebuffer *source, const Framebuffer *destination, int sourceWidth, int sourceHeight, int destWidth, int destHeight, unsigned int bufferBits ) {
+		void Framebuffer::Blit( const Framebuffer *source, const Framebuffer *destination, int sourceWidth,
+			int sourceHeight, int destWidth, int destHeight, unsigned int bufferBits ) {
 			if ( currentReadFramebuffer != source ) {
 				glBindFramebufferEXT( GL_READ_FRAMEBUFFER_EXT, source ? source->id : 0 );
 				currentReadFramebuffer = source;
@@ -80,12 +81,15 @@ namespace XS {
 			glBlitFramebufferEXT( sourceWidth, sourceHeight, 0, 0, destWidth, destHeight, 0, 0, bufferBits, GL_NEAREST );
 		}
 
-		void Framebuffer::BlitColor( const Framebuffer *source, const Framebuffer *destination, int sourceWidth, int sourceHeight, int destWidth, int destHeight ) {
+		void Framebuffer::BlitColor( const Framebuffer *source, const Framebuffer *destination, int sourceWidth,
+			int sourceHeight, int destWidth, int destHeight ) {
 			Blit( source, destination, sourceWidth, sourceHeight, destWidth, destHeight, GL_COLOR_BUFFER_BIT);
 		}
 
-		void Framebuffer::BlitColorAndDepth( const Framebuffer *source, const Framebuffer *destination, int sourceWidth, int sourceHeight, int destWidth, int destHeight ) {
-			Blit( source, destination, sourceWidth, sourceHeight, destWidth, destHeight, GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+		void Framebuffer::BlitColorAndDepth( const Framebuffer *source, const Framebuffer *destination, int sourceWidth,
+			int sourceHeight, int destWidth, int destHeight ) {
+			Blit( source, destination, sourceWidth, sourceHeight, destWidth, destHeight,
+				GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 		}
 
 		// instance functions

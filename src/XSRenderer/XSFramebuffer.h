@@ -21,9 +21,12 @@ namespace XS {
 			static void Cleanup( void );
 			static void BindDefault( void );
 			static const Framebuffer *GetCurrent( void );
-			static void Blit( const Framebuffer *source, const Framebuffer *destination, int sourceWidth, int sourceHeight, int destWidth, int destHeight, unsigned int bufferBits );
-			static void BlitColor( const Framebuffer *source, const Framebuffer *destination, int sourceWidth, int sourceHeight, int destWidth, int destHeight );
-			static void BlitColorAndDepth( const Framebuffer *source, const Framebuffer *destination, int sourceWidth, int sourceHeight, int destWidth, int destHeight );
+			static void Blit( const Framebuffer *source, const Framebuffer *destination, int sourceWidth,
+				int sourceHeight, int destWidth, int destHeight, unsigned int bufferBits );
+			static void BlitColor( const Framebuffer *source, const Framebuffer *destination, int sourceWidth,
+				int sourceHeight, int destWidth, int destHeight );
+			static void BlitColorAndDepth( const Framebuffer *source, const Framebuffer *destination, int sourceWidth,
+				int sourceHeight, int destWidth, int destHeight );
 
 			Framebuffer();
 			~Framebuffer();

@@ -74,12 +74,14 @@ namespace XS {
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
 
 			if ( anisotropy && r_textureAnisotropy->GetBool() )
-				glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, std::min( r_textureAnisotropyMax->GetFloat(), maxAnisotropy ) );
+				glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT,
+					std::min( r_textureAnisotropyMax->GetFloat(), maxAnisotropy ) );
 
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filterTable[filterMode].min );
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filterTable[filterMode].mag );
 
-			glTexImage2D( GL_TEXTURE_2D, 0, GetGLInternalFormat( internalFormat ), width, height, 0, GetGLFormat( internalFormat ), GetDataTypeForFormat( internalFormat ), data );
+			glTexImage2D( GL_TEXTURE_2D, 0, GetGLInternalFormat( internalFormat ), width, height, 0,
+				GetGLFormat( internalFormat ), GetDataTypeForFormat( internalFormat ), data );
 			glBindTexture( GL_TEXTURE_2D, 0 );
  		}
 

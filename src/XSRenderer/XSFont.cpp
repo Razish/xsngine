@@ -106,7 +106,8 @@ namespace XS {
 					FT_Done_Glyph( glyph );
 
 					font->glyph[c].texture = tex;
-					font->glyph[c].dimensions = vector4( (number)w, (number)h, (number)(slot->advance.x >> 6), (number)(slot->metrics.horiBearingY >> 6) );
+					font->glyph[c].dimensions = vector4( (number)w, (number)h, (number)(slot->advance.x >> 6),
+						(number)(slot->metrics.horiBearingY >> 6) );
 				}
 
 				FT_Done_Face( face );

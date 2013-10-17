@@ -39,7 +39,8 @@ namespace XS {
 		static Renderer::View view;
 
 		void Init( void ) {
-			fontTexture = new Renderer::Texture( 16*characterSize, 16*characterSize, Renderer::IF_RGBA8, Renderer::LoadPNG( "fonts/console.png" ) );
+			fontTexture = new Renderer::Texture( 16*characterSize, 16*characterSize, Renderer::IF_RGBA8,
+				Renderer::LoadPNG( "fonts/console.png" ) );
 			view.is2D = true;
 			view.width = Cvar::Get( "vid_width" )->GetInt();
 			view.height = Cvar::Get( "vid_height" )->GetInt();

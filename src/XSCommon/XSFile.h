@@ -6,14 +6,12 @@ namespace XS {
 	// XS Filesystem layer
 	//
 	//	All files are internally treated as binary files to avoid line ending conversions (i.e. \n -> \r\n)
-	//	When using non-binary file modes (e.g. FM_READ) the file will be treated as text and space will be
-	//		reserved for null terminator (i.e. file.length will be increased, file.read() will add null
-	//		terminator at buffer[length-1]
+	//	When using non-binary file modes (e.g. FM_READ) the file will be treated as text and space will be reserved for
+	//	null terminator (i.e. file.length will be increased, file.read() will add null terminator at buffer[length-1]
 	//
 	//	The only acceptable path separator is '/' for consistency between platforms
 	//
-	//	There are currently no case sensitivity rules, but lower-case is strongly recommend and may be
-	//		enforced later
+	//	There are currently no case sensitivity rules, but lower-case is strongly recommend and may be enforced later
 	//
 	//	You may only specify RELATIVE paths, not full system paths or network paths.
 	//	com_path will be prepended to any file path

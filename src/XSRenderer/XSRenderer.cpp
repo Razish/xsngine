@@ -107,7 +107,8 @@ namespace XS {
 				SDL_GL_SetAttribute( SDL_GL_MULTISAMPLESAMPLES, multisample );
 			}
 
-			window = SDL_CreateWindow( WINDOW_TITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, vid_width->GetInt(), vid_height->GetInt(), windowFlags );
+			window = SDL_CreateWindow( WINDOW_TITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+				vid_width->GetInt(), vid_height->GetInt(), windowFlags );
 			context = SDL_GL_CreateContext( window );
 
 			SDL_GL_SetSwapInterval( r_swapInterval->GetInt() );

@@ -36,7 +36,8 @@ namespace XS {
 			if ( debug_events->GetBool() ) {
 				switch( type ) {
 				case EVENT_KEY:
-					Console::Print( "Event::Queue: %s (%i) key: %i, down: %i\n", eventNames[type], type, ev->keyEvent.key, ev->keyEvent.down );
+					Console::Print( "Event::Queue: %s (%i) key: %i, down: %i\n", eventNames[type], type,
+						ev->keyEvent.key, ev->keyEvent.down );
 					break;
 				default:
 					throw( String::Format( "Event::Queue: Unknown event %i", type ) );

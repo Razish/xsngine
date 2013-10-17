@@ -82,7 +82,8 @@ namespace XS {
 					return false;
 				}
 
-				// If we need to load a non-RGB(A)8 image, colortype should be PNG_COLOR_TYPE_PALETTE or PNG_COLOR_TYPE_GRAY.
+				// If we need to load a non-RGB(A)8 image, colortype should be PNG_COLOR_TYPE_PALETTE or
+				//	PNG_COLOR_TYPE_GRAY.
 				if ( colortype != PNG_COLOR_TYPE_RGB && colortype != PNG_COLOR_TYPE_RGBA ) {
 					Console::Print( "Image is not 24-bit or 32-bit\n" );
 					return false;

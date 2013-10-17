@@ -11,16 +11,16 @@ namespace XS {
 		void	DestroyDisplay	( void );
 
 		// public
-		void	Init			( void );
-		void	Shutdown		( void );
-		void	Update			( void );
+		void	Init	( void );
+		void	Shutdown( void );
+		void	Update	( void );
 
 		// access
-		void	RegisterView	( View *view );
-		void	SetView			( View *view );
+		void	RegisterView( View *view );
+		void	SetView		( View *view );
 
 		// render commands
-		void	DrawQuad		( float x, float y, float w, float h, float s1, float t1, float s2, float t2, const Texture *texture );
+		void	DrawQuad( float x, float y, float w, float h, float s1, float t1, float s2, float t2, const Texture *texture );
 
 	} // namespace Renderer
 
