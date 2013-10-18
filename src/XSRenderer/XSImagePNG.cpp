@@ -159,7 +159,7 @@ namespace XS {
 			byte *out = NULL;
 
 			File f = File( filename, FM_READ_BINARY );
-			if ( f.length == 0 ) {
+			if ( !f.open ) {
 				Console::Print( "Could not open PNG file '%s'\n", filename );
 				return NULL;
 			}

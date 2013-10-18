@@ -17,7 +17,7 @@ namespace XS {
 	void Cvar::LoadConfig( void ) {
 		File f( DEFAULT_CONFIG, FM_READ );
 
-		if ( f.length ) {
+		if ( f.open ) {
 			char *buffer = new char[f.length];
 				f.Read( (byte *)buffer );
 				char *current = strtok( buffer, "\n" );
@@ -44,7 +44,7 @@ namespace XS {
 			const char *name = itr->first.c_str();
 			Cvar *cv = itr->second;
 			if ( (cv->flags & CVAR_ARCHIVE) && cv->modified && cv->fullString != cv->defaultStr )
-				f.AppendString( String::Format( "set %s %s\n", name, cv->fullString.c_str() ).c_str() );
+				f.AppendString( String::Format( "set %s \"%s\"\n", name, cv->fullString.c_str() ).c_str() );
 		}
 	}
 
