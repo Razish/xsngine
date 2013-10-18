@@ -20,7 +20,8 @@ namespace XS {
 		void	SetView		( View *view );
 
 		// render commands
-		void	DrawQuad( float x, float y, float w, float h, float s1, float t1, float s2, float t2, const Texture *texture );
+		void	DrawQuad( float x, float y, float w, float h, float s1, float t1, float s2, float t2,
+			const Texture *texture );
 
 	} // namespace Renderer
 

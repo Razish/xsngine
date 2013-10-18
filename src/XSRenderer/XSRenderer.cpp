@@ -149,7 +149,9 @@ namespace XS {
 			currentView = view;
 		}
 
-		void DrawQuad( float x, float y, float w, float h, float s1, float t1, float s2, float t2, const Texture *texture ) {
+		void DrawQuad( float x, float y, float w, float h, float s1, float t1, float s2, float t2,
+			const Texture *texture )
+		{
 			RenderCommand cmd;
 
 			//TODO: procedurally generated default/missing texture

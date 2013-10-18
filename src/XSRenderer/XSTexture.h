@@ -16,7 +16,8 @@ namespace XS {
 		public:
 			static void Init( void );
 
-			Texture( unsigned int width, unsigned int height, internalFormat_t internalFormat = IF_RGBA8, byte *data = NULL );
+			Texture( unsigned int width, unsigned int height, internalFormat_t internalFormat = IF_RGBA8,
+				byte *data = NULL );
 			~Texture();
 
 			uint32_t id;

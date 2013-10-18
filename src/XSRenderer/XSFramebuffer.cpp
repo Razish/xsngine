@@ -67,7 +67,8 @@ namespace XS {
 		}
 
 		void Framebuffer::Blit( const Framebuffer *source, const Framebuffer *destination, int sourceWidth,
-			int sourceHeight, int destWidth, int destHeight, unsigned int bufferBits ) {
+			int sourceHeight, int destWidth, int destHeight, unsigned int bufferBits )
+		{
 			if ( currentReadFramebuffer != source ) {
 				glBindFramebufferEXT( GL_READ_FRAMEBUFFER_EXT, source ? source->id : 0 );
 				currentReadFramebuffer = source;
@@ -82,12 +83,14 @@ namespace XS {
 		}
 
 		void Framebuffer::BlitColor( const Framebuffer *source, const Framebuffer *destination, int sourceWidth,
-			int sourceHeight, int destWidth, int destHeight ) {
+			int sourceHeight, int destWidth, int destHeight )
+		{
 			Blit( source, destination, sourceWidth, sourceHeight, destWidth, destHeight, GL_COLOR_BUFFER_BIT);
 		}
 
 		void Framebuffer::BlitColorAndDepth( const Framebuffer *source, const Framebuffer *destination, int sourceWidth,
-			int sourceHeight, int destWidth, int destHeight ) {
+			int sourceHeight, int destWidth, int destHeight )
+		{
 			Blit( source, destination, sourceWidth, sourceHeight, destWidth, destHeight,
 				GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 		}

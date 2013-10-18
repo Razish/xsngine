@@ -42,11 +42,19 @@ Other platforms have a SCons project, which is only guaranteed to work on Linux 
 Use tabs with a width of 4
 Never indent with spaces
 
-Opening braces belong on the same line as the statement/definition, including functions and conditional expressions
+Opening braces belong on the same line as the conditional expression/function definition
+The only exception to this rule is multi-line conditionals/definitions
 	void Function( void ) {
 	}
+
+	void Function( int some, float really, const char *big,
+		vector3 *argument, int list )
+	{
+	}
+
 	if ( x ) {
 	}
+
 	switch ( x ) {
 	}
 
