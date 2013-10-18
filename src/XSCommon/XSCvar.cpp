@@ -1,9 +1,11 @@
 #include "XSSystem/XSInclude.h"
 
+#include "XSCommon/XSCommon.h"
 #include "XSCommon/XSCvar.h"
 #include "XSCommon/XSString.h"
 #include "XSCommon/XSCommand.h"
 #include "XSCommon/XSConsole.h"
+#include "XSCommon/XSFile.h"
 
 namespace XS {
 
@@ -11,7 +13,18 @@ namespace XS {
 	bool Cvar::initialised = false;
 
 	void Cvar::LoadConfig( void ) {
-		//TODO: Cvar::LoadConfig
+		File f( "cfg/xsn.cfg", FM_READ );
+
+		if ( f.length ) {
+			char *buffer = new char[f.length];
+				f.Read( (byte *)buffer );
+				char *current = strtok( buffer, "\n" );
+				do {
+					Command::Append( current );
+					Command::ExecuteBuffer();
+				} while ( (current = strtok( NULL, "\n" ) ) );
+			delete[] buffer;
+		}
 
 		initialised = true;
 	}

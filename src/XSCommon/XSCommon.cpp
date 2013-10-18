@@ -104,16 +104,15 @@ int main( int argc, char **argv ) {
 		XS::Console::Print( WINDOW_TITLE " built on " __DATE__ "\n" );
 
 		// init
+		XS::File::Init();
 		XS::Command::Init(); // register commands like exec, vstr
 		XS::Common::ParseCommandLine( argc, argv );
 
 		XS::Common::RegisterCvars();
+		// execute the command line args, so config can be loaded from an overridden com_path
+		XS::Command::ExecuteBuffer();
 		XS::Cvar::LoadConfig();
 
-		// now execute the command line args
-		XS::Command::ExecuteBuffer();
-
-		XS::File::Init();
 		XS::Renderer::Init();
 
 		XS::Event::Init();

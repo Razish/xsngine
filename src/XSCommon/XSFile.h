@@ -17,10 +17,12 @@ namespace XS {
 	//	com_path will be prepended to any file path
 	//	TODO: restrict accessing files outside of com_path, including absolute paths and directory traversal
 	//
-	//	Example of file reading:
-	//		File f = File::Open( 'path/to.file', FM_READ );
-	//		char *buffer = new char[file.length];
-	//			f.Read( buffer, file.length );	// second argument is optional, defaults to file.length
+	//	Example of reading a text file:
+	//		File f( "path/to.file", FM_READ );
+	//		if ( !f.length )
+	//			return; // failed to open
+	//		char *buffer = new char[f.length];
+	//			f.Read( (byte *)buffer, f.length );	// second argument is optional, defaults to file.length
 	//			// do things to buffer here
 	//		delete[] buffer;
 	//
