@@ -116,6 +116,12 @@ namespace XS {
 
 		void DestroyDisplay( void ) {
 			SDL_GL_DeleteContext( context );
+			context = NULL;
+
+			SDL_DestroyWindow( window );
+			window = NULL;
+
+			SDL_Quit();
 		}
 
 		void Update( void ) {
