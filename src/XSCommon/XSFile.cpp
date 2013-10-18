@@ -33,17 +33,23 @@ namespace XS {
 		file = fopen( path, modes[mode] );
 
 		if ( !file ) {
-			length = 0;
+			length = 0L;
+			open = false;
 			return;
 		}
+		open = true;
+		length = 0L;
 
-		fseek( file, 0L, SEEK_END );
-			length = ftell( file );
-		fseek( file, 0L, SEEK_SET );
+		// only read/append modes care about the file length
+		if ( mode != FM_WRITE && mode != FM_WRITE_BINARY ) {
+			fseek( file, 0L, SEEK_END );
+				length = ftell( file );
+			fseek( file, 0L, SEEK_SET );
 
-		// account for null terminator
-		if ( mode == FM_READ )
-			length++;
+			// account for null terminator
+			if ( mode == FM_READ )
+				length++;
+		}
 	}
 
 	void File::Read( byte *buf, size_t len ) {
@@ -58,12 +64,7 @@ namespace XS {
 	}
 
 	void File::AppendString( const char *str ) {
-		if ( mode != FM_APPEND ) {
-			Console::Print( "Tried to append to file not opened with APPEND mode: %s", path );
-			return;
-		}
-
-		fwrite( str, 1, strlen(str), file );
+		fputs( str, file );
 	}
 
 	File::~File() {

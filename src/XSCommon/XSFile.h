@@ -19,12 +19,18 @@ namespace XS {
 	//
 	//	Example of reading a text file:
 	//		File f( "path/to.file", FM_READ );
-	//		if ( !f.length )
-	//			return; // failed to open
+	//		if ( !f.open )
+	//			return;
 	//		char *buffer = new char[f.length];
 	//			f.Read( (byte *)buffer, f.length );	// second argument is optional, defaults to file.length
 	//			// do things to buffer here
 	//		delete[] buffer;
+	//
+	//	Example of writing a text file:
+	//		File f( "path/to.file", FM_WRITE );
+	//		if ( !f.open )
+	//			return;
+	//		f.AppendString( "Herp derp\n" );
 	//
 
 	enum fileMode_t {
@@ -47,6 +53,7 @@ namespace XS {
 
 	public:
 		long length;
+		bool open;
 		char path[FILENAME_MAX];
 
 		static void Init( void );

@@ -9,20 +9,23 @@
 
 namespace XS {
 
+	#define DEFAULT_CONFIG "cfg/xsn.cfg"
+
 	static std::unordered_map<std::string, Cvar*> cvars;
 	bool Cvar::initialised = false;
 
 	void Cvar::LoadConfig( void ) {
-		File f( "cfg/xsn.cfg", FM_READ );
+		File f( DEFAULT_CONFIG, FM_READ );
 
 		if ( f.length ) {
 			char *buffer = new char[f.length];
 				f.Read( (byte *)buffer );
 				char *current = strtok( buffer, "\n" );
-				do {
+				while ( current ) {
 					Command::Append( current );
 					Command::ExecuteBuffer();
-				} while ( (current = strtok( NULL, "\n" ) ) );
+					current = strtok( NULL, "\n" );
+				}
 			delete[] buffer;
 		}
 
@@ -30,22 +33,25 @@ namespace XS {
 	}
 
 	void Cvar::WriteConfig( void ) {
+		File f( DEFAULT_CONFIG, FM_WRITE );
+
+		if ( !f.open ) {
+			Console::Print( "Failed to load default config! (" DEFAULT_CONFIG ")\n" );
+			return;
+		}
+
 		for ( auto itr=cvars.begin(); itr != cvars.end(); ++itr ) {
 			const char *name = itr->first.c_str();
 			Cvar *cv = itr->second;
-			if ( (cv->flags & CVAR_ARCHIVE) && cv->modified && cv->fullString != cv->defaultStr ) {
-				#ifdef _DEBUG
-					Console::Print( "Saving Cvar '%s' with value '%s'\n", name, cv->fullString.c_str() );
-				#endif
-			}
+			if ( (cv->flags & CVAR_ARCHIVE) && cv->modified && cv->fullString != cv->defaultStr )
+				f.AppendString( String::Format( "set %s %s\n", name, cv->fullString.c_str() ).c_str() );
 		}
 	}
 
 	void Cvar::Clean( void ) {
 		Console::Print( "Cleaning up cvars\n" );
-		for ( auto it=cvars.begin(); it != cvars.end(); ++it ) {
+		for ( auto it=cvars.begin(); it != cvars.end(); ++it )
 			delete it->second;
-		}
 		cvars.clear();
 	}
 
@@ -108,9 +114,8 @@ namespace XS {
 	}
 
 	void Cvar::List( void ) {
-		for ( auto itr=cvars.begin(); itr != cvars.end(); ++itr ) {
+		for ( auto itr=cvars.begin(); itr != cvars.end(); ++itr )
 			Console::Print( "%-32s : %s\n", itr->first.c_str(), itr->second->fullString.c_str() );
-		}
 	}
 
 	void Cvar::SetFlags( uint32_t flags ) {

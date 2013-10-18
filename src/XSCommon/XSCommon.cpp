@@ -90,7 +90,7 @@ namespace XS {
 			// indent the console for this scope
 			Indent indent(1);
 			Renderer::Shutdown();
-			// shutdown
+
 			Cvar::WriteConfig();
 			Cvar::Clean();
 		}
