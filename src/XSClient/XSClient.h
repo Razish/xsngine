@@ -3,7 +3,8 @@
 namespace XS {
 
 	namespace Client {
-	
+
+		void	Init		( void );
 		void	NetworkPump	( void );
 		void	RunFrame	( void );
 

@@ -7,6 +7,7 @@
 #include "XSCommon/XSCommon.h"
 #include "XSCommon/XSCommand.h"
 #include "XSCommon/XSConsole.h"
+#include "XSCommon/XSFile.h"
 #include "XSCommon/XSCvar.h"
 #include "XSCommon/XSVector.h"
 #include "XSRenderer/XSInternalFormat.h"
@@ -80,6 +81,8 @@ namespace XS {
 
 		void Shutdown( void ) {
 			Console::Print( "Shutting down renderer...\n" );
+
+			Font::Shutdown();
 
 			DestroyDisplay();
 		}

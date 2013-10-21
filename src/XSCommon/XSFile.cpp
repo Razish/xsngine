@@ -1,15 +1,16 @@
 #include "XSSystem/XSInclude.h"
 
-#include "XSCommon/XSCvar.h"
 #include "XSCommon/XSCommon.h"
 #include "XSCommon/XSFile.h"
+#include "XSCommon/XSCvar.h"
 #include "XSCommon/XSString.h"
 #include "XSCommon/XSCommand.h"
 #include "XSCommon/XSConsole.h"
 
 namespace XS {
 
-	Cvar *File::com_path;
+	static Cvar *com_path = NULL;
+
 	static const char *modes[FM_NUM_MODES] = {
 		"rb", // FM_READ
 		"rb", // FM_READ_BINARY

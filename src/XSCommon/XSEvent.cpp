@@ -2,10 +2,12 @@
 
 #include "SDL2/SDL_keycode.h"
 
+#include "XSCommon/XSCommon.h"
 #include "XSCommon/XSEvent.h"
 #include "XSCommon/XSCommand.h"
 #include "XSCommon/XSConsole.h"
 #include "XSCommon/XSString.h"
+#include "XSCommon/XSFile.h"
 #include "XSCommon/XSCvar.h"
 #include "XSClient/XSKeys.h"
 

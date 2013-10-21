@@ -15,8 +15,6 @@ namespace XS {
 		Cvar();
 		Cvar( const std::string &name, const std::string &value = "", uint32_t flags = CVAR_NONE );
 
-		static bool initialised;
-
 		std::string name;
 
 		// store the value in these formats
@@ -36,9 +34,10 @@ namespace XS {
 		bool modified;
 
 	public:
-		static void LoadConfig( void );
-		static void WriteConfig( void );
+		static void WriteCvarsToFile( File &f );
 		static void Clean( void );
+
+		static bool initialised;
 
 		static Cvar *Create( std::string name, std::string value="", uint32_t flags=CVAR_NONE );
 		static Cvar *Get( const std::string &name );

@@ -46,8 +46,6 @@ namespace XS {
 	private:
 		File(); // can not instantiate with default constructor
 
-		static Cvar *com_path;
-
 		FILE *file;
 		fileMode_t mode;
 

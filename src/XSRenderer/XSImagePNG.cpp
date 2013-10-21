@@ -5,8 +5,8 @@
 #include "XSCommon/XSCommon.h"
 #include "XSCommon/XSCommand.h"
 #include "XSCommon/XSConsole.h"
-#include "XSCommon/XSCvar.h"
 #include "XSCommon/XSFile.h"
+#include "XSCommon/XSCvar.h"
 #include "XSRenderer/XSImagePNG.h"
 
 namespace XS {
@@ -170,9 +170,12 @@ namespace XS {
 			f.Read( buf );
 
 			PNGFileReader r( buf );
-			if ( !r.Read( &out, outWidth, outHeight ) )
+			if ( !r.Read( &out, outWidth, outHeight ) ) {
+				delete[] buf;
 				return NULL;
+			}
 
+			delete[] buf;
 			return out;
 		}
 

@@ -7,12 +7,12 @@
 #include "freetype/ftglyph.h"
 
 #include "XSCommon/XSCommon.h"
+#include "XSCommon/XSFile.h"
 #include "XSCommon/XSCvar.h"
 #include "XSCommon/XSCommand.h"
 #include "XSCommon/XSConsole.h"
 #include "XSCommon/XSString.h"
 #include "XSCommon/XSVector.h"
-#include "XSCommon/XSFile.h"
 #include "XSRenderer/XSFont.h"
 #include "XSRenderer/XSShaderProgram.h"
 #include "XSRenderer/XSInternalFormat.h"
@@ -112,6 +112,12 @@ namespace XS {
 
 				FT_Done_Face( face );
 				delete[] contents;
+			}
+		}
+
+		void Font::Shutdown( void ) {
+			for ( auto it=fonts.begin(); it != fonts.end(); ++it ) {
+				delete it->second;
 			}
 		}
 

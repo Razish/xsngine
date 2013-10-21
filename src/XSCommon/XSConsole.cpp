@@ -13,6 +13,7 @@
 #include "XSCommon/XSString.h"
 #include "XSCommon/XSVector.h"
 #include "XSCommon/XSColours.h"
+#include "XSCommon/XSFile.h"
 #include "XSCommon/XSCvar.h"
 #include "XSCommon/XSCommand.h"
 #include "XSRenderer/XSInternalFormat.h"
@@ -48,7 +49,7 @@ namespace XS {
 		}
 
 		static void Append( const char *text, bool multiLine ) {
-			size_t len = strlen( text );
+			size_t len = strlen( text )+1;
 			size_t accumLength = 0;
 			size_t i = 0;
 			char *insert = new char[len];
@@ -62,7 +63,7 @@ namespace XS {
 					scrollAmount = std::max<int>( scrollAmount-1, 0U );
 			}
 
-			for (  i=0; i<len; i++ ) {
+			for ( i=0; i<len; i++ ) {
 				char *p = (char *)&text[i];
 
 				if ( !IsColourString( p ) && (i>0 && !IsColourString( p-1 )) )
@@ -104,7 +105,7 @@ namespace XS {
 			consoleText.push_back( insert );
 		}
 
-		void Print( std::string fmt, ... ) {
+		void Print( const std::string &fmt, ... ) {
 			size_t size = 128;
 			std::string str;
 			va_list ap;

@@ -26,6 +26,7 @@ namespace XS {
 
 		public:
 			static void Init( void );
+			static void Shutdown( void );
 			static font_t *Register( const std::string &name, uint16_t size );
 			static void Draw( const vector2 pos, const std::string &text, const font_t *font );
 		};

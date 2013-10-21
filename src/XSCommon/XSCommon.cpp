@@ -5,14 +5,15 @@
 #include "SDL2/SDL_keycode.h"
 
 #include "XSCommon/XSCommon.h"
+#include "XSCommon/XSFile.h"
 #include "XSCommon/XSCvar.h"
 #include "XSCommon/XSEvent.h"
 #include "XSCommon/XSCommand.h"
 #include "XSCommon/XSConsole.h"
 #include "XSCommon/XSString.h"
-#include "XSCommon/XSFile.h"
 #include "XSClient/XSInput.h"
 #include "XSClient/XSClient.h"
+#include "XSClient/XSKeys.h"
 #include "XSRenderer/XSInternalFormat.h"
 #include "XSRenderer/XSTexture.h"
 #include "XSRenderer/XSRenderCommand.h"
@@ -22,6 +23,9 @@
 namespace XS {
 
 	namespace Common {
+
+		#define DEFAULT_CONFIG			"cfg/xsn.cfg"
+		#define DEFAULT_CONFIG_SERVER	"cfg/xsn_server.cfg"
 
 		static Cvar *com_dedicated;
 
@@ -83,6 +87,41 @@ namespace XS {
 			}
 		}
 
+		static void LoadConfig( void ) {
+			const char *cfg = com_dedicated->GetBool() ? DEFAULT_CONFIG_SERVER : DEFAULT_CONFIG;
+			File f( cfg, FM_READ );
+
+			if ( f.open ) {
+				char *buffer = new char[f.length];
+					f.Read( (byte *)buffer );
+
+					Command::ExecuteBuffer(); // flush buffer before we issue commands
+					char *current = strtok( buffer, "\n" );
+					while ( current ) {
+						Command::Append( current );
+						Command::ExecuteBuffer();
+						current = strtok( NULL, "\n" );
+					}
+				delete[] buffer;
+			}
+
+			Cvar::initialised = true;
+		}
+
+		static void WriteConfig( void ) {
+			const char *cfg = com_dedicated->GetBool() ? DEFAULT_CONFIG_SERVER : DEFAULT_CONFIG;
+			File f( cfg, FM_WRITE );
+
+			if ( !f.open ) {
+				Console::Print( "Failed to write config! (%s)\n", cfg );
+				return;
+			}
+
+			Cvar::WriteCvarsToFile( f );
+			if ( !com_dedicated->GetBool() )
+				Client::WriteBindsToFile( f );
+		}
+
 		static void Shutdown( const char *msg ) {
 			Console::Print( "\n*** XSNGINE Shutdown: %s\n\n"
 				"Cleaning up...\n", msg );
@@ -91,7 +130,7 @@ namespace XS {
 			Indent indent(1);
 			Renderer::Shutdown();
 
-			Cvar::WriteConfig();
+			Common::WriteConfig();
 			Cvar::Clean();
 		}
 
@@ -111,7 +150,7 @@ int main( int argc, char **argv ) {
 		XS::Common::RegisterCvars();
 		// execute the command line args, so config can be loaded from an overridden com_path
 		XS::Command::ExecuteBuffer();
-		XS::Cvar::LoadConfig();
+		XS::Common::LoadConfig();
 
 		XS::Renderer::Init();
 

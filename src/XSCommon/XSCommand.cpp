@@ -1,9 +1,14 @@
 #include "XSSystem/XSInclude.h"
 
+#include "SDL2/SDL_keycode.h"
+
+#include "XSCommon/XSCommon.h"
 #include "XSCommon/XSCommand.h"
 #include "XSCommon/XSString.h"
+#include "XSCommon/XSFile.h"
 #include "XSCommon/XSCvar.h"
 #include "XSCommon/XSConsole.h"
+#include "XSClient/XSKeys.h"
 
 namespace XS {
 
@@ -17,9 +22,10 @@ namespace XS {
 
 
 		static void Cmd_SetCvar( const commandContext_t *context ) {
-			// must specify a cvar and a value
-			if ( context->args.size() < 2 )
+			if ( context->args.size() < 2 ) {
+				Console::Print( "\"set\" failed. Must specify a cvar and value\n" );
 				return;
+			}
 
 			Cvar *cv = Cvar::Get( context->args[0] );
 
@@ -43,6 +49,7 @@ namespace XS {
 			AddCommand( "set", Cmd_SetCvar );
 			AddCommand( "toggle", Cmd_ToggleCvar );
 			AddCommand( "toggleconsole", Console::Toggle );
+			AddCommand( "bind", Client::Cmd_SetBind );
 		}
 
 		// command buffer

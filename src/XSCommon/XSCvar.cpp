@@ -1,45 +1,18 @@
 #include "XSSystem/XSInclude.h"
 
 #include "XSCommon/XSCommon.h"
+#include "XSCommon/XSFile.h"
 #include "XSCommon/XSCvar.h"
 #include "XSCommon/XSString.h"
 #include "XSCommon/XSCommand.h"
 #include "XSCommon/XSConsole.h"
-#include "XSCommon/XSFile.h"
 
 namespace XS {
-
-	#define DEFAULT_CONFIG "cfg/xsn.cfg"
 
 	static std::unordered_map<std::string, Cvar*> cvars;
 	bool Cvar::initialised = false;
 
-	void Cvar::LoadConfig( void ) {
-		File f( DEFAULT_CONFIG, FM_READ );
-
-		if ( f.open ) {
-			char *buffer = new char[f.length];
-				f.Read( (byte *)buffer );
-				char *current = strtok( buffer, "\n" );
-				while ( current ) {
-					Command::Append( current );
-					Command::ExecuteBuffer();
-					current = strtok( NULL, "\n" );
-				}
-			delete[] buffer;
-		}
-
-		initialised = true;
-	}
-
-	void Cvar::WriteConfig( void ) {
-		File f( DEFAULT_CONFIG, FM_WRITE );
-
-		if ( !f.open ) {
-			Console::Print( "Failed to load default config! (" DEFAULT_CONFIG ")\n" );
-			return;
-		}
-
+	void Cvar::WriteCvarsToFile( File &f ) {
 		for ( auto itr=cvars.begin(); itr != cvars.end(); ++itr ) {
 			const char *name = itr->first.c_str();
 			Cvar *cv = itr->second;

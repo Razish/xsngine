@@ -6,6 +6,7 @@
 #include "XSCommon/XSCommand.h"
 #include "XSCommon/XSConsole.h"
 #include "XSCommon/XSCommon.h"
+#include "XSCommon/XSFile.h"
 #include "XSCommon/XSCvar.h"
 #include "XSRenderer/XSInternalFormat.h"
 #include "XSRenderer/XSTexture.h"
