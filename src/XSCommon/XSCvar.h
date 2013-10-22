@@ -34,7 +34,7 @@ namespace XS {
 		bool modified;
 
 	public:
-		static void WriteCvarsToFile( File &f );
+		static void WriteCvarsToFile( const File &f );
 		static void Clean( void );
 
 		static bool initialised;

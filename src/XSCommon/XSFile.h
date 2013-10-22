@@ -18,7 +18,7 @@ namespace XS {
 	//	TODO: restrict accessing files outside of com_path, including absolute paths and directory traversal
 	//
 	//	Example of reading a text file:
-	//		File f( "path/to.file", FM_READ );
+	//		const File f( "path/to.file", FM_READ );
 	//		if ( !f.open )
 	//			return;
 	//		char *buffer = new char[f.length];
@@ -27,7 +27,7 @@ namespace XS {
 	//		delete[] buffer;
 	//
 	//	Example of writing a text file:
-	//		File f( "path/to.file", FM_WRITE );
+	//		const File f( "path/to.file", FM_WRITE );
 	//		if ( !f.open )
 	//			return;
 	//		f.AppendString( "Herp derp\n" );
@@ -59,8 +59,8 @@ namespace XS {
 
 		File( const char *gamePath, fileMode_t mode = FM_READ );
 		~File();
-		void Read( byte *buf, size_t len = 0U );
-		void AppendString( const char *str );
+		void Read( byte *buf, size_t len = 0U ) const;
+		void AppendString( const char *str ) const;
 	};
 
 } // namespace XS

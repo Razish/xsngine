@@ -53,7 +53,7 @@ namespace XS {
 		}
 	}
 
-	void File::Read( byte *buf, size_t len ) {
+	void File::Read( byte *buf, size_t len ) const {
 		if ( len == 0 )
 			len = length;
 
@@ -64,7 +64,7 @@ namespace XS {
 			buf[len-1] = '\0';
 	}
 
-	void File::AppendString( const char *str ) {
+	void File::AppendString( const char *str ) const {
 		fputs( str, file );
 	}
 

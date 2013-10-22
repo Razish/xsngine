@@ -143,12 +143,12 @@ namespace XS {
 				throw( String::Format( "Shader(): Unknown shader type %d", type ) );
 			}
 
-			File file( path.c_str(), FM_READ );
-			if ( !file.open )
+			const File f( path.c_str(), FM_READ );
+			if ( !f.open )
 				throw( String::Format( "Shader(): Could not open file '%s'", name ) );
 
-			char *contents = new char[file.length];
-				file.Read( (byte *)contents );
+			char *contents = new char[f.length];
+				f.Read( (byte *)contents );
 				Create( name, contents, shaderTypes[type] );
 			delete[] contents;
 		}

@@ -89,7 +89,7 @@ namespace XS {
 
 		static void LoadConfig( void ) {
 			const char *cfg = com_dedicated->GetBool() ? DEFAULT_CONFIG_SERVER : DEFAULT_CONFIG;
-			File f( cfg, FM_READ );
+			const File f( cfg, FM_READ );
 
 			if ( f.open ) {
 				char *buffer = new char[f.length];
@@ -110,7 +110,7 @@ namespace XS {
 
 		static void WriteConfig( void ) {
 			const char *cfg = com_dedicated->GetBool() ? DEFAULT_CONFIG_SERVER : DEFAULT_CONFIG;
-			File f( cfg, FM_WRITE );
+			const File f( cfg, FM_WRITE );
 
 			if ( !f.open ) {
 				Console::Print( "Failed to write config! (%s)\n", cfg );

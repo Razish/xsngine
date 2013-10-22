@@ -46,17 +46,17 @@ namespace XS {
 				font_t *font = it->second;
 				FT_Face face = NULL;
 
-				File file( font->file.c_str(), FM_READ_BINARY );
-				if ( !file.open ) {
-					Console::Print( "WARNING: Could not load font file '%s'\n", file.path );
+				const File f( font->file.c_str(), FM_READ_BINARY );
+				if ( !f.open ) {
+					Console::Print( "WARNING: Could not load font file '%s'\n", f.path );
 					continue;
 				}
 
-				byte *contents = new byte[file.length];
-				memset( contents, 0, file.length );
-				file.Read( contents );
+				byte *contents = new byte[f.length];
+				memset( contents, 0, f.length );
+				f.Read( contents );
 
-				if ( FT_New_Memory_Face( ft, contents, file.length, 0, &face ) ) {
+				if ( FT_New_Memory_Face( ft, contents, f.length, 0, &face ) ) {
 					Console::Print( "WARNING: Could not register font '%s'\n", font->file.c_str() );
 					delete[] contents;
 					continue;

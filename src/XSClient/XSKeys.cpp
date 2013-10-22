@@ -195,7 +195,7 @@ namespace XS {
 			ExecuteBind( key, down );
 		}
 
-		void WriteBindsToFile( File &f ) {
+		void WriteBindsToFile( const File &f ) {
 			for ( auto itr=binds.begin(); itr != binds.end(); ++itr ) {
 				SDL_Keycode key = itr->first;
 				const std::string &cmd = itr->second;

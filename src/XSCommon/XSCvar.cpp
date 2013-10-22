@@ -12,7 +12,7 @@ namespace XS {
 	static std::unordered_map<std::string, Cvar*> cvars;
 	bool Cvar::initialised = false;
 
-	void Cvar::WriteCvarsToFile( File &f ) {
+	void Cvar::WriteCvarsToFile( const File &f ) {
 		for ( auto itr=cvars.begin(); itr != cvars.end(); ++itr ) {
 			const char *name = itr->first.c_str();
 			Cvar *cv = itr->second;
