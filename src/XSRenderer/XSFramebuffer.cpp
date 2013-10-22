@@ -121,7 +121,6 @@ namespace XS {
 
 			glFramebufferTexture2DEXT( GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT + slot, GL_TEXTURE_2D, texture->id, 0 );
 			colorTextures[slot] = texture;
-
 		}
 
 		void Framebuffer::AttachDepthTexture( const Texture *texture ) {
@@ -135,7 +134,7 @@ namespace XS {
 			stencilTexture = texture->id;
 		}
 
-		void Framebuffer::Bind( void ) {
+		void Framebuffer::Bind( void ) const {
 			if ( currentReadFramebuffer != this || currentWriteFramebuffer != this ) {
 				glBindFramebufferEXT( GL_FRAMEBUFFER_EXT, id );
 				currentReadFramebuffer	= this;
@@ -143,7 +142,7 @@ namespace XS {
 			}
 		}
 
-		void Framebuffer::Check( void ) {
+		void Framebuffer::Check( void ) const {
 			unsigned int status = glCheckFramebufferStatusEXT( GL_FRAMEBUFFER_EXT );
 
 			switch ( status ) {

@@ -23,8 +23,8 @@ namespace XS {
 
 			void Register( void );
 			void Bind( void );
-			void PreRender( void );
-			void PostRender( void );
+			void PreRender( void ) const;
+			void PostRender( void ) const;
 		};
 
 	} // namespace Renderer

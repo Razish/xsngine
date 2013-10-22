@@ -43,9 +43,7 @@ namespace XS {
 		static Cvar *Get( const std::string &name );
 		static void List( void );
 
-		// get/set
 		void SetFlags( uint32_t flags );
-		const uint32_t Flags( void ) { return flags; }
 
 		bool Set( const std::string &value, bool initial = false );
 		bool Set( const char *value, bool initial = false );
@@ -53,11 +51,11 @@ namespace XS {
 		bool Set( const float value, bool initial = false );
 		bool Set( const bool value, bool initial = false );
 
-		inline const std::string &GetString( size_t index = 0 ) { return this->values[index].str; }
-		inline const char *GetCString( size_t index = 0 ) { return this->values[index].str.c_str(); }
-		inline const int GetInt( size_t index = 0 ) { return this->values[index].integer; }
-		inline const float GetFloat( size_t index = 0 ) { return this->values[index].number; }
-		inline bool GetBool( size_t index = 0 ) { return this->values[index].boolean; }
+		inline const std::string &GetString( size_t index = 0 ) const { return this->values[index].str; }
+		inline const char *GetCString( size_t index = 0 ) const { return this->values[index].str.c_str(); }
+		inline int GetInt( size_t index = 0 ) const { return this->values[index].integer; }
+		inline float GetFloat( size_t index = 0 ) const { return this->values[index].number; }
+		inline bool GetBool( size_t index = 0 ) const { return this->values[index].boolean; }
 	};
 
 } // namespace XS

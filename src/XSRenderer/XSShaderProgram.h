@@ -10,7 +10,6 @@ namespace XS {
 			ST_NUM_SHADER_TYPES
 		};
 
-
 		class Shader {
 			friend class ShaderProgram;
 		private:
@@ -25,7 +24,6 @@ namespace XS {
 			Shader( shaderType_t type, const char *name );
 			~Shader();
 		};
-
 
 		class ProgramVariable {
 			friend class ShaderProgram;
@@ -56,8 +54,8 @@ namespace XS {
 			~ShaderProgram();
 			ShaderProgram( const char *vertexShaderName, const char *fragmentShaderName );
 			void AttachShader( Shader *shader );
-			void Link( void );
-			void Bind( void );
+			void Link( void ) const;
+			void Bind( void ) const;
 			void SetUniform1( const char *name, int i );
 			void SetUniform1( const char *name, float f );
 			void SetUniform2( const char *name, float f1, float f2 );

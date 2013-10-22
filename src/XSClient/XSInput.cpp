@@ -23,7 +23,7 @@ namespace XS {
 			SDL_SetRelativeMouseMode( SDL_TRUE );
 		}
 
-		void Input::Poll( void ) {
+		void Input::Poll( void ) const {
 			SDL_Event e;
 
 			while ( SDL_PollEvent( &e ) ) {

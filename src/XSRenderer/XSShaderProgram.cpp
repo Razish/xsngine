@@ -216,6 +216,7 @@ namespace XS {
 			delete attributes;
 		}
 
+		// will create if necessary
 		ProgramVariable *ShaderProgram::GetUniformLocation( const char *name ) {
 			ProgramVariable *variable = uniforms, *prev = NULL;
 
@@ -266,7 +267,7 @@ namespace XS {
 			}
 		}
 
-		void ShaderProgram::Link( void ) {
+		void ShaderProgram::Link( void ) const {
 			int statusCode = 0;
 
 			glLinkProgramARB( id );
@@ -278,7 +279,7 @@ namespace XS {
 			}
 		}
 
-		void ShaderProgram::Bind( void ) {
+		void ShaderProgram::Bind( void ) const {
 			if ( lastProgramUsed != this ) {
 				glUseProgramObjectARB( id );
 				lastProgramUsed = this;

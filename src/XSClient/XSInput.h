@@ -10,7 +10,7 @@ namespace XS {
 
 		public:
 			Input();
-			void Poll( void );
+			void Poll( void ) const;
 		} input;
 
 	} // namespace Client

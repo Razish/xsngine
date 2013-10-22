@@ -35,8 +35,8 @@ namespace XS {
 			void AttachDepthStencilTexture( const Texture *texture );
 			void AttachDepthRenderbuffer( unsigned int renderbufferId );
 			void AttachStencilRenderbuffer( unsigned int renderbufferId );
-			void Bind( void );
-			void Check( void );
+			void Bind( void ) const;
+			void Check( void ) const;
 		};
 
 	} // namespace Renderer

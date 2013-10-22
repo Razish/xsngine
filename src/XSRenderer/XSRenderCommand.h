@@ -23,7 +23,7 @@ namespace XS {
 			};
 			renderCommandType_t type;
 
-			void Execute( void );
+			void Execute( void ) const;
 		};
 
 	} // namespace Renderer

@@ -35,6 +35,6 @@ namespace XS {
 		void Queue( eventType_t type, xsEvent_t *ev );
 		void Pump( void );
 
-	} // Event
+	} // namespace Event
 
-} // XS
+} // namespace XS

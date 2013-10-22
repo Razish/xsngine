@@ -12,7 +12,7 @@ namespace XS {
 
 	namespace Renderer {
 
-		void View::PreRender( void ) {
+		void View::PreRender( void ) const {
 			// set up 2d/3d perspective
 			if ( is2D )
 				Backend::Begin2D( width, height );
@@ -20,7 +20,7 @@ namespace XS {
 				Backend::Begin3D( width, height );
 		}
 
-		void View::PostRender( void ) {
+		void View::PostRender( void ) const {
 			// ...
 		}
 

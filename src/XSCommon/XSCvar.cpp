@@ -32,7 +32,7 @@ namespace XS {
 	Cvar::Cvar() {
 		cvars[name] = this;
 
-		flags = CVAR_NONE;
+		SetFlags( CVAR_NONE );
 		modified = false;
 	}
 
@@ -41,7 +41,7 @@ namespace XS {
 		cvars[name] = this;
 
 		this->name = name;
-		this->flags = flags;
+		SetFlags( flags );
 		modified = false;
 		Set( value, true );
 	}
