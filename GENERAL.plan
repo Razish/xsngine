@@ -1,0 +1,35 @@
+what does do about sound backend?? THIS IS BROKEN
+networking raknet library? or roll our own?
+video - bother at all?
+scripting - necessary? just use native code
+
+MAIN LOOP
+	input poll
+		queue events
+		generate keystates
+		generate movement commands
+	pump events (key events...)
+	execute command buffer
+
+	run server frame
+	pump server networking (snapshots)
+	pump events (nothing at the moment)
+	execute buffer (server frame may have appended commands)
+
+	pump client networking (movement commands)
+		1 movement command per client frame. look into semi-fixed timestep integration (gafferongames)
+	run client frame
+		process server updates
+		simulate local entities
+		movement prediction (movement commands have been generated)
+		draw game view
+			set up renderer view (3d) and queue render commands
+		draw HUD
+			set up hud view (2d) and queue render commands
+		draw console (move this out of client? maybe server should just use stdin/stdout)
+			set up console view, or hijack hud/overlay view?
+			queue render commands
+
+	execute render commands
+		foreach view
+			foreach command

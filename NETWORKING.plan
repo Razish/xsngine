@@ -1,0 +1,21 @@
+CLIENT FRAME
+	Client creates input command
+		has access to keystates -> create trinary move[3], buttons
+	delta encode input command
+	add to output batch
+		pumped at end of each frame if criteria is met
+		might buffer multiple commands into a packet, reduce udp overhead?
+		i recall carmack saying this is not necessary, especially today
+
+enum buttons_e {
+	BUTTON_ATTACK,
+	BUTTON_ALT_ATTACK,
+	BUTTON_USE,
+	// ...?!
+}
+
+struct inputCommand_t {
+	byte		buttons; // not keystates, hand-crafted buttons
+	vector3		angles; // or use shorts like iD Tech 3
+	byte		move[3]; // -1, 0, 1 movement in each axis
+}
