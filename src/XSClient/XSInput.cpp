@@ -65,6 +65,8 @@ namespace XS {
 					break;
 				}
 			}
+
+			//TODO: movement command generation?
 		}
 
 	} // namespace Client

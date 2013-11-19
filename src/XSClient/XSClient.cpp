@@ -22,6 +22,13 @@ namespace XS {
 		}
 
 		void RunFrame( void ) {
+			// process server updates
+			// simulate local entities
+			// movement prediction (movement commands have been generated)
+			// draw game view
+			// draw HUD
+
+			// draw console
 			Console::Display();
 		}
 

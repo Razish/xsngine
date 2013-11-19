@@ -20,6 +20,20 @@ namespace XS {
 		// command buffer
 		static std::vector<std::string> buffer;
 
+		static void Cmd_PrintCvar( const commandContext_t *context ) {
+			if ( context->args.size() < 1 ) {
+				Console::Print( "\"print\" failed. Must specify at-least one cvar\n" );
+				return;
+			}
+
+			for ( auto it=context->args.begin(); it!=context->args.end(); ++it ) {
+				const Cvar *cv = Cvar::Get( *it );
+				if ( cv )
+					Console::Print( "%s: \"%s\"\n", it->c_str(), cv->GetFullCString() );
+				else
+					Console::Print( "%s: does not exist\n", it->c_str() );
+			}
+		}
 
 		static void Cmd_SetCvar( const commandContext_t *context ) {
 			if ( context->args.size() < 2 ) {
@@ -27,7 +41,7 @@ namespace XS {
 				return;
 			}
 
-			Cvar *cv = Cvar::Get( context->args[0] );
+			Cvar *cv = Cvar::Create( context->args[0] );
 
 			size_t size = context->args.size();
 			std::string value;
@@ -46,10 +60,11 @@ namespace XS {
 		}
 
 		void Init( void ) {
+			AddCommand( "bind", Client::Cmd_SetBind );
+			AddCommand( "print", Cmd_PrintCvar );
 			AddCommand( "set", Cmd_SetCvar );
 			AddCommand( "toggle", Cmd_ToggleCvar );
 			AddCommand( "toggleconsole", Console::Toggle );
-			AddCommand( "bind", Client::Cmd_SetBind );
 		}
 
 		// command buffer

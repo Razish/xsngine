@@ -15,38 +15,21 @@ if env['PLATFORM'] == 'posix':
 print( 'Building for ' + plat + '/' + platform.machine() )
 print( '\n********************************\n' )
 
-# file listing
-files = {}
-files['client'] = [
-	'XSClient/XSClient.cpp',
-	'XSClient/XSInput.cpp',
-	'XSClient/XSKeys.cpp',
-	'XSCommon/XSColours.cpp',
-	'XSCommon/XSCommand.cpp',
-	'XSCommon/XSCommon.cpp',
-	'XSCommon/XSConsole.cpp',
-	'XSCommon/XSCvar.cpp',
-	'XSCommon/XSEvent.cpp',
-	'XSCommon/XSFile.cpp',
-	'XSCommon/XSString.cpp',
-	'GLee/GLee.c',
-	'XSRenderer/XSBackend.cpp',
-	'XSRenderer/XSFont.cpp',
-	'XSRenderer/XSFramebuffer.cpp',
-	'XSRenderer/XSImagePNG.cpp',
-	'XSRenderer/XSInternalFormat.cpp',
-	'XSRenderer/XSRenderCommand.cpp',
-	'XSRenderer/XSRenderer.cpp',
-	'XSRenderer/XSShaderProgram.cpp',
-	'XSRenderer/XSTexture.cpp',
-	'XSRenderer/XSView.cpp' ]
+# files: client
+files  = [ 'XSClient/XSClient.cpp', 'XSClient/XSInput.cpp', 'XSClient/XSKeys.cpp' ]
+# files: common
+files += [ 'XSCommon/XSColours.cpp', 'XSCommon/XSCommand.cpp', 'XSCommon/XSCommon.cpp', 'XSCommon/XSConsole.cpp',
+	'XSCommon/XSCvar.cpp', 'XSCommon/XSEvent.cpp', 'XSCommon/XSFile.cpp', 'XSCommon/XSString.cpp' ]
+# files: renderer
+files += [ 'GLee/GLee.c', 'XSRenderer/XSBackend.cpp', 'XSRenderer/XSFont.cpp', 'XSRenderer/XSFramebuffer.cpp',
+	'XSRenderer/XSImagePNG.cpp', 'XSRenderer/XSInternalFormat.cpp', 'XSRenderer/XSRenderCommand.cpp',
+	'XSRenderer/XSRenderer.cpp', 'XSRenderer/XSShaderProgram.cpp', 'XSRenderer/XSTexture.cpp', 'XSRenderer/XSView.cpp' ]
 
 # set up libraries to link with
-libs = {}
 if plat == 'Linux':
-    libs['client'] = [ 'freetype', 'GL', 'm', 'png12', 'SDL2' ]
+    libs = [ 'freetype', 'GL', 'm', 'png12', 'SDL2' ]
 else:
-    libs['client'] = [ 'OpenGL32', 'SDL2', 'SDL2main' ]
+    libs = [ 'OpenGL32', 'SDL2', 'SDL2main' ]
 
 # compiler options
 env['CPPPATH'] = [ '.', './freetype/' ]
@@ -64,11 +47,11 @@ else:
 	env['CCFLAGS'] += [ '-O2' ]
 	env['CPPDEFINES'] += [ 'NDEBUG' ]
 
-#################
+# # # # # # # # #
 #    TARGETS    #
-#################
+# # # # # # # # #
 
 # client / all
-env['LIBS'] = libs['client']
+env['LIBS'] = libs
 env['LIBPREFIX'] = ''
-env.Program( 'xsn'+'.'+arch, files['client'] )
+env.Program( 'xsn'+'.'+arch, files )

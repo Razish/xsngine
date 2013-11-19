@@ -12,12 +12,19 @@ namespace XS {
 	static std::unordered_map<std::string, Cvar*> cvars;
 	bool Cvar::initialised = false;
 
-	void Cvar::WriteCvarsToFile( const File &f ) {
-		for ( auto itr=cvars.begin(); itr != cvars.end(); ++itr ) {
-			const char *name = itr->first.c_str();
-			Cvar *cv = itr->second;
+	void Cvar::WriteCvars( std::string &str ) {
+		for ( auto it=cvars.begin(); it != cvars.end(); ++it ) {
+			const char *name = it->first.c_str();
+			Cvar *cv = it->second;
+			if ( !cv ) {
+				// shouldn't happen
+				#ifdef _DEBUG
+					Console::Print( "WriteCvars: NULL cvar '%s'\n", it->first.c_str() );
+				#endif
+				continue;
+			}
 			if ( (cv->flags & CVAR_ARCHIVE) && cv->modified && cv->fullString != cv->defaultStr )
-				f.AppendString( String::Format( "set %s \"%s\"\n", name, cv->fullString.c_str() ).c_str() );
+				str += String::Format( "set %s \"%s\"\n", name, cv->fullString.c_str() );
 		}
 	}
 
@@ -83,7 +90,7 @@ namespace XS {
 		if ( cv )
 			return cv;
 
-		return new Cvar( name );
+		return NULL; //new Cvar( name );
 	}
 
 	void Cvar::List( void ) {

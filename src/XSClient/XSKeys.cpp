@@ -21,6 +21,8 @@ namespace XS {
 			SDL_Keycode keycode;
 		};
 
+		// map xsn keynames to SDL keycodes
+		//TODO: unordered map?
 		static const keyMap_t keymap[] = {
 			{ "RETURN",			SDLK_RETURN },
 			{ "ESCAPE",			SDLK_ESCAPE },
@@ -156,7 +158,7 @@ namespace XS {
 			}
 
 			// join all args, so we can do /bind x command argument
-			size_t size = context->args.size();
+			const size_t size = context->args.size();
 			std::string value;
 			for ( size_t i=1; i<size; i++ ) {
 				value += context->args[i];
@@ -171,8 +173,8 @@ namespace XS {
 			const std::string &cmd = binds[key];
 
 			if ( cmd.empty() ) {
-				if ( down )
-					Console::Print( "ExecuteBind: '%s' (%d) is not bound\n", GetNameForKeycode( key ), key );
+			//	if ( down )
+			//		Console::Print( "ExecuteBind: '%s' (%d) is not bound\n", GetNameForKeycode( key ), key );
 				return;
 			}
 
@@ -195,12 +197,12 @@ namespace XS {
 			ExecuteBind( key, down );
 		}
 
-		void WriteBindsToFile( const File &f ) {
+		void WriteBinds( std::string &str ) {
 			for ( auto itr=binds.begin(); itr != binds.end(); ++itr ) {
 				SDL_Keycode key = itr->first;
 				const std::string &cmd = itr->second;
 				if ( !cmd.empty() )
-					f.AppendString( String::Format( "bind %s \"%s\"\n", GetNameForKeycode( key ), cmd.c_str() ).c_str() );
+					str += String::Format( "bind %s \"%s\"\n", GetNameForKeycode( key ), cmd.c_str() );
 			}
 		}
 

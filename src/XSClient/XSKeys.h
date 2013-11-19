@@ -8,7 +8,7 @@ namespace XS {
 
 		void KeyEvent			( SDL_Keycode key, bool down );
 		void Cmd_SetBind		( const commandContext_t *context );
-		void WriteBindsToFile	( const File &f );
+		void WriteBinds			( std::string &str );
 
 	} // namespace Client
 

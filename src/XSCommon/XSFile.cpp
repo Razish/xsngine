@@ -20,7 +20,7 @@ namespace XS {
 	};
 
 	void File::Init( void ) {
-		com_path = Cvar::Get( "com_path" );
+		com_path = Cvar::Create( "com_path", "", CVAR_INIT );
 	}
 
 	void File::GetPath( const char *gamePath, char *outPath, size_t outLen ) {

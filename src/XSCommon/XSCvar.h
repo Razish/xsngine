@@ -8,7 +8,6 @@ namespace XS {
 	#define CVAR_INIT		(0x0002u)	// can only be set during initialisation (i.e. not runtime)
 	#define CVAR_LATCH		(0x0004u)	// value will not be updated until relevant subsystem is restarted
 	#define CVAR_READONLY	(0x0008u)	// can only be set by code
-	#define CVAR_DEVELOPER	(0x0010u)	// can only be set in developer mode
 
 	class Cvar {
 	private:
@@ -34,7 +33,7 @@ namespace XS {
 		bool modified;
 
 	public:
-		static void WriteCvarsToFile( const File &f );
+		static void WriteCvars( std::string &str );
 		static void Clean( void );
 
 		static bool initialised;
@@ -53,6 +52,8 @@ namespace XS {
 
 		inline const std::string &GetString( size_t index = 0 ) const { return this->values[index].str; }
 		inline const char *GetCString( size_t index = 0 ) const { return this->values[index].str.c_str(); }
+		inline const std::string &GetFullString( void ) const { return this->fullString; }
+		inline const char *GetFullCString( void ) const { return this->fullString.c_str(); }
 		inline int GetInt( size_t index = 0 ) const { return this->values[index].integer; }
 		inline float GetFloat( size_t index = 0 ) const { return this->values[index].number; }
 		inline bool GetBool( size_t index = 0 ) const { return this->values[index].boolean; }

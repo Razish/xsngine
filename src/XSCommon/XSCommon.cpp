@@ -31,11 +31,7 @@ namespace XS {
 
 		static void RegisterCvars( void ) {
 			Cvar::Create( "com_date", __DATE__, CVAR_READONLY );
-#ifdef DEDICATED
-			com_dedicated = Cvar::Create( "com_dedicated", "1", CVAR_INIT );
-#else
 			com_dedicated = Cvar::Create( "com_dedicated", "0", CVAR_INIT );
-#endif
 		}
 
 		static void ParseCommandLine( int argc, char **argv ) {
@@ -108,18 +104,32 @@ namespace XS {
 			Cvar::initialised = true;
 		}
 
-		static void WriteConfig( void ) {
-			const char *cfg = com_dedicated->GetBool() ? DEFAULT_CONFIG_SERVER : DEFAULT_CONFIG;
-			const File f( cfg, FM_WRITE );
+		static void WriteConfig( const char *cfg = NULL ) {
+			std::string str = "";
+			Cvar::WriteCvars( str );
+			if ( !com_dedicated->GetBool() )
+				Client::WriteBinds( str );
 
+			// default config if none specified
+			if ( !cfg ) {
+				cfg = com_dedicated->GetBool() ? DEFAULT_CONFIG_SERVER : DEFAULT_CONFIG;
+			}
+
+			const File f( cfg, FM_WRITE );
 			if ( !f.open ) {
 				Console::Print( "Failed to write config! (%s)\n", cfg );
 				return;
 			}
 
-			Cvar::WriteCvarsToFile( f );
-			if ( !com_dedicated->GetBool() )
-				Client::WriteBindsToFile( f );
+			f.AppendString( str.c_str() );
+		}
+
+		static void Cmd_WriteConfig( const commandContext_t *context ) {
+			const char *cfg = NULL;
+			if ( context->args.size() )
+				 cfg = context->args[0].c_str();
+
+			WriteConfig( cfg );
 		}
 
 		static void Shutdown( const char *msg ) {
@@ -145,6 +155,7 @@ int main( int argc, char **argv ) {
 		// init
 		XS::File::Init();
 		XS::Command::Init(); // register commands like exec, vstr
+		XS::Command::AddCommand( "writeconfig", XS::Common::Cmd_WriteConfig );
 		XS::Common::ParseCommandLine( argc, argv );
 
 		XS::Common::RegisterCvars();
