@@ -95,7 +95,7 @@ namespace XS {
 						}
 					}
 
-					String::sprintf( tempMessage, len, "%c%c%s", COLOUR_ESCAPE, lastColour, text + i );
+					String::FormatBuffer( tempMessage, len, "%c%c%s", COLOUR_ESCAPE, lastColour, text + i );
 					Append( tempMessage, true );
 					return;
 				}

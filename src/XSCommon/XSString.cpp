@@ -29,7 +29,8 @@ namespace XS {
 			dst[len-1] = 0;
 		}
 
-		int sprintf( char *dst, size_t len, const char *fmt, ... ) {
+		// safe sprintf-like
+		int FormatBuffer( char *dst, size_t len, const char *fmt, ... ) {
 			va_list ap;
 
 			va_start( ap, fmt );
@@ -37,9 +38,71 @@ namespace XS {
 			va_end( ap );
 
 			if ( outLen >= (signed)len )
-				throw( String::Format( "sprintf: Output length %d too short, requires %d bytes.", len, outLen+1 ) );
+				throw( String::Format( "FormatBuffer: Output length %d too short, requires %d bytes.", len, outLen+1 ) );
 
 			return outLen;
+		}
+
+		// strncmp
+		int CompareCase( const char *s1, const char *s2, size_t len ) {
+			// bail early on NULL strings
+			if ( !s1 ) {
+				if ( !s2 )
+					return 0;
+				else
+					return -1;
+			}
+			else if ( !s2 )
+				return 1;
+
+			int c1, c2;
+			do {
+				// strings considered equal if len reaches 0
+				if ( !len-- )
+					return 0;
+
+				c1 = *s1++;
+				c2 = *s2++;
+
+				if ( c1 != c2 )
+					return (c1 < c2) ? -1 : 1;
+			} while ( c1 );
+
+			return 0;
+		}
+
+		// stricmpn
+		int Compare( const char *s1, const char *s2, size_t len ) {
+			// bail early on NULL strings
+			if ( !s1 ) {
+				if ( !s2 )
+					return 0;
+				else
+					return -1;
+			}
+			else if ( !s2 )
+				return 1;
+
+			int c1, c2;
+			do {
+				// strings considered equal if len reaches 0
+				if ( !len-- )
+					return 0;
+
+				c1 = *s1++;
+				c2 = *s2++;
+
+				if ( c1 != c2 ) {
+					// convert to uppercase
+					if ( c1 >= 'a' && c1 <= 'z' ) c1 -= ('a' - 'A');
+					if ( c2 >= 'a' && c2 <= 'z' ) c2 -= ('a' - 'A');
+
+					if ( c1 != c2 )
+						return (c1 < c2) ? -1 : 1;
+				}
+			} while ( c1 );
+
+			return 0;
 		}
 
 		// by Erik Aronesty http://stackoverflow.com/a/8098080

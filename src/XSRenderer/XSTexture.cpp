@@ -7,6 +7,7 @@
 #include "XSCommon/XSCommon.h"
 #include "XSCommon/XSFile.h"
 #include "XSCommon/XSCvar.h"
+#include "XSCommon/XSString.h"
 #include "XSRenderer/XSInternalFormat.h"
 #include "XSRenderer/XSTexture.h"
 #include "XSRenderer/XSRenderCommand.h"
@@ -38,7 +39,7 @@ namespace XS {
 		static const size_t numFilters = ARRAY_LEN( filterTable );
 		static size_t GetTextureFilter( const char *string ) {
 			for ( size_t filter=0; filter<numFilters; filter++ ) {
-				if ( !stricmp( string, filterTable[filter].name ) )
+				if ( !String::Compare( string, filterTable[filter].name ) )
 					return filter;
 			}
 			return 0;

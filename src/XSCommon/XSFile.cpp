@@ -24,7 +24,7 @@ namespace XS {
 	}
 
 	void File::GetPath( const char *gamePath, char *outPath, size_t outLen ) {
-		String::sprintf( outPath, outLen, "%s/%s", com_path->GetCString(), gamePath );
+		String::FormatBuffer( outPath, outLen, "%s/%s", com_path->GetCString( ), gamePath );
 	}
 
 	File::File( const char *gamePath, fileMode_t mode ) {

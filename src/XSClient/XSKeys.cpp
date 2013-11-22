@@ -127,7 +127,7 @@ namespace XS {
 			size_t i = 0;
 
 			for ( i=0, km = keymap; i<keymapSize; i++, km++ ) {
-				if ( !stricmp( name, km->name ) )
+				if ( !String::Compare( name, km->name ) )
 					return km->keycode;
 			}
 			return SDLK_UNKNOWN;

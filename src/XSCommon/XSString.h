@@ -5,9 +5,11 @@ namespace XS {
 	namespace String {
 
 		// C string manipulation
-		void						 Concatenate( char *dst, size_t len, const char *src );
-		void						 Copy		( char *dst, const char *src, size_t len );
-		int							sprintf		( char *dst, size_t len, const char *fmt, ... );
+		void						 Concatenate	( char *dst, size_t len, const char *src );
+		void						 Copy			( char *dst, const char *src, size_t len );
+		int							 FormatBuffer	( char *dst, size_t len, const char *fmt, ... );
+		int							 CompareCase	( const char *s1, const char *s2, size_t len = 4096 );
+		int							 Compare		( const char *s1, const char *s2, size_t len = 4096 );
 
 		// std::string manipulation
 		std::string					 Format		( const std::string fmt, ... );
