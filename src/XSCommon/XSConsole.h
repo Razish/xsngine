@@ -16,9 +16,9 @@ namespace XS {
 	class Indent {
 	private:
 		Indent(){}
-		int level;
+		unsigned int level;
 	public:
-		Indent( int level ) { this->level = level; Console::Indent( this->level ); }
+		Indent( unsigned int level ) { this->level = level; Console::Indent( this->level ); }
 		~Indent() { Console::Indent( -level ); }
 	};
 

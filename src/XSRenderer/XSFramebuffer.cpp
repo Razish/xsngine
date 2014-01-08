@@ -113,8 +113,8 @@ namespace XS {
 			glDeleteFramebuffersEXT( 1, &id );
 		}
 
-		void Framebuffer::AttachColorTexture( const Texture *texture, unsigned int slot ) {
-			if ( slot < 0 || slot >= MAX_FBO_COLOR_TEXTURES ) {
+		void Framebuffer::AttachColorTexture( const Texture *texture, size_t slot ) {
+			if ( slot >= MAX_FBO_COLOR_TEXTURES ) {
 				Console::Print( "Invalid slot number given (%d), valid range is 0 - %d", slot, MAX_FBO_COLOR_TEXTURES-1 );
 				return;
 			}

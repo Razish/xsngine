@@ -199,8 +199,6 @@ namespace XS {
 
 		void Indent( int level ) {
 			indentation += level;
-			if ( indentation < 0 )
-				indentation = 0;
 		}
 
 	} // namespace Console

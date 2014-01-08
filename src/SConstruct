@@ -42,16 +42,25 @@ files += [ 'GLee/GLee.c', 'XSRenderer/XSBackend.cpp', 'XSRenderer/XSFont.cpp', '
 if plat == 'Linux':
 	libs = [ 'freetype', 'GL', 'm', 'png12', 'SDL2' ]
 elif plat == 'Windows':
+	# windows libs are in e.g. "../lib/x86/libpng16d.lib" for 32 bit debug build of libpng
 	env['LIBPATH'] = '#/../lib/' + arch + '/'
 	libs = [ 'OpenGL32', 'SDL2', 'SDL2main', 'freetype250d', 'zlibd', 'libpng16d' ]
 
 # compiler options
-env['CPPPATH'] = [ '.', './freetype/', './libpng/', './zlib/' ]
-env['CPPDEFINES'] = []
-# windows/linux
+env['CPPPATH'] = [ '.', './freetype/' ]
+if plat == 'Windows':
+	env['CPPPATH'] = [ './libpng/', './zlib/' ]
+env['CPPDEFINES'] = [ 'XS_ARCH_WIDTH='+str(bits), 'ARCH_STRING=\\"'+arch+'\\"' ]
+
+# tool-specific flags
 if plat == 'Linux':
-	env['CCFLAGS'] = [ '-std=c++11', '-march=k8', '-msse3', '-Wall', '-Wno-char-subscripts' ]
+	# assume gcc/g++
+	env['CCFLAGS'] = [ '-std=c++11', '-msse3', '-Wall', '-Wextra', '-Wno-char-subscripts' ]
+	# this may not be necessary
+	#if bits == 32:
+	#	env['CCFLAGS'] += [ '-m32' ]
 elif plat == 'Windows':
+	# assume msvc
 	env['CCFLAGS'] = [ '/Gm', '/GS', '/Zc:wchar_t', '/WX-', '/RTC1', '/MDd', '/EHsc', '/nologo', '/W4', '/wd"4100"', '/wd"4127"', '/wd"4996"' ]
 	env['LINKFLAGS'] = [ '/SUBSYSTEM:WINDOWS','/MACHINE:'+arch ]
 	env['CPPDEFINES'] += [ '_CRT_SECURE_NO_WARNINGS', 'WIN32', '_WINDOWS' ]
