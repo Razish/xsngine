@@ -1,4 +1,18 @@
+#
+# xsngine SCons project file
+# written by Raz0r
+#
+# options:
+#	debug		generate debug information
+#	force32		force 32 bit target when on 64 bit machine
+#	analyse		run static analysis
+#
+# example:
+#	scons debug=1 force32=1
+#
+
 import platform
+import os
 
 plat = platform.system() # Windows or Linux
 try:
@@ -10,6 +24,13 @@ arch = None # platform-specific, set manually
 print( '\n********************************\n' )
 print( 'Configuring build environment...' )
 env = Environment()
+
+env['ENV']['TERM'] = os.environ['TERM']
+
+analyse = int( ARGUMENTS.get( 'analyse', 0 ) )
+force32 = int( ARGUMENTS.get( 'force32', 0 ) )
+if force32:
+	bits = 32
 
 if bits == 32:
 	if plat == 'Windows':
@@ -55,10 +76,15 @@ env['CPPDEFINES'] = [ 'XS_ARCH_WIDTH='+str(bits), 'ARCH_STRING=\\"'+arch+'\\"' ]
 # tool-specific flags
 if plat == 'Linux':
 	# assume gcc/g++
-	env['CCFLAGS'] = [ '-std=c++11', '-msse3', '-Wall', '-Wextra', '-Wno-char-subscripts' ]
-	# this may not be necessary
-	#if bits == 32:
-	#	env['CCFLAGS'] += [ '-m32' ]
+	env['CXXFLAGS'] = [ '-std=c++11' ]
+	env['CCFLAGS'] += [ '-msse3', '-Wall', '-Wextra', '-Wno-char-subscripts' ]
+	if analyse:
+		env['CC'] = 'clang'
+		env['CXX'] = 'clang++'
+		env['CCFLAGS'] += [ '--analyze' ]
+	if force32:
+		env['CCFLAGS'] += [ '-m32' ]
+		env['LINKFLAGS'] += [ '-m32' ]
 elif plat == 'Windows':
 	# assume msvc
 	env['CCFLAGS'] = [ '/Gm', '/GS', '/Zc:wchar_t', '/WX-', '/RTC1', '/MDd', '/EHsc', '/nologo', '/W4', '/wd"4100"', '/wd"4127"', '/wd"4996"' ]
