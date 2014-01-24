@@ -76,8 +76,20 @@ env['CPPDEFINES'] = [ 'XS_ARCH_WIDTH='+str(bits), 'ARCH_STRING=\\"'+arch+'\\"' ]
 # tool-specific flags
 if plat == 'Linux':
 	# assume gcc/g++
+	env['CFLAGS'] = [ '-Wstrict-prototypes' ]
 	env['CXXFLAGS'] = [ '-std=c++11' ]
-	env['CCFLAGS'] += [ '-msse3', '-Wall', '-Wextra', '-Wno-char-subscripts' ]
+	env['CCFLAGS'] += [ '-msse3',
+		'-Wall', '-Wextra',
+		'-Wno-char-subscripts',
+	#	'-Waggregate-return',
+	#	'-Wfloat-equal',
+		'-Winit-self',
+	#	'-Wshadow',
+	#	'-Wswitch-default',
+		'-Wuninitialized',
+		'-Wunreachable-code',
+	#	'-Wwrite-strings',
+		]
 	if analyse:
 		env['CC'] = 'clang'
 		env['CXX'] = 'clang++'
