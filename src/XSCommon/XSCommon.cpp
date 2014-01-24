@@ -150,7 +150,7 @@ namespace XS {
 
 int main( int argc, char **argv ) {
 	try {
-		XS::Console::Print( WINDOW_TITLE " (" XSTR( XS_ARCH_WIDTH ) " bits) built on " __DATE__ "\n" );
+		XS::Console::Print( WINDOW_TITLE " (" XSTR( ARCH_WIDTH ) " bits) built on " __DATE__ " [git "REVISION"]\n" );
 
 		// init
 		XS::File::Init();

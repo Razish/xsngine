@@ -2,6 +2,10 @@
 
 namespace XS {
 
+	#ifndef REVISION
+		#define REVISION "unavailable"
+	#endif
+
 	#define XS_MAX_FILENAME (64)
 
 	typedef unsigned char byte; // unsigned 8 bits
@@ -16,6 +20,17 @@ namespace XS {
 		byte b[4];
 		char c[4];
 	} byteAlias_t;
+
+	// pointer aliasing
+	typedef union pointerAlias_u {
+		intptr_t ip;
+		void *v;
+		float *f;
+		int32_t *i;
+		uint32_t *ui;
+		byte *b;
+		char *c;
+	} pointerAlias_t;
 
 	#define ARRAY_LEN( x ) (sizeof( (x) ) / sizeof( (*x) ))
 	#define STR( str ) #str

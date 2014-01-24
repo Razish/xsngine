@@ -20,17 +20,17 @@ Do not use include guards.
 	#endif // !_MY_CLASS_H
 
 	Should be...
-	
+
 	#pragma once
 	// ...
 
 Every file must have a trailing newline
 
 We can assume the only platforms are:
-	Win32 (x86) where XS_ARCH_WIDTH is 32
-	Win64 (x86_64) where XS_ARCH_WIDTH is 64
-	Linux32 (i386) where XS_ARCH_WIDTH is 32
-	Linux64 (x86_64) where XS_ARCH_WIDTH is 64
+	Win32 (x86) where ARCH_WIDTH is 32
+	Win64 (x86_64) where ARCH_WIDTH is 64
+	Linux32 (i386) where ARCH_WIDTH is 32
+	Linux64 (x86_64) where ARCH_WIDTH is 64
 
 Windows has a premade MSVC 2010 project.
 Other platforms have a SCons project, which is only guaranteed to work on Linux (32 and 64)
@@ -259,11 +259,11 @@ Always use precision specifier when dealing with floating point numbers
 	float f = 1.f; // BAD!
 
 Use sign specifier when defining literals to be used for bit values and such
-	#define MASK_ALL (0xFFFFFFFFU)
+	#define MASK_ALL (0xFFFFFFFFu)
 
 	uint32_t Function( void ) {
 		// ...
-		return 0U;
+		return 0u;
 	}
 
 

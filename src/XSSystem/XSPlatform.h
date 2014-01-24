@@ -81,11 +81,11 @@
 #endif
 
 // architecture width
-#ifndef XS_ARCH_WIDTH
+#ifndef ARCH_WIDTH
 	#if UINTPTR_MAX == 0xffffffff
-		#define XS_ARCH_WIDTH 32
+		#define ARCH_WIDTH 32
 	#elif UINTPTR_MAX == 0xffffffffffffffff
-		#define XS_ARCH_WIDTH 64
+		#define ARCH_WIDTH 64
 	#else
 		#error "Could not determine architecture width"
 	#endif

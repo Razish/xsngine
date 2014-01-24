@@ -13,6 +13,7 @@
 
 import platform
 import os
+import commands
 
 plat = platform.system() # Windows or Linux
 try:
@@ -71,7 +72,7 @@ elif plat == 'Windows':
 env['CPPPATH'] = [ '.', './freetype/' ]
 if plat == 'Windows':
 	env['CPPPATH'] = [ './libpng/', './zlib/' ]
-env['CPPDEFINES'] = [ 'XS_ARCH_WIDTH='+str(bits), 'ARCH_STRING=\\"'+arch+'\\"' ]
+env['CPPDEFINES'] = [ 'ARCH_WIDTH='+str(bits), 'ARCH_STRING=\\"'+arch+'\\"' ]
 
 # tool-specific flags
 if plat == 'Linux':
@@ -117,11 +118,12 @@ else:
 		env['CCFLAGS'] += [ '/O2' ]
 	env['CPPDEFINES'] += [ 'NDEBUG' ]
 
-# # # # # # # # #
-#    TARGETS    #
-# # # # # # # # #
+# get git revision
+status, rev = commands.getstatusoutput( 'git rev-parse HEAD' )
+if status == 0:
+	env['CPPDEFINES'] += [ 'REVISION=\\"'+rev+'\\"' ]
 
-# client / all
+# targets
 env['LIBS'] = libs
 env['LIBPREFIX'] = ''
 env.Program( 'xsn'+'.'+arch+env['PROGSUFFIX'], files )
