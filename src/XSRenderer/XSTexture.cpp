@@ -8,6 +8,7 @@
 #include "XSCommon/XSFile.h"
 #include "XSCommon/XSCvar.h"
 #include "XSCommon/XSString.h"
+#include "XSCommon/XSError.h"
 #include "XSRenderer/XSInternalFormat.h"
 #include "XSRenderer/XSTexture.h"
 #include "XSRenderer/XSRenderCommand.h"
@@ -61,7 +62,7 @@ namespace XS {
 
 			glGenTextures( 1, &id );
 			if ( !id )
-				throw( "Failed to create blank texture" );
+				throw( XSError( "Failed to create blank texture" ) );
 
 			this->width		= width;
 			this->height	= height;

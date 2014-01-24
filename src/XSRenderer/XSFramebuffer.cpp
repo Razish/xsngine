@@ -8,6 +8,7 @@
 #include "XSCommon/XSCommon.h"
 #include "XSCommon/XSFile.h"
 #include "XSCommon/XSCvar.h"
+#include "XSCommon/XSError.h"
 #include "XSRenderer/XSInternalFormat.h"
 #include "XSRenderer/XSTexture.h"
 #include "XSRenderer/XSRenderCommand.h"
@@ -106,7 +107,7 @@ namespace XS {
 			glGenFramebuffersEXT( 1, &id );
 
 			if ( !id )
-				throw( "Failed to create framebuffer" );
+				throw( XSError( "Failed to create framebuffer" ) );
 		}
 
 		Framebuffer::~Framebuffer() {

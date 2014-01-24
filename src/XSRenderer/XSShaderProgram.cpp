@@ -9,6 +9,7 @@
 #include "XSCommon/XSString.h"
 #include "XSCommon/XSCommand.h"
 #include "XSCommon/XSConsole.h"
+#include "XSCommon/XSError.h"
 #include "XSRenderer/XSShaderProgram.h"
 #include "XSRenderer/XSInternalFormat.h"
 #include "XSRenderer/XSTexture.h"
@@ -64,7 +65,7 @@ namespace XS {
 		static void OutputInfoLog( int objectID ) {
 			int logLength = 0;
 			char *logText = NULL;
-			
+
 			Indent indent(1);
 
 			glGetObjectParameterivARB( objectID, GL_OBJECT_INFO_LOG_LENGTH_ARB, &logLength );
@@ -98,7 +99,7 @@ namespace XS {
 				delete[] shaderCode;
 				r_glsl->Set( false );
 
-				throw( String::Format( "Shader(): Failed to create shader object for shader '%s'.\n", path ) );
+				throw( XSError( String::Format( "Shader(): Failed to create shader object for shader '%s'.\n", path ) ) );
 			}
 
 			glShaderSourceARB( id, 1, (const GLcharARB **)&shaderCode, NULL );
@@ -109,7 +110,7 @@ namespace XS {
 				delete[] shaderCode;
 				r_glsl->Set( false );
 
-				throw( String::Format( "Shader(): Invalid source code in shader '%s'\n", path ) );
+				throw( XSError( String::Format( "Shader(): Invalid source code in shader '%s'\n", path ) ) );
 			}
 
 			delete[] shaderCode;
@@ -123,7 +124,7 @@ namespace XS {
 				glDeleteObjectARB( id );
 				r_glsl->Set( false );
 
-				throw( String::Format( "Shader(): Failed to compile shader source for shader '%s'\n", path ) );
+				throw( XSError( String::Format( "Shader(): Failed to compile shader source for shader '%s'\n", path ) ) );
 			}
 
 			OutputInfoLog( id );
@@ -140,12 +141,12 @@ namespace XS {
 				path = String::Format( "shaders/f_%s.glsl", name );
 				break;
 			default:
-				throw( String::Format( "Shader(): Unknown shader type %d", type ) );
+				throw( XSError( String::Format( "Shader(): Unknown shader type %d", type ) ) );
 			}
 
 			const File f( path.c_str(), FM_READ );
 			if ( !f.open )
-				throw( String::Format( "Shader(): Could not open file '%s'", name ) );
+				throw( XSError( String::Format( "Shader(): Could not open file '%s'", name ) ) );
 
 			char *contents = new char[f.length];
 				f.Read( (byte *)contents );
@@ -171,7 +172,7 @@ namespace XS {
 
 			id = glCreateProgramObjectARB();
 			if ( !id )
-				throw( "Failed to create shader program" );
+				throw( XSError( "Failed to create shader program" ) );
 		}
 
 		// save some typing..
@@ -185,7 +186,7 @@ namespace XS {
 
 			id = glCreateProgramObjectARB();
 			if ( !id )
-				throw( "Failed to create shader program" );
+				throw( XSError( "Failed to create shader program" ) );
 
 			if ( vertexShaderName && !vertexShader )
 				AttachShader( new Shader( ST_VERTEX, vertexShaderName ) );
@@ -263,7 +264,7 @@ namespace XS {
 				break;
 
 			default:
-				throw( String::Format( "AttachShader(): Unknown type %d", shader->type ) );
+				throw( XSError( String::Format( "AttachShader(): Unknown type %d", shader->type ) ) );
 			}
 		}
 

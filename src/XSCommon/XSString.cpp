@@ -1,5 +1,6 @@
 #include "XSSystem/XSInclude.h"
 #include "XSCommon/XSString.h"
+#include "XSCommon/XSError.h"
 
 namespace XS {
 
@@ -9,7 +10,7 @@ namespace XS {
 			size_t l1 = strlen( dst );
 
 			if ( l1 >= len )
-				throw( "XS::String::Concatenate: already overflowed" );
+				throw( XSError( "XS::String::Concatenate: already overflowed" ) );
 
 			Copy( dst+l1, src, len-l1 );
 		}
@@ -17,13 +18,13 @@ namespace XS {
 		// safe strncpy that ensures a trailing zero
 		void Copy( char *dst, const char *src, size_t len ) {
 			if ( !dst )
-				throw( "XS::String::Copy: NULL dest" );
+				throw( XSError( "XS::String::Copy: NULL dest" ) );
 
 			if ( !src )
-				throw( "XS::String::Copy: NULL src" );
+				throw( XSError( "XS::String::Copy: NULL src" ) );
 
 			if ( len < 1 )
-				throw( "XS::String::Copy: destsize < 1" );
+				throw( XSError( "XS::String::Copy: destsize < 1" ) );
 
 			strncpy( dst, src, len-1 );
 			dst[len-1] = 0;
@@ -38,7 +39,7 @@ namespace XS {
 			va_end( ap );
 
 			if ( outLen >= (signed)len )
-				throw( String::Format( "FormatBuffer: Output length %d too short, requires %d bytes.", len, outLen+1 ) );
+				throw( XSError( String::Format( "FormatBuffer: Output length %d too short, requires %d bytes.", len, outLen+1 ) ) );
 
 			return outLen;
 		}
@@ -161,7 +162,7 @@ namespace XS {
 
 			return ss.str();
 		}
-	
+
 	} // namespace String
 
 } // namespace XS

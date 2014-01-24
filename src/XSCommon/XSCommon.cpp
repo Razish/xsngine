@@ -11,6 +11,7 @@
 #include "XSCommon/XSCommand.h"
 #include "XSCommon/XSConsole.h"
 #include "XSCommon/XSString.h"
+#include "XSCommon/XSError.h"
 #include "XSClient/XSInput.h"
 #include "XSClient/XSClient.h"
 #include "XSClient/XSKeys.h"
@@ -132,18 +133,6 @@ namespace XS {
 			WriteConfig( cfg );
 		}
 
-		static void Shutdown( const char *msg ) {
-			Console::Print( "\n*** XSNGINE Shutdown: %s\n\n"
-				"Cleaning up...\n", msg );
-
-			// indent the console for this scope
-			Indent indent(1);
-			Renderer::Shutdown();
-
-			Common::WriteConfig();
-			Cvar::Clean();
-		}
-
 	} // namespace Common
 
 } // namespace XS
@@ -194,12 +183,17 @@ int main( int argc, char **argv ) {
 			XS::Renderer::Update();
 		}
 	}
-	catch( const char *msg ) {
-		XS::Common::Shutdown( msg );
-		return EXIT_SUCCESS;
-	}
-	catch( std::string &msg ) {
-		XS::Common::Shutdown( msg.c_str() );
+	catch( const XS::XSError &e ) {
+		XS::Console::Print( "\n*** XSNGINE Shutdown: %s\n\n"
+			"Cleaning up...\n", e.msg.c_str() );
+
+		// indent the console for this scope
+		XS::Indent indent(1);
+			XS::Renderer::Shutdown();
+
+			XS::Common::WriteConfig();
+			XS::Cvar::Clean();
+
 		return EXIT_SUCCESS;
 	}
 

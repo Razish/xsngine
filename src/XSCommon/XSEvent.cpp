@@ -9,6 +9,7 @@
 #include "XSCommon/XSString.h"
 #include "XSCommon/XSFile.h"
 #include "XSCommon/XSCvar.h"
+#include "XSCommon/XSError.h"
 #include "XSClient/XSKeys.h"
 
 namespace XS {
@@ -42,7 +43,7 @@ namespace XS {
 						ev->keyEvent.key, ev->keyEvent.down );
 					break;
 				default:
-					throw( String::Format( "Event::Queue: Unknown event %i", type ) );
+					throw( XSError( String::Format( "Event::Queue: Unknown event %i", type ) ) );
 					break;
 				}
 			}
@@ -57,7 +58,7 @@ namespace XS {
 						Client::KeyEvent( it->keyEvent.key, it->keyEvent.down );
 						break;
 					default:
-						throw( String::Format( "Event::Pump: Unknown event %i", it->type ) );
+						throw( XSError( String::Format( "Event::Pump: Unknown event %i", it->type ) ) );
 						break;
 				}
 			}

@@ -13,6 +13,7 @@
 #include "XSCommon/XSConsole.h"
 #include "XSCommon/XSString.h"
 #include "XSCommon/XSVector.h"
+#include "XSCommon/XSError.h"
 #include "XSRenderer/XSFont.h"
 #include "XSRenderer/XSShaderProgram.h"
 #include "XSRenderer/XSInternalFormat.h"
@@ -22,7 +23,7 @@
 #include "XSRenderer/XSRenderer.h"
 
 namespace XS {
-	
+
 	namespace Renderer {
 
 		static FT_Library ft;
@@ -36,7 +37,7 @@ namespace XS {
 
 		void Font::Init( void ) {
 			if ( FT_Init_FreeType( &ft ) )
-				throw( "Could not initialise freetype library" );
+				throw( XSError( "Could not initialise freetype library" ) );
 
 			fonts["menu"] = new font_t( "menu", 48 );
 
@@ -71,7 +72,7 @@ namespace XS {
 				// load the printable characters
 				for ( char c=0x20; c<0x7F; c++ ) {
 					FT_Glyph glyph;
-					
+
 					uint32_t index = FT_Get_Char_Index( face, c );
 					if ( !index )
 						continue;

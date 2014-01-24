@@ -1,6 +1,7 @@
 #include "XSSystem/XSInclude.h"
 
 #include "XSCommon/XSCommon.h"
+#include "XSCommon/XSError.h"
 #include "XSRenderer/XSRenderCommand.h"
 #include "XSRenderer/XSView.h"
 #include "XSRenderer/XSBackend.h"
@@ -30,7 +31,7 @@ namespace XS {
 
 		void View::Register( void ) {
 			if ( !width || !height )
-				throw( "Registered view with 0 width or 0 height" );
+				throw( XSError( "Registered view with 0 width or 0 height" ) );
 
 			RegisterView( this );
 		}

@@ -7,6 +7,7 @@
 #include "XSCommon/XSCommand.h"
 #include "XSCommon/XSEvent.h"
 #include "XSCommon/XSFile.h"
+#include "XSCommon/XSError.h"
 #include "XSClient/XSInput.h"
 #include "XSClient/XSKeys.h"
 
@@ -29,7 +30,7 @@ namespace XS {
 			while ( SDL_PollEvent( &e ) ) {
 				switch ( e.type ) {
 				case SDL_QUIT:
-					throw( "Quit application" );
+					throw( XSError( "Quit application" ) );
 					break;
 
 				case SDL_KEYDOWN:
@@ -61,7 +62,7 @@ namespace XS {
 					break;
 
 				default:
-				//	throw( String::Format( "Unhandled SDL event %d", e.type ) );
+				//	throw( XSError( String::Format( "Unhandled SDL event %d", e.type ) ) );
 					break;
 				}
 			}
