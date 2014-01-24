@@ -74,8 +74,7 @@ For multi-line if/else statements, the else keyword starts a new line
 
 Some projects wrap lines at 80 columns. This was due to UNIX terminals only supporting 80 columns.
 It is now common to see 24-27 inch monitors, but long statements/comments are easier to read if they are wrapped
-	Wrap statements at *roughly* 80 columns
-	Wrap comments at roughly 100 columns
+All lines shall be wrapped at less than 120 columns
 
 
 
