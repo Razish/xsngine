@@ -145,23 +145,23 @@ namespace XS {
 		}
 
 		void Cmd_SetBind( const commandContext_t *context ) {
-			if ( context->args.size() < 2 ) {
+			if ( context->size() < 2 ) {
 				Console::Print( "\"bind\" failed. Must specify a key and command\n" );
 				return;
 			}
 
-			SDL_Keycode keycode = GetKeycodeForName( context->args[0].c_str() );
+			SDL_Keycode keycode = GetKeycodeForName( (*context)[0].c_str() );
 
 			if ( keycode == SDLK_UNKNOWN ) {
-				Console::Print( "\"bind\" failed. Unknown key '%s'\n", context->args[0].c_str() );
+				Console::Print( "\"bind\" failed. Unknown key '%s'\n", (*context)[0].c_str() );
 				return;
 			}
 
 			// join all args, so we can do /bind x command argument
-			const size_t size = context->args.size();
+			const size_t size = context->size();
 			std::string value;
 			for ( size_t i=1; i<size; i++ ) {
-				value += context->args[i];
+				value += (*context)[i];
 				if ( i != size-1 )
 					value += " ";
 			}

@@ -21,12 +21,12 @@ namespace XS {
 		static std::vector<std::string> buffer;
 
 		static void Cmd_PrintCvar( const commandContext_t *context ) {
-			if ( context->args.size() < 1 ) {
+			if ( context->size() < 1 ) {
 				Console::Print( "\"print\" failed. Must specify at-least one cvar\n" );
 				return;
 			}
 
-			for ( auto it=context->args.begin(); it!=context->args.end(); ++it ) {
+			for ( auto it=context->begin(); it!=context->end(); ++it ) {
 				const Cvar *cv = Cvar::Get( *it );
 				if ( cv )
 					Console::Print( "%s: \"%s\"\n", it->c_str(), cv->GetFullCString() );
@@ -36,17 +36,17 @@ namespace XS {
 		}
 
 		static void Cmd_SetCvar( const commandContext_t *context ) {
-			if ( context->args.size() < 2 ) {
+			if ( context->size() < 2 ) {
 				Console::Print( "\"set\" failed. Must specify a cvar and value\n" );
 				return;
 			}
 
-			Cvar *cv = Cvar::Create( context->args[0] );
+			Cvar *cv = Cvar::Create( (*context)[0] );
 
-			size_t size = context->args.size();
+			size_t size = context->size();
 			std::string value;
 			for ( size_t i=1; i<size; i++ ) {
-				value += context->args[i];
+				value += (*context)[i];
 				if ( i != size-1 )
 					value += " ";
 			}
@@ -54,7 +54,7 @@ namespace XS {
 		}
 
 		static void Cmd_ToggleCvar( const commandContext_t *context ) {
-			Cvar *cv = Cvar::Get( context->args[0] );
+			Cvar *cv = Cvar::Get( (*context)[0] );
 
 			cv->Set( !cv->GetBool() );
 		}
@@ -83,13 +83,13 @@ namespace XS {
 				std::string name = it->substr( 0, start );
 
 				if ( start != std::string::npos && start != it->size()-1 ) {
-					context.args = String::Split( &(*it)[start+1], ' ' );
+					context = String::Split( &(*it)[start+1], ' ' );
 
 					// strip any quotes around the arguments
-					for ( auto tok = context.args.begin(); tok != context.args.end(); ++tok )
+					for ( auto tok = context.begin(); tok != context.end(); ++tok )
 						tok->erase( std::remove( tok->begin(), tok->end(), '"' ), tok->end() );
 
-				//	if ( context.args.size() == 0 )
+				//	if ( !context->size() )
 				//		continue;
 				}
 

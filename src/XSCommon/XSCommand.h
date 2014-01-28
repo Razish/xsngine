@@ -2,9 +2,7 @@
 
 namespace XS {
 
-	struct commandContext_t {
-		std::vector<std::string> args;
-	};
+	typedef std::vector<std::string> commandContext_t;
 
 	namespace Command {
 

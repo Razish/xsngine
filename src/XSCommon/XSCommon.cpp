@@ -127,8 +127,8 @@ namespace XS {
 
 		static void Cmd_WriteConfig( const commandContext_t *context ) {
 			const char *cfg = NULL;
-			if ( context->args.size() )
-				 cfg = context->args[0].c_str();
+			if ( context->size() )
+				 cfg = (*context)[0].c_str();
 
 			WriteConfig( cfg );
 		}

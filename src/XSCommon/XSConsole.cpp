@@ -55,7 +55,7 @@ namespace XS {
 			char *insert = new char[len];
 			String::Copy( insert, text, len );
 			std::string tmp = insert;
-			
+
 			if ( scrollAmount < 0 ) {
 				if ( consoleText.size() >= lineCount )
 					scrollAmount = std::max<int>( scrollAmount-1, (signed)(consoleText.size()-lineCount) * -1 );
@@ -166,8 +166,8 @@ namespace XS {
 			fcol = col*size;
 
 			Renderer::DrawQuad( x, y, (float)characterSize, (float)characterSize,
-				fcol, frow, 
-				fcol+size, frow+size, 
+				fcol, frow,
+				fcol+size, frow+size,
 				fontTexture );
 		}
 
@@ -194,6 +194,7 @@ namespace XS {
 		}
 
 		void Toggle( const commandContext_t *context ) {
+			(void)context;
 			visible = !visible;
 		}
 
