@@ -37,7 +37,7 @@ namespace XS {
 
 				glEnable( GL_DEPTH_TEST );
 				glDepthFunc( GL_LEQUAL );
-	
+
 				glEnable( GL_TEXTURE_2D );
 
 				// back-face culling
@@ -53,7 +53,7 @@ namespace XS {
 				glEnableClientState( GL_VERTEX_ARRAY );
 				glEnableClientState( GL_TEXTURE_COORD_ARRAY );
 			}
-	
+
 			static void XS_gluPerspective( GLdouble fovy, GLdouble aspect, GLdouble zNear, GLdouble zFar ) {
 				double f = 1.0 / tan(fovy * M_PI / 360);  // convert degrees to radians and divide by 2
 				double xform[16] = {
@@ -64,7 +64,7 @@ namespace XS {
 				};
 				glMultMatrixd( xform );
 			}
-	
+
 			void Begin2D( const int width, const int height ) {
 				if ( in2D )
 					return;
@@ -97,7 +97,7 @@ namespace XS {
 
 				glMatrixMode( GL_PROJECTION );
 				glLoadIdentity();
-	
+
 				glMatrixMode( GL_MODELVIEW );
 				glLoadIdentity();
 

@@ -11,7 +11,7 @@ namespace XS {
 		void	Indent		( int level );
 
 	} // namespace Console
-	
+
 	// Instantiate a local (stack-level) Indent object to indent subsequent console prints
 	class Indent {
 	private:

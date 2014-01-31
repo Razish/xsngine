@@ -78,12 +78,12 @@ namespace XS {
 
 	unsigned int ColourIndex( char c ) {
 		int lowc = tolower( c );
-	
+
 		if ( c >= '0' && c <= '9' )
 			return (c-'0') & COLOUR_BITS;
 		else if ( lowc >= 'a' && lowc <= 'e' )
 			return (lowc-'a'+'9') & COLOUR_BITS;
-	
+
 		return ColourIndex( COLOUR_WHITE );
 	}
 

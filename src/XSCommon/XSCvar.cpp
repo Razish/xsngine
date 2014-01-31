@@ -86,7 +86,7 @@ namespace XS {
 
 	Cvar *Cvar::Get( const std::string &name ) {
 		Cvar *cv = cvars[name];
-		
+
 		if ( cv )
 			return cv;
 
@@ -126,7 +126,7 @@ namespace XS {
 
 			values.push_back( newValue );
 		}
-		
+
 		if ( !initial )
 			modified = true;
 

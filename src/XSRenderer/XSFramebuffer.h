@@ -12,7 +12,7 @@ namespace XS {
 			const Texture	*colorTextures[MAX_FBO_COLOR_TEXTURES];
 			const Texture	*depthTexture;
 			unsigned int	stencilTexture;
-		
+
 		public:
 			static const Framebuffer *currentReadFramebuffer;
 			static const Framebuffer *currentWriteFramebuffer;

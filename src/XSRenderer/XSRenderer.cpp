@@ -86,7 +86,7 @@ namespace XS {
 
 			DestroyDisplay();
 		}
-	
+
 		void RegisterCvars( void ) {
 			r_multisample			= Cvar::Create( "r_multisample", "2", CVAR_ARCHIVE );
 			r_swapInterval			= Cvar::Create( "r_swapInterval", "0", CVAR_ARCHIVE );
@@ -94,13 +94,13 @@ namespace XS {
 			vid_noBorder			= Cvar::Create( "vid_noBorder", "0", CVAR_ARCHIVE );
 			vid_width				= Cvar::Create( "vid_width", "1280", CVAR_ARCHIVE );
 		}
-	
+
 		void CreateDisplay( void ) {
 			Uint32 windowFlags = SDL_WINDOW_OPENGL;
-	
+
 			if ( vid_noBorder->GetInt() )
 				windowFlags |= SDL_WINDOW_BORDERLESS;
-	
+
 			SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 3 );
 			SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 2 );
 
@@ -130,7 +130,7 @@ namespace XS {
 		void Update( void ) {
 			glClearColor( 0.5f, 0.125f, 0.125f, 1.0f );
 			glClear( GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT );
-	
+
 			glLoadIdentity();
 
 			for ( auto view = views.begin(); view != views.end(); ++view ) {

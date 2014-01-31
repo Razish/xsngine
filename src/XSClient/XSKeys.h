@@ -3,7 +3,7 @@
 namespace XS {
 
 	namespace Client {
-		
+
 		extern std::unordered_map<SDL_Keycode, bool> keystate;
 
 		void KeyEvent			( SDL_Keycode key, bool down );

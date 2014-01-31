@@ -4,7 +4,7 @@ namespace XS {
 
 	#define COLOUR_ESCAPE	'^'
 	#define COLOUR_BITS		(0xF)
-	
+
 	#define COLOUR_BLACK		'0'
 	#define COLOUR_GREY			'1'
 	#define COLOUR_WHITE		'2'
@@ -20,7 +20,7 @@ namespace XS {
 	#define COLOUR_VIOLET		'c'
 	#define COLOUR_PURPLE		'd'
 	#define COLOUR_PINK			'e'
-	
+
 	#define S_COLOUR_BLACK		"^0"
 	#define S_COLOUR_GREY		"^1"
 	#define S_COLOUR_WHITE		"^2"
@@ -36,7 +36,7 @@ namespace XS {
 	#define S_COLOUR_VIOLET		"^c"
 	#define S_COLOUR_PURPLE		"^d"
 	#define S_COLOUR_PINK		"^e"
-	
+
 	bool IsColourString( const char *p );
 	size_t ColourStringLength( const char *text );
 	unsigned int ColourIndex( char c );
