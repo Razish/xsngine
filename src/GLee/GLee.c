@@ -16069,6 +16069,8 @@ GLEE_EXTERN GLint __GLeeGetExtensionNumber(const char *extensionName, int type)
 			if (strcmp(extensionName,__GLeeGLXExtensionNames[a])==0) return a;
 		return -1;
 #endif
+	default:
+		return -1;
 	}
 	return -1;
 }

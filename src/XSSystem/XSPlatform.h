@@ -1,7 +1,12 @@
 #pragma once
 
 #define PRODUCT_NAME			"xsngine"
-#define PRODUCT_VERSION			"0.1"
+#ifdef _DEBUG
+	#define PRODUCT_VERSION		"0.1 DEBUG"
+#else
+	#define PRODUCT_VERSION		"0.1"
+#endif
+
 #define WINDOW_TITLE			"xsngine [" PRODUCT_VERSION "] " ARCH_STRING
 
 // Win64

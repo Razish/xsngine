@@ -22,14 +22,14 @@ except (ValueError, TypeError):
 	bits = None
 arch = None # platform-specific, set manually
 
-print( '\n********************************\n' )
 print( 'Configuring build environment...' )
-env = Environment()
-
-env['ENV']['TERM'] = os.environ['TERM']
 
 analyse = int( ARGUMENTS.get( 'analyse', 0 ) )
+compiler = ARGUMENTS.get( 'compiler', 'gcc' )
+debug = int( ARGUMENTS.get( 'debug', 0 ) )
 force32 = int( ARGUMENTS.get( 'force32', 0 ) )
+
+# architecture settings, needed for binary names, also passed as a preprocessor definition
 if force32:
 	bits = 32
 
@@ -47,16 +47,26 @@ elif bits == 64:
 		arch = 'x86_64'
 	#TODO: Mac
 
+# Notify the user of the build configuration
 print( 'Building for ' + plat + ' (' + str(bits) + ' bits, treated as \'' + arch + '\')' )
-print( '\n********************************\n' )
+if debug:
+	print( 'With debugging symbols' )
+if not debug or debug == 2:
+	print( 'Optimisation enabled' )
+if force32:
+	print( 'Forcing 32 bit compile' )
+if analyse:
+	print( 'WARNING: Running static analysis mode. Will not produce binaries' )
+print( '' )
 
-# files: client
-files  = [ 'XSClient/XSClient.cpp', 'XSClient/XSInput.cpp', 'XSClient/XSKeys.cpp' ]
-# files: common
-files += [ 'XSCommon/XSColours.cpp', 'XSCommon/XSCommand.cpp', 'XSCommon/XSCommon.cpp', 'XSCommon/XSConsole.cpp',
-	'XSCommon/XSCvar.cpp', 'XSCommon/XSEvent.cpp', 'XSCommon/XSFile.cpp', 'XSCommon/XSString.cpp' ]
-# files: renderer
-files += [ 'GLee/GLee.c', 'XSRenderer/XSBackend.cpp', 'XSRenderer/XSFont.cpp', 'XSRenderer/XSFramebuffer.cpp',
+env = Environment()
+if plat != 'Windows':
+	env['ENV']['TERM'] = os.environ['TERM']
+
+files = [ 'XSClient/XSClient.cpp', 'XSClient/XSInput.cpp', 'XSClient/XSKeys.cpp',
+	'XSCommon/XSColours.cpp', 'XSCommon/XSCommand.cpp', 'XSCommon/XSCommon.cpp', 'XSCommon/XSConsole.cpp',
+	'XSCommon/XSCvar.cpp', 'XSCommon/XSEvent.cpp', 'XSCommon/XSFile.cpp', 'XSCommon/XSString.cpp',
+	'GLee/GLee.c', 'XSRenderer/XSBackend.cpp', 'XSRenderer/XSFont.cpp', 'XSRenderer/XSFramebuffer.cpp',
 	'XSRenderer/XSImagePNG.cpp', 'XSRenderer/XSInternalFormat.cpp', 'XSRenderer/XSRenderCommand.cpp',
 	'XSRenderer/XSRenderer.cpp', 'XSRenderer/XSShaderProgram.cpp', 'XSRenderer/XSTexture.cpp', 'XSRenderer/XSView.cpp' ]
 
@@ -72,56 +82,93 @@ elif plat == 'Windows':
 env['CPPPATH'] = [ '.', './freetype/' ]
 if plat == 'Windows':
 	env['CPPPATH'] = [ './libpng/', './zlib/' ]
-env['CPPDEFINES'] = [ 'ARCH_WIDTH='+str(bits), 'ARCH_STRING=\\"'+arch+'\\"' ]
 
 # tool-specific flags
 if plat == 'Linux':
-	# assume gcc/g++
-	env['CFLAGS'] = [ '-Wstrict-prototypes' ]
+	env['CC'] = compiler
+	env['CFLAGS'] = [ '-Wdeclaration-after-statement',
+		'-Wnested-externs',
+		'-Wold-style-definition',
+		'-Wstrict-prototypes' ]
 	env['CXXFLAGS'] = [ '-std=c++11' ]
-	env['CCFLAGS'] += [ '-msse3',
+	env['CPPDEFINES'] = [ '__GCC__' ]
+	env['CCFLAGS'] = [ '-msse3',
 		'-Wall', '-Wextra',
 		'-Wno-char-subscripts',
+		'-Wno-missing-braces',
+		'-Wno-missing-field-initializers',
+		'-Wno-sign-compare',
+		'-Wno-unused-parameter',
 	#	'-Waggregate-return',
+	#	'-Wbad-function-cast',
+	#	'-Wcast-qual',
+	#	'-Wdouble-promotion',
 	#	'-Wfloat-equal',
 		'-Winit-self',
+		'-Winline',
+		'-Wlogical-op',
+	#	'-Wlong-long',
+		'-Wmissing-include-dirs',
+		'-Woverlength-strings',
+		'-Wpointer-arith',
+		'-Wredundant-decls',
 	#	'-Wshadow',
+	#	'-Wsign-conversion',
+		'-Wstack-usage=32768',
+	#	'-Wsuggest-attribute=const',
 	#	'-Wswitch-default',
+		'-Wundef',
 		'-Wuninitialized',
 		'-Wunreachable-code',
-	#	'-Wwrite-strings',
+	#	'-Wunsuffixed-float-constants',
+		'-Wwrite-strings',
 		]
 	if analyse:
 		env['CC'] = 'clang'
 		env['CXX'] = 'clang++'
-		env['CCFLAGS'] += [ '--analyze' ]
+		env['CCFLAGS'] += [ '--analyze -O3' ]
 	if force32:
 		env['CCFLAGS'] += [ '-m32' ]
 		env['LINKFLAGS'] += [ '-m32' ]
 elif plat == 'Windows':
 	# assume msvc
-	env['CCFLAGS'] = [ '/Gm', '/GS', '/Zc:wchar_t', '/WX-', '/RTC1', '/MDd', '/EHsc', '/nologo', '/W4', '/wd"4100"', '/wd"4127"', '/wd"4996"' ]
-	env['LINKFLAGS'] = [ '/SUBSYSTEM:WINDOWS','/MACHINE:'+arch ]
-	env['CPPDEFINES'] += [ '_CRT_SECURE_NO_WARNINGS', 'WIN32', '_WINDOWS' ]
+	env['CFLAGS'] = [ '/TC' ]
+	env['CCFLAGS'] = [ '/nologo', '/W4', '/WX-', '/GS', '/fp:precise', '/Zc:wchar_t', '/Zc:forScope', '/Gd', '/GF', '/errorReport:prompt', '/EHs', '/EHc', '/Ot', '/Zi' ]
+	env['LINKFLAGS'] = [ '/SUBSYSTEM:WINDOWS', '/MACHINE:'+arch, '/LTCG' ]
+	env['CPPDEFINES'] = [ '_MSC_EXTENSIONS', '_INTEGRAL_MAX_BITS=64', '_WIN32', '_MT', '_M_FP_PRECISE' ]
+	if bits == 32:
+		env['CCFLAGS'] += [ '/analyze-', '/Zp8', '/Gs', '/Oy-' ]
+		env['CPPDEFINES'] += [ '_M_IX86=600', '_M_IX86_FP=2' ]
+	elif bits == 64:
+		env['CCFLAGS'] += [ '/Zp16' ]
+		env['CPPDEFINES'] += [ '_M_AMD64=100', '_M_X64=100', '_WIN64' ]
 
 # debug / release
-if int( ARGUMENTS.get( 'debug', 0 ) ):
+if not debug or debug == 2:
+	if plat == 'Linux' and not analyse:
+		env['CCFLAGS'] += [ '-O2' ] # analysis sets higher optimisation level
+	elif plat == 'Windows':
+		env['CCFLAGS'] += [ '/GL', '/Gm-', '/MD', '/O2', '/Oi' ]
+		if bits == 64:
+			env['CCFLAGS'] += [ '/Oy' ]
+	if not debug:
+		env['CPPDEFINES'] += [ 'NDEBUG' ]
+if debug:
 	if plat == 'Linux':
 		env['CCFLAGS'] += [ '-g3' ]
 	elif plat == 'Windows':
-		env['CCFLAGS'] += [ '/Zi', '/Od' ]
-	env['CPPDEFINES'] += [ '_DEBUG' ]
-else:
-	if plat == 'Linux':
-		env['CCFLAGS'] += [ '-O2' ]
-	elif plat == 'Windows':
-		env['CCFLAGS'] += [ '/O2' ]
-	env['CPPDEFINES'] += [ 'NDEBUG' ]
+		env['CCFLAGS'] += [ '/Gm', '/FD', '/MDd', '/Od', '/RTC1', '/RTCs', '/RTCu' ]
+		if bits == 32:
+			env['CCFLAGS'] += [ '/FC', '/ZI' ]
+	env['CPPDEFINES'] += [ '_DEBUG', '__MSVC_RUNTIME_CHECKS' ]
 
 # get git revision
 status, rev = commands.getstatusoutput( 'git rev-parse HEAD' )
 if status == 0:
 	env['CPPDEFINES'] += [ 'REVISION=\\"'+rev+'\\"' ]
+
+# arch width
+env['CPPDEFINES'] += [ 'ARCH_WIDTH='+str(bits), 'ARCH_STRING=\\"'+arch+'\\"' ]
 
 # targets
 env['LIBS'] = libs

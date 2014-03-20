@@ -57,7 +57,10 @@ namespace XS {
 		if ( len == 0 )
 			len = length;
 
-		fread( (void *)buf, 1, len, file );
+		size_t res = fread( (void *)buf, 1, len, file );
+		if ( res == 0u )
+			buf[0] = '\0';
+		//TODO: determine cause of failure via feof, ferror
 
 		// account for null terminator
 		if ( mode == FM_READ )

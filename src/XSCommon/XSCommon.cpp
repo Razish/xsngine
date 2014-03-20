@@ -42,7 +42,10 @@ namespace XS {
 #ifdef _WIN32
 			_getcwd( cwd, sizeof( cwd )-1 );
 #else
-			getcwd( cwd, sizeof( cwd )-1 );
+			if ( getcwd( cwd, sizeof( cwd )-1 ) == NULL ) {
+				//TODO: determine cause of failure via errno
+				cwd[0] = '\0';
+			}
 #endif
 			cwd[FILENAME_MAX-1] = '\0';
 
