@@ -32,7 +32,7 @@ We can assume the only platforms are:
 	Linux32 (i386) where ARCH_WIDTH is 32
 	Linux64 (x86_64) where ARCH_WIDTH is 64
 
-Windows has a premade MSVC 2010 project.
+Windows has a premade MSVC 2013 project.
 Other platforms have a SCons project, which is only guaranteed to work on Linux (32 and 64)
 
 
@@ -48,7 +48,7 @@ The only exception to this rule is multi-line conditionals/definitions
 	}
 
 	void Function( int some, float really, const char *big,
-		vector3 *argument, int list )
+		vector3 *argument, size_t list )
 	{
 	}
 
@@ -59,7 +59,7 @@ The only exception to this rule is multi-line conditionals/definitions
 	}
 
 Pad parenthesised expressions as such...
-	for ( i=0; i<3; i++ ) {
+	for ( i = 0, j = 2; i < 3; i++, j-- ) {
 		if ( x )
 			Func( y );
 	}
@@ -74,7 +74,7 @@ For multi-line if/else statements, the else keyword starts a new line
 
 Some projects wrap lines at 80 columns. This was due to UNIX terminals only supporting 80 columns.
 It is now common to see 24-27 inch monitors, but long statements/comments are easier to read if they are wrapped
-All lines shall be wrapped at less than 120 columns
+All lines shall be wrapped at less than 120 columns. Most editors support indent guides.
 
 
 
@@ -98,6 +98,7 @@ Do not over-comment code. This includes being exceedingly explicit and comment s
 	}
 
 Recursive functions should be explicitly commented at both the point of recursion, and above the function definition
+There is no naming requirement for a recursive function
 
 Line comments should have a space at the start
 	// good
@@ -130,14 +131,14 @@ Object-structs shall only be used for the case where data encapsulation is not a
 	class Font {}; // object, has font->Draw() method
 	struct RenderCommand {}; // object-struct, has cmd->Execute() method
 	struct commandContext_t {}; // POD type
-	struct vector3 {}; // object-struct, but is a common type. exception to the rule.
+	struct vector3 {}; // object-struct, but is a common type. exception to the rule and treated as POD.
 
 Enums and structs that are not treated as objects (i.e. POD type) shall follow the next rule...
 
 All non-primitive-esque types start with lower case and use the _t suffix to indicate a type
 	typedef float real; // primitive-esque, so this is fine
 	struct gameEntity_t {};
-	enum flags_t {};
+	enum team_t {};
 	typedef uint32_t fileHandle_t;
 
 Enumerated constants are all upper case. All consecutive words are separated by an underscore.
@@ -167,6 +168,14 @@ This includes all preprocessor definitions, not just those involving arithmetic
 
 	#define SOME_VALUE (32 + 32)
 	int otherValue = 16 * SOME_VALUE; // 16 * (32 + 32)
+
+Macros containing multiple sequence points shall be wrapped in braces to avoid dangling selection constructs
+	#define DO_SOMETHING(x) { statement_one( (x) ); statement_two(); }
+	// ...
+	if ( x )
+		DO_SOMETHING( 10 );
+	else if ( y )
+		return;
 
 
 
@@ -244,7 +253,7 @@ USE CONST AS MUCH AS POSSIBLE!
 Do NOT cast away constness.
 
 Function parameters dealing with const pointers shall indicate what is being read, and what is being written
-	static void GetPath( const char *gamePath, char *outPath, size_t outLen );
+	static void GetPath( const char *gamePath, char *outPath, size_t outPathLen );
 
 Use const as much as possible.
 
