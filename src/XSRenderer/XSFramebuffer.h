@@ -30,7 +30,7 @@ namespace XS {
 
 			Framebuffer();
 			~Framebuffer();
-			void AttachColorTexture( const Texture *texture, size_t slot );
+			void AttachColorTexture( const Texture *texture, unsigned int slot );
 			void AttachDepthTexture( const Texture *texture );
 			void AttachDepthStencilTexture( const Texture *texture );
 			void AttachDepthRenderbuffer( unsigned int renderbufferId );

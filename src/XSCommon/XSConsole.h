@@ -18,8 +18,8 @@ namespace XS {
 		Indent(){}
 		unsigned int level;
 	public:
-		Indent( unsigned int level ) { this->level = level; Console::Indent( this->level ); }
-		~Indent() { Console::Indent( -level ); }
+		Indent( int level ) { this->level = (unsigned)level; Console::Indent( this->level ); }
+		~Indent() { Console::Indent( -(signed)level ); }
 	};
 
 } // namespace XS
