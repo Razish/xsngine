@@ -81,6 +81,9 @@
     <ClCompile Include="XSRenderer\XSRenderCommand.cpp">
       <Filter>XSRenderer</Filter>
     </ClCompile>
+    <ClCompile Include="XSCommon\XSTimer.cpp">
+      <Filter>XSCommon</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="XSCommon\XSCvar.h">
@@ -154,6 +157,9 @@
     </ClInclude>
     <ClInclude Include="XSRenderer\XSView.h">
       <Filter>XSRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="XSCommon\XSTimer.h">
+      <Filter>XSCommon</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

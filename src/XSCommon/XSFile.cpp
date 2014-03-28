@@ -30,6 +30,8 @@ namespace XS {
 	File::File( const char *gamePath, fileMode_t mode ) {
 		GetPath( gamePath, path, sizeof( path ) );
 
+		//TODO: create folders if non-existent. requires platform-specific code
+
 		this->mode = mode;
 		file = fopen( path, modes[mode] );
 
