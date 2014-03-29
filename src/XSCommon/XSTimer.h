@@ -2,6 +2,8 @@
 
 #ifdef _WIN32
 	#include <Windows.h>
+#elif defined(__linux__)
+	#include <sys/time.h>
 #endif
 
 namespace XS {
@@ -25,6 +27,6 @@ namespace XS {
 		};
 
 		void	Stop( void );
-		double	GetTiming( TimerResolution resolution = MILLISECONDS );
+		double	GetTiming( bool restart = false, TimerResolution resolution = MILLISECONDS );
 	};
 }

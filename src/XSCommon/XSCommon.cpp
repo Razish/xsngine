@@ -12,6 +12,7 @@
 #include "XSCommon/XSConsole.h"
 #include "XSCommon/XSString.h"
 #include "XSCommon/XSError.h"
+#include "XSCommon/XSTimer.h"
 #include "XSClient/XSInput.h"
 #include "XSClient/XSClient.h"
 #include "XSClient/XSKeys.h"
@@ -140,6 +141,10 @@ namespace XS {
 
 } // namespace XS
 
+#ifdef _DEBUG
+	static XS::Timer timer;
+#endif
+
 int main( int argc, char **argv ) {
 	try {
 		XS::Console::Print( WINDOW_TITLE " (" XSTR( ARCH_WIDTH ) " bits) built on " __DATE__ " [git " REVISION "]\n" );
@@ -161,6 +166,11 @@ int main( int argc, char **argv ) {
 	//	XS::Network::Init();
 
 		XS::Console::Init();
+
+	#ifdef _DEBUG
+		double t = timer.GetTiming( true, XS::Timer::MILLISECONDS );
+		XS::Console::Print( "Init time: %.0f milliseconds\n", (float)t );
+	#endif
 
 		// frame
 		while ( 1 ) {
@@ -190,12 +200,24 @@ int main( int argc, char **argv ) {
 		XS::Console::Print( "\n*** XSNGINE Shutdown: %s\n\n"
 			"Cleaning up...\n", e.msg.c_str() );
 
+	#ifdef _DEBUG
+		double t = timer.GetTiming( true, XS::Timer::MILLISECONDS );
+		XS::Console::Print( "Run time: %.0f milliseconds\n", (float)t );
+	#endif
+
 		// indent the console for this scope
-		XS::Indent indent(1);
+		{
+			XS::Indent indent(1);
 			XS::Renderer::Shutdown();
 
 			XS::Common::WriteConfig();
 			XS::Cvar::Clean();
+		}
+
+	#ifdef _DEBUG
+		t = timer.GetTiming( false, XS::Timer::MILLISECONDS );
+		XS::Console::Print( "Shutdown time: %.0f milliseconds\n", (float)t );
+	#endif
 
 		return EXIT_SUCCESS;
 	}

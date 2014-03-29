@@ -8,37 +8,44 @@
 namespace XS {
 
 	Timer::Timer() {
-#ifdef _WIN32
+	#ifdef _WIN32
 		QueryPerformanceCounter( &start );
-#elif defined(__linux__)
+	#elif defined(__linux__)
 		gettimeofday( &start, NULL );
-#endif
+	#endif
 	}
 
 	void Timer::Stop( void ) {
-#ifdef _WIN32
+	#ifdef _WIN32
 		QueryPerformanceCounter( &stop );
-#elif defined(__linux__)
+	#elif defined(__linux__)
 		gettimeofday( &stop, NULL );
-#endif
+	#endif
 	}
 
-	double Timer::GetTiming( TimerResolution resolution ) {
+	double Timer::GetTiming( bool restart, TimerResolution resolution ) {
 		double startTime = 0.0, stopTime = 0.0;
 
-#ifdef _WIN32
+		Stop();
+
+	#ifdef _WIN32
 		TimeVal frequency;
 		QueryPerformanceFrequency( &frequency );
-		QueryPerformanceCounter( &stop );
 
 		startTime = start.QuadPart * (1000000.0 / frequency.QuadPart);
 		stopTime = stop.QuadPart * (1000000.0 / frequency.QuadPart);
 	#elif defined(__linux__)
-		gettimeofday( &stop, NULL );
-
 		startTime = (start.tv_sec * 1000000.0) + start.tv_usec;
 		stopTime = (stop.tv_sec * 1000000.0) + stop.tv_usec;
 	#endif
+
+		if ( restart ) {
+		#ifdef _WIN32
+			QueryPerformanceCounter( &start );
+		#elif defined(__linux__)
+			gettimeofday( &start, NULL );
+		#endif
+		}
 
 		switch ( resolution ) {
 		case SECONDS:
