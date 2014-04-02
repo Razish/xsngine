@@ -4,9 +4,7 @@ namespace XS {
 
 	namespace Renderer {
 
-		class View {
-		private:
-		public:
+		struct View {
 			union {
 				struct {
 					// ...

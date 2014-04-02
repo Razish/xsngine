@@ -10,7 +10,7 @@ namespace XS {
 
 	class XSError {
 	private:
-		XSError(){}
+		XSError();
 
 	public:
 		XSError( std::string &msg ) { this->msg = msg; }

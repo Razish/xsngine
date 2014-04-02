@@ -5,10 +5,7 @@ namespace XS {
 	namespace Renderer {
 
 		struct font_t {
-			font_t() {
-				file = "";
-				size = 24;
-			}
+			font_t() : file( "" ), size( 24 ) {}
 			font_t( const char *name, uint16_t size );
 			std::string		file;
 			uint16_t		size;
@@ -22,7 +19,7 @@ namespace XS {
 		// should not be instantiated
 		class Font {
 		private:
-			Font(){}
+			Font();
 
 		public:
 			static void Init( void );

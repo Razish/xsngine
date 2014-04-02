@@ -21,8 +21,13 @@ namespace XS {
 		bool IsPowerOfTwo( int i ) { return (i & (i - 1)) == 0; }
 
 		struct PNGFileReader {
-		public:
+		private:
+			byte *buf;
+			size_t offset;
+			png_structp png_ptr;
+			png_infop info_ptr;
 
+		public:
 			PNGFileReader( byte *buf ) : buf( buf ), offset( 0 ), png_ptr( NULL ), info_ptr( NULL ){}
 			~PNGFileReader() {
 				if ( info_ptr ) {
@@ -140,12 +145,6 @@ namespace XS {
 				memcpy( dest, buf + offset, len );
 				offset += len;
 			}
-
-		private:
-			byte *buf;
-			size_t offset;
-			png_structp png_ptr;
-			png_infop info_ptr;
 		};
 
 		void user_read_data( png_structp png_ptr, png_bytep data, png_size_t length ) {

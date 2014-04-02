@@ -8,7 +8,7 @@ namespace XS {
 
 		class Texture {
 		private:
-			Texture(){}
+			Texture();
 
 			unsigned int width, height;
 			internalFormat_t internalFormat;
