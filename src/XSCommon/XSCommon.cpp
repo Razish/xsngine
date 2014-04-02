@@ -29,11 +29,16 @@ namespace XS {
 		#define DEFAULT_CONFIG			"cfg/xsn.cfg"
 		#define DEFAULT_CONFIG_SERVER	"cfg/xsn_server.cfg"
 
-		static Cvar *com_dedicated;
+		static Cvar *com_dedicated, *com_developer;
 
 		static void RegisterCvars( void ) {
 			Cvar::Create( "com_date", __DATE__, CVAR_READONLY );
 			com_dedicated = Cvar::Create( "com_dedicated", "0", CVAR_INIT );
+#ifdef _DEBUG
+			com_developer = Cvar::Create( "com_developer", "1", CVAR_NONE );
+#else
+			com_developer = Cvar::Create( "com_developer", "0", CVAR_NONE );
+#endif
 		}
 
 		static void ParseCommandLine( int argc, char **argv ) {
@@ -141,9 +146,7 @@ namespace XS {
 
 } // namespace XS
 
-#ifdef _DEBUG
-	static XS::Timer timer;
-#endif
+static XS::Timer timer;
 
 int main( int argc, char **argv ) {
 	try {
@@ -167,10 +170,10 @@ int main( int argc, char **argv ) {
 
 		XS::Console::Init();
 
-	#ifdef _DEBUG
-		double t = timer.GetTiming( true, XS::Timer::MILLISECONDS );
-		XS::Console::Print( "Init time: %.0f milliseconds\n", (float)t );
-	#endif
+		if ( XS::Common::com_developer->GetInt() ) {
+			double t = timer.GetTiming( true, XS::Timer::MILLISECONDS );
+			XS::Console::Print( "Init time: %.0f milliseconds\n", (float)t );
+		}
 
 		// frame
 		while ( 1 ) {
@@ -200,10 +203,10 @@ int main( int argc, char **argv ) {
 		XS::Console::Print( "\n*** XSNGINE Shutdown: %s\n\n"
 			"Cleaning up...\n", e.msg.c_str() );
 
-	#ifdef _DEBUG
-		double t = timer.GetTiming( true, XS::Timer::MILLISECONDS );
-		XS::Console::Print( "Run time: %.0f milliseconds\n", (float)t );
-	#endif
+		if ( XS::Common::com_developer->GetInt() ) {
+			double t = timer.GetTiming( true, XS::Timer::MILLISECONDS );
+			XS::Console::Print( "Run time: %.0f milliseconds\n", (float)t );
+		}
 
 		// indent the console for this scope
 		{
@@ -214,10 +217,10 @@ int main( int argc, char **argv ) {
 			XS::Cvar::Clean();
 		}
 
-	#ifdef _DEBUG
-		t = timer.GetTiming( false, XS::Timer::MILLISECONDS );
-		XS::Console::Print( "Shutdown time: %.0f milliseconds\n", (float)t );
-	#endif
+		if ( XS::Common::com_developer->GetInt() ) {
+			double t = timer.GetTiming( false, XS::Timer::MILLISECONDS );
+			XS::Console::Print( "Shutdown time: %.0f milliseconds\n", (float)t );
+		}
 
 		return EXIT_SUCCESS;
 	}
