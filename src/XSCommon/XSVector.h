@@ -7,10 +7,7 @@
 
 namespace XS {
 
-	class vector2 {
-	private:
-
-	public:
+	struct vector2 {
 		union {
 			struct { number x, y; };
 			struct { number w, h; };
@@ -18,14 +15,9 @@ namespace XS {
 		};
 
 		// xtors
-		vector2() {
-			this->x = this->y = 0.0f;
-		}
-
-		vector2( number x, number y ) {
-			this->x = x;
-			this->y = y;
-		}
+		vector2() : x( 0.0f ), y( 0.0f ) {}
+		vector2( number x, number y ) : x( x ), y( y ) {}
+		const char *tostring( void ) const;
 
 		// access operators
 		inline number& operator[]( const int idx ) {
@@ -40,6 +32,9 @@ namespace XS {
 		// compare
 		static inline bool compare( const vector2 &lhs, const vector2 &rhs ) {
 			return ( lhs.x == rhs.x && lhs.y == rhs.y );
+		}
+		inline bool compare( const vector2 &rhs ) const {
+			return ( x == rhs.x && y == rhs.y );
 		}
 
 		// addition
@@ -105,25 +100,16 @@ namespace XS {
 
 		// ???
 		static inline vector2 ma( const vector2 &a, number scale, const vector2 &b ) {
-			vector2 result;
-			result.x = a.x + b.x*scale;
-			result.y = a.y + b.y*scale;
-			return result;
+			return a + b*scale;
 		}
 
 		// linear interpolation
 		static inline vector2 lerp( const vector2 &a, number scale, const vector2 &b ) {
-			vector2 result;
-			result.x = a.x + (b.x-a.x)*scale;
-			result.y = a.y + (b.y-a.y)*scale;
-			return result;
+			return a + (b-a)*scale;
 		}
 	};
 
-	class vector3 {
-	private:
-
-	public:
+	struct vector3 {
 		union {
 			struct { number x, y, z; };
 			struct { number r, g, b; }; // red, green, blue?
@@ -131,15 +117,9 @@ namespace XS {
 		};
 
 		// xtors
-		vector3() {
-			this->x = this->y = this->z = 0.0f;
-		}
-
-		vector3( number x, number y, number z ) {
-			this->x = x;
-			this->y = y;
-			this->z = z;
-		}
+		vector3() : x( 0.0f ), y( 0.0f ), z( 0.0f ) {}
+		vector3( number x, number y, number z ) : x( x ), y( y ), z( z ) {}
+		const char *tostring( void ) const;
 
 		// access operators
 		inline number& operator[]( const int idx ) {
@@ -154,6 +134,9 @@ namespace XS {
 		// compare
 		static inline bool compare( const vector3 &lhs, const vector3 &rhs ) {
 			return ( lhs.x == rhs.x && lhs.y == rhs.y && lhs.z == rhs.z );
+		}
+		inline bool compare( const vector3 &rhs ) const {
+			return ( x == rhs.x && y == rhs.y && z == rhs.z );
 		}
 
 		// addition
@@ -226,20 +209,12 @@ namespace XS {
 
 		// ???
 		static inline vector3 ma( const vector3 &a, number scale, const vector3 &b ) {
-			vector3 result;
-			result.x = a.x + b.x*scale;
-			result.y = a.y + b.y*scale;
-			result.z = a.z + b.z*scale;
-			return result;
+			return a + b*scale;
 		}
 
 		// linear interpolation
 		static inline vector3 lerp( const vector3 &a, number scale, const vector3 &b ) {
-			vector3 result;
-			result.x = a.x + (b.x-a.x)*scale;
-			result.y = a.y + (b.y-a.y)*scale;
-			result.z = a.z + (b.z-a.z)*scale;
-			return result;
+			return a + (b-a)*scale;
 		}
 
 		// length
@@ -298,7 +273,7 @@ namespace XS {
 		}
 
 		// cross
-		inline vector3 cross( const vector3 &a, const vector3 &b ) const {
+		static inline vector3 cross( const vector3 &a, const vector3 &b ) {
 			vector3 result;
 
 			result.x = (a.y*b.z) - (a.z*b.y);
@@ -307,14 +282,14 @@ namespace XS {
 
 			return result;
 		}
+		inline vector3 cross( const vector3 &v ) const {
+			return cross( *this, v );
+		}
 
 		//TODO: snap?
 	};
 
-	class vector4 {
-	private:
-
-	public:
+	struct vector4 {
 		union {
 			struct { number x, y, z, w; };
 			struct { number r, g, b, a; }; // red, green, blue?
@@ -322,16 +297,9 @@ namespace XS {
 		};
 
 		// xtors
-		vector4() {
-			this->x = this->y = this->z = this->w = 0.0f;
-		}
-
-		vector4( number x, number y, number z, number w ) {
-			this->x = x;
-			this->y = y;
-			this->z = z;
-			this->w = w;
-		}
+		vector4() : x( 0.0f ), y( 0.0f ), z( 0.0f ), w( 0.0f ) {}
+		vector4( number x, number y, number z, number w ) : x( x ), y( y ), z( z ), w( w ) {}
+		const char *tostring( void ) const;
 
 		// access operators
 		inline number& operator[]( const int idx ) {
@@ -346,6 +314,9 @@ namespace XS {
 		// compare
 		static inline bool compare( const vector4 &lhs, const vector4 &rhs ) {
 			return ( lhs.x == rhs.x && lhs.y == rhs.y && lhs.z == rhs.z && lhs.w == rhs.w );
+		}
+		inline bool compare( const vector4 &rhs ) const {
+			return ( x == rhs.x && y == rhs.y && z == rhs.z && w == rhs.w );
 		}
 
 		// addition
@@ -425,22 +396,12 @@ namespace XS {
 
 		// ???
 		static inline vector4 ma( const vector4 &a, number scale, const vector4 &b ) {
-			vector4 result;
-			result.x = a.x + b.x*scale;
-			result.y = a.y + b.y*scale;
-			result.z = a.z + b.z*scale;
-			result.w = a.w + b.w*scale;
-			return result;
+			return a + b*scale;
 		}
 
 		// linear interpolation
 		static inline vector4 lerp( const vector4 &a, number scale, const vector4 &b ) {
-			vector4 result;
-			result.x = a.x + (b.x-a.x)*scale;
-			result.y = a.y + (b.y-a.y)*scale;
-			result.z = a.z + (b.z-a.z)*scale;
-			result.w = a.w + (b.w-a.w)*scale;
-			return result;
+			return a + (b-a)*scale;
 		}
 	};
 

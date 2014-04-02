@@ -84,6 +84,9 @@
     <ClCompile Include="XSCommon\XSTimer.cpp">
       <Filter>XSCommon</Filter>
     </ClCompile>
+    <ClCompile Include="XSCommon\XSVector.cpp">
+      <Filter>XSCommon</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="XSCommon\XSCvar.h">

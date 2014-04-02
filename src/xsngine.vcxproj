@@ -207,6 +207,7 @@
     <ClCompile Include="XSCommon\XSFile.cpp" />
     <ClCompile Include="XSCommon\XSString.cpp" />
     <ClCompile Include="XSCommon\XSTimer.cpp" />
+    <ClCompile Include="XSCommon\XSVector.cpp" />
     <ClCompile Include="XSRenderer\XSBackend.cpp" />
     <ClCompile Include="XSRenderer\XSFont.cpp" />
     <ClCompile Include="XSRenderer\XSFramebuffer.cpp" />
