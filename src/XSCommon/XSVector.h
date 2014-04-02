@@ -393,9 +393,10 @@ namespace XS {
 			x = -x;
 			y = -y;
 			z = -z;
+			w = -w;
 		}
 		static inline vector4 inverse( const vector4 &in ) {
-			return vector4( -in.x, -in.y, -in.z, in.w );
+			return vector4( -in.x, -in.y, -in.z, -in.w );
 		}
 
 		// scalar multiplication
