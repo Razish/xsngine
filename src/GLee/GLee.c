@@ -16070,7 +16070,7 @@ GLEE_EXTERN GLint __GLeeGetExtensionNumber(const char *extensionName, int type)
 		return -1;
 #endif
 	default:
-		return -1;
+		break;
 	}
 	return -1;
 }
