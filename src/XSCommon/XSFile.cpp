@@ -22,6 +22,7 @@ namespace XS {
 		"a" // FM_APPEND
 	};
 
+	// returns true if mode is for writing
 	static inline bool IsWriteMode( fileMode_t mode ) {
 		switch ( mode ) {
 		default:
@@ -35,6 +36,7 @@ namespace XS {
 		}
 	}
 
+	// normalise path separators for the current platform
 	void File::ReplaceSeparators( char *path ) {
 		bool skip = false;
 
@@ -52,11 +54,36 @@ namespace XS {
 		}
 	}
 
-	bool CreatePath( const char *fullpath ) {
-		char path[FILENAME_MAX];
+	// returns false if fullpath is outside of basepath
+	// if paths are relative, they will be resolved
+	static bool CompareBaseDirectory( const char *basepath, const char *fullpath ) {
+		char b1[FILENAME_MAX];
+		const char *s1 = basepath;
+		if ( strstr( s1, ".." ) || strstr( s1, "::" ) ) {
+			OS::ResolvePath( b1, s1, sizeof(b1) );
+			s1 = b1;
+		}
 
-		if ( strstr( fullpath, ".." ) || strstr( fullpath, "::" ) ) {
-			Console::Print( "WARNING: refusing to create relative path \"%s\"\n", fullpath );
+		char b2[FILENAME_MAX];
+		const char *s2 = fullpath;
+		if ( strstr( s2, ".." ) || strstr( s2, "::" ) ) {
+			OS::ResolvePath( b2, b2, sizeof(b2) );
+			s2 = b2;
+		}
+
+		if ( !String::Compare( s1, s2, strlen( s1 ) ) )
+			return true;
+
+		return false;
+	}
+
+	// create the folders necessary to store the specified file
+	static bool CreatePath( const char *fullpath ) {
+		char path[FILENAME_MAX], basepath[FILENAME_MAX];
+
+		OS::ResolvePath( basepath, com_path->GetCString(), sizeof(basepath) );
+		if ( !CompareBaseDirectory( basepath, fullpath ) ) {
+			Console::Print( "WARNING: attempted directory traversal: \"%s\"\n", fullpath );
 			return false;
 		}
 
@@ -78,11 +105,17 @@ namespace XS {
 		com_path = Cvar::Create( "com_path", "", CVAR_INIT );
 	}
 
+	// return the full OS path for the specified relative gamepath
+	//	e.g. "C:\xsngine\textures\black.jpg" for "textures/black.jpg"
 	void File::GetPath( const char *gamePath, char *outPath, size_t outLen ) {
-		String::FormatBuffer( outPath, outLen, "%s/%s", com_path->GetCString( ), gamePath );
-		File::ReplaceSeparators( outPath );
+		char fullpath[FILENAME_MAX];
+		String::FormatBuffer( fullpath, sizeof(fullpath), "%s%c%s", com_path->GetCString(), PATH_SEP, gamePath );
+		File::ReplaceSeparators( fullpath );
+		OS::ResolvePath( outPath, fullpath, outLen );
 	}
 
+	// opens a file ready for read/write
+	// upon failure, file.open will be false and file.length will be 0
 	File::File( const char *gamePath, fileMode_t mode ) {
 		GetPath( gamePath, path, sizeof( path ) );
 
@@ -122,6 +155,8 @@ namespace XS {
 		}
 	}
 
+	// read len bytes into buf
+	// if len is 0, read as much as possible
 	void File::Read( byte *buf, size_t len ) const {
 		if ( len == 0 )
 			len = length;

@@ -30,7 +30,7 @@ namespace XS {
 		#define DEFAULT_CONFIG			"cfg/xsn.cfg"
 		#define DEFAULT_CONFIG_SERVER	"cfg/xsn_server.cfg"
 
-		static Cvar *com_dedicated, *com_developer;
+		Cvar *com_dedicated, *com_developer;
 
 		static void RegisterCvars( void ) {
 			Cvar::Create( "com_date", __DATE__, CVAR_READONLY );
@@ -46,8 +46,9 @@ namespace XS {
 			std::string commandLine;
 			static char cwd[FILENAME_MAX];
 
+			Cvar *com_path = Cvar::Get( "com_path" );
 			OS::GetCurrentWorkingDirectory( cwd, sizeof(cwd) );
-			Cvar::Create( "com_path", cwd, CVAR_INIT );
+			com_path->Set( cwd );
 
 			// concatenate argv[] to commandLine
 			for ( int i=1; i<argc; i++ ) {

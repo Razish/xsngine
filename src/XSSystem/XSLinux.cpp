@@ -1,5 +1,11 @@
 #include "XSSystem/XSInclude.h"
 
+#include "XSCommon/XSCommon.h"
+#include "XSCommon/XSCommand.h"
+#include "XSCommon/XSConsole.h"
+#include "XSCommon/XSCvar.h"
+#include "XSCommon/XSGlobals.h"
+
 #include <sys/stat.h>
 
 namespace XS {
@@ -20,6 +26,15 @@ namespace XS {
 			}
 
 			return true;
+		}
+
+		bool ResolvePath( char *outPath, const char *inPath, size_t pathLen ) {
+			assert( outPath && inPath );
+			if ( !realpath( inPath, outPath ) ) {
+				if ( Common::com_developer->GetBool() )
+					Console::Print( "Could not resolve path: \"%s\" (errno: %i)\n", inPath, errno );
+				outPath[0] = '\0';
+			}
 		}
 
 		bool Stat( const char *path ) {
