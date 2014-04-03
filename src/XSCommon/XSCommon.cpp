@@ -21,6 +21,7 @@
 #include "XSRenderer/XSRenderCommand.h"
 #include "XSRenderer/XSView.h"
 #include "XSRenderer/XSRenderer.h"
+#include "XSSystem/XSOS.h"
 
 namespace XS {
 
@@ -45,16 +46,7 @@ namespace XS {
 			std::string commandLine;
 			static char cwd[FILENAME_MAX];
 
-#ifdef _WIN32
-			_getcwd( cwd, sizeof( cwd )-1 );
-#else
-			if ( getcwd( cwd, sizeof( cwd )-1 ) == NULL ) {
-				//TODO: determine cause of failure via errno
-				cwd[0] = '\0';
-			}
-#endif
-			cwd[FILENAME_MAX-1] = '\0';
-
+			OS::GetCurrentWorkingDirectory( cwd, sizeof(cwd) );
 			Cvar::Create( "com_path", cwd, CVAR_INIT );
 
 			// concatenate argv[] to commandLine

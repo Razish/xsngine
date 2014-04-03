@@ -46,6 +46,8 @@ namespace XS {
 	private:
 		File(); // can not instantiate with default constructor
 
+		void Clear( void );
+
 		FILE *file;
 		fileMode_t mode;
 
@@ -56,6 +58,7 @@ namespace XS {
 
 		static void Init( void );
 		static void GetPath( const char *gamePath, char *outPath, size_t outLen );
+		static void ReplaceSeparators( char *path );
 
 		File( const char *gamePath, fileMode_t mode = FM_READ );
 		~File();

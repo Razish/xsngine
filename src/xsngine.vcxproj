@@ -218,6 +218,7 @@
     <ClCompile Include="XSRenderer\XSShaderProgram.cpp" />
     <ClCompile Include="XSRenderer\XSTexture.cpp" />
     <ClCompile Include="XSRenderer\XSView.cpp" />
+    <ClCompile Include="XSSystem\XSWindows.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="XSClient\XSClient.h" />
@@ -244,6 +245,7 @@
     <ClInclude Include="XSRenderer\XSTexture.h" />
     <ClInclude Include="XSRenderer\XSView.h" />
     <ClInclude Include="XSSystem\XSInclude.h" />
+    <ClInclude Include="XSSystem\XSOS.h" />
     <ClInclude Include="XSSystem\XSPlatform.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

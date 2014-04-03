@@ -3,6 +3,7 @@
 // commonly included headers from stl/stdlib
 
 #include <cassert>
+#include <cerrno>
 #include <cstdarg>
 #include <cstdint>
 #include <cstring>

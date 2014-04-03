@@ -70,6 +70,12 @@ files = [ 'XSClient/XSClient.cpp', 'XSClient/XSInput.cpp', 'XSClient/XSKeys.cpp'
 	'GLee/GLee.c', 'XSRenderer/XSBackend.cpp', 'XSRenderer/XSFont.cpp', 'XSRenderer/XSFramebuffer.cpp',
 	'XSRenderer/XSImagePNG.cpp', 'XSRenderer/XSInternalFormat.cpp', 'XSRenderer/XSRenderCommand.cpp',
 	'XSRenderer/XSRenderer.cpp', 'XSRenderer/XSShaderProgram.cpp', 'XSRenderer/XSTexture.cpp', 'XSRenderer/XSView.cpp' ]
+if plat == 'Linux':
+	files += [ 'XSSystem/XSLinux.cpp' ]
+elif plat == 'Windows':
+	files += [ 'XSSystem/XSWindows.cpp' ]
+else
+	error( 'Missing xsngine backend for your platform!')
 
 # set up libraries to link with
 if plat == 'Linux':
