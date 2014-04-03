@@ -8,6 +8,7 @@
 #include "XSCommon/XSFile.h"
 #include "XSCommon/XSCvar.h"
 #include "XSCommon/XSConsole.h"
+#include "XSCommon/XSError.h"
 #include "XSClient/XSKeys.h"
 
 namespace XS {
@@ -59,12 +60,17 @@ namespace XS {
 			cv->Set( !cv->GetBool() );
 		}
 
+		static void Cmd_Quit( const commandContext_t *context ) {
+			throw( XSError( "Quit application" ) );
+		}
+
 		void Init( void ) {
 			AddCommand( "bind", Client::Cmd_SetBind );
 			AddCommand( "print", Cmd_PrintCvar );
 			AddCommand( "set", Cmd_SetCvar );
 			AddCommand( "toggle", Cmd_ToggleCvar );
 			AddCommand( "toggleconsole", Console::Toggle );
+			AddCommand( "quit", Cmd_Quit );
 		}
 
 		// command buffer

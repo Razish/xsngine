@@ -15,7 +15,7 @@ namespace XS {
 	// Instantiate a local (stack-level) Indent object to indent subsequent console prints
 	class Indent {
 	private:
-		Indent(){}
+		Indent();
 		unsigned int level;
 	public:
 		Indent( int level ) { this->level = (unsigned)level; Console::Indent( this->level ); }

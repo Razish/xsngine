@@ -13,6 +13,11 @@ namespace XS {
 
 	namespace Renderer {
 
+	#ifdef _MSC_VER
+		#pragma warning( push )
+		#pragma warning( disable : 4611 )
+	#endif
+
 		void user_read_data( png_structp png_ptr, png_bytep data, png_size_t length );
 		void png_print_error( png_structp png_ptr, png_const_charp msg ) {
 			Console::Print( "%s\n", msg );
@@ -177,6 +182,10 @@ namespace XS {
 			delete[] buf;
 			return out;
 		}
+
+	#ifdef _MSC_VER
+		#pragma warning( pop )
+	#endif
 
 	} // namespace Renderer
 

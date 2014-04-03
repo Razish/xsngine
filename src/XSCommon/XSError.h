@@ -13,11 +13,10 @@ namespace XS {
 		XSError();
 
 	public:
-		XSError( std::string &msg ) { this->msg = msg; }
-		XSError( std::string msg ) { this->msg = msg; }
-		XSError( const char *msg ) { this->msg = msg; }
-
 		std::string msg;
+		XSError( std::string &msg ) : msg( msg ) {}
+		XSError( std::string msg ) : msg( msg ) {}
+		XSError( const char *msg ) : msg( msg ) {}
 	};
 
 } // namespace XS

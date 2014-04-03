@@ -170,7 +170,7 @@ int main( int argc, char **argv ) {
 
 		XS::Console::Init();
 
-		if ( XS::Common::com_developer->GetInt() ) {
+		if ( XS::Common::com_developer->GetBool() ) {
 			double t = timer.GetTiming( true, XS::Timer::MILLISECONDS );
 			XS::Console::Print( "Init time: %.0f milliseconds\n", (float)t );
 		}
@@ -200,10 +200,12 @@ int main( int argc, char **argv ) {
 		}
 	}
 	catch( const XS::XSError &e ) {
+		bool developer = XS::Common::com_developer->GetBool();
+
 		XS::Console::Print( "\n*** XSNGINE Shutdown: %s\n\n"
 			"Cleaning up...\n", e.msg.c_str() );
 
-		if ( XS::Common::com_developer->GetInt() ) {
+		if ( developer ) {
 			double t = timer.GetTiming( true, XS::Timer::MILLISECONDS );
 			XS::Console::Print( "Run time: %.0f milliseconds\n", (float)t );
 		}
@@ -217,7 +219,7 @@ int main( int argc, char **argv ) {
 			XS::Cvar::Clean();
 		}
 
-		if ( XS::Common::com_developer->GetInt() ) {
+		if ( developer ) {
 			double t = timer.GetTiming( false, XS::Timer::MILLISECONDS );
 			XS::Console::Print( "Shutdown time: %.0f milliseconds\n", (float)t );
 		}
