@@ -30,11 +30,16 @@ namespace XS {
 
 		bool ResolvePath( char *outPath, const char *inPath, size_t pathLen ) {
 			assert( outPath && inPath );
+
 			if ( !realpath( inPath, outPath ) ) {
 				if ( Common::com_developer->GetBool() )
 					Console::Print( "Could not resolve path: \"%s\" (errno: %i)\n", inPath, errno );
 				outPath[0] = '\0';
+
+				return false;
 			}
+
+			return true;
 		}
 
 		bool Stat( const char *path ) {
