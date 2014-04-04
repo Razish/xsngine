@@ -13,7 +13,7 @@
 
 namespace XS {
 
-	static const char *modes[FM_NUM_MODES] = {
+	static const char *modes[FileMode::NUM_MODES] = {
 		"rb", // FM_READ
 		"rb", // FM_READ_BINARY
 		"wb", // FM_WRITE
@@ -22,15 +22,15 @@ namespace XS {
 	};
 
 	// returns true if mode is for writing
-	static inline bool IsWriteMode( fileMode_t mode ) {
+	static inline bool IsWriteMode( FileMode mode ) {
 		switch ( mode ) {
 		default:
-		case FM_READ:
-		case FM_READ_BINARY:
+		case FileMode::READ:
+		case FileMode::READ_BINARY:
 			return false;
-		case FM_WRITE:
-		case FM_WRITE_BINARY:
-		case FM_APPEND:
+		case FileMode::WRITE:
+		case FileMode::WRITE_BINARY:
+		case FileMode::APPEND:
 			return true;
 		}
 	}
@@ -115,7 +115,7 @@ namespace XS {
 
 	// opens a file ready for read/write
 	// upon failure, file.open will be false and file.length will be 0
-	File::File( const char *gamePath, fileMode_t mode ) {
+	File::File( const char *gamePath, FileMode mode ) {
 		path[0] = '\0';
 		GetPath( gamePath, path, sizeof( path ) );
 
@@ -150,7 +150,7 @@ namespace XS {
 			fseek( file, 0L, SEEK_SET );
 
 			// account for null terminator
-			if ( mode == FM_READ )
+			if ( mode == READ )
 				length++;
 		}
 	}
@@ -167,7 +167,7 @@ namespace XS {
 		//TODO: determine cause of failure via feof, ferror
 
 		// account for null terminator
-		if ( mode == FM_READ )
+		if ( mode == READ )
 			buf[len-1] = '\0';
 	}
 

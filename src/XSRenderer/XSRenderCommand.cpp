@@ -70,7 +70,7 @@ namespace XS {
 
 		void RenderCommand::Execute( void ) const {
 			switch( type ) {
-			case RC_DRAWQUAD:
+			case DRAWQUAD:
 				DrawQuad( &drawQuad );
 				break;
 			default:

@@ -20,13 +20,13 @@ namespace XS {
 
 	public:
 		Timer();
-		enum TimerResolution {
+		enum class Resolution {
 			SECONDS,
 			MILLISECONDS,
 			MICROSECONDS,
 		};
 
 		void	Stop( void );
-		double	GetTiming( bool restart = false, TimerResolution resolution = MICROSECONDS );
+		double	GetTiming( bool restart = false, Resolution resolution = Resolution::MICROSECONDS );
 	};
 }

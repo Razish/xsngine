@@ -171,7 +171,7 @@ namespace XS {
 			cmd.drawQuad.t2 = t2;
 			cmd.drawQuad.textureID = texture->id;
 
-			cmd.type = RC_DRAWQUAD;
+			cmd.type = RenderCommand::DRAWQUAD;
 
 			currentView->renderCommands.push_back( cmd );
 		}

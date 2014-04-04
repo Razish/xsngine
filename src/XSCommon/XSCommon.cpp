@@ -90,7 +90,7 @@ namespace XS {
 
 		static void LoadConfig( void ) {
 			const char *cfg = com_dedicated->GetBool() ? DEFAULT_CONFIG_SERVER : DEFAULT_CONFIG;
-			const File f( cfg, FM_READ );
+			const File f( cfg, FileMode::READ );
 
 			if ( f.open ) {
 				char *buffer = new char[f.length];
@@ -120,7 +120,7 @@ namespace XS {
 				cfg = com_dedicated->GetBool() ? DEFAULT_CONFIG_SERVER : DEFAULT_CONFIG;
 			}
 
-			const File f( cfg, FM_WRITE );
+			const File f( cfg, FileMode::WRITE );
 			if ( !f.open ) {
 				Console::Print( "Failed to write config! (%s)\n", cfg );
 				return;
@@ -174,7 +174,7 @@ int main( int argc, char **argv ) {
 	//	XS::Network::Init();
 
 		if ( XS::Common::com_developer->GetBool() ) {
-			double t = timer.GetTiming( true, XS::Timer::MILLISECONDS );
+			double t = timer.GetTiming( true, XS::Timer::Resolution::MILLISECONDS );
 			XS::Console::Print( "Init time: %.0f milliseconds\n", (float)t );
 		}
 
@@ -233,7 +233,7 @@ int main( int argc, char **argv ) {
 			"Cleaning up...\n", e.what() );
 
 		if ( developer ) {
-			double t = timer.GetTiming( true, XS::Timer::MILLISECONDS );
+			double t = timer.GetTiming( true, XS::Timer::Resolution::MILLISECONDS );
 			XS::Console::Print( "Run time: %.0f milliseconds\n", (float)t );
 		}
 
@@ -248,7 +248,7 @@ int main( int argc, char **argv ) {
 		}
 
 		if ( developer ) {
-			double t = timer.GetTiming( false, XS::Timer::MILLISECONDS );
+			double t = timer.GetTiming( false, XS::Timer::Resolution::MILLISECONDS );
 			XS::Console::Print( "Shutdown time: %.0f milliseconds\n", (float)t );
 		}
 

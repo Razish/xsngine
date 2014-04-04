@@ -4,11 +4,6 @@ namespace XS {
 
 	namespace Renderer {
 
-		enum renderCommandType_t {
-			RC_DRAWQUAD=0,
-			NUM_RCMDS
-		};
-
 		struct rcDrawQuad_t {
 			float x, y;
 			float w, h;
@@ -18,10 +13,14 @@ namespace XS {
 		};
 
 		struct RenderCommand {
+			enum RenderCommandType {
+				DRAWQUAD = 0,
+				NUM_RCMDS
+			};
 			union {
 				rcDrawQuad_t drawQuad;
 			};
-			renderCommandType_t type;
+			RenderCommandType type;
 
 			void Execute( void ) const;
 		};

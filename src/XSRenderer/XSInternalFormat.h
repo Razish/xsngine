@@ -4,20 +4,20 @@ namespace XS {
 
 	namespace Renderer {
 
-		enum internalFormat_t {
-			IF_NONE=0,
-			IF_RGBA8,
-			IF_RGBA16F,
-			IF_DEPTH_COMPONENT16,
-			IF_DEPTH_COMPONENT24,
-			IF_STENCIL_INDEX4,
-			IF_STENCIL_INDEX8,
-			IF_DEPTH24_STENCIL8
+		enum class InternalFormat {
+			NONE=0,
+			RGBA8,
+			RGBA16F,
+			DEPTH_COMPONENT16,
+			DEPTH_COMPONENT24,
+			STENCIL_INDEX4,
+			STENCIL_INDEX8,
+			DEPTH24_STENCIL8
 		};
 
-		unsigned int GetGLInternalFormat( internalFormat_t internalFormat );
-		unsigned int GetGLFormat( internalFormat_t internalFormat );
-		unsigned int GetDataTypeForFormat( internalFormat_t internalFormat );
+		unsigned int GetGLInternalFormat( InternalFormat internalFormat );
+		unsigned int GetGLFormat( InternalFormat internalFormat );
+		unsigned int GetDataTypeForFormat( InternalFormat internalFormat );
 
 	} // namespace Renderer
 

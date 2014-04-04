@@ -6,7 +6,7 @@ namespace XS {
 	// XS Filesystem layer
 	//
 	//	All files are internally treated as binary files to avoid line ending conversions (i.e. \n -> \r\n)
-	//	When using non-binary file modes (e.g. FM_READ) the file will be treated as text and space will be reserved for
+	//	When using non-binary file modes (e.g. FileMode::READ) the file will be treated as text and space will be reserved for
 	//	null terminator (i.e. file.length will be increased, file.read() will add null terminator at buffer[length-1]
 	//
 	//	The only acceptable path separator is '/' for consistency between platforms
@@ -18,7 +18,7 @@ namespace XS {
 	//	TODO: restrict accessing files outside of com_path, including absolute paths and directory traversal
 	//
 	//	Example of reading a text file:
-	//		const File f( "path/to.file", FM_READ );
+	//		const File f( "path/to.file", FileMode::READ );
 	//		if ( !f.open )
 	//			return;
 	//		char *buffer = new char[f.length];
@@ -27,29 +27,29 @@ namespace XS {
 	//		delete[] buffer;
 	//
 	//	Example of writing a text file:
-	//		const File f( "path/to.file", FM_WRITE );
+	//		const File f( "path/to.file", FileMode::WRITE );
 	//		if ( !f.open )
 	//			return;
 	//		f.AppendString( "Herp derp\n" );
 	//
 
-	enum fileMode_t {
-		FM_READ=0,
-		FM_READ_BINARY,
-		FM_WRITE,
-		FM_WRITE_BINARY,
-		FM_APPEND,
-		FM_NUM_MODES
+	enum FileMode {
+		READ = 0,
+		READ_BINARY,
+		WRITE,
+		WRITE_BINARY,
+		APPEND,
+		NUM_MODES
 	};
 
 	class File {
 	private:
-		File(); // can not instantiate with default constructor
+		File();
 
 		void Clear( void );
 
 		FILE *file;
-		fileMode_t mode;
+		FileMode mode;
 
 	public:
 		long length;
@@ -60,7 +60,7 @@ namespace XS {
 		static void GetPath( const char *gamePath, char *outPath, size_t outLen );
 		static void ReplaceSeparators( char *path );
 
-		File( const char *gamePath, fileMode_t mode = FM_READ );
+		File( const char *gamePath, FileMode mode = FileMode::READ );
 		~File();
 		void Read( byte *buf, size_t len = 0U ) const;
 		void AppendString( const char *str ) const;

@@ -39,11 +39,11 @@ namespace XS {
 
 						keystate[key] = true;
 
-						xsEvent_t ev;
+						XSEvent ev;
 						ev.keyEvent.key = key;
 						ev.keyEvent.down = true;
 
-						Event::Queue( EVENT_KEY, &ev );
+						Event::Queue( EventType::KEY, &ev );
 					}
 					break;
 
@@ -53,11 +53,11 @@ namespace XS {
 
 						keystate[key] = false;
 
-						xsEvent_t ev;
+						XSEvent ev;
 						ev.keyEvent.key = key;
 						ev.keyEvent.down = false;
 
-						Event::Queue( EVENT_KEY, &ev );
+						Event::Queue( EventType::KEY, &ev );
 					}
 					break;
 

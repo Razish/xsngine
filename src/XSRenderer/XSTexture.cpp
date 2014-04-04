@@ -57,7 +57,7 @@ namespace XS {
 			glGetFloatv( GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maxAnisotropy );
 		}
 
-		Texture::Texture( unsigned int width, unsigned int height, internalFormat_t internalFormat, byte *data ) {
+		Texture::Texture( unsigned int width, unsigned int height, InternalFormat internalFormat, byte *data ) {
 			size_t filterMode = GetTextureFilter( r_textureFilter->GetCString() );
 
 			glGenTextures( 1, &id );

@@ -23,7 +23,7 @@ namespace XS {
 	#endif
 	}
 
-	double Timer::GetTiming( bool restart, TimerResolution resolution ) {
+	double Timer::GetTiming( bool restart, Resolution resolution ) {
 		double startTime = 0.0, stopTime = 0.0;
 
 		Stop();
@@ -48,11 +48,11 @@ namespace XS {
 		}
 
 		switch ( resolution ) {
-		case SECONDS:
+		case Resolution::SECONDS:
 			return (stopTime - startTime) * 0.000001;
-		case MILLISECONDS:
+		case Resolution::MILLISECONDS:
 			return (stopTime - startTime) * 0.001;
-		case MICROSECONDS:
+		case Resolution::MICROSECONDS:
 			return (stopTime - startTime);
 		default:
 			// should not happen
@@ -60,5 +60,4 @@ namespace XS {
 		}
 	}
 
-}
-
+} // namespace XS

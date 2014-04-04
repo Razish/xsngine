@@ -31,7 +31,7 @@ namespace XS {
 		};
 		static const size_t numExtensionsRequired = ARRAY_LEN( extensionsRequired );
 
-		static const int shaderTypes[ST_NUM_SHADER_TYPES] = {
+		static const int shaderTypes[Shader::NUM_SHADER_TYPES] = {
 			GL_VERTEX_SHADER_ARB,
 			GL_FRAGMENT_SHADER_ARB
 		};
@@ -93,7 +93,7 @@ namespace XS {
 
 			id = glCreateShaderObjectARB( shaderType );
 			String::Copy( name, path, sizeof( name ) );
-			type = (shaderType == GL_VERTEX_SHADER_ARB) ? ST_VERTEX : ST_FRAGMENT;
+			type = (shaderType == GL_VERTEX_SHADER_ARB) ? VERTEX : FRAGMENT;
 
 			if ( !id ) {
 				delete[] shaderCode;
@@ -130,21 +130,21 @@ namespace XS {
 			OutputInfoLog( id );
 		}
 
-		Shader::Shader( shaderType_t type, const char *name ) {
+		Shader::Shader( ShaderType type, const char *name ) {
 			std::string path;
 
 			switch( type ) {
-			case ST_VERTEX:
+			case VERTEX:
 				path = String::Format( "shaders/v_%s.glsl", name );
 				break;
-			case ST_FRAGMENT:
+			case FRAGMENT:
 				path = String::Format( "shaders/f_%s.glsl", name );
 				break;
 			default:
 				throw( XSError( String::Format( "Shader(): Unknown shader type %d", type ).c_str() ) );
 			}
 
-			const File f( path.c_str(), FM_READ );
+			const File f( path.c_str(), FileMode::READ );
 			if ( !f.open )
 				throw( XSError( String::Format( "Shader(): Could not open file '%s'", name ).c_str() ) );
 
@@ -189,9 +189,9 @@ namespace XS {
 				throw( XSError( "Failed to create shader program" ) );
 
 			if ( vertexShaderName && !vertexShader )
-				AttachShader( new Shader( ST_VERTEX, vertexShaderName ) );
+				AttachShader( new Shader( Shader::VERTEX, vertexShaderName ) );
 			if ( fragmentShaderName && !fragmentShader )
-				AttachShader( new Shader( ST_FRAGMENT, fragmentShaderName ) );
+				AttachShader( new Shader( Shader::FRAGMENT, fragmentShaderName ) );
 
 			Link();
 			Bind();
@@ -249,14 +249,14 @@ namespace XS {
 				return;
 
 			switch ( shader->type ) {
-			case ST_FRAGMENT:
+			case Shader::FRAGMENT:
 				if ( fragmentShader != shader ) {
 					fragmentShader = shader;
 					glAttachObjectARB( id, shader->id );
 				}
 				break;
 
-			case ST_VERTEX:
+			case Shader::VERTEX:
 				if ( vertexShader != shader ) {
 					vertexShader = shader;
 					glAttachObjectARB( id, shader->id );

@@ -11,14 +11,14 @@
 
 namespace XS {
 
-	enum eventType_t {
-		EVENT_KEY=0,
-		EVENT_NUM_EVENTS
+	enum EventType {
+		KEY = 0,
+		NUM_EVENTS
 	};
 
-	struct xsEvent_t {
+	struct XSEvent {
 		// these will be set internally
-		eventType_t	type;
+		EventType	type;
 		uint32_t	time;
 
 		union {
@@ -32,7 +32,7 @@ namespace XS {
 	namespace Event {
 
 		void Init( void );
-		void Queue( eventType_t type, xsEvent_t *ev );
+		void Queue( EventType type, XSEvent *ev );
 		void Pump( void );
 
 	} // namespace Event
