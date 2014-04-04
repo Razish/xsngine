@@ -12,7 +12,7 @@ namespace XS {
 
 		bool AddCommand( const char *name, commandFunc_t cmd );
 
-		void Append( const char *cmd );
+		void Append( const char *str, char delimiter = ';' );
 		void ExecuteBuffer( void );
 
 	} // namespace Command

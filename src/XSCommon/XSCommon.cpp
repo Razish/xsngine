@@ -74,18 +74,18 @@ namespace XS {
 			//	set herp derp
 			// then append it to the command buffer
 
-			const char delim = '+';
-			size_t start = commandLine.find( delim );
+			const char delimiter = '+';
+			size_t start = commandLine.find( delimiter );
 			if ( start == std::string::npos )
 				return;
-			std::vector<std::string> args = String::Split( &commandLine[start+1], delim );
+			Command::Append( &commandLine[start + 1], delimiter );
 
+		#ifdef _DEBUG
 			Console::Print( "Startup parameters:\n" );
 			Indent indent(1);
-			for ( const auto &it : args ) {
-				Command::Append( it.c_str() );
-				Console::Print( "%s\n", it.c_str() );
-			}
+			for ( const auto &arg : String::Split( &commandLine[start + 1], delimiter ) )
+				Console::Print( "%s\n", arg.c_str() );
+		#endif
 		}
 
 		static void LoadConfig( void ) {

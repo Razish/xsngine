@@ -74,8 +74,10 @@ namespace XS {
 
 		// command buffer
 
-		void Append( const char *cmd ) {
-			buffer.push_back( cmd );
+		void Append( const char *str, char delimiter ) {
+			std::vector<std::string> commands = String::Split( str, delimiter );
+			for ( const auto &command : commands )
+				buffer.push_back( command );
 		}
 
 		void ExecuteBuffer( void ) {
