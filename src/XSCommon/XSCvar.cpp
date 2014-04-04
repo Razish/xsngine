@@ -6,6 +6,7 @@
 #include "XSCommon/XSString.h"
 #include "XSCommon/XSCommand.h"
 #include "XSCommon/XSConsole.h"
+#include "XSCommon/XSGlobals.h"
 
 namespace XS {
 
@@ -18,9 +19,8 @@ namespace XS {
 			Cvar *cv = it->second;
 			if ( !cv ) {
 				// shouldn't happen
-				#ifdef _DEBUG
+				if ( Common::com_developer->GetBool() )
 					Console::Print( "WriteCvars: NULL cvar '%s'\n", it->first.c_str() );
-				#endif
 				continue;
 			}
 			if ( (cv->flags & CVAR_ARCHIVE) && cv->modified && cv->fullString != cv->defaultStr )

@@ -8,11 +8,10 @@
 #include "XSCommon/XSCommand.h"
 #include "XSCommon/XSConsole.h"
 #include "XSCommon/XSError.h"
+#include "XSCommon/XSGlobals.h"
 #include "XSSystem/XSOS.h"
 
 namespace XS {
-
-	static Cvar *com_path = NULL;
 
 	static const char *modes[FM_NUM_MODES] = {
 		"rb", // FM_READ
@@ -81,7 +80,7 @@ namespace XS {
 	static bool CreatePath( const char *fullpath ) {
 		char path[FILENAME_MAX], basepath[FILENAME_MAX];
 
-		OS::ResolvePath( basepath, com_path->GetCString(), sizeof(basepath) );
+		OS::ResolvePath( basepath, Common::com_path->GetCString(), sizeof(basepath) );
 		if ( !CompareBaseDirectory( basepath, fullpath ) ) {
 			Console::Print( "WARNING: attempted directory traversal: \"%s\"\n", fullpath );
 			return false;
@@ -90,11 +89,11 @@ namespace XS {
 		String::Copy( path, fullpath, sizeof(path) );
 		File::ReplaceSeparators( path );
 
-		for ( char *s = strchr( path, PATH_SEP ) + 1; s != NULL && *s; s++ ) {
+		for ( char *s = strchr( path, PATH_SEP ) + 1; s && *s; s++ ) {
 			if ( *s == PATH_SEP ) {
 				*s = '\0';
 				if ( !OS::MkDir( path ) )
-					throw( XSError( String::Format( "FS_CreatePath: failed to create path \"%s\"", path ) ) );
+					throw( XSError( String::Format( "failed to create path \"%s\"", path ).c_str() ) );
 				*s = PATH_SEP;
 			}
 		}
@@ -102,14 +101,14 @@ namespace XS {
 	}
 
 	void File::Init( void ) {
-		com_path = Cvar::Create( "com_path", "", CVAR_INIT );
+		Common::com_path = Cvar::Create( "com_path", "", CVAR_INIT );
 	}
 
 	// return the full OS path for the specified relative gamepath
 	//	e.g. "C:\xsngine\textures\black.jpg" for "textures/black.jpg"
 	void File::GetPath( const char *gamePath, char *outPath, size_t outLen ) {
 		char fullpath[FILENAME_MAX];
-		String::FormatBuffer( fullpath, sizeof(fullpath), "%s%c%s", com_path->GetCString(), PATH_SEP, gamePath );
+		String::FormatBuffer( fullpath, sizeof(fullpath), "%s%c%s", Common::com_path->GetCString(), PATH_SEP, gamePath );
 		File::ReplaceSeparators( fullpath );
 		OS::ResolvePath( outPath, fullpath, outLen );
 	}
@@ -117,6 +116,7 @@ namespace XS {
 	// opens a file ready for read/write
 	// upon failure, file.open will be false and file.length will be 0
 	File::File( const char *gamePath, fileMode_t mode ) {
+		path[0] = '\0';
 		GetPath( gamePath, path, sizeof( path ) );
 
 		//TODO: create folders if non-existent. requires platform-specific code

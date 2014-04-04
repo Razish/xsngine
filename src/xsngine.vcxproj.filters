@@ -170,5 +170,11 @@
     <ClInclude Include="XSSystem\XSOS.h">
       <Filter>XSSystem</Filter>
     </ClInclude>
+    <ClInclude Include="XSCommon\XSError.h">
+      <Filter>XSCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="XSCommon\XSGlobals.h">
+      <Filter>XSCommon</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

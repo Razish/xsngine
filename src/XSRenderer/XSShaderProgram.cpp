@@ -99,7 +99,7 @@ namespace XS {
 				delete[] shaderCode;
 				r_glsl->Set( false );
 
-				throw( XSError( String::Format( "Shader(): Failed to create shader object for shader '%s'.\n", path ) ) );
+				throw( XSError( String::Format( "Shader(): Failed to create shader object for shader '%s'.\n", path ).c_str() ) );
 			}
 
 			glShaderSourceARB( id, 1, (const GLcharARB **)&shaderCode, NULL );
@@ -110,7 +110,7 @@ namespace XS {
 				delete[] shaderCode;
 				r_glsl->Set( false );
 
-				throw( XSError( String::Format( "Shader(): Invalid source code in shader '%s'\n", path ) ) );
+				throw( XSError( String::Format( "Shader(): Invalid source code in shader '%s'\n", path ).c_str() ) );
 			}
 
 			delete[] shaderCode;
@@ -124,7 +124,7 @@ namespace XS {
 				glDeleteObjectARB( id );
 				r_glsl->Set( false );
 
-				throw( XSError( String::Format( "Shader(): Failed to compile shader source for shader '%s'\n", path ) ) );
+				throw( XSError( String::Format( "Shader(): Failed to compile shader source for shader '%s'\n", path ).c_str() ) );
 			}
 
 			OutputInfoLog( id );
@@ -141,12 +141,12 @@ namespace XS {
 				path = String::Format( "shaders/f_%s.glsl", name );
 				break;
 			default:
-				throw( XSError( String::Format( "Shader(): Unknown shader type %d", type ) ) );
+				throw( XSError( String::Format( "Shader(): Unknown shader type %d", type ).c_str() ) );
 			}
 
 			const File f( path.c_str(), FM_READ );
 			if ( !f.open )
-				throw( XSError( String::Format( "Shader(): Could not open file '%s'", name ) ) );
+				throw( XSError( String::Format( "Shader(): Could not open file '%s'", name ).c_str() ) );
 
 			char *contents = new char[f.length];
 				f.Read( (byte *)contents );
@@ -264,7 +264,7 @@ namespace XS {
 				break;
 
 			default:
-				throw( XSError( String::Format( "AttachShader(): Unknown type %d", shader->type ) ) );
+				throw( XSError( String::Format( "AttachShader(): Unknown type %d", shader->type ).c_str() ) );
 			}
 		}
 

@@ -43,7 +43,7 @@ namespace XS {
 						ev->keyEvent.key, ev->keyEvent.down );
 					break;
 				default:
-					throw( XSError( String::Format( "Event::Queue: Unknown event %i", type ) ) );
+					throw( XSError( String::Format( "Event::Queue: Unknown event %i", type ).c_str() ) );
 					break;
 				}
 			}
@@ -58,7 +58,7 @@ namespace XS {
 						Client::KeyEvent( it->keyEvent.key, it->keyEvent.down );
 						break;
 					default:
-						throw( XSError( String::Format( "Event::Pump: Unknown event %i", it->type ) ) );
+						throw( XSError( String::Format( "Event::Pump: Unknown event %i", it->type ).c_str() ) );
 						break;
 				}
 			}

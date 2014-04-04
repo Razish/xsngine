@@ -5,7 +5,8 @@ namespace XS {
 	namespace Console {
 
 		void	Init		( void );
-		void	Print		( const std::string &fmt, ... );
+		void	Close		( void );
+		void	Print		( const char *fmt, ... );
 		void	Toggle		( const commandContext_t *context );
 		void	Display		( void );
 		void	Indent		( int level );

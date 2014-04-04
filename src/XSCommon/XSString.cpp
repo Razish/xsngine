@@ -38,8 +38,10 @@ namespace XS {
 			int outLen = vsnprintf( dst, len, fmt, ap );
 			va_end( ap );
 
-			if ( outLen >= (signed)len )
-				throw( XSError( String::Format( "FormatBuffer: Output length %d too short, requires %d bytes.", len, outLen+1 ) ) );
+			if ( outLen >= (signed)len ) {
+				throw( XSError( String::Format( "FormatBuffer: Output length %d too short, requires %d bytes.", len,
+					outLen+1 ).c_str() ) );
+			}
 
 			return outLen;
 		}
@@ -107,7 +109,7 @@ namespace XS {
 		}
 
 		// by Erik Aronesty http://stackoverflow.com/a/8098080
-		std::string Format( const std::string fmt, ... ) {
+		std::string Format( const char *fmt, ... ) {
 			size_t size = 128;
 			std::string str;
 			va_list ap;
@@ -116,7 +118,7 @@ namespace XS {
 				str.resize( size );
 
 				va_start( ap, fmt );
-				int n = vsnprintf( (char *)str.c_str(), size, fmt.c_str(), ap );
+				int n = vsnprintf( (char *)str.c_str(), size, fmt, ap );
 				va_end( ap );
 
 				if ( n > -1 && n < (signed)size ) {

@@ -48,6 +48,13 @@ namespace XS {
 			view.Register();
 		}
 
+		void Close( void ) {
+			for ( auto it = consoleText.begin(); it != consoleText.end(); ++it ) {
+				delete *it;
+			}
+			consoleText.clear();
+		}
+
 		static void Append( const char *text, bool multiLine ) {
 			size_t len = strlen( text )+1;
 			size_t accumLength = 0;
@@ -85,7 +92,7 @@ namespace XS {
 						j--;
 					}
 
-					String::Copy( insert, text, i+1 );
+					String::Copy( insert, text, i );
 					consoleText.push_back( insert );
 
 					for ( j=i; j>0; j-- ) {
@@ -101,11 +108,11 @@ namespace XS {
 				}
 			}
 
-			String::Copy( insert, text, i+1 );
+			String::Copy( insert, text, i );
 			consoleText.push_back( insert );
 		}
 
-		void Print( const std::string &fmt, ... ) {
+		void Print( const char *fmt, ... ) {
 			size_t size = 128;
 			std::string str;
 			va_list ap;
@@ -114,7 +121,7 @@ namespace XS {
 				str.resize( size );
 
 				va_start( ap, fmt );
-				int n = vsnprintf( (char *)str.c_str(), size, fmt.c_str(), ap );
+				int n = vsnprintf( (char *)str.c_str(), size, fmt, ap );
 				va_end( ap );
 
 				if ( n > -1 && n < (signed)size ) {
@@ -128,19 +135,19 @@ namespace XS {
 			}
 
 			//FIXME: care about printing twice on same line
-			std::string final = "";
+			std::string finalOut = "";
 			for ( unsigned int i=0; i<indentation; i++ )
-				final += "\t";
-			final += str;
+				finalOut += "\t";
+			finalOut += str;
 
 			//TODO: strip colours?
-			std::cout << final;
-			Append( final.c_str(), false );
+			std::cout << finalOut;
+			Append( finalOut.c_str(), false );
 
-			#if defined(_WIN32) && defined(_DEBUG)
-				if ( !final.empty() )
-					OutputDebugString( final.c_str() );
-			#endif
+		#if defined(_WIN32) && defined(_DEBUG)
+			if ( !finalOut.empty() )
+				OutputDebugString( finalOut.c_str() );
+		#endif
 		}
 
 		static void AdjustWidth( void ) {

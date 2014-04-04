@@ -20,6 +20,7 @@ namespace XS {
 		std::string defaultStr;
 		std::string fullString;
 		struct CvarValue {
+			CvarValue() : str( "" ), integer( 0 ), number( 0.0f ), boolean( false ) {}
 			std::string str;
 			int integer;
 			float number;

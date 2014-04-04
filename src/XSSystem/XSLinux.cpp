@@ -5,6 +5,7 @@
 #include "XSCommon/XSConsole.h"
 #include "XSCommon/XSCvar.h"
 #include "XSCommon/XSGlobals.h"
+#include "XSSystem/XSOS.h"
 
 #include <sys/stat.h>
 
@@ -31,14 +32,24 @@ namespace XS {
 		bool ResolvePath( char *outPath, const char *inPath, size_t pathLen ) {
 			assert( outPath && inPath );
 
-			if ( !realpath( inPath, outPath ) ) {
+			if ( !Stat( inPath ) || !realpath( inPath, outPath ) ) {
 				if ( Common::com_developer->GetBool() )
-					Console::Print( "Could not resolve path: \"%s\" (errno: %i)\n", inPath, errno );
+					Console::Print( "Could not resolve path: \"%s\" (%s)\n", inPath, strerro( errno ) );
 				outPath[0] = '\0';
 
 				return false;
 			}
 
+			return true;
+		}
+
+		bool RmDir( const char *path ) {
+			rmdir( path );
+			return true;
+		}
+
+		bool RmFile( const char *path ) {
+			remove( path );
 			return true;
 		}
 

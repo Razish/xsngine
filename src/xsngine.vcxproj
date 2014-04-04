@@ -229,8 +229,10 @@
     <ClInclude Include="XSCommon\XSCommon.h" />
     <ClInclude Include="XSCommon\XSConsole.h" />
     <ClInclude Include="XSCommon\XSCvar.h" />
+    <ClInclude Include="XSCommon\XSError.h" />
     <ClInclude Include="XSCommon\XSEvent.h" />
     <ClInclude Include="XSCommon\XSFile.h" />
+    <ClInclude Include="XSCommon\XSGlobals.h" />
     <ClInclude Include="XSCommon\XSString.h" />
     <ClInclude Include="XSCommon\XSTimer.h" />
     <ClInclude Include="XSCommon\XSVector.h" />

@@ -30,7 +30,7 @@ namespace XS {
 		#define DEFAULT_CONFIG			"cfg/xsn.cfg"
 		#define DEFAULT_CONFIG_SERVER	"cfg/xsn_server.cfg"
 
-		Cvar *com_dedicated, *com_developer;
+		Cvar *com_dedicated, *com_developer, *com_path;
 
 		static void RegisterCvars( void ) {
 			Cvar::Create( "com_date", __DATE__, CVAR_READONLY );
@@ -40,13 +40,13 @@ namespace XS {
 #else
 			com_developer = Cvar::Create( "com_developer", "0", CVAR_NONE );
 #endif
+			com_path = Cvar::Get( "com_path" );
 		}
 
 		static void ParseCommandLine( int argc, char **argv ) {
 			std::string commandLine;
 			static char cwd[FILENAME_MAX];
 
-			Cvar *com_path = Cvar::Get( "com_path" );
 			OS::GetCurrentWorkingDirectory( cwd, sizeof(cwd) );
 			com_path->Set( cwd );
 
@@ -151,17 +151,24 @@ int main( int argc, char **argv ) {
 		XS::Command::AddCommand( "writeconfig", XS::Common::Cmd_WriteConfig );
 		XS::Common::ParseCommandLine( argc, argv );
 
+		//
+		// DO NOT LOAD MEDIA BEFORE THIS POINT
+		//
+
 		XS::Common::RegisterCvars();
 		// execute the command line args, so config can be loaded from an overridden com_path
 		XS::Command::ExecuteBuffer();
 		XS::Common::LoadConfig();
 
+		// base path should be finalised by now
+		XS::Console::Print( "Base path: %s\n", XS::Common::com_path->GetCString() );
+
 		XS::Renderer::Init();
+
+		XS::Console::Init();
 
 		XS::Event::Init();
 	//	XS::Network::Init();
-
-		XS::Console::Init();
 
 		if ( XS::Common::com_developer->GetBool() ) {
 			double t = timer.GetTiming( true, XS::Timer::MILLISECONDS );
@@ -196,7 +203,7 @@ int main( int argc, char **argv ) {
 		bool developer = XS::Common::com_developer->GetBool();
 
 		XS::Console::Print( "\n*** XSNGINE Shutdown: %s\n\n"
-			"Cleaning up...\n", e.msg.c_str() );
+			"Cleaning up...\n", e.what() );
 
 		if ( developer ) {
 			double t = timer.GetTiming( true, XS::Timer::MILLISECONDS );
@@ -216,6 +223,8 @@ int main( int argc, char **argv ) {
 			double t = timer.GetTiming( false, XS::Timer::MILLISECONDS );
 			XS::Console::Print( "Shutdown time: %.0f milliseconds\n", (float)t );
 		}
+
+		XS::Console::Close();
 
 		return EXIT_SUCCESS;
 	}
