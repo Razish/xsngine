@@ -49,9 +49,8 @@ namespace XS {
 		}
 
 		void Close( void ) {
-			for ( auto it = consoleText.begin(); it != consoleText.end(); ++it ) {
-				delete *it;
-			}
+			for ( const auto &it : consoleText )
+				delete it;
 			consoleText.clear();
 		}
 

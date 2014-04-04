@@ -31,6 +31,7 @@ namespace XS {
 		#define DEFAULT_CONFIG_SERVER	"cfg/xsn_server.cfg"
 
 		Cvar *com_dedicated, *com_developer, *com_path;
+		static Cvar *com_framerate;
 
 		static void RegisterCvars( void ) {
 			Cvar::Create( "com_date", __DATE__, CVAR_READONLY );
@@ -40,6 +41,7 @@ namespace XS {
 #else
 			com_developer = Cvar::Create( "com_developer", "0", CVAR_NONE );
 #endif
+			com_framerate = Cvar::Create( "com_framerate", "120", CVAR_NONE );
 			com_path = Cvar::Get( "com_path" );
 		}
 
@@ -80,9 +82,9 @@ namespace XS {
 
 			Console::Print( "Startup parameters:\n" );
 			Indent indent(1);
-			for ( auto it = args.begin(); it != args.end(); ++it ) {
-				Command::Append( it->c_str() );
-				Console::Print( "%s\n", it->c_str() );
+			for ( const auto &it : args ) {
+				Command::Append( it.c_str() );
+				Console::Print( "%s\n", it.c_str() );
 			}
 		}
 
@@ -163,7 +165,8 @@ int main( int argc, char **argv ) {
 		// base path should be finalised by now
 		XS::Console::Print( "Base path: %s\n", XS::Common::com_path->GetCString() );
 
-		XS::Renderer::Init();
+		if ( !XS::Common::com_dedicated->GetBool() )
+			XS::Renderer::Init();
 
 		XS::Console::Init();
 
@@ -175,8 +178,25 @@ int main( int argc, char **argv ) {
 			XS::Console::Print( "Init time: %.0f milliseconds\n", (float)t );
 		}
 
+		if ( !XS::Common::com_dedicated->GetBool() ) {
+			XS::Client::Init();
+		}
+
 		// frame
+		XS::Timer gameTimer;
 		while ( 1 ) {
+			static double currentTime = gameTimer.GetTiming();
+			static double accumulator = 0.0;
+
+			// calculate delta time for integrating this frame
+			double newTime = gameTimer.GetTiming();
+			double frametime = newTime - currentTime;
+			double dt = 1.0 / XS::Common::com_framerate->GetDouble();
+			if ( frametime > 1.0 / 4.0 )
+				frametime = 1.0 / 4.0; // avoid spiral of death, maximum 250mspf
+			currentTime = newTime;
+			accumulator += frametime;
+
 			// input
 			if ( !XS::Common::com_dedicated->GetBool() )
 				XS::Client::input.Poll();
@@ -186,7 +206,7 @@ int main( int argc, char **argv ) {
 			XS::Command::ExecuteBuffer();
 
 			// server frame, then network (snapshot)
-		//	XS::Server::RunFrame();
+		//	XS::Server::RunFrame( dt );
 		//	XS::Server::NetworkPump();
 
 			// event pump
@@ -195,8 +215,15 @@ int main( int argc, char **argv ) {
 
 			// outgoing network (client command), then client frame
 			XS::Client::NetworkPump();
-			XS::Client::RunFrame();
-			XS::Renderer::Update();
+			while ( accumulator >= dt ) {
+				XS::Client::RunFrame( dt );
+				accumulator -= dt;
+			}
+
+		//	const double alpha = accumulator / dt;
+			// lerp( previousState, alpha, currentState )
+			XS::Client::DrawFrame();
+			XS::Renderer::Update( /*state*/ );
 		}
 	}
 	catch( const XS::XSError &e ) {
@@ -213,6 +240,7 @@ int main( int argc, char **argv ) {
 		// indent the console for this scope
 		{
 			XS::Indent indent(1);
+			XS::Client::Shutdown();
 			XS::Renderer::Shutdown();
 
 			XS::Common::WriteConfig();

@@ -14,13 +14,13 @@ namespace XS {
 	bool Cvar::initialised = false;
 
 	void Cvar::WriteCvars( std::string &str ) {
-		for ( auto it=cvars.begin(); it != cvars.end(); ++it ) {
-			const char *name = it->first.c_str();
-			Cvar *cv = it->second;
+		for ( const auto &it : cvars ) {
+			const char *name = it.first.c_str();
+			Cvar *cv = it.second;
 			if ( !cv ) {
 				// shouldn't happen
 				if ( Common::com_developer->GetBool() )
-					Console::Print( "WriteCvars: NULL cvar '%s'\n", it->first.c_str() );
+					Console::Print( "WriteCvars: NULL cvar '%s'\n", name );
 				continue;
 			}
 			if ( (cv->flags & CVAR_ARCHIVE) && cv->modified && cv->fullString != cv->defaultStr )
@@ -30,8 +30,8 @@ namespace XS {
 
 	void Cvar::Clean( void ) {
 		Console::Print( "Cleaning up cvars\n" );
-		for ( auto it=cvars.begin(); it != cvars.end(); ++it )
-			delete it->second;
+		for ( const auto &it : cvars )
+			delete it.second;
 		cvars.clear();
 	}
 
@@ -94,8 +94,8 @@ namespace XS {
 	}
 
 	void Cvar::List( void ) {
-		for ( auto itr=cvars.begin(); itr != cvars.end(); ++itr )
-			Console::Print( "%-32s : %s\n", itr->first.c_str(), itr->second->fullString.c_str() );
+		for ( const auto &it : cvars )
+			Console::Print( "%-32s : %s\n", it.first.c_str(), it.second->fullString.c_str() );
 	}
 
 	void Cvar::SetFlags( uint32_t flags ) {
@@ -116,12 +116,14 @@ namespace XS {
 		values.clear();
 		const char delim = ' ';
 		std::vector<std::string> tokens = String::Split( value, delim );
-		for ( auto it = tokens.begin(); it != tokens.end(); ++it ) {
+		for ( const auto &it : tokens ) {
 			CvarValue newValue;
 
-			newValue.str = *it;
-			newValue.number = (float)atof( newValue.str.c_str() );
-			newValue.integer = atoi( newValue.str.c_str() );
+			newValue.str = it;
+			const char *cstr = newValue.str.c_str();
+			newValue.real = atof( cstr );
+			newValue.number = (float)newValue.real;
+			newValue.integer = atoi( cstr );
 			newValue.boolean = !!newValue.integer;
 
 			values.push_back( newValue );

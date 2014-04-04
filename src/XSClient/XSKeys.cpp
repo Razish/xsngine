@@ -198,9 +198,9 @@ namespace XS {
 		}
 
 		void WriteBinds( std::string &str ) {
-			for ( auto itr=binds.begin(); itr != binds.end(); ++itr ) {
-				SDL_Keycode key = itr->first;
-				const std::string &cmd = itr->second;
+			for ( const auto &it : binds ) {
+				SDL_Keycode key = it.first;
+				const std::string &cmd = it.second;
 				if ( !cmd.empty() )
 					str += String::Format( "bind %s \"%s\"\n", GetNameForKeycode( key ), cmd.c_str() );
 			}

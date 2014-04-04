@@ -133,12 +133,12 @@ namespace XS {
 
 			glLoadIdentity();
 
-			for ( auto view = views.begin(); view != views.end(); ++view ) {
-				(*view)->PreRender();
-				for ( auto cmd = (*view)->renderCommands.begin(); cmd != (*view)->renderCommands.end(); ++cmd )
-					cmd->Execute();
-				(*view)->PostRender();
-				(*view)->renderCommands.clear();
+			for ( const auto &view : views ) {
+				view->PreRender();
+				for ( const auto &cmd : view->renderCommands )
+					cmd.Execute();
+				view->PostRender();
+				view->renderCommands.clear();
 			}
 
 			SDL_GL_SwapWindow( window );

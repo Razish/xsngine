@@ -52,13 +52,13 @@ namespace XS {
 		}
 
 		void Pump( void ) {
-			for ( auto it=events.begin(); it != events.end(); ++it ) {
-				switch( it->type ) {
+			for ( const auto &it : events ) {
+				switch( it.type ) {
 					case EVENT_KEY:
-						Client::KeyEvent( it->keyEvent.key, it->keyEvent.down );
+						Client::KeyEvent( it.keyEvent.key, it.keyEvent.down );
 						break;
 					default:
-						throw( XSError( String::Format( "Event::Pump: Unknown event %i", it->type ).c_str() ) );
+						throw( XSError( String::Format( "Event::Pump: Unknown event %i", it.type ).c_str() ) );
 						break;
 				}
 			}

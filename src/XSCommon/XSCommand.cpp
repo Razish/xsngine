@@ -27,12 +27,12 @@ namespace XS {
 				return;
 			}
 
-			for ( auto it=context->begin(); it!=context->end(); ++it ) {
-				const Cvar *cv = Cvar::Get( *it );
+			for ( const auto &it : *context ) {
+				const Cvar *cv = Cvar::Get( it );
 				if ( cv )
-					Console::Print( "%s: \"%s\"\n", it->c_str(), cv->GetFullCString() );
+					Console::Print( "%s: \"%s\"\n", it.c_str(), cv->GetFullCString() );
 				else
-					Console::Print( "%s: does not exist\n", it->c_str() );
+					Console::Print( "%s: does not exist\n", it.c_str() );
 			}
 		}
 
@@ -65,7 +65,6 @@ namespace XS {
 		}
 
 		void Init( void ) {
-			AddCommand( "bind", Client::Cmd_SetBind );
 			AddCommand( "print", Cmd_PrintCvar );
 			AddCommand( "set", Cmd_SetCvar );
 			AddCommand( "toggle", Cmd_ToggleCvar );
@@ -80,20 +79,20 @@ namespace XS {
 		}
 
 		void ExecuteBuffer( void ) {
-			for ( auto it = buffer.begin(); it != buffer.end(); ++it ) {
+			for ( const auto &it : buffer ) {
 				commandContext_t context;
 
 				// tokenise the arguments
 				const char delim = ' ';
-				size_t start = it->find( delim );
-				std::string name = it->substr( 0, start );
+				size_t start = it.find( delim );
+				std::string name = it.substr( 0, start );
 
-				if ( start != std::string::npos && start != it->size()-1 ) {
-					context = String::Split( &(*it)[start+1], ' ' );
+				if ( start != std::string::npos && start != it.size()-1 ) {
+					context = String::Split( &it[start+1], ' ' );
 
 					// strip any quotes around the arguments
-					for ( auto tok = context.begin(); tok != context.end(); ++tok )
-						tok->erase( std::remove( tok->begin(), tok->end(), '"' ), tok->end() );
+					for ( auto &tok : context )
+						tok.erase( std::remove( tok.begin(), tok.end(), '"' ), tok.end() );
 
 				//	if ( !context->size() )
 				//		continue;

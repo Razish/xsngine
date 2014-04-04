@@ -27,6 +27,6 @@ namespace XS {
 		};
 
 		void	Stop( void );
-		double	GetTiming( bool restart = false, TimerResolution resolution = MILLISECONDS );
+		double	GetTiming( bool restart = false, TimerResolution resolution = MICROSECONDS );
 	};
 }

@@ -26,7 +26,7 @@ MAIN LOOP
 			set up renderer view (3d) and queue render commands
 		draw HUD
 			set up hud view (2d) and queue render commands
-		draw console (move this out of client? maybe server should just use stdin/stdout)
+		draw console (move this out of client? maybe server should just use stdin/stdout, curses if available)
 			set up console view, or hijack hud/overlay view?
 			queue render commands
 

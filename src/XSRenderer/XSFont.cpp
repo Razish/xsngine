@@ -43,8 +43,8 @@ namespace XS {
 
 			fontProgram = new ShaderProgram( "text", "text" );
 
-			for ( auto it = fonts.begin(); it != fonts.end(); ++it ) {
-				font_t *font = it->second;
+			for ( const auto &it : fonts ) {
+				font_t *font = it.second;
 				FT_Face face = NULL;
 
 				const File f( font->file.c_str(), FM_READ_BINARY );
@@ -117,9 +117,8 @@ namespace XS {
 		}
 
 		void Font::Shutdown( void ) {
-			for ( auto it=fonts.begin(); it != fonts.end(); ++it ) {
-				delete it->second;
-			}
+			for ( const auto &it : fonts )
+				delete it.second;
 		}
 
 		void Font::Draw( const vector2 pos, const std::string &text, const font_t *font ) {
