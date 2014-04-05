@@ -143,9 +143,7 @@ static XS::Timer timer;
 
 int main( int argc, char **argv ) {
 	try {
-		XS::Console::Print( WINDOW_TITLE " (" XSTR( ARCH_WIDTH ) " bits) built on " __DATE__ " [git " REVISION "]\n" );
-
-		// init
+		// critical initialisation
 		XS::File::Init();
 		XS::Command::Init(); // register commands like exec, vstr
 		XS::Command::AddCommand( "writeconfig", XS::Common::Cmd_WriteConfig );
@@ -154,6 +152,8 @@ int main( int argc, char **argv ) {
 		//
 		// DO NOT LOAD MEDIA BEFORE THIS POINT
 		//
+
+		XS::Console::Print( WINDOW_TITLE " (" XSTR( ARCH_WIDTH ) " bits) built on " __DATE__ " [git " REVISION "]\n" );
 
 		XS::Common::RegisterCvars();
 		// execute the command line args, so config can be loaded from an overridden com_path
@@ -250,7 +250,7 @@ int main( int argc, char **argv ) {
 
 		if ( developer ) {
 			double t = timer.GetTiming( false, XS::Timer::Resolution::MILLISECONDS );
-			XS::Console::Print( "Shutdown time: %.0f milliseconds\n", (float)t );
+			XS::Console::Print( "Shutdown time: %.0f milliseconds\n\n\n", (float)t );
 		}
 
 		XS::Console::Close();

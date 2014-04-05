@@ -90,6 +90,9 @@
     <ClCompile Include="XSSystem\XSWindows.cpp">
       <Filter>XSSystem</Filter>
     </ClCompile>
+    <ClCompile Include="XSCommon\XSLogger.cpp">
+      <Filter>XSCommon</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="XSCommon\XSCvar.h">
@@ -174,6 +177,9 @@
       <Filter>XSCommon</Filter>
     </ClInclude>
     <ClInclude Include="XSCommon\XSGlobals.h">
+      <Filter>XSCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="XSCommon\XSLogger.h">
       <Filter>XSCommon</Filter>
     </ClInclude>
   </ItemGroup>

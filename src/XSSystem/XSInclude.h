@@ -7,6 +7,7 @@
 #include <cstdarg>
 #include <cstdint>
 #include <cstring>
+#include <ctime>
 
 // for getcwd
 #if defined(_WIN32)

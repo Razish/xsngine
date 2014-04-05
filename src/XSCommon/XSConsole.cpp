@@ -16,6 +16,7 @@
 #include "XSCommon/XSFile.h"
 #include "XSCommon/XSCvar.h"
 #include "XSCommon/XSCommand.h"
+#include "XSCommon/XSLogger.h"
 #include "XSRenderer/XSInternalFormat.h"
 #include "XSRenderer/XSTexture.h"
 #include "XSRenderer/XSRenderCommand.h"
@@ -38,6 +39,8 @@ namespace XS {
 
 		static Renderer::Texture *fontTexture;
 		static Renderer::View view;
+
+		static Logger consoleLog( "console.log" );
 
 		void Init( void ) {
 			fontTexture = new Renderer::Texture( 16*characterSize, 16*characterSize, Renderer::InternalFormat::RGBA8,
@@ -142,6 +145,7 @@ namespace XS {
 			//TODO: strip colours?
 			std::cout << finalOut;
 			Append( finalOut.c_str(), false );
+			consoleLog.Print( finalOut.c_str() );
 
 		#if defined(_WIN32) && defined(_DEBUG)
 			if ( !finalOut.empty() )
