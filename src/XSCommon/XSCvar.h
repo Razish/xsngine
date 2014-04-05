@@ -12,9 +12,11 @@ namespace XS {
 	class Cvar {
 	private:
 		Cvar();
-		Cvar( const std::string &name, const std::string &value = "", uint32_t flags = CVAR_NONE );
+		Cvar( const std::string &name, const std::string &value = "", const std::string &description = "none",
+			uint32_t flags = CVAR_NONE );
 
 		std::string name;
+		std::string description;
 
 		// store the value in these formats
 		std::string defaultStr;
@@ -40,7 +42,8 @@ namespace XS {
 
 		static bool initialised;
 
-		static Cvar *Create( std::string name, std::string value="", uint32_t flags=CVAR_NONE );
+		static Cvar *Create( std::string name, std::string value="", std::string description="none",
+			uint32_t flags=CVAR_NONE );
 		static Cvar *Get( const std::string &name );
 		static void List( void );
 

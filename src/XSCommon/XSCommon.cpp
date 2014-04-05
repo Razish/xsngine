@@ -34,14 +34,14 @@ namespace XS {
 		static Cvar *com_framerate;
 
 		static void RegisterCvars( void ) {
-			Cvar::Create( "com_date", __DATE__, CVAR_READONLY );
-			com_dedicated = Cvar::Create( "com_dedicated", "0", CVAR_INIT );
+			Cvar::Create( "com_date", __DATE__, "Compilation date", CVAR_READONLY );
+			com_dedicated = Cvar::Create( "com_dedicated", "0", "Running a dedicated server", CVAR_INIT );
 #ifdef _DEBUG
-			com_developer = Cvar::Create( "com_developer", "1", CVAR_NONE );
+			com_developer = Cvar::Create( "com_developer", "1", "Developer mode", CVAR_NONE );
 #else
-			com_developer = Cvar::Create( "com_developer", "0", CVAR_NONE );
+			com_developer = Cvar::Create( "com_developer", "0", "Developer mode", CVAR_NONE );
 #endif
-			com_framerate = Cvar::Create( "com_framerate", "120", CVAR_NONE );
+			com_framerate = Cvar::Create( "com_framerate", "120", "Game tick rate", CVAR_NONE );
 			com_path = Cvar::Get( "com_path" );
 		}
 
@@ -105,8 +105,6 @@ namespace XS {
 					}
 				delete[] buffer;
 			}
-
-			Cvar::initialised = true;
 		}
 
 		static void WriteConfig( const char *cfg = NULL ) {
@@ -129,7 +127,7 @@ namespace XS {
 			f.AppendString( str.c_str() );
 		}
 
-		static void Cmd_WriteConfig( const commandContext_t *context ) {
+		static void Cmd_WriteConfig( const commandContext_t * const context ) {
 			const char *cfg = NULL;
 			if ( context->size() )
 				 cfg = (*context)[0].c_str();
@@ -181,6 +179,9 @@ int main( int argc, char **argv ) {
 		if ( !XS::Common::com_dedicated->GetBool() ) {
 			XS::Client::Init();
 		}
+
+		// post-init stuff
+		XS::Cvar::initialised = true;
 
 		// frame
 		XS::Timer gameTimer;

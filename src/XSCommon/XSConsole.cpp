@@ -136,7 +136,7 @@ namespace XS {
 			//FIXME: care about printing twice on same line
 			std::string finalOut = "";
 			for ( unsigned int i=0; i<indentation; i++ )
-				finalOut += "\t";
+				finalOut += "  ";
 			finalOut += str;
 
 			//TODO: strip colours?
@@ -199,7 +199,7 @@ namespace XS {
 			}
 		}
 
-		void Toggle( const commandContext_t *context ) {
+		void Toggle( const commandContext_t * const context ) {
 			(void)context;
 			visible = !visible;
 		}

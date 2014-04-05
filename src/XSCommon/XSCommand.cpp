@@ -21,7 +21,11 @@ namespace XS {
 		// command buffer
 		static std::vector<std::string> buffer;
 
-		static void Cmd_PrintCvar( const commandContext_t *context ) {
+		static void Cmd_ListCvars( const commandContext_t * const context ) {
+			Cvar::List();
+		}
+
+		static void Cmd_PrintCvar( const commandContext_t * const context ) {
 			if ( context->size() < 1 ) {
 				Console::Print( "\"print\" failed. Must specify at-least one cvar\n" );
 				return;
@@ -36,7 +40,7 @@ namespace XS {
 			}
 		}
 
-		static void Cmd_SetCvar( const commandContext_t *context ) {
+		static void Cmd_SetCvar( const commandContext_t * const context ) {
 			if ( context->size() < 2 ) {
 				Console::Print( "\"set\" failed. Must specify a cvar and value\n" );
 				return;
@@ -54,17 +58,19 @@ namespace XS {
 			cv->Set( value );
 		}
 
-		static void Cmd_ToggleCvar( const commandContext_t *context ) {
+		static void Cmd_ToggleCvar( const commandContext_t * const context ) {
 			Cvar *cv = Cvar::Get( (*context)[0] );
 
 			cv->Set( !cv->GetBool() );
 		}
 
-		static void Cmd_Quit( const commandContext_t *context ) {
+		static void Cmd_Quit( const commandContext_t * const context ) {
 			throw( XSError( "Quit application" ) );
 		}
 
 		void Init( void ) {
+			AddCommand( "bind", Client::Cmd_SetBind );
+			AddCommand( "cvarlist", Cmd_ListCvars );
 			AddCommand( "print", Cmd_PrintCvar );
 			AddCommand( "set", Cmd_SetCvar );
 			AddCommand( "toggle", Cmd_ToggleCvar );
@@ -113,8 +119,10 @@ namespace XS {
 
 		bool AddCommand( const char *name, commandFunc_t cmd ) {
 			commandFunc_t &func = commands[name];
-			if ( func )
+			if ( func ) {
+				Console::Print( "Tried to register command \"%s\" twice\n", name );
 				return false;
+			}
 
 			func = cmd;
 			return true;

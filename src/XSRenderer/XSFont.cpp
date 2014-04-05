@@ -49,7 +49,7 @@ namespace XS {
 
 				const File f( font->file.c_str(), FileMode::READ_BINARY );
 				if ( !f.open ) {
-					Console::Print( "WARNING: Could not load font file '%s'\n", f.path );
+					Console::Print( "WARNING: Could not load font file \"%s\"\n", f.path );
 					continue;
 				}
 
@@ -58,7 +58,7 @@ namespace XS {
 				f.Read( contents );
 
 				if ( FT_New_Memory_Face( ft, contents, f.length, 0, &face ) ) {
-					Console::Print( "WARNING: Could not register font '%s'\n", font->file.c_str() );
+					Console::Print( "WARNING: Could not register font \"%s\"\n", font->file.c_str() );
 					delete[] contents;
 					continue;
 				}

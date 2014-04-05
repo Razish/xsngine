@@ -31,7 +31,7 @@ namespace XS {
 		static const size_t numExtensionsRequired = ARRAY_LEN( extensionsRequired );
 
 		void Framebuffer::Init( void ) {
-			r_fbo = Cvar::Create( "r_fbo", "1", CVAR_ARCHIVE );
+			r_fbo = Cvar::Create( "r_fbo", "1", "Enable framebuffer objects", CVAR_ARCHIVE );
 
 			// let them disable GLSL entirely
 			if ( !r_fbo->GetBool() ) {
@@ -43,7 +43,7 @@ namespace XS {
 			for ( size_t i=0; i<numExtensionsRequired; i++ ) {
 				if ( !SDL_GL_ExtensionSupported( extensionsRequired[i] ) ) {
 					supported = false;
-					Console::Print( "Warning: Required OpenGL extension '%s' not available\n", extensionsRequired[i] );
+					Console::Print( "Warning: Required OpenGL extension \"%s\" not available\n", extensionsRequired[i] );
 				}
 			}
 

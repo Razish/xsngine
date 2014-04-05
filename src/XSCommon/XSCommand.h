@@ -6,7 +6,7 @@ namespace XS {
 
 	namespace Command {
 
-		typedef void (*commandFunc_t)( const commandContext_t *context );
+		typedef void (*commandFunc_t)( const commandContext_t * const context );
 
 		void Init( void );
 

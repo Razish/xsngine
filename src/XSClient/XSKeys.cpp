@@ -144,7 +144,7 @@ namespace XS {
 			return NULL;
 		}
 
-		void Cmd_SetBind( const commandContext_t *context ) {
+		void Cmd_SetBind( const commandContext_t * const context ) {
 			if ( context->size() < 2 ) {
 				Console::Print( "\"bind\" failed. Must specify a key and command\n" );
 				return;
@@ -153,7 +153,7 @@ namespace XS {
 			SDL_Keycode keycode = GetKeycodeForName( (*context)[0].c_str() );
 
 			if ( keycode == SDLK_UNKNOWN ) {
-				Console::Print( "\"bind\" failed. Unknown key '%s'\n", (*context)[0].c_str() );
+				Console::Print( "\"bind\" failed. Unknown key \"%s\"\n", (*context)[0].c_str() );
 				return;
 			}
 
@@ -174,7 +174,7 @@ namespace XS {
 
 			if ( cmd.empty() ) {
 			//	if ( down )
-			//		Console::Print( "ExecuteBind: '%s' (%d) is not bound\n", GetNameForKeycode( key ), key );
+			//		Console::Print( "ExecuteBind: \"%s\" (%d) is not bound\n", GetNameForKeycode( key ), key );
 				return;
 			}
 

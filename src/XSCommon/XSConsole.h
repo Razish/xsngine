@@ -7,7 +7,7 @@ namespace XS {
 		void	Init		( void );
 		void	Close		( void );
 		void	Print		( const char *fmt, ... );
-		void	Toggle		( const commandContext_t *context );
+		void	Toggle		( const commandContext_t * const context );
 		void	Display		( void );
 		void	Indent		( int level );
 

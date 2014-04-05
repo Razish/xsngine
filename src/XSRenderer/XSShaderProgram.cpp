@@ -37,7 +37,7 @@ namespace XS {
 		};
 
 		void ShaderProgram::Init( void ) {
-			r_glsl = Cvar::Create( "r_glsl", "1", CVAR_ARCHIVE );
+			r_glsl = Cvar::Create( "r_glsl", "1", "Enable GLSL", CVAR_ARCHIVE );
 
 			// let them disable GLSL entirely
 			if ( !r_glsl->GetBool() ) {
@@ -49,7 +49,7 @@ namespace XS {
 			for ( size_t i=0; i<numExtensionsRequired; i++ ) {
 				if ( !SDL_GL_ExtensionSupported( extensionsRequired[i] ) ) {
 					supported = false;
-					Console::Print( "Warning: Required OpenGL extension '%s' not available\n", extensionsRequired[i] );
+					Console::Print( "Warning: Required OpenGL extension \"%s\" not available\n", extensionsRequired[i] );
 				}
 			}
 
@@ -99,7 +99,7 @@ namespace XS {
 				delete[] shaderCode;
 				r_glsl->Set( false );
 
-				throw( XSError( String::Format( "Shader(): Failed to create shader object for shader '%s'.\n", path ).c_str() ) );
+				throw( XSError( String::Format( "Shader(): Failed to create shader object for shader \"%s\"\n", path ).c_str() ) );
 			}
 
 			glShaderSourceARB( id, 1, (const GLcharARB **)&shaderCode, NULL );
@@ -110,7 +110,7 @@ namespace XS {
 				delete[] shaderCode;
 				r_glsl->Set( false );
 
-				throw( XSError( String::Format( "Shader(): Invalid source code in shader '%s'\n", path ).c_str() ) );
+				throw( XSError( String::Format( "Shader(): Invalid source code in shader \"%s\"\n", path ).c_str() ) );
 			}
 
 			delete[] shaderCode;
@@ -124,7 +124,7 @@ namespace XS {
 				glDeleteObjectARB( id );
 				r_glsl->Set( false );
 
-				throw( XSError( String::Format( "Shader(): Failed to compile shader source for shader '%s'\n", path ).c_str() ) );
+				throw( XSError( String::Format( "Shader(): Failed to compile shader source for shader \"%s\"\n", path ).c_str() ) );
 			}
 
 			OutputInfoLog( id );
@@ -146,7 +146,7 @@ namespace XS {
 
 			const File f( path.c_str(), FileMode::READ );
 			if ( !f.open )
-				throw( XSError( String::Format( "Shader(): Could not open file '%s'", name ).c_str() ) );
+				throw( XSError( String::Format( "Shader(): Could not open file \"%s\"", name ).c_str() ) );
 
 			char *contents = new char[f.length];
 				f.Read( (byte *)contents );

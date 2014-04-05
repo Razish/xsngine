@@ -101,7 +101,7 @@ namespace XS {
 	}
 
 	void File::Init( void ) {
-		Common::com_path = Cvar::Create( "com_path", "", CVAR_INIT );
+		Common::com_path = Cvar::Create( "com_path", "", "Base directory to load assets from", CVAR_INIT );
 	}
 
 	// return the full OS path for the specified relative gamepath

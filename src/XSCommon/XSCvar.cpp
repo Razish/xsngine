@@ -20,7 +20,7 @@ namespace XS {
 			if ( !cv ) {
 				// shouldn't happen
 				if ( Common::com_developer->GetBool() )
-					Console::Print( "WriteCvars: NULL cvar '%s'\n", name );
+					Console::Print( "WriteCvars: NULL cvar \"%s\"\n", name );
 				continue;
 			}
 			if ( (cv->flags & CVAR_ARCHIVE) && cv->modified && cv->fullString != cv->defaultStr )
@@ -44,16 +44,15 @@ namespace XS {
 	}
 
 	// public
-	Cvar::Cvar( const std::string &name, const std::string &value, uint32_t flags ) {
-		cvars[name] = this;
+	Cvar::Cvar( const std::string &name, const std::string &value, const std::string &description , uint32_t flags )
+		: name( name ), defaultStr( value ), description( description ), modified( false ) {
 
-		this->name = name;
+		cvars[name] = this;
 		SetFlags( flags );
-		modified = false;
 		Set( value, true );
 	}
 
-	Cvar *Cvar::Create( std::string name, std::string value, uint32_t flags ) {
+	Cvar *Cvar::Create( std::string name, std::string value, std::string description, uint32_t flags ) {
 		Cvar *cvar = cvars[name];
 		if ( initialised )
 			flags &= ~CVAR_INIT;
@@ -63,12 +62,14 @@ namespace XS {
 			if ( !value.empty() ) {
 				// INIT cvars should not be initialised with differing values
 				if ( cvar->flags & CVAR_INIT )
-					Console::Print( "WARNING: CVAR_INIT Cvar '%s' was created twice with values '%s' and '%s'\n",
+					Console::Print( "WARNING: CVAR_INIT Cvar \"%s\" was created twice with values \"%s\" and \"%s\"\n",
 						name.c_str(), cvar->fullString.c_str(), value.c_str() );
 
 				// don't initialise a cvar if it already exists/has been set
 				else if ( !cvar->modified )
 					cvar->Set( value, true );
+
+				cvar->description = description;
 			}
 
 			if ( flags != CVAR_NONE )
@@ -78,10 +79,7 @@ namespace XS {
 		}
 
 		// allocate and add to map
-		cvar = new Cvar( name, value );
-		cvar->defaultStr = value;
-
-		return cvar;
+		return new Cvar( name, value, description, flags );
 	}
 
 	Cvar *Cvar::Get( const std::string &name ) {
@@ -94,8 +92,14 @@ namespace XS {
 	}
 
 	void Cvar::List( void ) {
-		for ( const auto &it : cvars )
-			Console::Print( "%-32s : %s\n", it.first.c_str(), it.second->fullString.c_str() );
+		Console::Print( "Listing Cvars...\n" );
+
+		Indent indent( 1 );
+		for ( const auto &it : cvars ) {
+			char buf[64];
+			String::FormatBuffer( buf, sizeof(buf), "%s \"%s\"", it.first.c_str(), it.second->fullString.c_str() );
+			Console::Print( "%-48s: %s\n", buf, it.second->description.c_str() );
+		}
 	}
 
 	void Cvar::SetFlags( uint32_t flags ) {
@@ -106,8 +110,8 @@ namespace XS {
 	}
 
 	bool Cvar::Set( const char *value, bool initial ) {
-		if ( flags & CVAR_READONLY ) {
-			Console::Print( "Attempt to set read-only cvar '%s'\n", name.c_str() );
+		if ( !initial && (flags & CVAR_READONLY) ) {
+			Console::Print( "Attempt to set read-only cvar \"%s\"\n", name.c_str() );
 			return false;
 		}
 

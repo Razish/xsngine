@@ -7,6 +7,7 @@
 #include "XSCommon/XSConsole.h"
 #include "XSCommon/XSFile.h"
 #include "XSCommon/XSCvar.h"
+#include "XSCommon/XSGlobals.h"
 #include "XSRenderer/XSImagePNG.h"
 
 namespace XS {
@@ -164,11 +165,12 @@ namespace XS {
 
 			const File f = File( filename, FileMode::READ_BINARY );
 			if ( !f.open ) {
-				Console::Print( "Could not open PNG file '%s'\n", filename );
+				Console::Print( "Could not open PNG file \"%s\"\n", filename );
 				return NULL;
 			}
 
-			Console::Print( "Loading '%s'...\n", filename );
+			if ( Common::com_developer->GetBool() )
+				Console::Print( "Loading \"%s\"...\n", filename );
 
 			byte *buf = new byte[f.length];
 			f.Read( buf );

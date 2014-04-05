@@ -25,8 +25,6 @@ namespace XS {
 		void *moduleHandle = NULL;
 
 		void Init( void ) {
-			Command::AddCommand( "bind", Cmd_SetBind );
-
 #if 0
 			// initialise the client library
 			char modulePath[XS_MAX_FILENAME];

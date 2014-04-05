@@ -29,7 +29,7 @@ namespace XS {
 		};
 
 		void Init( void ) {
-			debug_events = Cvar::Create( "debug_events", "0", CVAR_INIT );
+			debug_events = Cvar::Create( "debug_events", "0", "Print debug messages for input events", CVAR_INIT );
 		}
 
 		void Queue( EventType type, XSEvent *ev ) {
