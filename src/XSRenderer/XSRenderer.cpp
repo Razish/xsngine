@@ -115,6 +115,10 @@ namespace XS {
 			context = SDL_GL_CreateContext( window );
 
 			SDL_GL_SetSwapInterval( r_swapInterval->GetInt() );
+
+			Console::Print( "OpenGL device: %s %s\n", glGetString( GL_VENDOR ), glGetString( GL_RENDERER ) );
+			Console::Print( "OpenGL version: %s with GLSL %s\n", glGetString( GL_VERSION ),
+				glGetString( GL_SHADING_LANGUAGE_VERSION ) );
 		}
 
 		void DestroyDisplay( void ) {
@@ -155,14 +159,13 @@ namespace XS {
 		void DrawQuad( float x, float y, float w, float h, float s1, float t1, float s2, float t2,
 			const Texture *texture )
 		{
-			RenderCommand cmd;
-
 			//TODO: procedurally generated default/missing texture
 			if ( !texture )
 				return;
 
-			cmd.drawQuad.x = x / vid_width->GetInt();
-			cmd.drawQuad.y = y / vid_height->GetInt();
+			RenderCommand cmd( RenderCommand::DRAWQUAD );
+			cmd.drawQuad.x = x / vid_width->GetFloat();
+			cmd.drawQuad.y = y / vid_height->GetFloat();
 			cmd.drawQuad.w = w;
 			cmd.drawQuad.h = h;
 			cmd.drawQuad.s1 = s1;
@@ -170,8 +173,6 @@ namespace XS {
 			cmd.drawQuad.s2 = s2;
 			cmd.drawQuad.t2 = t2;
 			cmd.drawQuad.textureID = texture->id;
-
-			cmd.type = RenderCommand::DRAWQUAD;
 
 			currentView->renderCommands.push_back( cmd );
 		}

@@ -13,6 +13,7 @@ namespace XS {
 		};
 
 		struct RenderCommand {
+		public:
 			enum RenderCommandType {
 				DRAWQUAD = 0,
 				NUM_RCMDS
@@ -20,9 +21,13 @@ namespace XS {
 			union {
 				rcDrawQuad_t drawQuad;
 			};
-			RenderCommandType type;
 
+			RenderCommand( RenderCommandType type ) : type( type ) {}
 			void Execute( void ) const;
+
+		private:
+			RenderCommand();
+			RenderCommandType type;
 		};
 
 	} // namespace Renderer
