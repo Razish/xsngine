@@ -34,7 +34,7 @@ namespace XS {
 
 			if ( !Stat( inPath ) || !realpath( inPath, outPath ) ) {
 				if ( Common::com_developer->GetBool() )
-					Console::Print( "Could not resolve path: \"%s\" (%s)\n", inPath, strerro( errno ) );
+					Console::Print( "Could not resolve path: \"%s\" (%s)\n", inPath, strerror( errno ) );
 				outPath[0] = '\0';
 
 				return false;
