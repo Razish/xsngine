@@ -30,7 +30,7 @@ namespace XS {
 		#define DEFAULT_CONFIG			"cfg/xsn.cfg"
 		#define DEFAULT_CONFIG_SERVER	"cfg/xsn_server.cfg"
 
-		Cvar *com_dedicated, *com_developer, *com_path;
+		Cvar *com_dedicated, *com_developer;
 		static Cvar *com_framerate;
 
 		static void RegisterCvars( void ) {
@@ -42,15 +42,10 @@ namespace XS {
 			com_developer = Cvar::Create( "com_developer", "0", "Developer mode", CVAR_NONE );
 #endif
 			com_framerate = Cvar::Create( "com_framerate", "120", "Game tick rate", CVAR_NONE );
-			com_path = Cvar::Get( "com_path" );
 		}
 
 		static void ParseCommandLine( int argc, char **argv ) {
 			std::string commandLine;
-			static char cwd[FILENAME_MAX];
-
-			OS::GetCurrentWorkingDirectory( cwd, sizeof(cwd) );
-			com_path->Set( cwd );
 
 			// concatenate argv[] to commandLine
 			for ( int i=1; i<argc; i++ ) {
@@ -73,7 +68,6 @@ namespace XS {
 			//	set x y
 			//	set herp derp
 			// then append it to the command buffer
-
 			const char delimiter = '+';
 			size_t start = commandLine.find( delimiter );
 			if ( start == std::string::npos )
@@ -145,23 +139,21 @@ int main( int argc, char **argv ) {
 	try {
 		// critical initialisation
 		XS::File::Init();
+		XS::Common::RegisterCvars();
 		XS::Command::Init(); // register commands like exec, vstr
 		XS::Command::AddCommand( "writeconfig", XS::Common::Cmd_WriteConfig );
 		XS::Common::ParseCommandLine( argc, argv );
+
+		// execute the command line args, so config can be loaded from an overridden base path
+		XS::Command::ExecuteBuffer();
+		XS::File::SetBasePath();
+		XS::Common::LoadConfig();
 
 		//
 		// DO NOT LOAD MEDIA BEFORE THIS POINT
 		//
 
 		XS::Console::Print( WINDOW_TITLE " (" XSTR( ARCH_WIDTH ) " bits) built on " __DATE__ " [git " REVISION "]\n" );
-
-		XS::Common::RegisterCvars();
-		// execute the command line args, so config can be loaded from an overridden com_path
-		XS::Command::ExecuteBuffer();
-		XS::Common::LoadConfig();
-
-		// base path should be finalised by now
-		XS::Console::Print( "Base path: %s\n", XS::Common::com_path->GetCString() );
 
 		if ( !XS::Common::com_dedicated->GetBool() )
 			XS::Renderer::Init();

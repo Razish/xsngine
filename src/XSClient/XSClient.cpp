@@ -28,7 +28,7 @@ namespace XS {
 #if 0
 			// initialise the client library
 			char modulePath[XS_MAX_FILENAME];
-			File::GetPath( MODULE_NAME, modulePath, sizeof( modulePath ) );
+			File::GetFullPath( MODULE_NAME, modulePath, sizeof( modulePath ) );
 			moduleHandle = SDL_LoadObject( modulePath );
 			if ( !moduleHandle ) {
 				throw( XSError( "Could not find client module (" MODULE_NAME ")" ) );

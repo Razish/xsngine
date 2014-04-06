@@ -13,6 +13,10 @@
 
 namespace XS {
 
+	static char basePath[XS_MAX_FILENAME];
+	static Cvar *com_path;
+	static bool initialised = false;
+
 	static const char *modes[FileMode::NUM_MODES] = {
 		"rb", // FM_READ
 		"rb", // FM_READ_BINARY
@@ -35,6 +39,29 @@ namespace XS {
 		}
 	}
 
+	void File::Init( void ) {
+		// set com_path to current working directory, can be overridden later
+		char cwd[FILENAME_MAX];
+		OS::GetCurrentWorkingDirectory( cwd, sizeof(cwd) );
+		com_path = Cvar::Create( "com_path", cwd, "Base directory to load assets from", CVAR_INIT );
+	}
+
+	// finalise the basepath
+	void File::SetBasePath( void ) {
+		OS::ResolvePath( basePath, com_path->GetCString(), sizeof(basePath) );
+		Console::Print( "Base path: %s\n", basePath );
+
+		initialised = true;
+	}
+
+	// returns true if requested file does not attempt directory traversal
+	static bool ValidPath( const char *gamePath ) {
+		if ( strstr( gamePath, ".." ) || strstr( gamePath, "::" ) )
+			return false;
+
+		return true;
+	}
+
 	// normalise path separators for the current platform
 	void File::ReplaceSeparators( char *path ) {
 		bool skip = false;
@@ -53,42 +80,30 @@ namespace XS {
 		}
 	}
 
-	// returns false if fullpath is outside of basepath
-	// if paths are relative, they will be resolved
-	static bool CompareBaseDirectory( const char *basepath, const char *fullpath ) {
-		char b1[FILENAME_MAX];
-		const char *s1 = basepath;
-		if ( strstr( s1, ".." ) || strstr( s1, "::" ) ) {
-			OS::ResolvePath( b1, s1, sizeof(b1) );
-			s1 = b1;
-		}
-
-		char b2[FILENAME_MAX];
-		const char *s2 = fullpath;
-		if ( strstr( s2, ".." ) || strstr( s2, "::" ) ) {
-			OS::ResolvePath( b2, b2, sizeof(b2) );
-			s2 = b2;
-		}
-
-		if ( !String::Compare( s1, s2, strlen( s1 ) ) )
-			return true;
-
-		return false;
-	}
-
-	// create the folders necessary to store the specified file
-	static bool CreatePath( const char *fullpath ) {
-		char path[FILENAME_MAX], basepath[FILENAME_MAX];
-
-		OS::ResolvePath( basepath, Common::com_path->GetCString(), sizeof(basepath) );
-		if ( !CompareBaseDirectory( basepath, fullpath ) ) {
-			Console::Print( "WARNING: attempted directory traversal: \"%s\"\n", fullpath );
+	// return the full OS path for the specified relative gamepath
+	//	e.g. "C:\xsngine\textures\black.jpg" for "textures/black.jpg"
+	bool File::GetFullPath( const char *gamePath, char *outPath, size_t outLen ) {
+		if ( !initialised ) {
+			outPath[0] = '\0';
 			return false;
 		}
 
-		String::Copy( path, fullpath, sizeof(path) );
-		File::ReplaceSeparators( path );
+		if ( !ValidPath( gamePath ) ) {
+			Console::Print( "WARNING: attempted directory traversal: \"%s\"\n", gamePath );
+			outPath[0] = '\0';
+			return false;
+		}
 
+		String::FormatBuffer( outPath, outLen, "%s%c%s", basePath, PATH_SEP, gamePath );
+		File::ReplaceSeparators( outPath );
+
+		return true;
+	}
+
+	// create the folders necessary to store the specified file
+	static bool CreatePath( const char *fullPath ) {
+		char path[XS_MAX_FILENAME];
+		String::Copy( path, fullPath, sizeof(path) );
 		for ( char *s = strchr( path, PATH_SEP ) + 1; s && *s; s++ ) {
 			if ( *s == PATH_SEP ) {
 				*s = '\0';
@@ -100,26 +115,17 @@ namespace XS {
 		return true;
 	}
 
-	void File::Init( void ) {
-		Common::com_path = Cvar::Create( "com_path", "", "Base directory to load assets from", CVAR_INIT );
-	}
-
-	// return the full OS path for the specified relative gamepath
-	//	e.g. "C:\xsngine\textures\black.jpg" for "textures/black.jpg"
-	void File::GetPath( const char *gamePath, char *outPath, size_t outLen ) {
-		char fullpath[FILENAME_MAX];
-		String::FormatBuffer( fullpath, sizeof(fullpath), "%s%c%s", Common::com_path->GetCString(), PATH_SEP, gamePath );
-		File::ReplaceSeparators( fullpath );
-		OS::ResolvePath( outPath, fullpath, outLen );
-	}
-
 	// opens a file ready for read/write
 	// upon failure, file.open will be false and file.length will be 0
 	File::File( const char *gamePath, FileMode mode ) {
 		path[0] = '\0';
-		GetPath( gamePath, path, sizeof( path ) );
 
-		//TODO: create folders if non-existent. requires platform-specific code
+		if ( !GetFullPath( gamePath, path, sizeof( path ) ) ) {
+			Clear();
+			return;
+		}
+
+		// create folders required to store file if non-existent
 		if ( IsWriteMode( mode ) ) {
 			if ( !CreatePath( path ) ) {
 				Clear();

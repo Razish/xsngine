@@ -16,10 +16,10 @@ namespace XS {
 			uint32_t flags = CVAR_NONE );
 
 		std::string name;
+		std::string defaultStr;
+
 		std::string description;
 
-		// store the value in these formats
-		std::string defaultStr;
 		std::string fullString;
 		struct CvarValue {
 			CvarValue() : str( "" ), integer( 0 ), number( 0.0f ), real( 0.0 ), boolean( false ) {}

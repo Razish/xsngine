@@ -6,16 +6,16 @@ namespace XS {
 	// XS Filesystem layer
 	//
 	//	All files are internally treated as binary files to avoid line ending conversions (i.e. \n -> \r\n)
-	//	When using non-binary file modes (e.g. FileMode::READ) the file will be treated as text and space will be reserved for
-	//	null terminator (i.e. file.length will be increased, file.read() will add null terminator at buffer[length-1]
+	//	When using non-binary file modes (e.g. FileMode::READ) the file will be treated as text and space will be reserved
+	//	for null terminator (i.e. file.length will be increased, file.read() will add null terminator at buffer[length-1]
 	//
-	//	The only acceptable path separator is '/' for consistency between platforms
+	//	All requests to files will automatically have their path separators replaced to that of the host OS
 	//
 	//	There are currently no case sensitivity rules, but lower-case is strongly recommend and may be enforced later
 	//
-	//	You may only specify RELATIVE paths, not full system paths or network paths.
+	//	You may only specify relative paths, not full system paths or network paths
 	//	com_path will be prepended to any file path
-	//	TODO: restrict accessing files outside of com_path, including absolute paths and directory traversal
+	//	com_path may only be set during initialisation
 	//
 	//	Example of reading a text file:
 	//		const File f( "path/to.file", FileMode::READ );
@@ -57,7 +57,8 @@ namespace XS {
 		char path[FILENAME_MAX];
 
 		static void Init( void );
-		static void GetPath( const char *gamePath, char *outPath, size_t outLen );
+		static void SetBasePath( void );
+		static bool GetFullPath( const char *gamePath, char *outPath, size_t outLen );
 		static void ReplaceSeparators( char *path );
 
 		File( const char *gamePath, FileMode mode = FileMode::READ );
