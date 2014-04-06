@@ -1,6 +1,6 @@
 #include "XSSystem/XSInclude.h"
 
-#include "GLee/GLee.h"
+#include <GL/glew.h>
 
 #include "XSCommon/XSCommon.h"
 #include "XSCommon/XSVector.h"

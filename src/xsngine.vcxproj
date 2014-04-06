@@ -71,6 +71,7 @@
     <IntDir>..\build\$(Configuration)\$(PlatformShortName)\</IntDir>
     <OutDir>..\bin\</OutDir>
     <TargetName>$(ProjectName).$(PlatformShortName)</TargetName>
+    <IncludePath>GLEW/;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -83,6 +84,7 @@
     <OutDir>..\bin\</OutDir>
     <IntDir>..\build\$(Configuration)\$(PlatformShortName)\</IntDir>
     <TargetName>$(ProjectName).$(PlatformShortName)</TargetName>
+    <IncludePath>GLEW/;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -96,7 +98,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;ARCH_STRING="x86";_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLEW_STATIC;_CRT_SECURE_NO_WARNINGS;WIN32;ARCH_STRING="x86";_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>.;freetype;libpng;zlib</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4127;4100</DisableSpecificWarnings>
     </ClCompile>
@@ -149,7 +151,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;ARCH_STRING="x86";NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLEW_STATIC;_CRT_SECURE_NO_WARNINGS;WIN32;ARCH_STRING="x86";NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>.;freetype;libpng;zlib</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <DisableSpecificWarnings>4127;4100</DisableSpecificWarnings>
@@ -194,7 +196,7 @@
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="GLee\GLee.c" />
+    <ClCompile Include="GLEW\glew.c" />
     <ClCompile Include="XSClient\XSClient.cpp" />
     <ClCompile Include="XSClient\XSInput.cpp" />
     <ClCompile Include="XSClient\XSKeys.cpp" />

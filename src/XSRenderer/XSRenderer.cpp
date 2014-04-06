@@ -1,7 +1,7 @@
 #include "XSSystem/XSInclude.h"
 #include "XSSystem/XSPlatform.h"
 
-#include "GLee/GLee.h"
+#include "GLEW/GL/glew.h"
 #include "SDL2/SDL.h"
 
 #include "XSCommon/XSCommon.h"
@@ -36,6 +36,45 @@ namespace XS {
 		std::vector<View*> views;
 		static View *currentView = NULL;
 
+#if defined(_DEBUG)
+		static const char *GLErrSeverityToString( GLenum severity ) {
+			switch( severity ) {
+				case GL_DEBUG_SEVERITY_HIGH: return "High";
+				case GL_DEBUG_SEVERITY_MEDIUM: return "Medium";
+				case GL_DEBUG_SEVERITY_LOW: return "Low";
+				default: return "?";
+			}
+		}
+
+		static const char *GLErrSourceToString( GLenum source ) {
+			switch( source ) {
+				case GL_DEBUG_SOURCE_API: return "API";
+				case GL_DEBUG_SOURCE_WINDOW_SYSTEM: return "WS";
+				case GL_DEBUG_SOURCE_SHADER_COMPILER: return "GLSL";
+				case GL_DEBUG_SOURCE_THIRD_PARTY: return "3rd";
+				case GL_DEBUG_SOURCE_APPLICATION: return "App";
+				case GL_DEBUG_SOURCE_OTHER: return "Other";
+				default: return "?";
+			}
+		}
+
+		static const char *GLErrTypeToString( GLenum type ) {
+			switch( type ) {
+				case GL_DEBUG_TYPE_ERROR: return "Error";
+				case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR: return "Deprecated";
+				case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR: return "UB";
+				case GL_DEBUG_TYPE_PORTABILITY: return "Portability";
+				case GL_DEBUG_TYPE_PERFORMANCE: return "Performance";
+				case GL_DEBUG_TYPE_OTHER_ARB: return "Other";
+				default: return "?";
+			}
+		}
+
+		static void OnGLError( GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, GLvoid *userParam ) {
+			Console::Print( "[%s] [%s] %s: %s\n", GLErrSeverityToString( severity ), GLErrSourceToString( source ), GLErrTypeToString( type ), message );
+		}
+#endif
+
 		void CheckGLErrors( const char *filename, int line ) {
 			unsigned int error = glGetError();
 			if ( error != GL_NO_ERROR ) {
@@ -69,6 +108,16 @@ namespace XS {
 			RegisterCvars();
 
 			CreateDisplay();
+
+			if( glewInit() != GLEW_OK ) {
+				return;
+			}
+
+#if defined(_DEBUG)
+			glEnable( GL_DEBUG_OUTPUT_SYNCHRONOUS );
+			glDebugMessageCallback( OnGLError, NULL );
+#endif
+
 			Backend::Init();
 
 			Texture::Init();
@@ -98,11 +147,16 @@ namespace XS {
 		void CreateDisplay( void ) {
 			Uint32 windowFlags = SDL_WINDOW_OPENGL;
 
+			if( SDL_Init( SDL_INIT_VIDEO ) != 0 ) {
+				return;
+			}
+
 			if ( vid_noBorder->GetInt() )
 				windowFlags |= SDL_WINDOW_BORDERLESS;
 
-			SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 3 );
-			SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 2 );
+			SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 4 );
+			SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 3 );
+			SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY );
 
 			int multisample = r_multisample->GetInt();
 			if ( multisample ) {
@@ -110,9 +164,15 @@ namespace XS {
 				SDL_GL_SetAttribute( SDL_GL_MULTISAMPLESAMPLES, multisample );
 			}
 
+#if defined(_DEBUG)
+			SDL_GL_SetAttribute( SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG );
+#endif
+
 			window = SDL_CreateWindow( WINDOW_TITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 				vid_width->GetInt(), vid_height->GetInt(), windowFlags );
 			context = SDL_GL_CreateContext( window );
+
+			SDL_GL_MakeCurrent( window, context );
 
 			SDL_GL_SetSwapInterval( r_swapInterval->GetInt() );
 
@@ -164,12 +224,12 @@ namespace XS {
 				return;
 
 			RenderCommand cmd( RenderCommand::DRAWQUAD );
-			cmd.drawQuad.x = x / vid_width->GetFloat();
-			cmd.drawQuad.y = y / vid_height->GetFloat();
+			cmd.drawQuad.x = x;
+			cmd.drawQuad.y = y;
 			cmd.drawQuad.w = w;
 			cmd.drawQuad.h = h;
 			cmd.drawQuad.s1 = s1;
-			cmd.drawQuad.t1 = t2;
+			cmd.drawQuad.t1 = t1;
 			cmd.drawQuad.s2 = s2;
 			cmd.drawQuad.t2 = t2;
 			cmd.drawQuad.textureID = texture->id;

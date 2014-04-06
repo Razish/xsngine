@@ -1,4 +1,4 @@
-#include "GLee/GLee.h"
+#include <GL/glew.h>
 #include "SDL2/SDL.h"
 
 #include "XSRenderer/XSInternalFormat.h"

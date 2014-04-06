@@ -1,7 +1,7 @@
 #include "XSSystem/XSInclude.h"
 #include "XSSystem/XSPlatform.h"
 
-#include "GLee/GLee.h"
+#include <GL/glew.h>
 #include "SDL2/SDL.h"
 
 #include "XSCommon/XSCommon.h"
@@ -87,6 +87,15 @@ namespace XS {
 
 			glTexImage2D( GL_TEXTURE_2D, 0, GetGLInternalFormat( internalFormat ), width, height, 0,
 				GetGLFormat( internalFormat ), GetDataTypeForFormat( internalFormat ), data );
+
+			if( filterTable[filterMode].min == GL_NEAREST_MIPMAP_LINEAR ||
+				filterTable[filterMode].min == GL_NEAREST_MIPMAP_NEAREST ||
+				filterTable[filterMode].min == GL_LINEAR_MIPMAP_LINEAR ||
+				filterTable[filterMode].min == GL_LINEAR_MIPMAP_NEAREST )
+			{
+				glGenerateMipmap( GL_TEXTURE_2D );
+			}
+
 			glBindTexture( GL_TEXTURE_2D, 0 );
  		}
 

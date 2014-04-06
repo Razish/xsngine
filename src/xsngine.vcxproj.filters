@@ -51,9 +51,6 @@
     <ClCompile Include="XSRenderer\XSRenderer.cpp">
       <Filter>XSRenderer</Filter>
     </ClCompile>
-    <ClCompile Include="GLee\GLee.c">
-      <Filter>XSRenderer</Filter>
-    </ClCompile>
     <ClCompile Include="XSRenderer\XSTexture.cpp">
       <Filter>XSRenderer</Filter>
     </ClCompile>
@@ -92,6 +89,9 @@
     </ClCompile>
     <ClCompile Include="XSCommon\XSLogger.cpp">
       <Filter>XSCommon</Filter>
+    </ClCompile>
+    <ClCompile Include="GLEW\glew.c">
+      <Filter>XSRenderer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
