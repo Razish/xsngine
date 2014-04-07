@@ -124,7 +124,7 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;ARCH_STRING="x64";_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.;freetype;libpng;zlib</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;freetype;libpng;zlib;GLEW</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4127;4100</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -178,7 +178,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;ARCH_STRING="x64";NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.;freetype;libpng;zlib</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;freetype;libpng;zlib;GLEW</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <DisableSpecificWarnings>4127;4100</DisableSpecificWarnings>
     </ClCompile>
