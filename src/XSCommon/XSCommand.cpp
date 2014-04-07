@@ -70,6 +70,7 @@ namespace XS {
 
 		void Init( void ) {
 			AddCommand( "bind", Client::Cmd_SetBind );
+			AddCommand( "bindlist", Client::Cmd_ListBinds );
 			AddCommand( "cvarlist", Cmd_ListCvars );
 			AddCommand( "print", Cmd_PrintCvar );
 			AddCommand( "set", Cmd_SetCvar );

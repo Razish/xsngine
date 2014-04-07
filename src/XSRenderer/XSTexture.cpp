@@ -54,7 +54,7 @@ namespace XS {
 				CVAR_ARCHIVE );
 
 			// get anisotropic filtering settings
-			if ( SDL_GL_ExtensionSupported( "GL_EXT_texture_filter_anisotropic" ) )
+			if ( GLEW_EXT_texture_filter_anisotropic )
 				anisotropy = true;
 			glGetFloatv( GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maxAnisotropy );
 		}

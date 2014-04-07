@@ -67,7 +67,7 @@ files = [ 'XSClient/XSClient.cpp', 'XSClient/XSInput.cpp', 'XSClient/XSKeys.cpp'
 	'XSCommon/XSColours.cpp', 'XSCommon/XSCommand.cpp', 'XSCommon/XSCommon.cpp', 'XSCommon/XSConsole.cpp',
 	'XSCommon/XSCvar.cpp', 'XSCommon/XSEvent.cpp', 'XSCommon/XSFile.cpp', 'XSCommon/XSLogger.cpp',
 	'XSCommon/XSString.cpp', 'XSCommon/XSTimer.cpp', 'XSCommon/XSVector.cpp',
-	'GLee/GLee.c', 'XSRenderer/XSBackend.cpp', 'XSRenderer/XSFont.cpp', 'XSRenderer/XSFramebuffer.cpp',
+	'GLEW/glew.c', 'XSRenderer/XSBackend.cpp', 'XSRenderer/XSFont.cpp', 'XSRenderer/XSFramebuffer.cpp',
 	'XSRenderer/XSImagePNG.cpp', 'XSRenderer/XSInternalFormat.cpp', 'XSRenderer/XSRenderCommand.cpp',
 	'XSRenderer/XSRenderer.cpp', 'XSRenderer/XSShaderProgram.cpp', 'XSRenderer/XSTexture.cpp', 'XSRenderer/XSView.cpp' ]
 if plat == 'Linux':
@@ -79,16 +79,14 @@ else:
 
 # set up libraries to link with
 if plat == 'Linux':
-	libs = [ 'freetype', 'GL', 'm', 'png12', 'SDL2' ]
+	libs = [ 'freetype', 'GL', 'm', 'png16', 'SDL2' ]
 elif plat == 'Windows':
 	# windows libs are in e.g. "../lib/x86/libpng16d.lib" for 32 bit debug build of libpng
 	env['LIBPATH'] = '#/../lib/' + arch + '/'
 	libs = [ 'OpenGL32', 'SDL2', 'SDL2main', 'freetype250d', 'zlibd', 'libpng16d' ]
 
 # compiler options
-env['CPPPATH'] = [ '.', './freetype/' ]
-if plat == 'Windows':
-	env['CPPPATH'] = [ './libpng/', './zlib/' ]
+env['CPPPATH'] = [ '.', './freetype/', './GLEW/', './libpng/', './zlib/' ]
 
 # tool-specific flags
 if plat == 'Linux':
@@ -171,6 +169,8 @@ if debug:
 		if bits == 32:
 			env['CCFLAGS'] += [ '/FC', '/ZI' ]
 	env['CPPDEFINES'] += [ '_DEBUG', '__MSVC_RUNTIME_CHECKS' ]
+
+env['CPPDEFINES'] += [ 'GLEW_STATIC' ]
 
 # get git revision
 status, rev = commands.getstatusoutput( 'git rev-parse HEAD' )

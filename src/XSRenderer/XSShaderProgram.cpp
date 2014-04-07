@@ -23,41 +23,30 @@ namespace XS {
 
 		#define MAX_SHADER_LENGTH (1024*32) // 32kb
 
-		static Cvar *r_glsl;
 		const ShaderProgram *ShaderProgram::lastProgramUsed = NULL;
-
-		static const char *extensionsRequired[] = {
-			"GL_ARB_shader_objects",
-		};
-		static const size_t numExtensionsRequired = ARRAY_LEN( extensionsRequired );
 
 		static const int shaderTypes[Shader::NUM_SHADER_TYPES] = {
 			GL_VERTEX_SHADER_ARB,
 			GL_FRAGMENT_SHADER_ARB
 		};
 
+		static const struct { const GLboolean *p; const char *name; } extensionsRequired[] = {
+			{ &GLEW_ARB_shader_objects, "GL_ARB_shader_objects" },
+		};
+
 		void ShaderProgram::Init( void ) {
-			r_glsl = Cvar::Create( "r_glsl", "1", "Enable GLSL", CVAR_ARCHIVE );
-
-			// let them disable GLSL entirely
-			if ( !r_glsl->GetBool() ) {
-				Console::Print( "Not using GLSL extension\n" );
-				return;
-			}
-
 			bool supported = true;
-			for ( size_t i=0; i<numExtensionsRequired; i++ ) {
-				if ( !SDL_GL_ExtensionSupported( extensionsRequired[i] ) ) {
+			for ( const auto &ext : extensionsRequired ) {
+				if ( !*ext.p ) {
 					supported = false;
-					Console::Print( "Warning: Required OpenGL extension \"%s\" not available\n", extensionsRequired[i] );
+					Console::Print( "Warning: Required OpenGL extension \"%s\" not available\n", ext.name );
 				}
 			}
 
-			if ( supported )
-				Console::Print( "GLSL extension loaded\n" );
-			else
-				Console::Print( "GLSL extension unavailable\n" );
-			r_glsl->Set( supported );
+			if ( !supported )
+				throw( XSError( "GLSL extension not supported\n" ) );
+
+			Console::Print( "GLSL extension loaded\n" );
 
 			lastProgramUsed = NULL;
 		}
@@ -97,7 +86,6 @@ namespace XS {
 
 			if ( !id ) {
 				delete[] shaderCode;
-				r_glsl->Set( false );
 
 				throw( XSError( String::Format( "Shader(): Failed to create shader object for shader \"%s\"\n", path ).c_str() ) );
 			}
@@ -108,7 +96,6 @@ namespace XS {
 
 				glDeleteObjectARB( id );
 				delete[] shaderCode;
-				r_glsl->Set( false );
 
 				throw( XSError( String::Format( "Shader(): Invalid source code in shader \"%s\"\n", path ).c_str() ) );
 			}
@@ -122,7 +109,6 @@ namespace XS {
 				OutputInfoLog( id );
 
 				glDeleteObjectARB( id );
-				r_glsl->Set( false );
 
 				throw( XSError( String::Format( "Shader(): Failed to compile shader source for shader \"%s\"\n", path ).c_str() ) );
 			}
@@ -167,9 +153,6 @@ namespace XS {
 			fragmentShader = vertexShader = NULL;
 			uniforms = attributes = NULL;
 
-			if ( !r_glsl->GetBool() )
-				return;
-
 			id = glCreateProgramObjectARB();
 			if ( !id )
 				throw( XSError( "Failed to create shader program" ) );
@@ -180,9 +163,6 @@ namespace XS {
 			id = 0;
 			fragmentShader = vertexShader = NULL;
 			uniforms = attributes = NULL;
-
-			if ( !r_glsl->GetBool() )
-				return;
 
 			id = glCreateProgramObjectARB();
 			if ( !id )

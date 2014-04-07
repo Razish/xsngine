@@ -20,38 +20,27 @@ namespace XS {
 
 	namespace Renderer {
 
-		static Cvar *r_fbo;
 		const Framebuffer *Framebuffer::currentReadFramebuffer = NULL;
 		const Framebuffer *Framebuffer::currentWriteFramebuffer = NULL;
 
-		static const char *extensionsRequired[] = {
-			"GL_EXT_framebuffer_object",
-			"GL_EXT_framebuffer_blit",
+		static const struct { const GLboolean *p; const char *name; } extensionsRequired[] = {
+			{ &GLEW_EXT_framebuffer_object, "GL_EXT_framebuffer_object" },
+			{ &GLEW_EXT_framebuffer_blit, "GL_EXT_framebuffer_blit" },
 		};
-		static const size_t numExtensionsRequired = ARRAY_LEN( extensionsRequired );
 
 		void Framebuffer::Init( void ) {
-			r_fbo = Cvar::Create( "r_fbo", "1", "Enable framebuffer objects", CVAR_ARCHIVE );
-
-			// let them disable GLSL entirely
-			if ( !r_fbo->GetBool() ) {
-				Console::Print( "Not using framebuffer extension\n" );
-				return;
-			}
-
 			bool supported = true;
-			for ( size_t i=0; i<numExtensionsRequired; i++ ) {
-				if ( !SDL_GL_ExtensionSupported( extensionsRequired[i] ) ) {
+			for ( const auto &ext : extensionsRequired ) {
+				if ( !*ext.p ) {
 					supported = false;
-					Console::Print( "Warning: Required OpenGL extension \"%s\" not available\n", extensionsRequired[i] );
+					Console::Print( "Warning: Required OpenGL extension \"%s\" not available\n", ext.name );
 				}
 			}
 
-			if ( supported )
-				Console::Print( "Framebuffer extension loaded\n" );
-			else
-				Console::Print( "Framebuffer extension unavailable\n" );
-			r_fbo->Set( supported );
+			if ( !supported )
+				throw( XSError( "Framebuffer extension not supported\n" ) );
+
+			Console::Print( "Framebuffer extension loaded\n" );
 
 			currentReadFramebuffer = currentWriteFramebuffer = NULL;
 		}
@@ -100,9 +89,6 @@ namespace XS {
 		// instance functions
 		Framebuffer::Framebuffer() {
 			id = 0;
-
-			if ( !r_fbo->GetBool() )
-				return;
 
 			glGenFramebuffersEXT( 1, &id );
 

@@ -14,7 +14,9 @@ namespace XS {
 	bool Cvar::initialised = false;
 
 	void Cvar::WriteCvars( std::string &str ) {
-		for ( const auto &it : cvars ) {
+		std::map<std::string, Cvar*> sorted( cvars.begin(), cvars.end() );
+
+		for ( const auto &it : sorted ) {
 			const char *name = it.first.c_str();
 			Cvar *cv = it.second;
 			if ( !cv ) {
@@ -91,23 +93,16 @@ namespace XS {
 		return NULL; //new Cvar( name );
 	}
 
-	static bool CvarSort( const std::string &cv1, const std::string &cv2 ) {
-		return String::Compare( cv1.c_str(), cv2.c_str() ) < 0;
-	}
-
 	void Cvar::List( void ) {
-		Console::Print( "Listing Cvars...\n" );
+		Console::Print( "Listing cvars...\n" );
 
-		std::vector<std::string> vec;
-		for ( const auto &cvar : cvars )
-			vec.push_back( cvar.first );
-		std::sort( vec.begin(), vec.end(), CvarSort );
+		std::map<std::string, Cvar*> sorted( cvars.begin(), cvars.end() );
 
 		Indent indent( 1 );
-		for ( const auto &cvar : vec ) {
+		for ( const auto &cvar : sorted ) {
 			char buf[64];
-			String::FormatBuffer( buf, sizeof(buf), "%s \"%s\"", cvar.c_str(), cvars[cvar]->fullString.c_str() );
-			Console::Print( "%-48s: %s\n", buf, cvars[cvar]->description.c_str() );
+			String::FormatBuffer( buf, sizeof(buf), "%s \"%s\"", cvar.first.c_str(), cvar.second->fullString.c_str() );
+			Console::Print( "%-48s: %s\n", buf, cvar.second->description.c_str() );
 		}
 	}
 

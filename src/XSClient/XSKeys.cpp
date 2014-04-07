@@ -144,6 +144,16 @@ namespace XS {
 			return NULL;
 		}
 
+		void Cmd_ListBinds( const commandContext_t * const context ) {
+			Console::Print( "Listing binds...\n" );
+
+			std::map<SDL_Keycode, std::string> sorted( binds.begin(), binds.end() );
+
+			Indent indent( 1 );
+			for ( const auto &bind : sorted )
+				Console::Print( "%-8s: %s\n", GetNameForKeycode( bind.first ), bind.second.c_str() );
+		}
+
 		void Cmd_SetBind( const commandContext_t * const context ) {
 			if ( context->size() < 2 ) {
 				Console::Print( "\"bind\" failed. Must specify a key and command\n" );
@@ -198,7 +208,9 @@ namespace XS {
 		}
 
 		void WriteBinds( std::string &str ) {
-			for ( const auto &it : binds ) {
+			std::map<SDL_Keycode, std::string> sorted( binds.begin(), binds.end() );
+
+			for ( const auto &it : sorted ) {
 				SDL_Keycode key = it.first;
 				const std::string &cmd = it.second;
 				if ( !cmd.empty() )

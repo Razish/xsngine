@@ -10,6 +10,8 @@
 #include "XSCommon/XSFile.h"
 #include "XSCommon/XSCvar.h"
 #include "XSCommon/XSVector.h"
+#include "XSCommon/XSString.h"
+#include "XSCommon/XSError.h"
 #include "XSRenderer/XSInternalFormat.h"
 #include "XSRenderer/XSTexture.h"
 #include "XSRenderer/XSRenderCommand.h"
@@ -36,9 +38,9 @@ namespace XS {
 		std::vector<View*> views;
 		static View *currentView = NULL;
 
-#if defined(_DEBUG)
+	#ifdef _DEBUG
 		static const char *GLErrSeverityToString( GLenum severity ) {
-			switch( severity ) {
+			switch ( severity ) {
 				case GL_DEBUG_SEVERITY_HIGH: return "High";
 				case GL_DEBUG_SEVERITY_MEDIUM: return "Medium";
 				case GL_DEBUG_SEVERITY_LOW: return "Low";
@@ -47,7 +49,7 @@ namespace XS {
 		}
 
 		static const char *GLErrSourceToString( GLenum source ) {
-			switch( source ) {
+			switch ( source ) {
 				case GL_DEBUG_SOURCE_API: return "API";
 				case GL_DEBUG_SOURCE_WINDOW_SYSTEM: return "WS";
 				case GL_DEBUG_SOURCE_SHADER_COMPILER: return "GLSL";
@@ -59,7 +61,7 @@ namespace XS {
 		}
 
 		static const char *GLErrTypeToString( GLenum type ) {
-			switch( type ) {
+			switch ( type ) {
 				case GL_DEBUG_TYPE_ERROR: return "Error";
 				case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR: return "Deprecated";
 				case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR: return "UB";
@@ -70,10 +72,13 @@ namespace XS {
 			}
 		}
 
-		static void OnGLError( GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, GLvoid *userParam ) {
-			Console::Print( "[%s] [%s] %s: %s\n", GLErrSeverityToString( severity ), GLErrSourceToString( source ), GLErrTypeToString( type ), message );
+		static void OnGLError( GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length,
+			const GLchar *message, GLvoid *userParam )
+		{
+			Console::Print( "[%s] [%s] %s: %s\n", GLErrSeverityToString( severity ), GLErrSourceToString( source ),
+				GLErrTypeToString( type ), message );
 		}
-#endif
+	#endif
 
 		void CheckGLErrors( const char *filename, int line ) {
 			unsigned int error = glGetError();
@@ -109,14 +114,17 @@ namespace XS {
 
 			CreateDisplay();
 
-			if( glewInit() != GLEW_OK ) {
-				return;
-			}
+			glewExperimental = GL_TRUE;
+			GLenum error = glewInit();
+			if ( error != GLEW_OK )
+				throw( XSError( String::Format( "Failed to initialise GLEW: %s\n", glewGetErrorString( error ) ).c_str() ) );
 
-#if defined(_DEBUG)
-			glEnable( GL_DEBUG_OUTPUT_SYNCHRONOUS );
-			glDebugMessageCallback( OnGLError, NULL );
-#endif
+		#ifdef _DEBUG
+			if ( glDebugMessageCallback ) {
+				glEnable( GL_DEBUG_OUTPUT_SYNCHRONOUS );
+				glDebugMessageCallback( OnGLError, NULL );
+			}
+		#endif
 
 			Backend::Init();
 
@@ -147,15 +155,15 @@ namespace XS {
 		void CreateDisplay( void ) {
 			Uint32 windowFlags = SDL_WINDOW_OPENGL;
 
-			if( SDL_Init( SDL_INIT_VIDEO ) != 0 ) {
+			if ( SDL_Init( SDL_INIT_VIDEO ) != 0 ) {
 				return;
 			}
 
 			if ( vid_noBorder->GetInt() )
 				windowFlags |= SDL_WINDOW_BORDERLESS;
 
-			SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 4 );
-			SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 3 );
+			SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 3 );
+			SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 1 );
 			SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY );
 
 			int multisample = r_multisample->GetInt();
@@ -163,10 +171,12 @@ namespace XS {
 				SDL_GL_SetAttribute( SDL_GL_MULTISAMPLEBUFFERS, 1 );
 				SDL_GL_SetAttribute( SDL_GL_MULTISAMPLESAMPLES, multisample );
 			}
+			else
+				SDL_GL_SetAttribute( SDL_GL_MULTISAMPLEBUFFERS, 0 );
 
-#if defined(_DEBUG)
+		#ifdef _DEBUG
 			SDL_GL_SetAttribute( SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG );
-#endif
+		#endif
 
 			window = SDL_CreateWindow( WINDOW_TITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 				vid_width->GetInt(), vid_height->GetInt(), windowFlags );
