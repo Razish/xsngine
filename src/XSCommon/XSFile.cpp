@@ -64,19 +64,9 @@ namespace XS {
 
 	// normalise path separators for the current platform
 	void File::ReplaceSeparators( char *path ) {
-		bool skip = false;
-
 		for ( char *s = path; *s; s++ ) {
-			if ( *s == '/' || *s == '\\' ) {
-				if ( !skip ) {
-					*s = PATH_SEP;
-					skip = true;
-				}
-				else
-					memmove( s, s + 1, strlen( s ) );
-			}
-			else
-				skip = false;
+			if ( *s == '/' || *s == '\\' )
+				*s = PATH_SEP;
 		}
 	}
 
