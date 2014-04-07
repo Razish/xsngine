@@ -13,6 +13,7 @@ namespace XS {
 		static void DrawQuad( const rcDrawQuad_t *quad ) {
 			static vector4 color = vector4( 1.0f, 1.0f, 1.0f, 1.0f );
 
+			glUseProgramObjectARB (0);
 			glBindTexture( GL_TEXTURE_2D, quad->textureID );
 
 			vector2 vertices[4];
