@@ -41,32 +41,32 @@ namespace XS {
 	#ifdef _DEBUG
 		static const char *GLErrSeverityToString( GLenum severity ) {
 			switch ( severity ) {
-				case GL_DEBUG_SEVERITY_HIGH: return "High";
-				case GL_DEBUG_SEVERITY_MEDIUM: return "Medium";
-				case GL_DEBUG_SEVERITY_LOW: return "Low";
+				case GL_DEBUG_SEVERITY_HIGH_ARB: return "High";
+				case GL_DEBUG_SEVERITY_MEDIUM_ARB: return "Medium";
+				case GL_DEBUG_SEVERITY_LOW_ARB: return "Low";
 				default: return "?";
 			}
 		}
 
 		static const char *GLErrSourceToString( GLenum source ) {
 			switch ( source ) {
-				case GL_DEBUG_SOURCE_API: return "API";
-				case GL_DEBUG_SOURCE_WINDOW_SYSTEM: return "WS";
-				case GL_DEBUG_SOURCE_SHADER_COMPILER: return "GLSL";
-				case GL_DEBUG_SOURCE_THIRD_PARTY: return "3rd";
-				case GL_DEBUG_SOURCE_APPLICATION: return "App";
-				case GL_DEBUG_SOURCE_OTHER: return "Other";
+				case GL_DEBUG_SOURCE_API_ARB: return "API";
+				case GL_DEBUG_SOURCE_WINDOW_SYSTEM_ARB: return "WS";
+				case GL_DEBUG_SOURCE_SHADER_COMPILER_ARB: return "GLSL";
+				case GL_DEBUG_SOURCE_THIRD_PARTY_ARB: return "3rd";
+				case GL_DEBUG_SOURCE_APPLICATION_ARB: return "App";
+				case GL_DEBUG_SOURCE_OTHER_ARB: return "Other";
 				default: return "?";
 			}
 		}
 
 		static const char *GLErrTypeToString( GLenum type ) {
 			switch ( type ) {
-				case GL_DEBUG_TYPE_ERROR: return "Error";
-				case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR: return "Deprecated";
-				case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR: return "UB";
-				case GL_DEBUG_TYPE_PORTABILITY: return "Portability";
-				case GL_DEBUG_TYPE_PERFORMANCE: return "Performance";
+				case GL_DEBUG_TYPE_ERROR_ARB: return "Error";
+				case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR_ARB: return "Deprecated";
+				case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR_ARB: return "UB";
+				case GL_DEBUG_TYPE_PORTABILITY_ARB: return "Portability";
+				case GL_DEBUG_TYPE_PERFORMANCE_ARB: return "Performance";
 				case GL_DEBUG_TYPE_OTHER_ARB: return "Other";
 				default: return "?";
 			}
@@ -120,9 +120,9 @@ namespace XS {
 				throw( XSError( String::Format( "Failed to initialise GLEW: %s\n", glewGetErrorString( error ) ).c_str() ) );
 
 		#ifdef _DEBUG
-			if ( glDebugMessageCallback ) {
-				glEnable( GL_DEBUG_OUTPUT_SYNCHRONOUS );
-				glDebugMessageCallback( OnGLError, NULL );
+			if ( GLEW_ARB_debug_output ) {
+				glEnable( GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB );
+				glDebugMessageCallbackARB( OnGLError, NULL );
 			}
 		#endif
 
