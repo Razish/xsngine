@@ -8,7 +8,7 @@ namespace XS {
 		void	Shutdown	( void );
 		void	NetworkPump	( void );
 		void	RunFrame	( double dt );
-		void	DrawFrame	( void );
+		void	DrawFrame	( double frametime );
 
 	} // namespace Client
 

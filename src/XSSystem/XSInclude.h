@@ -8,6 +8,7 @@
 #include <cstdint>
 #include <cstring>
 #include <ctime>
+#include <cinttypes>
 
 // for getcwd
 #if defined(_WIN32)

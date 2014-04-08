@@ -31,7 +31,7 @@ namespace XS {
 		#define DEFAULT_CONFIG_SERVER	"cfg/xsn_server.cfg"
 
 		Cvar *com_dedicated, *com_developer;
-		static Cvar *com_framerate;
+		static Cvar *com_framerate, *r_framerate;
 
 		static void RegisterCvars( void ) {
 			Cvar::Create( "com_date", __DATE__, "Compilation date", CVAR_READONLY );
@@ -41,7 +41,8 @@ namespace XS {
 #else
 			com_developer = Cvar::Create( "com_developer", "0", "Developer mode", CVAR_NONE );
 #endif
-			com_framerate = Cvar::Create( "com_framerate", "120", "Game tick rate", CVAR_NONE );
+			com_framerate = Cvar::Create( "com_framerate", "50", "Game tick rate", CVAR_NONE );
+			r_framerate = Cvar::Create( "r_framerate", "120", "Render framerate", CVAR_NONE );
 		}
 
 		static void ParseCommandLine( int argc, char **argv ) {
@@ -69,7 +70,7 @@ namespace XS {
 			//	set herp derp
 			// then append it to the command buffer
 			const char delimiter = '+';
-			size_t start = commandLine.find( delimiter );
+			const size_t start = commandLine.find( delimiter );
 			if ( start == std::string::npos )
 				return;
 			Command::Append( &commandLine[start + 1], delimiter );
@@ -178,17 +179,19 @@ int main( int argc, char **argv ) {
 		// frame
 		XS::Timer gameTimer;
 		while ( 1 ) {
-			static double currentTime = gameTimer.GetTiming();
+			static double currentTime = gameTimer.GetTiming( false, XS::Timer::Resolution::MILLISECONDS );
 			static double accumulator = 0.0;
 
 			// calculate delta time for integrating this frame
-			double newTime = gameTimer.GetTiming();
-			double frametime = newTime - currentTime;
-			double dt = 1.0 / XS::Common::com_framerate->GetDouble();
-			if ( frametime > 1.0 / 4.0 )
-				frametime = 1.0 / 4.0; // avoid spiral of death, maximum 250mspf
+			const double newTime = gameTimer.GetTiming( false, XS::Timer::Resolution::MILLISECONDS );
+			const double dt = 1000.0 / XS::Common::com_framerate->GetDouble();
+			const double frameTime = newTime - currentTime;
 			currentTime = newTime;
-			accumulator += frametime;
+
+			double sliceMsec = frameTime;
+			if ( sliceMsec > 250.0 )
+				sliceMsec = 250.0; // avoid spiral of death, maximum 250mspf
+			accumulator += sliceMsec;
 
 			// input
 			if ( !XS::Common::com_dedicated->GetBool() )
@@ -213,10 +216,14 @@ int main( int argc, char **argv ) {
 				accumulator -= dt;
 			}
 
-		//	const double alpha = accumulator / dt;
+			// alpha = accumulator / dt;
 			// lerp( previousState, alpha, currentState )
-			XS::Client::DrawFrame();
+			XS::Client::DrawFrame( frameTime );
 			XS::Renderer::Update( /*state*/ );
+
+			const double renderMsec = 1000.0 / XS::Common::r_framerate->GetDouble();
+			if ( frameTime < renderMsec )
+				SDL_Delay( (uint32_t)(renderMsec - frameTime) );
 		}
 	}
 	catch( const XS::XSError &e ) {

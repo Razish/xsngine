@@ -19,9 +19,7 @@ namespace XS {
 
 	namespace Renderer {
 
-		static Cvar *r_textureAnisotropy;
-		static Cvar *r_textureAnisotropyMax;
-		static Cvar *r_textureFilter;
+		static Cvar *r_textureAnisotropy, *r_textureAnisotropyMax, *r_textureFilter;
 
 		static bool anisotropy;
 		static float maxAnisotropy;
@@ -59,15 +57,13 @@ namespace XS {
 			glGetFloatv( GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maxAnisotropy );
 		}
 
-		Texture::Texture( unsigned int width, unsigned int height, InternalFormat internalFormat, byte *data ) {
+		Texture::Texture( unsigned int width, unsigned int height, InternalFormat internalFormat, byte *data )
+			: width( width ), height( height ) {
 			size_t filterMode = GetTextureFilter( r_textureFilter->GetCString() );
 
 			glGenTextures( 1, &id );
 			if ( !id )
 				throw( XSError( "Failed to create blank texture" ) );
-
-			this->width		= width;
-			this->height	= height;
 
 			// fp16 textures don't play nicely with filtering (performance, support)
 			//	if ( internalFormat == IF_RGBA16F )
@@ -88,7 +84,7 @@ namespace XS {
 			glTexImage2D( GL_TEXTURE_2D, 0, GetGLInternalFormat( internalFormat ), width, height, 0,
 				GetGLFormat( internalFormat ), GetDataTypeForFormat( internalFormat ), data );
 
-			if( filterTable[filterMode].min == GL_NEAREST_MIPMAP_LINEAR ||
+			if ( filterTable[filterMode].min == GL_NEAREST_MIPMAP_LINEAR ||
 				filterTable[filterMode].min == GL_NEAREST_MIPMAP_NEAREST ||
 				filterTable[filterMode].min == GL_LINEAR_MIPMAP_LINEAR ||
 				filterTable[filterMode].min == GL_LINEAR_MIPMAP_NEAREST )
