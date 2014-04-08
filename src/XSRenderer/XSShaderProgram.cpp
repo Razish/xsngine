@@ -26,42 +26,43 @@ namespace XS {
 		const ShaderProgram *ShaderProgram::lastProgramUsed = NULL;
 
 		static const int shaderTypes[Shader::NUM_SHADER_TYPES] = {
-			GL_VERTEX_SHADER_ARB,
-			GL_FRAGMENT_SHADER_ARB
-		};
-
-		static const struct { const GLboolean *p; const char *name; } extensionsRequired[] = {
-			{ &GLEW_ARB_shader_objects, "GL_ARB_shader_objects" },
+			GL_VERTEX_SHADER,
+			GL_FRAGMENT_SHADER
 		};
 
 		void ShaderProgram::Init( void ) {
-			bool supported = true;
-			for ( const auto &ext : extensionsRequired ) {
-				if ( !*ext.p ) {
-					supported = false;
-					Console::Print( "Warning: Required OpenGL extension \"%s\" not available\n", ext.name );
-				}
-			}
-
-			if ( !supported )
-				throw( XSError( "GLSL extension not supported\n" ) );
-
-			Console::Print( "GLSL extension loaded\n" );
-
 			lastProgramUsed = NULL;
 		}
 
-		static void OutputInfoLog( int objectID ) {
+		static void OutputProgramInfoLog( int program ) {
 			int logLength = 0;
 			char *logText = NULL;
 
 			Indent indent(1);
 
-			glGetObjectParameterivARB( objectID, GL_OBJECT_INFO_LOG_LENGTH_ARB, &logLength );
+			glGetProgramiv( program, GL_INFO_LOG_LENGTH, &logLength );
 
 			if ( logLength > 1 ) {
 				logText = new char[logLength];
-				glGetInfoLogARB( objectID, logLength, NULL, logText );
+				glGetProgramInfoLog( program, logLength, NULL, logText );
+
+				Console::Print( "%s\n", logText );
+
+				delete[] logText;
+			}
+		}
+
+		static void OutputShaderInfoLog( int shader ) {
+			int logLength = 0;
+			char *logText = NULL;
+
+			Indent indent (1);
+
+			glGetShaderiv( shader, GL_INFO_LOG_LENGTH, &logLength );
+
+			if ( logLength > 1 ) {
+				logText = new char[logLength];
+				glGetShaderInfoLog( shader, logLength, NULL, logText );
 
 				Console::Print( "%s\n", logText );
 
@@ -80,9 +81,9 @@ namespace XS {
 			shaderCode = new char[MAX_SHADER_LENGTH];
 			String::Copy( shaderCode, source, MAX_SHADER_LENGTH );
 
-			id = glCreateShaderObjectARB( shaderType );
+			id = glCreateShader( shaderType );
 			String::Copy( name, path, sizeof( name ) );
-			type = (shaderType == GL_VERTEX_SHADER_ARB) ? VERTEX : FRAGMENT;
+			type = (shaderType == GL_VERTEX_SHADER) ? VERTEX : FRAGMENT;
 
 			if ( !id ) {
 				delete[] shaderCode;
@@ -90,11 +91,11 @@ namespace XS {
 				throw( XSError( String::Format( "Shader(): Failed to create shader object for shader \"%s\"\n", path ).c_str() ) );
 			}
 
-			glShaderSourceARB( id, 1, (const GLcharARB **)&shaderCode, NULL );
+			glShaderSource( id, 1, (const GLchar **)&shaderCode, NULL );
 			if ( glGetError() == GL_INVALID_OPERATION ) {
-				OutputInfoLog( id );
+				OutputShaderInfoLog( id );
 
-				glDeleteObjectARB( id );
+				glDeleteShader( id );
 				delete[] shaderCode;
 
 				throw( XSError( String::Format( "Shader(): Invalid source code in shader \"%s\"\n", path ).c_str() ) );
@@ -102,18 +103,18 @@ namespace XS {
 
 			delete[] shaderCode;
 
-			glCompileShaderARB( id );
-			glGetObjectParameterivARB( id, GL_OBJECT_COMPILE_STATUS_ARB, &statusCode );
+			glCompileShader( id );
+			glGetShaderiv( id, GL_COMPILE_STATUS, &statusCode );
 
 			if ( statusCode == GL_FALSE ) {
-				OutputInfoLog( id );
+				OutputShaderInfoLog (id);
 
-				glDeleteObjectARB( id );
+				glDeleteShader( id );
 
 				throw( XSError( String::Format( "Shader(): Failed to compile shader source for shader \"%s\"\n", path ).c_str() ) );
 			}
 
-			OutputInfoLog( id );
+			OutputShaderInfoLog (id);
 		}
 
 		Shader::Shader( ShaderType type, const char *name ) {
@@ -141,57 +142,54 @@ namespace XS {
 		}
 
 		Shader::~Shader() {
-			glDeleteObjectARB( id );
+			glDeleteShader( id );
 		}
 
 		//
 		// Shader Programs
 		//
 
-		ShaderProgram::ShaderProgram() {
-			id = 0;
-			fragmentShader = vertexShader = NULL;
-			uniforms = attributes = NULL;
-
-			id = glCreateProgramObjectARB();
-			if ( !id )
-				throw( XSError( "Failed to create shader program" ) );
-		}
-
 		// save some typing..
 		ShaderProgram::ShaderProgram( const char *vertexShaderName, const char *fragmentShaderName ) {
+			Shader *fragmentShader = nullptr;
+			Shader *vertexShader = nullptr;
+
 			id = 0;
-			fragmentShader = vertexShader = NULL;
 			uniforms = attributes = NULL;
 
-			id = glCreateProgramObjectARB();
+			id = glCreateProgram();
 			if ( !id )
 				throw( XSError( "Failed to create shader program" ) );
 
-			if ( vertexShaderName && !vertexShader )
-				AttachShader( new Shader( Shader::VERTEX, vertexShaderName ) );
-			if ( fragmentShaderName && !fragmentShader )
-				AttachShader( new Shader( Shader::FRAGMENT, fragmentShaderName ) );
+			if ( vertexShaderName && !vertexShader ) {
+				vertexShader = new Shader( Shader::VERTEX, vertexShaderName );
+				glAttachShader( id, vertexShader->id );
+			}
+
+			if ( fragmentShaderName && !fragmentShader ) {
+				fragmentShader = new Shader( Shader::FRAGMENT, fragmentShaderName );
+				glAttachShader( id, fragmentShader->id );
+			}
 
 			Link();
 			Bind();
+
+			if ( vertexShader ) {
+				glDetachShader( id, vertexShader->id );
+				delete vertexShader;
+			}
+
+			if ( fragmentShader ) {
+				glDetachShader( id, fragmentShader->id );
+				delete fragmentShader;
+			}
 		}
 
 		ShaderProgram::~ShaderProgram() {
 			if ( lastProgramUsed == this )
 				lastProgramUsed = NULL;
 
-			if ( fragmentShader ) {
-				glDetachObjectARB( id, fragmentShader->id );
-				delete fragmentShader;
-			}
-
-			if ( vertexShader ) {
-				glDetachObjectARB( id, vertexShader->id );
-				delete vertexShader;
-			}
-
-			glDeleteObjectARB( id );
+			glDeleteProgram( id );
 
 			delete uniforms;
 			delete attributes;
@@ -218,73 +216,49 @@ namespace XS {
 
 				variable->name = name;
 				variable->next = NULL;
-				variable->location = glGetUniformLocationARB( id, name );
+				variable->location = glGetUniformLocation( id, name );
 			}
 
 			return variable;
 		}
 
-		void ShaderProgram::AttachShader( Shader *shader ) {
-			if ( !shader )
-				return;
-
-			switch ( shader->type ) {
-			case Shader::FRAGMENT:
-				if ( fragmentShader != shader ) {
-					fragmentShader = shader;
-					glAttachObjectARB( id, shader->id );
-				}
-				break;
-
-			case Shader::VERTEX:
-				if ( vertexShader != shader ) {
-					vertexShader = shader;
-					glAttachObjectARB( id, shader->id );
-				}
-				break;
-
-			default:
-				throw( XSError( String::Format( "AttachShader(): Unknown type %d", shader->type ).c_str() ) );
-			}
-		}
-
 		void ShaderProgram::Link( void ) const {
 			int statusCode = 0;
 
-			glLinkProgramARB( id );
-			glGetObjectParameterivARB( id, GL_OBJECT_LINK_STATUS_ARB, &statusCode );
+			glLinkProgram( id );
+			glGetProgramiv( id, GL_LINK_STATUS, &statusCode );
 
 			if ( statusCode == GL_FALSE ) {
 				Console::Print( "Failed to link program %d\n", id );
-				OutputInfoLog( id );
+				OutputProgramInfoLog( id );
 			}
 		}
 
 		void ShaderProgram::Bind( void ) const {
 			if ( lastProgramUsed != this ) {
-				glUseProgramObjectARB( id );
+				glUseProgram( id );
 				lastProgramUsed = this;
 			}
 		}
 
 		void ShaderProgram::SetUniform1( const char *name, int i ) {
-			glUniform1iARB( GetUniformLocation( name )->location, i );
+			glUniform1i( GetUniformLocation( name )->location, i );
 		}
 
 		void ShaderProgram::SetUniform1( const char *name, float f ) {
-			glUniform1fARB( GetUniformLocation( name )->location, f );
+			glUniform1f( GetUniformLocation( name )->location, f );
 		}
 
 		void ShaderProgram::SetUniform2( const char *name, float f1, float f2 ) {
-			glUniform2fARB( GetUniformLocation( name )->location, f1, f2 );
+			glUniform2f( GetUniformLocation( name )->location, f1, f2 );
 		}
 
 		void ShaderProgram::SetUniform3( const char *name, float f1, float f2, float f3 ) {
-			glUniform3fARB( GetUniformLocation( name )->location, f1, f2, f3 );
+			glUniform3f( GetUniformLocation( name )->location, f1, f2, f3 );
 		}
 
 		void ShaderProgram::SetUniform4( const char *name, float f1, float f2, float f3, float f4 ) {
-			glUniform4fARB( GetUniformLocation( name )->location, f1, f2, f3, f4 );
+			glUniform4f( GetUniformLocation( name )->location, f1, f2, f3, f4 );
 		}
 
 	} // namespace Renderer

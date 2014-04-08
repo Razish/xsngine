@@ -23,31 +23,13 @@ namespace XS {
 		const Framebuffer *Framebuffer::currentReadFramebuffer = NULL;
 		const Framebuffer *Framebuffer::currentWriteFramebuffer = NULL;
 
-		static const struct { const GLboolean *p; const char *name; } extensionsRequired[] = {
-			{ &GLEW_EXT_framebuffer_object, "GL_EXT_framebuffer_object" },
-			{ &GLEW_EXT_framebuffer_blit, "GL_EXT_framebuffer_blit" },
-		};
-
 		void Framebuffer::Init( void ) {
-			bool supported = true;
-			for ( const auto &ext : extensionsRequired ) {
-				if ( !*ext.p ) {
-					supported = false;
-					Console::Print( "Warning: Required OpenGL extension \"%s\" not available\n", ext.name );
-				}
-			}
-
-			if ( !supported )
-				throw( XSError( "Framebuffer extension not supported\n" ) );
-
-			Console::Print( "Framebuffer extension loaded\n" );
-
-			currentReadFramebuffer = currentWriteFramebuffer = NULL;
+			// No initialization required
 		}
 
 		void Framebuffer::BindDefault( void ) {
 			if ( currentReadFramebuffer || currentWriteFramebuffer ) {
-				glBindFramebufferEXT( GL_FRAMEBUFFER_EXT, 0 );
+				glBindFramebuffer( GL_FRAMEBUFFER, 0 );
 				currentReadFramebuffer	= NULL;
 				currentWriteFramebuffer	= NULL;
 			}
@@ -61,16 +43,16 @@ namespace XS {
 			int sourceHeight, int destWidth, int destHeight, unsigned int bufferBits )
 		{
 			if ( currentReadFramebuffer != source ) {
-				glBindFramebufferEXT( GL_READ_FRAMEBUFFER_EXT, source ? source->id : 0 );
+				glBindFramebuffer( GL_READ_FRAMEBUFFER, source ? source->id : 0 );
 				currentReadFramebuffer = source;
 			}
 
 			if ( currentWriteFramebuffer != destination ) {
-				glBindFramebufferEXT( GL_DRAW_FRAMEBUFFER_EXT, destination ? destination->id : 0 );
+				glBindFramebuffer( GL_DRAW_FRAMEBUFFER, destination ? destination->id : 0 );
 				currentWriteFramebuffer = destination;
 			}
 
-			glBlitFramebufferEXT( sourceWidth, sourceHeight, 0, 0, destWidth, destHeight, 0, 0, bufferBits, GL_NEAREST );
+			glBlitFramebuffer( sourceWidth, sourceHeight, 0, 0, destWidth, destHeight, 0, 0, bufferBits, GL_NEAREST );
 		}
 
 		void Framebuffer::BlitColor( const Framebuffer *source, const Framebuffer *destination, int sourceWidth,
@@ -90,14 +72,14 @@ namespace XS {
 		Framebuffer::Framebuffer() {
 			id = 0;
 
-			glGenFramebuffersEXT( 1, &id );
+			glGenFramebuffers( 1, &id );
 
 			if ( !id )
 				throw( XSError( "Failed to create framebuffer" ) );
 		}
 
 		Framebuffer::~Framebuffer() {
-			glDeleteFramebuffersEXT( 1, &id );
+			glDeleteFramebuffers( 1, &id );
 		}
 
 		void Framebuffer::AttachColorTexture( const Texture *texture, unsigned int slot ) {
@@ -106,62 +88,66 @@ namespace XS {
 				return;
 			}
 
-			glFramebufferTexture2DEXT( GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT + slot, GL_TEXTURE_2D, texture->id, 0 );
+			glFramebufferTexture2D( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + slot, GL_TEXTURE_2D, texture->id, 0 );
 			colorTextures[slot] = texture;
 		}
 
 		void Framebuffer::AttachDepthTexture( const Texture *texture ) {
-			glFramebufferTexture2DEXT( GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_TEXTURE_2D, texture->id, 0 );
+			glFramebufferTexture2D( GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, texture->id, 0 );
 			depthTexture = texture;
 		}
 
 		void Framebuffer::AttachDepthStencilTexture( const Texture *texture ) {
-			glFramebufferTexture2DEXT( GL_FRAMEBUFFER_EXT, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, texture->id, 0 );
+			glFramebufferTexture2D( GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, texture->id, 0 );
 			depthTexture = texture;
 			stencilTexture = texture->id;
 		}
 
 		void Framebuffer::Bind( void ) const {
 			if ( currentReadFramebuffer != this || currentWriteFramebuffer != this ) {
-				glBindFramebufferEXT( GL_FRAMEBUFFER_EXT, id );
+				glBindFramebuffer( GL_FRAMEBUFFER, id );
 				currentReadFramebuffer	= this;
 				currentWriteFramebuffer	= this;
 			}
 		}
 
 		void Framebuffer::Check( void ) const {
-			unsigned int status = glCheckFramebufferStatusEXT( GL_FRAMEBUFFER_EXT );
+			unsigned int status = glCheckFramebufferStatus( GL_FRAMEBUFFER );
 
 			switch ( status ) {
-			case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT_EXT:
+			case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
 				Console::Print( "One or more framebuffer attachment points are not complete.\n" );
 				break;
 
-			case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_EXT:
-				Console::Print( "One or more attached images have different dimensions.\n" );
-				break;
-
-			case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER_EXT:
+			case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER:
 				Console::Print( "Invalid framebuffer attachment object type used.\n" );
 				break;
 
-			case GL_FRAMEBUFFER_INCOMPLETE_FORMATS_EXT:
+			case GL_FRAMEBUFFER_UNSUPPORTED:
 				Console::Print( "More than one internal format was used in the color attachments.\n" );
 				break;
 
-			case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER_EXT:
+			case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER:
 				Console::Print( "Missing a read buffer.\n" );
 				break;
 
-			case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT_EXT:
+			case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
 				Console::Print( "No images were attached to the framebuffer.\n" );
 				break;
 
-			case GL_FRAMEBUFFER_COMPLETE_EXT:
+			case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE:
+				Console::Print ("Number of samples is not the same for all rendertargets and color attachments.\n");
+				break;
+
+			case GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS:
+				Console::Print ("Not all layered attachments are valid.\n");
+				break;
+
+			case GL_FRAMEBUFFER_COMPLETE:
 				break;
 			}
 
-			if ( status != GL_FRAMEBUFFER_COMPLETE_EXT )
+			if ( status != GL_FRAMEBUFFER_COMPLETE )
 				Console::Print( "Creation of framebuffer %d could not be completed.\n", id );
 		}
 

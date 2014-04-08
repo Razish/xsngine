@@ -38,7 +38,6 @@ namespace XS {
 		class ShaderProgram {
 		private:
 			uint32_t		id;
-			Shader			*vertexShader, *fragmentShader;
 			// TODO: vector
 			ProgramVariable	*uniforms, *attributes;
 
@@ -49,10 +48,9 @@ namespace XS {
 
 			static void Init( void );
 
-			ShaderProgram();
-			~ShaderProgram();
 			ShaderProgram( const char *vertexShaderName, const char *fragmentShaderName );
-			void AttachShader( Shader *shader );
+			~ShaderProgram();
+			
 			void Link( void ) const;
 			void Bind( void ) const;
 			void SetUniform1( const char *name, int i );
