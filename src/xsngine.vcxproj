@@ -208,6 +208,7 @@
     <ClCompile Include="XSCommon\XSEvent.cpp" />
     <ClCompile Include="XSCommon\XSFile.cpp" />
     <ClCompile Include="XSCommon\XSLogger.cpp" />
+    <ClCompile Include="XSCommon\XSMatrix.cpp" />
     <ClCompile Include="XSCommon\XSString.cpp" />
     <ClCompile Include="XSCommon\XSTimer.cpp" />
     <ClCompile Include="XSCommon\XSVector.cpp" />
@@ -237,6 +238,7 @@
     <ClInclude Include="XSCommon\XSFile.h" />
     <ClInclude Include="XSCommon\XSGlobals.h" />
     <ClInclude Include="XSCommon\XSLogger.h" />
+    <ClInclude Include="XSCommon\XSMatrix.h" />
     <ClInclude Include="XSCommon\XSString.h" />
     <ClInclude Include="XSCommon\XSTimer.h" />
     <ClInclude Include="XSCommon\XSVector.h" />

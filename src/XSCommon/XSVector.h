@@ -17,7 +17,7 @@ namespace XS {
 		// xtors
 		vector2() : x( 0.0f ), y( 0.0f ) {}
 		vector2( number x, number y ) : x( x ), y( y ) {}
-		const char *tostring( void ) const;
+		std::string tostring( void ) const;
 
 		// access operators
 		inline number& operator[]( const int idx ) {
@@ -26,7 +26,7 @@ namespace XS {
 
 		// clear
 		inline void clear( void ) {
-			this->x = this->y = 0.0f;
+			x = y = 0.0f;
 		}
 
 		// compare
@@ -39,34 +39,34 @@ namespace XS {
 
 		// addition
 		inline vector2 operator+( const vector2 &rhs ) const {
-			return vector2( this->x + rhs.x, this->y + rhs.y );
+			return vector2( x + rhs.x, y + rhs.y );
 		}
         inline vector2& operator+=( const vector2& rhs ) {
-			this->x += rhs.x;
-			this->y += rhs.y;
+			x += rhs.x;
+			y += rhs.y;
 			return *this;
 		}
 
 		// subtraction
 		inline vector2 operator-( const vector2 &rhs ) const {
-			return vector2( this->x - rhs.x, this->y - rhs.y );
+			return vector2( x - rhs.x, y - rhs.y );
 		}
         inline vector2& operator-=( const vector2& rhs ) {
-			this->x -= rhs.x;
-			this->y -= rhs.y;
+			x -= rhs.x;
+			y -= rhs.y;
 			return *this;
 		}
 
 		// increment
 		inline void increment( void ) {
-			this->x += 1.0f;
-			this->y += 1.0f;
+			x += 1.0f;
+			y += 1.0f;
 		}
 
 		// decrement
 		inline void decrement( void ) {
-			this->x -= 1.0f;
-			this->y -= 1.0f;
+			x -= 1.0f;
+			y -= 1.0f;
 		}
 
 		// inverse
@@ -80,21 +80,21 @@ namespace XS {
 
 		// scalar multiplication
 		inline vector2 operator*( const number scalar ) const {
-			return vector2( this->x * scalar, this->y * scalar );
+			return vector2( x * scalar, y * scalar );
 		}
 		inline vector2& operator*=( const number scalar ) {
-			this->x *= scalar;
-			this->y *= scalar;
+			x *= scalar;
+			y *= scalar;
 			return *this;
 		}
 
 		// vector multiplication
 		inline vector2 operator*( const vector2 &rhs ) const {
-			return vector2( this->x * rhs.x, this->y * rhs.y );
+			return vector2( x * rhs.x, y * rhs.y );
 		}
 		inline vector2& operator*=( const vector2 &rhs ) {
-			this->x *= rhs.x;
-			this->y *= rhs.y;
+			x *= rhs.x;
+			y *= rhs.y;
 			return *this;
 		}
 
@@ -119,7 +119,7 @@ namespace XS {
 		// xtors
 		vector3() : x( 0.0f ), y( 0.0f ), z( 0.0f ) {}
 		vector3( number x, number y, number z ) : x( x ), y( y ), z( z ) {}
-		const char *tostring( void ) const;
+		std::string tostring( void ) const;
 
 		// access operators
 		inline number& operator[]( const int idx ) {
@@ -128,7 +128,7 @@ namespace XS {
 
 		// clear
 		inline void clear( void ) {
-			this->x = this->y = this->z = 0.0f;
+			x = y = z = 0.0f;
 		}
 
 		// compare
@@ -141,38 +141,38 @@ namespace XS {
 
 		// addition
 		inline vector3 operator+( const vector3 &rhs ) const {
-			return vector3( this->x + rhs.x, this->y + rhs.y, this->z + rhs.z );
+			return vector3( x + rhs.x, y + rhs.y, z + rhs.z );
 		}
         inline vector3& operator+=( const vector3& rhs ) {
-			this->x += rhs.x;
-			this->y += rhs.y;
-			this->z += rhs.z;
+			x += rhs.x;
+			y += rhs.y;
+			z += rhs.z;
 			return *this;
 		}
 
 		// subtraction
 		inline vector3 operator-( const vector3 &rhs ) const {
-			return vector3( this->x - rhs.x, this->y - rhs.y, this->z - rhs.z );
+			return vector3( x - rhs.x, y - rhs.y, z - rhs.z );
 		}
         inline vector3& operator-=( const vector3& rhs ) {
-			this->x -= rhs.x;
-			this->y -= rhs.y;
-			this->z -= rhs.z;
+			x -= rhs.x;
+			y -= rhs.y;
+			z -= rhs.z;
 			return *this;
 		}
 
 		// increment
 		inline void increment( void ) {
-			this->x += 1.0f;
-			this->y += 1.0f;
-			this->z += 1.0f;
+			x += 1.0f;
+			y += 1.0f;
+			z += 1.0f;
 		}
 
 		// decrement
 		inline void decrement( void ) {
-			this->x -= 1.0f;
-			this->y -= 1.0f;
-			this->z -= 1.0f;
+			x -= 1.0f;
+			y -= 1.0f;
+			z -= 1.0f;
 		}
 
 		// inverse
@@ -187,23 +187,23 @@ namespace XS {
 
 		// scalar multiplication
 		inline vector3 operator*( const number scalar ) const {
-			return vector3( this->x * scalar, this->y * scalar, this->z * scalar );
+			return vector3( x * scalar, y * scalar, z * scalar );
 		}
 		inline vector3& operator*=( const number scalar ) {
-			this->x *= scalar;
-			this->y *= scalar;
-			this->z *= scalar;
+			x *= scalar;
+			y *= scalar;
+			z *= scalar;
 			return *this;
 		}
 
 		// vector multiplication
 		inline vector3 operator*( const vector3 &rhs ) const {
-			return vector3( this->x * rhs.x, this->y * rhs.y, this->z * rhs.z );
+			return vector3( x * rhs.x, y * rhs.y, z * rhs.z );
 		}
 		inline vector3& operator*=( const vector3 &rhs ) {
-			this->x *= rhs.x;
-			this->y *= rhs.y;
-			this->z *= rhs.z;
+			x *= rhs.x;
+			y *= rhs.y;
+			z *= rhs.z;
 			return *this;
 		}
 
@@ -219,13 +219,13 @@ namespace XS {
 
 		// length
 		inline number length( void ) const {
-			return sqrtf( this->x*this->x + this->y*this->y + this->z*this->z );
+			return sqrtf( x*x + y*y + z*z );
 		}
 		static inline number length( const vector3 &vec ) {
 			return vec.length();
 		}
 		inline number lengthSquared( void ) const {
-			return this->x*this->x + this->y*this->y + this->z*this->z;
+			return x*x + y*y + z*z;
 		}
 		static inline number lengthSquared( const vector3 &vec ) {
 			return vec.lengthSquared();
@@ -240,9 +240,9 @@ namespace XS {
 		}
 
 		// normalise
+		// does not check that length != 0
+		// does not return length
 		inline void normaliseFast( void ) {
-			// does not check that length != 0
-			// does not return length
 			*this *= length();
 		}
 		inline number normalise( void ) {
@@ -269,7 +269,7 @@ namespace XS {
 
 		// dot
 		inline number dot( const vector3 &vec ) const {
-			return this->x*vec.x + this->y*vec.y + this->z*vec.z;
+			return x*vec.x + y*vec.y + z*vec.z;
 		}
 
 		// cross
@@ -299,7 +299,7 @@ namespace XS {
 		// xtors
 		vector4() : x( 0.0f ), y( 0.0f ), z( 0.0f ), w( 0.0f ) {}
 		vector4( number x, number y, number z, number w ) : x( x ), y( y ), z( z ), w( w ) {}
-		const char *tostring( void ) const;
+		std::string tostring( void ) const;
 
 		// access operators
 		inline number& operator[]( const int idx ) {
@@ -308,7 +308,7 @@ namespace XS {
 
 		// clear
 		inline void clear( void ) {
-			this->x = this->y = this->z = this->w = 0.0f;
+			x = y = z = w = 0.0f;
 		}
 
 		// compare
@@ -372,25 +372,25 @@ namespace XS {
 
 		// scalar multiplication
 		inline vector4 operator*( const number scalar ) const {
-			return vector4( this->x * scalar, this->y * scalar, this->z * scalar, this->w * scalar );
+			return vector4( x * scalar, y * scalar, z * scalar, w * scalar );
 		}
 		inline vector4& operator*=( const number scalar ) {
-			this->x *= scalar;
-			this->y *= scalar;
-			this->z *= scalar;
-			this->w *= scalar;
+			x *= scalar;
+			y *= scalar;
+			z *= scalar;
+			w *= scalar;
 			return *this;
 		}
 
 		// vector multiplication
 		inline vector4 operator*( const vector4 &rhs ) const {
-			return vector4( this->x * rhs.x, this->y * rhs.y, this->z * rhs.z, this->w * rhs.w );
+			return vector4( x * rhs.x, y * rhs.y, z * rhs.z, w * rhs.w );
 		}
 		inline vector4& operator*=( const vector4 &rhs ) {
-			this->x *= rhs.x;
-			this->y *= rhs.y;
-			this->z *= rhs.z;
-			this->w *= rhs.w;
+			x *= rhs.x;
+			y *= rhs.y;
+			z *= rhs.z;
+			w *= rhs.w;
 			return *this;
 		}
 

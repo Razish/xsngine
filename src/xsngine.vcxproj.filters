@@ -93,6 +93,9 @@
     <ClCompile Include="GLEW\glew.c">
       <Filter>XSRenderer</Filter>
     </ClCompile>
+    <ClCompile Include="XSCommon\XSMatrix.cpp">
+      <Filter>XSCommon</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="XSCommon\XSCvar.h">
@@ -180,6 +183,9 @@
       <Filter>XSCommon</Filter>
     </ClInclude>
     <ClInclude Include="XSCommon\XSLogger.h">
+      <Filter>XSCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="XSCommon\XSMatrix.h">
       <Filter>XSCommon</Filter>
     </ClInclude>
   </ItemGroup>
