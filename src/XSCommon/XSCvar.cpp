@@ -7,6 +7,8 @@
 #include "XSCommon/XSCommand.h"
 #include "XSCommon/XSConsole.h"
 #include "XSCommon/XSGlobals.h"
+#include "XSCommon/XSVector.h"
+#include "XSCommon/XSMatrix.h"
 
 namespace XS {
 

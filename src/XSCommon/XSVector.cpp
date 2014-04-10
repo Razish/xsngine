@@ -6,22 +6,16 @@
 
 namespace XS {
 
-	const char *vector2::tostring( void ) const {
-		static char buf[64];
-		String::FormatBuffer( buf, sizeof( buf ), "%.2f, %.2f", x, y );
-		return buf;
+	std::string vector2::tostring( void ) const {
+		return String::Format( "%.2f, %.2f", x, y );
 	}
 
-	const char *vector3::tostring( void ) const {
-		static char buf[64];
-		String::FormatBuffer( buf, sizeof( buf ), "%.2f, %.2f, %.2f", x, y, z );
-		return buf;
+	std::string vector3::tostring( void ) const {
+		return String::Format( "%.2f, %.2f, %.2f", x, y, z );
 	}
 
-	const char *vector4::tostring( void ) const {
-		static char buf[64];
-		String::FormatBuffer( buf, sizeof( buf ), "%.2f, %.2f, %.2f, %.2f", x, y, w );
-		return buf;
+	std::string vector4::tostring( void ) const {
+		return String::Format( "%.2f, %.2f, %.2f, %.2f", x, y, w );
 	}
 
 } // namespace XS

@@ -35,6 +35,7 @@ namespace XS {
 		static int scrollAmount = 0;
 		static unsigned int lineLength = 128; // changes at runtime based on window width
 		static const uint32_t characterSize = 16;
+		static const float fontSize = 12.0f;
 		static const unsigned int lineCount = 24;
 
 		static Renderer::Texture *fontTexture;
@@ -162,7 +163,7 @@ namespace XS {
 		static void DrawChar( float x, float y, char c ) {
 			int row, col;
 			float frow, fcol;
-			const float size = 0.0625f;
+			const float size = 1.0f / characterSize;
 
 			if ( c == ' ' )
 				return;
@@ -175,10 +176,7 @@ namespace XS {
 			frow = row*size;
 			fcol = col*size;
 
-			Renderer::DrawQuad( x, y, (float)characterSize, (float)characterSize,
-				fcol, frow,
-				fcol+size, frow+size,
-				fontTexture );
+			Renderer::DrawQuad( x, y, fontSize, fontSize, fcol, frow, fcol+size, frow+size, fontTexture );
 		}
 
 		void Display( void ) {
@@ -199,7 +197,7 @@ namespace XS {
 				auto it = consoleText.at(i);
 				size_t len = strlen( it );
 				for ( size_t c=0; c<len; c++ )
-					DrawChar( (float)(c*characterSize), (float)(line*characterSize), it[c] );
+					DrawChar( (float)(c*fontSize), (float)(line*fontSize), it[c] );
 			}
 		}
 
