@@ -18,11 +18,14 @@
 #include "XSCommon/XSCommand.h"
 #include "XSCommon/XSLogger.h"
 #include "XSRenderer/XSInternalFormat.h"
+#include "XSRenderer/XSMaterial.h"
 #include "XSRenderer/XSTexture.h"
 #include "XSRenderer/XSRenderCommand.h"
 #include "XSRenderer/XSView.h"
 #include "XSRenderer/XSRenderer.h"
 #include "XSRenderer/XSImagePNG.h"
+#include "XSRenderer/XSShaderProgram.h"
+#include "XSRenderer/XSVertexAttributes.h"
 
 namespace XS {
 
@@ -39,23 +42,58 @@ namespace XS {
 		static const unsigned int lineCount = 24;
 
 		static Renderer::Texture *fontTexture;
-		static Renderer::View view;
+		static Renderer::Material *fontMaterial;
+		static Renderer::ShaderProgram *fontShader;
+		static Renderer::View *view;
 
 		static Logger consoleLog( "console.log" );
 
+		static void CreateFontMaterial (Renderer::Texture& fontTexture);
+
 		void Init( void ) {
-			fontTexture = new Renderer::Texture( 16*characterSize, 16*characterSize, Renderer::InternalFormat::RGBA8,
-				Renderer::LoadPNG( "fonts/console.png" ) );
-			view.is2D = true;
-			view.width = Cvar::Get( "vid_width" )->GetInt();
-			view.height = Cvar::Get( "vid_height" )->GetInt();
-			view.Register();
+			view = new Renderer::View();
+			view->is2D = true;
+			view->width = Cvar::Get( "vid_width" )->GetInt();
+			view->height = Cvar::Get( "vid_height" )->GetInt();
+			view->Register();
+
+			byte *fontTextureData = Renderer::LoadPNG( "fonts/console.png" );
+			fontTexture = new Renderer::Texture( 16*characterSize, 16*characterSize, Renderer::InternalFormat::RGBA8, fontTextureData );
+
+			// Ew
+			delete[] fontTextureData;
+
+			CreateFontMaterial (*fontTexture);
 		}
 
 		void Close( void ) {
 			for ( const auto &it : consoleText )
 				delete it;
 			consoleText.clear();
+
+			delete fontMaterial;
+			delete fontShader;
+			delete fontTexture;
+			delete view;
+		}
+
+		static void CreateFontMaterial ( Renderer::Texture& fontTexture )
+		{
+			Renderer::VertexAttribute attributes[] = {
+				{ 0, "in_Position" },
+				{ 1, "in_TexCoord" },
+				{ 2, "in_Color" }
+			};
+
+			Renderer::Material::SamplerBinding samplerBinding;
+			samplerBinding.unit = 0;
+			samplerBinding.texture = &fontTexture;
+
+			fontShader = new Renderer::ShaderProgram ("text", "text", attributes, sizeof (attributes) / sizeof (attributes[0]));
+
+			fontMaterial = new Renderer::Material ();
+			fontMaterial->samplerBindings.push_back (samplerBinding);
+			fontMaterial->shaderProgram = fontShader;
 		}
 
 		static void Append( const char *text, bool multiLine ) {
@@ -176,7 +214,7 @@ namespace XS {
 			frow = row*size;
 			fcol = col*size;
 
-			Renderer::DrawQuad( x, y, fontSize, fontSize, fcol, frow, fcol+size, frow+size, fontTexture );
+			Renderer::DrawQuad( x, y, fontSize, fontSize, fcol, frow, fcol+size, frow+size, *fontMaterial );
 		}
 
 		void Display( void ) {
@@ -186,7 +224,7 @@ namespace XS {
 			if ( consoleText.size() == 0 )
 				return;
 
-			view.Bind();
+			view->Bind();
 
 			AdjustWidth();
 

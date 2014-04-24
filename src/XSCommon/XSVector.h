@@ -243,7 +243,7 @@ namespace XS {
 		// does not check that length != 0
 		// does not return length
 		inline void normaliseFast( void ) {
-			*this *= length();
+			*this *= static_cast<number>(1.0f) / length();
 		}
 		inline number normalise( void ) {
 			number length = this->length();

@@ -217,6 +217,7 @@
     <ClCompile Include="XSRenderer\XSFramebuffer.cpp" />
     <ClCompile Include="XSRenderer\XSImagePNG.cpp" />
     <ClCompile Include="XSRenderer\XSInternalFormat.cpp" />
+    <ClCompile Include="XSRenderer\XSMaterial.cpp" />
     <ClCompile Include="XSRenderer\XSRenderCommand.cpp" />
     <ClCompile Include="XSRenderer\XSRenderer.cpp" />
     <ClCompile Include="XSRenderer\XSShaderProgram.cpp" />
@@ -247,10 +248,12 @@
     <ClInclude Include="XSRenderer\XSFramebuffer.h" />
     <ClInclude Include="XSRenderer\XSImagePNG.h" />
     <ClInclude Include="XSRenderer\XSInternalFormat.h" />
+    <ClInclude Include="XSRenderer\XSMaterial.h" />
     <ClInclude Include="XSRenderer\XSRenderCommand.h" />
     <ClInclude Include="XSRenderer\XSRenderer.h" />
     <ClInclude Include="XSRenderer\XSShaderProgram.h" />
     <ClInclude Include="XSRenderer\XSTexture.h" />
+    <ClInclude Include="XSRenderer\XSVertexAttributes.h" />
     <ClInclude Include="XSRenderer\XSView.h" />
     <ClInclude Include="XSSystem\XSInclude.h" />
     <ClInclude Include="XSSystem\XSOS.h" />

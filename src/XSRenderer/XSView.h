@@ -1,27 +1,30 @@
 #pragma once
 
+#include "XSCommon/XSMatrix.h"
+
 namespace XS {
 
 	namespace Renderer {
 
+		class Buffer;
+
 		struct View {
-			union {
-				struct {
-					// ...
-				} data2d;
-				struct {
-					float matrix3DProjection[16];
-					float matrix3DModelview[16];
-				} data3d;
-			};
+			matrix4 projectionMatrix;
+			matrix4 viewMatrix;
+
+			Buffer *perFrameData;
+
 			bool is2D;
 
 			uint32_t width, height;
 			std::vector<RenderCommand> renderCommands;
 
+			View();
+			~View();
+
 			void Register( void );
 			void Bind( void );
-			void PreRender( void ) const;
+			void PreRender( void );
 			void PostRender( void ) const;
 		};
 

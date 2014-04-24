@@ -1,54 +1,56 @@
 #pragma once
 
+#include "XSSystem/XSInclude.h"
+
 namespace XS {
 
 	namespace Renderer {
 
+		struct VertexAttribute;
+
+		enum class ShaderType {
+			Vertex,
+			Geometry,
+			Fragment,
+		};
+
 		class Shader {
 		public:
-			enum ShaderType {
-				VERTEX = 0,
-				FRAGMENT,
-				NUM_SHADER_TYPES
-			};
+			
 			Shader( ShaderType type, const char *name );
 			~Shader();
 
 			friend class ShaderProgram;
 		private:
-			int				id;
-			char			name[XS_MAX_FILENAME];
-			ShaderType	type; // fragment/vertex
+			int			id;
+			ShaderType	type;
 
 			Shader();
-			void Create( const char *path, const char *source, int shaderType );
+			void Create( const char *path, const char *source, ShaderType shaderType );
 		};
 
 		class ProgramVariable {
 			friend class ShaderProgram;
-		private:
+
 			const char		*name;
 			int				location;
-			ProgramVariable	*next;
-		public:
-			~ProgramVariable() { delete next; };
 		};
 
 
 		class ShaderProgram {
 		private:
 			uint32_t		id;
-			// TODO: vector
-			ProgramVariable	*uniforms, *attributes;
 
-			ProgramVariable *GetUniformLocation( const char *name );
+			std::vector<ProgramVariable> uniforms;
+
+			ProgramVariable &GetUniform( const char *name );
 
 		public:
 			static const ShaderProgram *lastProgramUsed;
 
 			static void Init( void );
 
-			ShaderProgram( const char *vertexShaderName, const char *fragmentShaderName );
+			ShaderProgram( const char *vertexShaderName, const char *fragmentShaderName, const VertexAttribute *attributes, int numAttributes );
 			~ShaderProgram();
 			
 			void Link( void ) const;

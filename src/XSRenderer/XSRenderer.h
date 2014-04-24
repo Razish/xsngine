@@ -4,6 +4,9 @@ namespace XS {
 
 	namespace Renderer {
 
+		struct Material;
+		struct View;
+
 		// private
 		void	CheckGLErrors	( const char *filename, int line );
 		void	RegisterCvars	( void );
@@ -21,7 +24,7 @@ namespace XS {
 
 		// render commands
 		void	DrawQuad( float x, float y, float w, float h, float s1, float t1, float s2, float t2,
-			const Texture *texture );
+			const Material& material);
 
 	} // namespace Renderer
 

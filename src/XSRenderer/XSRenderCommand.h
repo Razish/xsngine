@@ -4,15 +4,21 @@ namespace XS {
 
 	namespace Renderer {
 
+		struct Material;
+
 		struct rcDrawQuad_t {
 			float x, y;
 			float w, h;
 			float s1, t1;
 			float s2, t2;
-			uint32_t textureID;
+			const Material *material;
 		};
 
 		struct RenderCommand {
+		public:
+			static void Init();
+			static void Shutdown();
+
 		public:
 			enum RenderCommandType {
 				DRAWQUAD = 0,

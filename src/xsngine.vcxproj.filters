@@ -96,6 +96,9 @@
     <ClCompile Include="XSCommon\XSMatrix.cpp">
       <Filter>XSCommon</Filter>
     </ClCompile>
+    <ClCompile Include="XSRenderer\XSMaterial.cpp">
+      <Filter>XSRenderer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="XSCommon\XSCvar.h">
@@ -187,6 +190,12 @@
     </ClInclude>
     <ClInclude Include="XSCommon\XSMatrix.h">
       <Filter>XSCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="XSRenderer\XSMaterial.h">
+      <Filter>XSRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="XSRenderer\XSVertexAttributes.h">
+      <Filter>XSRenderer</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

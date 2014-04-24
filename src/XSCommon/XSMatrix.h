@@ -1,5 +1,7 @@
 #pragma once
 
+#include "XSCommon/XSVector.h"
+
 namespace XS {
 
 	struct matrix4 {
@@ -48,6 +50,34 @@ namespace XS {
 			data[2][2] = data[2][0]*rhs[0]->z + data[2][1]*rhs[1]->z + data[2][2]*rhs[2]->z;
 			return *this;
 		}
+
+		
 	};
 
+	inline matrix4 ortho( float left, float right, float top, float bottom, float znear, float zfar ) {
+		matrix4 m;
+
+		m[0][0] = 2.0f / (right - left);
+		m[1][1] = 2.0f / (top - bottom);
+		m[2][2] = 2.0f / (znear - zfar);
+		m[3][0] = (right + left) / (left - right);
+		m[3][1] = (top + bottom) / (bottom - top);
+		m[3][2] = (znear - zfar) / (zfar - znear);
+		
+		return m;
+	}
+
+	inline matrix4 perspectiveFov( float fovy, float aspectRatio, float znear, float zfar ) {
+		matrix4 m;
+		
+		float f = 1.0f / tanf(fovy * static_cast<float>(M_PI) / 360.0f);  // convert degrees to radians and divide by 2
+		m[0][0] = f / aspectRatio;
+		m[1][1] = f;
+		m[2][2] = (zfar + znear) / (zfar - znear);
+		m[2][3] = 2.0f * zfar * znear / (zfar - znear);
+		m[3][2] = -1.0f;
+		m[3][3] = 0.0f;
+
+		return m;
+	}
 } // namespace XS

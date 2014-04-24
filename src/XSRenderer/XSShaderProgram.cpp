@@ -1,6 +1,7 @@
 #include "XSSystem/XSInclude.h"
 
 #include <GL/glew.h>
+#include <algorithm>
 #include "SDL2/SDL.h"
 
 #include "XSCommon/XSCommon.h"
@@ -16,6 +17,7 @@
 #include "XSRenderer/XSRenderCommand.h"
 #include "XSRenderer/XSView.h"
 #include "XSRenderer/XSRenderer.h"
+#include "XSRenderer/XSVertexAttributes.h"
 
 namespace XS {
 
@@ -25,48 +27,39 @@ namespace XS {
 
 		const ShaderProgram *ShaderProgram::lastProgramUsed = NULL;
 
-		static const int shaderTypes[Shader::NUM_SHADER_TYPES] = {
-			GL_VERTEX_SHADER,
-			GL_FRAGMENT_SHADER
-		};
-
 		void ShaderProgram::Init( void ) {
 			lastProgramUsed = NULL;
 		}
 
 		static void OutputProgramInfoLog( int program ) {
 			int logLength = 0;
-			char *logText = NULL;
 
 			Indent indent(1);
 
 			glGetProgramiv( program, GL_INFO_LOG_LENGTH, &logLength );
 
 			if ( logLength > 1 ) {
-				logText = new char[logLength];
-				glGetProgramInfoLog( program, logLength, NULL, logText );
+				std::string logText (logLength - 1, '\0');
+
+				glGetProgramInfoLog( program, logLength - 1, NULL, &logText[0] );
 
 				Console::Print( "%s\n", logText );
-
-				delete[] logText;
 			}
 		}
 
 		static void OutputShaderInfoLog( int shader ) {
 			int logLength = 0;
-			char *logText = NULL;
 
 			Indent indent (1);
 
 			glGetShaderiv( shader, GL_INFO_LOG_LENGTH, &logLength );
 
 			if ( logLength > 1 ) {
-				logText = new char[logLength];
-				glGetShaderInfoLog( shader, logLength, NULL, logText );
+				std::string logText (logLength - 1, '\0');
+
+				glGetShaderInfoLog( shader, logLength - 1, NULL, &logText[0] );
 
 				Console::Print( "%s\n", logText );
-
-				delete[] logText;
 			}
 		}
 
@@ -74,40 +67,41 @@ namespace XS {
 		// Shaders
 		//
 
-		void Shader::Create( const char *path, const char *source, int shaderType ) {
-			char *shaderCode = NULL;
+		static GLenum GetGLShaderType (ShaderType type)
+		{
+			switch ( type )
+			{
+				case ShaderType::Vertex: return GL_VERTEX_SHADER;
+				case ShaderType::Geometry: return GL_GEOMETRY_SHADER;
+				case ShaderType::Fragment: return GL_FRAGMENT_SHADER;
+				default: return GL_NONE;
+			}
+		}
+
+		void Shader::Create( const char *path, const char *source, ShaderType shaderType ) {
 			int statusCode = 0;
 
-			shaderCode = new char[MAX_SHADER_LENGTH];
-			String::Copy( shaderCode, source, MAX_SHADER_LENGTH );
-
-			id = glCreateShader( shaderType );
-			String::Copy( name, path, sizeof( name ) );
-			type = (shaderType == GL_VERTEX_SHADER) ? VERTEX : FRAGMENT;
+			id = glCreateShader( GetGLShaderType( shaderType ) );
+			type = shaderType;
 
 			if ( !id ) {
-				delete[] shaderCode;
-
 				throw( XSError( String::Format( "Shader(): Failed to create shader object for shader \"%s\"\n", path ).c_str() ) );
 			}
 
-			glShaderSource( id, 1, (const GLchar **)&shaderCode, NULL );
+			glShaderSource( id, 1, (const GLchar **)&source, NULL );
 			if ( glGetError() == GL_INVALID_OPERATION ) {
 				OutputShaderInfoLog( id );
 
 				glDeleteShader( id );
-				delete[] shaderCode;
 
 				throw( XSError( String::Format( "Shader(): Invalid source code in shader \"%s\"\n", path ).c_str() ) );
 			}
-
-			delete[] shaderCode;
 
 			glCompileShader( id );
 			glGetShaderiv( id, GL_COMPILE_STATUS, &statusCode );
 
 			if ( statusCode == GL_FALSE ) {
-				OutputShaderInfoLog (id);
+				OutputShaderInfoLog( id );
 
 				glDeleteShader( id );
 
@@ -121,10 +115,13 @@ namespace XS {
 			std::string path;
 
 			switch( type ) {
-			case VERTEX:
+			case ShaderType::Vertex:
 				path = String::Format( "shaders/v_%s.glsl", name );
 				break;
-			case FRAGMENT:
+			case ShaderType::Geometry:
+				path = String::Format( "shaders/g_%s.glsl", name );
+				break;
+			case ShaderType::Fragment:
 				path = String::Format( "shaders/f_%s.glsl", name );
 				break;
 			default:
@@ -135,10 +132,11 @@ namespace XS {
 			if ( !f.open )
 				throw( XSError( String::Format( "Shader(): Could not open file \"%s\"", name ).c_str() ) );
 
-			char *contents = new char[f.length];
-				f.Read( (byte *)contents );
-				Create( name, contents, shaderTypes[type] );
-			delete[] contents;
+			std::string contents (f.length, '\0');
+
+			f.Read( reinterpret_cast<byte *>(&contents[0]) );
+
+			Create( name, contents.c_str(), type );
 		}
 
 		Shader::~Shader() {
@@ -150,29 +148,37 @@ namespace XS {
 		//
 
 		// save some typing..
-		ShaderProgram::ShaderProgram( const char *vertexShaderName, const char *fragmentShaderName ) {
+		ShaderProgram::ShaderProgram( const char *vertexShaderName, const char *fragmentShaderName, const VertexAttribute *attributes, int numAttributes ) {
 			Shader *fragmentShader = nullptr;
 			Shader *vertexShader = nullptr;
-
-			id = 0;
-			uniforms = attributes = NULL;
 
 			id = glCreateProgram();
 			if ( !id )
 				throw( XSError( "Failed to create shader program" ) );
 
 			if ( vertexShaderName && !vertexShader ) {
-				vertexShader = new Shader( Shader::VERTEX, vertexShaderName );
+				vertexShader = new Shader( ShaderType::Vertex, vertexShaderName );
 				glAttachShader( id, vertexShader->id );
 			}
 
 			if ( fragmentShaderName && !fragmentShader ) {
-				fragmentShader = new Shader( Shader::FRAGMENT, fragmentShaderName );
+				fragmentShader = new Shader( ShaderType::Fragment, fragmentShaderName );
 				glAttachShader( id, fragmentShader->id );
+			}
+
+			for ( int i = 0; i < numAttributes; i++ ) {
+				glBindAttribLocation( id, attributes[i].location, attributes[i].name );
 			}
 
 			Link();
 			Bind();
+
+			// Until there are some data files to describe the shader, we'll do it like this for now.
+			GLint perFrame = glGetUniformBlockIndex (id, "PerFrame");
+			if ( perFrame >= 0 )
+			{
+				glUniformBlockBinding (id, perFrame, 6);
+			}
 
 			if ( vertexShader ) {
 				glDetachShader( id, vertexShader->id );
@@ -190,36 +196,26 @@ namespace XS {
 				lastProgramUsed = NULL;
 
 			glDeleteProgram( id );
-
-			delete uniforms;
-			delete attributes;
 		}
 
 		// will create if necessary
-		ProgramVariable *ShaderProgram::GetUniformLocation( const char *name ) {
-			ProgramVariable *variable = uniforms, *prev = NULL;
+		ProgramVariable &ShaderProgram::GetUniform( const char *name ) {
+			auto var = std::find_if (std::begin (uniforms), std::end (uniforms), [name](const ProgramVariable& uniform)
+			{
+				return strcmp (uniform.name, name) == 0;
+			});
 
-			while ( variable && strcmp( variable->name, name ) ) {
-				prev = variable;
-				variable = variable->next;
+			if ( var != std::end (uniforms) ) {
+				return *var;
 			}
 
-			if ( !variable ) {
-				if ( !prev ) {
-					uniforms = new ProgramVariable;
-					variable = uniforms;
-				}
-				else {
-					prev->next = new ProgramVariable;
-					variable = prev->next;
-				}
+			ProgramVariable uniform;
+			uniform.name = name;
+			uniform.location = glGetUniformLocation( id, name );
 
-				variable->name = name;
-				variable->next = NULL;
-				variable->location = glGetUniformLocation( id, name );
-			}
+			uniforms.push_back (uniform);
 
-			return variable;
+			return uniforms.back ();
 		}
 
 		void ShaderProgram::Link( void ) const {
@@ -242,23 +238,23 @@ namespace XS {
 		}
 
 		void ShaderProgram::SetUniform1( const char *name, int i ) {
-			glUniform1i( GetUniformLocation( name )->location, i );
+			glUniform1i( GetUniform( name ).location, i );
 		}
 
 		void ShaderProgram::SetUniform1( const char *name, float f ) {
-			glUniform1f( GetUniformLocation( name )->location, f );
+			glUniform1f( GetUniform( name ).location, f );
 		}
 
 		void ShaderProgram::SetUniform2( const char *name, float f1, float f2 ) {
-			glUniform2f( GetUniformLocation( name )->location, f1, f2 );
+			glUniform2f( GetUniform( name ).location, f1, f2 );
 		}
 
 		void ShaderProgram::SetUniform3( const char *name, float f1, float f2, float f3 ) {
-			glUniform3f( GetUniformLocation( name )->location, f1, f2, f3 );
+			glUniform3f( GetUniform( name ).location, f1, f2, f3 );
 		}
 
 		void ShaderProgram::SetUniform4( const char *name, float f1, float f2, float f3, float f4 ) {
-			glUniform4f( GetUniformLocation( name )->location, f1, f2, f3, f4 );
+			glUniform4f( GetUniform( name ).location, f1, f2, f3, f4 );
 		}
 
 	} // namespace Renderer

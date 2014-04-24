@@ -44,6 +44,9 @@ namespace XS {
 			return 0;
 		}
 
+		const Texture *Texture::lastUsedTexture[MAX_TEXTURE_UNITS] = {};
+		int Texture::lastUsedTextureUnit = 0;
+
 		void Texture::Init( void ) {
 			r_textureAnisotropy = Cvar::Create( "r_textureAnisotropy", "1", "Enable anisotropic filtering", CVAR_ARCHIVE );
 			r_textureAnisotropyMax = Cvar::Create( "r_textureAnisotropyMax", "16.0", "Anisotropic filtering level",
@@ -69,7 +72,7 @@ namespace XS {
 			//	if ( internalFormat == IF_RGBA16F )
 			//		filterMode = GL_NEAREST;
 
-			glBindTexture( GL_TEXTURE_2D, id );
+			Bind (0);
 
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
@@ -91,12 +94,21 @@ namespace XS {
 			{
 				glGenerateMipmap( GL_TEXTURE_2D );
 			}
-
-			glBindTexture( GL_TEXTURE_2D, 0 );
  		}
 
 		Texture::~Texture() {
 			glDeleteTextures( 1, &id );
+		}
+
+		void Texture::Bind (int unit) const {
+			if ( lastUsedTextureUnit != unit ) {
+				glActiveTexture (GL_TEXTURE0 + unit);
+				lastUsedTextureUnit = unit;
+			}
+
+			if ( lastUsedTexture[unit] != this ) {
+				glBindTexture (GL_TEXTURE_2D, id);
+			}
 		}
 
 	} // namespace Renderer

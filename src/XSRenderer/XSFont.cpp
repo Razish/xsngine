@@ -21,6 +21,7 @@
 #include "XSRenderer/XSRenderCommand.h"
 #include "XSRenderer/XSView.h"
 #include "XSRenderer/XSRenderer.h"
+#include "XSRenderer/XSVertexAttributes.h"
 
 namespace XS {
 
@@ -41,7 +42,13 @@ namespace XS {
 
 			fonts["menu"] = new font_t( "menu", 48 );
 
-			fontProgram = new ShaderProgram( "text", "text" );
+			Renderer::VertexAttribute attributes[] = {
+				{ 0, "in_Position" },
+				{ 1, "in_TexCoord" },
+				{ 2, "in_Color" }
+			};
+
+			fontProgram = new ShaderProgram( "text", "text", attributes, sizeof (attributes) / sizeof (attributes[0]) );
 
 			for ( const auto &it : fonts ) {
 				font_t *font = it.second;
@@ -119,6 +126,8 @@ namespace XS {
 		void Font::Shutdown( void ) {
 			for ( const auto &it : fonts )
 				delete it.second;
+
+			delete fontProgram;
 		}
 
 		void Font::Draw( const vector2 pos, const std::string &text, const font_t *font ) {

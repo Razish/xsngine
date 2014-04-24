@@ -7,8 +7,7 @@ namespace XS {
 		namespace Backend {
 
 			void	Init		( void );
-			void	Begin2D		( const int width, const int height );
-			void	Begin3D		( const int width, const int height );
+			void	Shutdown	( );
 
 		} // namespace Backend
 

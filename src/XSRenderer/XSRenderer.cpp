@@ -15,6 +15,7 @@
 #include "XSRenderer/XSInternalFormat.h"
 #include "XSRenderer/XSTexture.h"
 #include "XSRenderer/XSRenderCommand.h"
+#include "XSRenderer/XSMaterial.h"
 #include "XSRenderer/XSView.h"
 #include "XSRenderer/XSRenderer.h"
 #include "XSRenderer/XSFont.h"
@@ -133,13 +134,17 @@ namespace XS {
 			Framebuffer::Init();
 			Font::Init();
 
-			Backend::Begin2D( vid_width->GetInt(), vid_height->GetInt() );
+			RenderCommand::Init();
+
+			glViewport( 0, 0, vid_width->GetInt(), vid_height->GetInt() );
 		}
 
 		void Shutdown( void ) {
 			Console::Print( "Shutting down renderer...\n" );
 
+			RenderCommand::Shutdown();
 			Font::Shutdown();
+			Backend::Shutdown();
 
 			DestroyDisplay();
 		}
@@ -164,7 +169,8 @@ namespace XS {
 
 			SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 3 );
 			SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 1 );
-			SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY );
+			SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE );
+			SDL_GL_SetAttribute( SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG );
 
 			int multisample = r_multisample->GetInt();
 			if ( multisample ) {
@@ -205,8 +211,6 @@ namespace XS {
 			glClearColor( 0.5f, 0.125f, 0.125f, 1.0f );
 			glClear( GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT );
 
-			glLoadIdentity();
-
 			for ( const auto &view : views ) {
 				view->PreRender();
 				for ( const auto &cmd : view->renderCommands )
@@ -227,12 +231,8 @@ namespace XS {
 		}
 
 		void DrawQuad( float x, float y, float w, float h, float s1, float t1, float s2, float t2,
-			const Texture *texture )
+			const Material& material )
 		{
-			//TODO: procedurally generated default/missing texture
-			if ( !texture )
-				return;
-
 			RenderCommand cmd( RenderCommand::DRAWQUAD );
 			cmd.drawQuad.x = x;
 			cmd.drawQuad.y = y;
@@ -242,7 +242,7 @@ namespace XS {
 			cmd.drawQuad.t1 = t1;
 			cmd.drawQuad.s2 = s2;
 			cmd.drawQuad.t2 = t2;
-			cmd.drawQuad.textureID = texture->id;
+			cmd.drawQuad.material = &material;
 
 			currentView->renderCommands.push_back( cmd );
 		}

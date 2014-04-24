@@ -4,22 +4,38 @@
 
 #include "XSCommon/XSCommon.h"
 #include "XSCommon/XSVector.h"
+#include "XSRenderer/XSMaterial.h"
 #include "XSRenderer/XSRenderCommand.h"
 
 namespace XS {
 
 	namespace Renderer {
 
+		static Buffer *quadsVertexBuffer;
+		static Buffer *quadsIndexBuffer;
+
+		void RenderCommand::Init()
+		{
+			const unsigned short indices[6] = { 0, 2, 1, 1, 2, 3 };
+
+			quadsVertexBuffer = new Buffer (BufferType::Vertex, nullptr, 576);
+			quadsIndexBuffer = new Buffer (BufferType::Index, indices, sizeof (indices));
+		}
+
+		void RenderCommand::Shutdown()
+		{
+			delete quadsVertexBuffer;
+			delete quadsIndexBuffer;
+		}
+
 		static void DrawQuad( const rcDrawQuad_t *quad ) {
 			static vector4 color = vector4( 1.0f, 1.0f, 1.0f, 1.0f );
 
-			glUseProgram (0);
-			glBindTexture( GL_TEXTURE_2D, quad->textureID );
+			quad->material->Bind ();
 
 			vector2 vertices[4];
 			vector2 texcoords[4];
 			vector4 colors[4];
-			static const unsigned short indices[6] = { 0, 1, 2, 1, 2, 3 };
 
 			// Top-left
 			vertices[0].x = quad->x;
@@ -49,24 +65,36 @@ namespace XS {
 			texcoords[3].y = quad->t2;
 			colors[3] = color;
 
-#if 1
-			glEnableClientState( GL_COLOR_ARRAY );
-			glVertexPointer( 2, GL_FLOAT, 0, (const GLvoid *)&vertices[0] );
-			glTexCoordPointer( 2, GL_FLOAT, 0, (const GLvoid *)&texcoords[0] );
-			glColorPointer( 4, GL_FLOAT, 0, (const GLvoid *)&colors[0] );
+			float *vertexBuffer = static_cast<float *>(quadsVertexBuffer->Map());
+			int offset = 0;
 
-			glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, (const GLvoid *)&indices[0] );
-			glDisableClientState( GL_COLOR_ARRAY );
-#else
-			glBegin( GL_TRIANGLES );
-				for ( size_t i=0; i<ARRAY_LEN( indices ); i++ ) {
-					glTexCoord2fv( &texcoords[indices[i]][0] );
-					glColor4fv( &colors[indices[i]][0] );
-					glVertex2fv( &vertices[indices[i]][0] );
-				}
-			glEnd();
-#endif
+			std::memcpy (vertexBuffer, vertices, sizeof (vertices));
+			vertexBuffer += 8;
 
+			std::memcpy (vertexBuffer, texcoords, sizeof (texcoords));
+			vertexBuffer += 8;
+
+			std::memcpy (vertexBuffer, colors, sizeof (colors));
+
+			quadsVertexBuffer->Unmap();
+
+			quadsIndexBuffer->Bind();
+
+			glEnableVertexAttribArray (0);
+			glEnableVertexAttribArray (1);
+			glEnableVertexAttribArray (2);
+
+			offset = 0;
+
+			glVertexAttribPointer (0, 2, GL_FLOAT, GL_FALSE, 0, 0);
+			offset += sizeof (vertices);
+
+			glVertexAttribPointer (1, 2, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<const GLvoid *>(offset));
+			offset += sizeof (texcoords);
+
+			glVertexAttribPointer (2, 4, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<const GLvoid *>(offset));
+
+			glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0 );
 		}
 
 		void RenderCommand::Execute( void ) const {
