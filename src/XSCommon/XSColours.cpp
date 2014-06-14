@@ -47,8 +47,9 @@ namespace XS {
 	bool IsColourString( const char *s ) {
 		if ( s && s[0] && s[1] && s[0] == COLOUR_ESCAPE ) {
 			int lowc = tolower( s[1] );
-			if ( (s[1] >= '0' && s[1] <= '9') || (lowc >= 'a' && lowc <= 'e') )
+			if ( (s[1] >= '0' && s[1] <= '9') || (lowc >= 'a' && lowc <= 'e') ) {
 				return true;
+			}
 		}
 
 		return false;
@@ -57,8 +58,9 @@ namespace XS {
 	size_t ColourStringLength( const char *text ) {
 		size_t len = 0;
 
-		if ( !text )
+		if ( !text ) {
 			return 0;
+		}
 
 		for ( const char *p=text; *p; p++ ) {
 			if ( IsColourString( p ) ) {
@@ -68,7 +70,9 @@ namespace XS {
 
 			if ( p[0] == COLOUR_ESCAPE &&
 				 p[1] == COLOUR_ESCAPE )
+			{
 				p++;
+			}
 
 			len++;
 		}
@@ -79,10 +83,12 @@ namespace XS {
 	unsigned int ColourIndex( char c ) {
 		int lowc = tolower( c );
 
-		if ( c >= '0' && c <= '9' )
+		if ( c >= '0' && c <= '9' ) {
 			return (c-'0') & COLOUR_BITS;
-		else if ( lowc >= 'a' && lowc <= 'e' )
+		}
+		else if ( lowc >= 'a' && lowc <= 'e' ) {
 			return (lowc-'a'+'9') & COLOUR_BITS;
+		}
 
 		return ColourIndex( COLOUR_WHITE );
 	}

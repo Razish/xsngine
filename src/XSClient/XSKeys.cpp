@@ -127,8 +127,9 @@ namespace XS {
 			size_t i = 0;
 
 			for ( i=0, km = keymap; i<keymapSize; i++, km++ ) {
-				if ( !String::Compare( name, km->name ) )
+				if ( !String::Compare( name, km->name ) ) {
 					return km->keycode;
+				}
 			}
 			return SDLK_UNKNOWN;
 		}
@@ -138,8 +139,9 @@ namespace XS {
 			size_t i = 0;
 
 			for ( i=0, km = keymap; i<keymapSize; i++, km++ ) {
-				if ( keycode == km->keycode )
+				if ( keycode == km->keycode ) {
 					return km->name;
+				}
 			}
 			return NULL;
 		}
@@ -150,8 +152,13 @@ namespace XS {
 			std::map<SDL_Keycode, std::string> sorted( binds.begin(), binds.end() );
 
 			Indent indent( 1 );
-			for ( const auto &bind : sorted )
+			for ( const auto &bind : sorted ) {
+				if ( bind.second.empty() ) {
+					continue;
+				}
+
 				Console::Print( "%-8s: %s\n", GetNameForKeycode( bind.first ), bind.second.c_str() );
+			}
 		}
 
 		void Cmd_SetBind( const commandContext_t * const context ) {
@@ -172,8 +179,9 @@ namespace XS {
 			std::string value;
 			for ( size_t i=1; i<size; i++ ) {
 				value += (*context)[i];
-				if ( i != size-1 )
+				if ( i != size-1 ) {
 					value += " ";
+				}
 			}
 
 			binds[keycode] = value;
@@ -183,8 +191,11 @@ namespace XS {
 			const std::string &cmd = binds[key];
 
 			if ( cmd.empty() ) {
-			//	if ( down )
-			//		Console::Print( "ExecuteBind: \"%s\" (%d) is not bound\n", GetNameForKeycode( key ), key );
+				/*
+				if ( down ) {
+					Console::Print( "ExecuteBind: \"%s\" (%d) is not bound\n", GetNameForKeycode( key ), key );
+				}
+				*/
 				return;
 			}
 
@@ -193,16 +204,23 @@ namespace XS {
 				return;
 			}
 
-			if ( down )
+			if ( down ) {
 				Command::Append( cmd.c_str() );
+			}
 		}
 
 		void KeyEvent( SDL_Keycode key, bool down ) {
-		//	if ( Console::KeyEvent() )
-		//		return;
+			/*
+			if ( Console::KeyEvent() ) {
+				return;
+			}
+			*/
 
-		//	if ( CGame::KeyEvent( key, down ) )
-		//		return;
+			/*
+			if ( CGame::KeyEvent( key, down ) ) {
+				return;
+			}
+			*/
 
 			ExecuteBind( key, down );
 		}
@@ -213,8 +231,9 @@ namespace XS {
 			for ( const auto &it : sorted ) {
 				SDL_Keycode key = it.first;
 				const std::string &cmd = it.second;
-				if ( !cmd.empty() )
+				if ( !cmd.empty() ) {
 					str += String::Format( "bind %s \"%s\"\n", GetNameForKeycode( key ), cmd.c_str() );
+				}
 			}
 		}
 

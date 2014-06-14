@@ -67,8 +67,9 @@ namespace XS {
 		}
 
 		void Close( void ) {
-			for ( const auto &it : consoleText )
+			for ( const auto &it : consoleText ) {
 				delete it;
+			}
 			consoleText.clear();
 
 			delete fontMaterial;
@@ -77,9 +78,8 @@ namespace XS {
 			delete view;
 		}
 
-		static void CreateFontMaterial ( Renderer::Texture& fontTexture )
-		{
-			Renderer::VertexAttribute attributes[] = {
+		static void CreateFontMaterial( Renderer::Texture& fontTexture ) {
+			static const Renderer::VertexAttribute attributes[] = {
 				{ 0, "in_Position" },
 				{ 1, "in_TexCoord" },
 				{ 2, "in_Color" }
@@ -89,10 +89,11 @@ namespace XS {
 			samplerBinding.unit = 0;
 			samplerBinding.texture = &fontTexture;
 
-			fontShader = new Renderer::ShaderProgram ("text", "text", attributes, sizeof (attributes) / sizeof (attributes[0]));
+			fontShader = new Renderer::ShaderProgram( "text", "text", attributes,
+				sizeof(attributes) / sizeof(attributes[0]) );
 
-			fontMaterial = new Renderer::Material ();
-			fontMaterial->samplerBindings.push_back (samplerBinding);
+			fontMaterial = new Renderer::Material();
+			fontMaterial->samplerBindings.push_back( samplerBinding );
 			fontMaterial->shaderProgram = fontShader;
 		}
 
@@ -105,17 +106,20 @@ namespace XS {
 			std::string tmp = insert;
 
 			if ( scrollAmount < 0 ) {
-				if ( consoleText.size() >= lineCount )
+				if ( consoleText.size() >= lineCount ) {
 					scrollAmount = std::max<int>( scrollAmount-1, (signed)(consoleText.size()-lineCount) * -1 );
-				else
+				}
+				else {
 					scrollAmount = std::max<int>( scrollAmount-1, 0U );
+				}
 			}
 
 			for ( i=0; i<len; i++ ) {
 				char *p = (char *)&text[i];
 
-				if ( !IsColourString( p ) && (i>0 && !IsColourString( p-1 )) )
+				if ( !IsColourString( p ) && (i>0 && !IsColourString( p-1 )) ) {
 					accumLength++;
+				}
 
 				if ( accumLength > lineLength && (i>0 && !IsColourString( p-1 )) ) {
 					char lastColour = COLOUR_GREEN;
@@ -143,7 +147,7 @@ namespace XS {
 						}
 					}
 
-					String::FormatBuffer( tempMessage, len, "%c%c%s", COLOUR_ESCAPE, lastColour, text + i );
+					String::FormatBuffer( tempMessage, len, "%c%c%s", COLOUR_ESCAPE, lastColour, text + i - 1 );
 					Append( tempMessage, true );
 					return;
 				}
@@ -169,16 +173,19 @@ namespace XS {
 					str.resize( n );
 					break;
 				}
-				if ( n > -1 )
+				if ( n > -1 ) {
 					size = n + 1;
-				else
+				}
+				else {
 					size *= 2;
+				}
 			}
 
 			//FIXME: care about printing twice on same line
 			std::string finalOut = "";
-			for ( unsigned int i=0; i<indentation; i++ )
+			for ( unsigned int i=0; i<indentation; i++ ) {
 				finalOut += "  ";
+			}
 			finalOut += str;
 
 			//TODO: strip colours?
@@ -187,15 +194,17 @@ namespace XS {
 			consoleLog.Print( finalOut.c_str() );
 
 		#if defined(_WIN32) && defined(_DEBUG)
-			if ( !finalOut.empty() )
+			if ( !finalOut.empty() ) {
 				OutputDebugString( finalOut.c_str() );
+			}
 		#endif
 		}
 
 		static void AdjustWidth( void ) {
 			Cvar *cv = Cvar::Get( "vid_width" );
-			if ( cv )
+			if ( cv ) {
 				lineLength = cv->GetInt() / characterSize;
+			}
 		}
 
 		static void DrawChar( float x, float y, char c ) {
@@ -203,8 +212,9 @@ namespace XS {
 			float frow, fcol;
 			const float size = 1.0f / characterSize;
 
-			if ( c == ' ' )
+			if ( c == ' ' ) {
 				return;
+			}
 
 			// assumes 16x16
 			// sqrt( 256 ) = 16
@@ -218,11 +228,13 @@ namespace XS {
 		}
 
 		void Display( void ) {
-			if ( !visible )
+			if ( !visible ) {
 				return;
+			}
 
-			if ( consoleText.size() == 0 )
+			if ( consoleText.size() == 0 ) {
 				return;
+			}
 
 			view->Bind();
 
@@ -234,8 +246,9 @@ namespace XS {
 			for ( size_t line=0; line<lineCount && line<consoleText.size(); i++, line++ ) {
 				auto it = consoleText.at(i);
 				size_t len = strlen( it );
-				for ( size_t c=0; c<len; c++ )
+				for ( size_t c=0; c<len; c++ ) {
 					DrawChar( (float)(c*fontSize), (float)(line*fontSize), it[c] );
+				}
 			}
 		}
 

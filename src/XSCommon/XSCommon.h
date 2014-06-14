@@ -37,7 +37,7 @@ namespace XS {
 	#define XSTR( str ) STR( str )
 
 	#ifndef M_PI
-		#define M_PI (4.0*atan(1.0))
+		#define M_PI (3.14159265358979323846f)
 	#endif
 
 } // namespace XS

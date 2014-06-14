@@ -37,17 +37,20 @@ namespace XS {
 
 			if ( initFunc_t init = (initFunc_t)SDL_LoadFunction( moduleHandle, "LoadModule" ) ) {
 				const char *msg = init( MODULE_VERSION );
-				if ( msg )
+				if ( msg ) {
 					throw( XSError( msg ) );
+				}
 			}
-			else
+			else {
 				throw( XSError( "Could not load client module (" MODULE_NAME ")" ) );
+			}
 #endif
 		}
 
 		void Shutdown( void ) {
-			if ( moduleHandle )
+			if ( moduleHandle ) {
 				SDL_UnloadObject( moduleHandle );
+			}
 		}
 
 		void NetworkPump( void ) {

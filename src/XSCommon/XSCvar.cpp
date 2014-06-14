@@ -23,19 +23,22 @@ namespace XS {
 			Cvar *cv = it.second;
 			if ( !cv ) {
 				// shouldn't happen
-				if ( Common::com_developer->GetBool() )
+				if ( Common::com_developer->GetBool() ) {
 					Console::Print( "WriteCvars: NULL cvar \"%s\"\n", name );
+				}
 				continue;
 			}
-			if ( (cv->flags & CVAR_ARCHIVE) && cv->modified && cv->fullString != cv->defaultStr )
+			if ( (cv->flags & CVAR_ARCHIVE) && cv->modified && cv->fullString != cv->defaultStr ) {
 				str += String::Format( "set %s \"%s\"\n", name, cv->fullString.c_str() );
+			}
 		}
 	}
 
 	void Cvar::Clean( void ) {
 		Console::Print( "Cleaning up cvars\n" );
-		for ( const auto &it : cvars )
+		for ( const auto &it : cvars ) {
 			delete it.second;
+		}
 		cvars.clear();
 	}
 
@@ -58,26 +61,30 @@ namespace XS {
 
 	Cvar *Cvar::Create( std::string name, std::string value, std::string description, uint32_t flags ) {
 		Cvar *cvar = cvars[name];
-		if ( initialised )
+		if ( initialised ) {
 			flags &= ~CVAR_INIT;
+		}
 
 		// check for existing
 		if ( cvar ) {
 			if ( !value.empty() ) {
 				// INIT cvars should not be initialised with differing values
-				if ( cvar->flags & CVAR_INIT )
+				if ( cvar->flags & CVAR_INIT ) {
 					Console::Print( "WARNING: CVAR_INIT Cvar \"%s\" was created twice with values \"%s\" and \"%s\"\n",
 						name.c_str(), cvar->fullString.c_str(), value.c_str() );
+				}
 
 				// don't initialise a cvar if it already exists/has been set
-				else if ( !cvar->modified )
+				else if ( !cvar->modified ) {
 					cvar->Set( value, true );
+				}
 
 				cvar->description = description;
 			}
 
-			if ( flags != CVAR_NONE )
+			if ( flags != CVAR_NONE ) {
 				cvar->SetFlags( flags );
+			}
 
 			return cvar;
 		}
@@ -89,8 +96,9 @@ namespace XS {
 	Cvar *Cvar::Get( const std::string &name ) {
 		Cvar *cv = cvars[name];
 
-		if ( cv )
+		if ( cv ) {
 			return cv;
+		}
 
 		return NULL; //new Cvar( name );
 	}
@@ -109,8 +117,9 @@ namespace XS {
 	}
 
 	void Cvar::SetFlags( uint32_t flags ) {
-		if ( initialised )
+		if ( initialised ) {
 			flags &= ~CVAR_INIT;
+		}
 
 		this->flags = flags;
 	}
@@ -139,8 +148,9 @@ namespace XS {
 			values.push_back( newValue );
 		}
 
-		if ( !initial )
+		if ( !initial ) {
 			modified = true;
+		}
 
 		return true;
 	}

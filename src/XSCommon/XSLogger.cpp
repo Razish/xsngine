@@ -49,8 +49,9 @@ namespace XS {
 				return;
 			}
 		}
-		else
+		else {
 			f->AppendString( out.c_str() );
+		}
 	}
 
 } // namespace XS

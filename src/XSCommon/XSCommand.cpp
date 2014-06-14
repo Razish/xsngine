@@ -33,10 +33,12 @@ namespace XS {
 
 			for ( const auto &it : *context ) {
 				const Cvar *cv = Cvar::Get( it );
-				if ( cv )
+				if ( cv ) {
 					Console::Print( "%s: \"%s\"\n", it.c_str(), cv->GetFullCString() );
-				else
+				}
+				else {
 					Console::Print( "%s: does not exist\n", it.c_str() );
+				}
 			}
 		}
 
@@ -52,8 +54,9 @@ namespace XS {
 			std::string value;
 			for ( size_t i=1; i<size; i++ ) {
 				value += (*context)[i];
-				if ( i != size-1 )
+				if ( i != size-1 ) {
 					value += " ";
+				}
 			}
 			cv->Set( value );
 		}
@@ -83,8 +86,9 @@ namespace XS {
 
 		void Append( const char *str, char delimiter ) {
 			std::vector<std::string> commands = String::Split( str, delimiter );
-			for ( const auto &command : commands )
+			for ( const auto &command : commands ) {
 				buffer.push_back( command );
+			}
 		}
 
 		void ExecuteBuffer( void ) {
@@ -100,8 +104,9 @@ namespace XS {
 					context = String::Split( &it[start+1], ' ' );
 
 					// strip any quotes around the arguments
-					for ( auto &tok : context )
+					for ( auto &tok : context ) {
 						tok.erase( std::remove( tok.begin(), tok.end(), '"' ), tok.end() );
+					}
 
 				//	if ( !context->size() )
 				//		continue;

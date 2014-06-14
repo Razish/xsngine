@@ -52,13 +52,15 @@ namespace XS {
 			for ( int i=1; i<argc; i++ ) {
 				const bool containsSpaces = strchr( argv[i], ' ' ) != NULL;
 
-				if ( containsSpaces )
+				if ( containsSpaces ) {
 					commandLine += "\"";
+				}
 
 				commandLine += argv[i];
 
-				if ( containsSpaces )
+				if ( containsSpaces ) {
 					commandLine += "\"";
+				}
 
 				commandLine += " ";
 			}
@@ -71,15 +73,17 @@ namespace XS {
 			// then append it to the command buffer
 			const char delimiter = '+';
 			const size_t start = commandLine.find( delimiter );
-			if ( start == std::string::npos )
+			if ( start == std::string::npos ) {
 				return;
+			}
 			Command::Append( &commandLine[start + 1], delimiter );
 
 		#ifdef _DEBUG
 			Console::Print( "Startup parameters:\n" );
 			Indent indent(1);
-			for ( const auto &arg : String::Split( &commandLine[start + 1], delimiter ) )
+			for ( const auto &arg : String::Split( &commandLine[start + 1], delimiter ) ) {
 				Console::Print( "%s\n", arg.c_str() );
+			}
 		#endif
 		}
 
@@ -105,8 +109,9 @@ namespace XS {
 		static void WriteConfig( const char *cfg = NULL ) {
 			std::string str = "";
 			Cvar::WriteCvars( str );
-			if ( !com_dedicated->GetBool() )
+			if ( !com_dedicated->GetBool() ) {
 				Client::WriteBinds( str );
+			}
 
 			// default config if none specified
 			if ( !cfg ) {
@@ -124,8 +129,9 @@ namespace XS {
 
 		static void Cmd_WriteConfig( const commandContext_t * const context ) {
 			const char *cfg = NULL;
-			if ( context->size() )
+			if ( context->size() ) {
 				 cfg = (*context)[0].c_str();
+			 }
 
 			WriteConfig( cfg );
 		}
@@ -156,8 +162,9 @@ int main( int argc, char **argv ) {
 
 		XS::Console::Print( WINDOW_TITLE " (" XSTR( ARCH_WIDTH ) " bits) built on " __DATE__ " [git " REVISION "]\n" );
 
-		if ( !XS::Common::com_dedicated->GetBool() )
+		if ( !XS::Common::com_dedicated->GetBool() ) {
 			XS::Renderer::Init();
+		}
 
 		XS::Console::Init();
 
@@ -189,13 +196,15 @@ int main( int argc, char **argv ) {
 			currentTime = newTime;
 
 			double sliceMsec = frameTime;
-			if ( sliceMsec > 250.0 )
+			if ( sliceMsec > 250.0 ) {
 				sliceMsec = 250.0; // avoid spiral of death, maximum 250mspf
+			}
 			accumulator += sliceMsec;
 
 			// input
-			if ( !XS::Common::com_dedicated->GetBool() )
+			if ( !XS::Common::com_dedicated->GetBool() ) {
 				XS::Client::input.Poll();
+			}
 
 			// event pump
 			XS::Event::Pump();
@@ -222,8 +231,9 @@ int main( int argc, char **argv ) {
 			XS::Renderer::Update( /*state*/ );
 
 			const double renderMsec = 1000.0 / XS::Common::r_framerate->GetDouble();
-			if ( frameTime < renderMsec )
+			if ( frameTime < renderMsec ) {
 				SDL_Delay( (uint32_t)(renderMsec - frameTime) );
+			}
 		}
 	}
 	catch( const XS::XSError &e ) {

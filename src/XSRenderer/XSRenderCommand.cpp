@@ -14,24 +14,22 @@ namespace XS {
 		static Buffer *quadsVertexBuffer;
 		static Buffer *quadsIndexBuffer;
 
-		void RenderCommand::Init()
-		{
+		void RenderCommand::Init() {
 			const unsigned short indices[6] = { 0, 2, 1, 1, 2, 3 };
 
-			quadsVertexBuffer = new Buffer (BufferType::Vertex, nullptr, 576);
-			quadsIndexBuffer = new Buffer (BufferType::Index, indices, sizeof (indices));
+			quadsVertexBuffer = new Buffer( BufferType::Vertex, nullptr, 576 );
+			quadsIndexBuffer = new Buffer( BufferType::Index, indices, sizeof(indices) );
 		}
 
-		void RenderCommand::Shutdown()
-		{
+		void RenderCommand::Shutdown() {
 			delete quadsVertexBuffer;
 			delete quadsIndexBuffer;
 		}
 
 		static void DrawQuad( const rcDrawQuad_t *quad ) {
-			static vector4 color = vector4( 1.0f, 1.0f, 1.0f, 1.0f );
+			static const vector4 color = vector4( 1.0f, 1.0f, 1.0f, 1.0f );
 
-			quad->material->Bind ();
+			quad->material->Bind();
 
 			vector2 vertices[4];
 			vector2 texcoords[4];
@@ -68,31 +66,31 @@ namespace XS {
 			float *vertexBuffer = static_cast<float *>(quadsVertexBuffer->Map());
 			int offset = 0;
 
-			std::memcpy (vertexBuffer, vertices, sizeof (vertices));
+			std::memcpy( vertexBuffer, vertices, sizeof(vertices) );
 			vertexBuffer += 8;
 
-			std::memcpy (vertexBuffer, texcoords, sizeof (texcoords));
+			std::memcpy( vertexBuffer, texcoords, sizeof(texcoords) );
 			vertexBuffer += 8;
 
-			std::memcpy (vertexBuffer, colors, sizeof (colors));
+			std::memcpy( vertexBuffer, colors, sizeof(colors) );
 
 			quadsVertexBuffer->Unmap();
 
 			quadsIndexBuffer->Bind();
 
-			glEnableVertexAttribArray (0);
-			glEnableVertexAttribArray (1);
-			glEnableVertexAttribArray (2);
+			glEnableVertexAttribArray( 0 );
+			glEnableVertexAttribArray( 1 );
+			glEnableVertexAttribArray( 2 );
 
 			offset = 0;
 
-			glVertexAttribPointer (0, 2, GL_FLOAT, GL_FALSE, 0, 0);
-			offset += sizeof (vertices);
+			glVertexAttribPointer( 0, 2, GL_FLOAT, GL_FALSE, 0, 0 );
+			offset += sizeof(vertices);
 
-			glVertexAttribPointer (1, 2, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<const GLvoid *>(offset));
-			offset += sizeof (texcoords);
+			glVertexAttribPointer( 1, 2, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<const GLvoid *>(offset) );
+			offset += sizeof(texcoords);
 
-			glVertexAttribPointer (2, 4, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<const GLvoid *>(offset));
+			glVertexAttribPointer( 2, 4, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<const GLvoid *>(offset) );
 
 			glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0 );
 		}

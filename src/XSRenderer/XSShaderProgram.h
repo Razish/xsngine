@@ -16,7 +16,7 @@ namespace XS {
 
 		class Shader {
 		public:
-			
+
 			Shader( ShaderType type, const char *name );
 			~Shader();
 
@@ -50,9 +50,10 @@ namespace XS {
 
 			static void Init( void );
 
-			ShaderProgram( const char *vertexShaderName, const char *fragmentShaderName, const VertexAttribute *attributes, int numAttributes );
+			ShaderProgram( const char *vertexShaderName, const char *fragmentShaderName,
+				const VertexAttribute *attributes, int numAttributes );
 			~ShaderProgram();
-			
+
 			void Link( void ) const;
 			void Bind( void ) const;
 			void SetUniform1( const char *name, int i );

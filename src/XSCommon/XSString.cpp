@@ -9,22 +9,26 @@ namespace XS {
 		void Concatenate( char *dst, size_t len, const char *src ) {
 			size_t l1 = strlen( dst );
 
-			if ( l1 >= len )
+			if ( l1 >= len ) {
 				throw( XSError( "XS::String::Concatenate: already overflowed" ) );
+			}
 
 			Copy( dst+l1, src, len-l1 );
 		}
 
 		// safe strncpy that ensures a trailing zero
 		void Copy( char *dst, const char *src, size_t len ) {
-			if ( !dst )
+			if ( !dst ) {
 				throw( XSError( "XS::String::Copy: NULL dest" ) );
+			}
 
-			if ( !src )
+			if ( !src ) {
 				throw( XSError( "XS::String::Copy: NULL src" ) );
+			}
 
-			if ( len < 1 )
+			if ( len < 1 ) {
 				throw( XSError( "XS::String::Copy: destsize < 1" ) );
+			}
 
 			strncpy( dst, src, len-1 );
 			dst[len-1] = 0;
@@ -50,25 +54,30 @@ namespace XS {
 		int CompareCase( const char *s1, const char *s2, size_t len ) {
 			// bail early on NULL strings
 			if ( !s1 ) {
-				if ( !s2 )
+				if ( !s2 ) {
 					return 0;
-				else
+				}
+				else {
 					return -1;
+				}
 			}
-			else if ( !s2 )
+			else if ( !s2 ) {
 				return 1;
+			}
 
 			int c1, c2;
 			do {
 				// strings considered equal if len reaches 0
-				if ( !len-- )
+				if ( !len-- ) {
 					return 0;
+				}
 
 				c1 = *s1++;
 				c2 = *s2++;
 
-				if ( c1 != c2 )
+				if ( c1 != c2 ) {
 					return (c1 < c2) ? -1 : 1;
+				}
 			} while ( c1 );
 
 			return 0;
@@ -78,30 +87,39 @@ namespace XS {
 		int Compare( const char *s1, const char *s2, size_t len ) {
 			// bail early on NULL strings
 			if ( !s1 ) {
-				if ( !s2 )
+				if ( !s2 ) {
 					return 0;
-				else
+				}
+				else {
 					return -1;
+				}
 			}
-			else if ( !s2 )
+			else if ( !s2 ) {
 				return 1;
+			}
 
 			int c1, c2;
 			do {
 				// strings considered equal if len reaches 0
-				if ( !len-- )
+				if ( !len-- ) {
 					return 0;
+				}
 
 				c1 = *s1++;
 				c2 = *s2++;
 
 				if ( c1 != c2 ) {
 					// convert to uppercase
-					if ( c1 >= 'a' && c1 <= 'z' ) c1 -= ('a' - 'A');
-					if ( c2 >= 'a' && c2 <= 'z' ) c2 -= ('a' - 'A');
+					if ( c1 >= 'a' && c1 <= 'z' ) {
+						c1 -= ('a' - 'A');
+					}
+					if ( c2 >= 'a' && c2 <= 'z' ) {
+						c2 -= ('a' - 'A');
+					}
 
-					if ( c1 != c2 )
+					if ( c1 != c2 ) {
 						return (c1 < c2) ? -1 : 1;
+					}
 				}
 			} while ( c1 );
 
@@ -125,10 +143,12 @@ namespace XS {
 					str.resize( n );
 					return str;
 				}
-				if ( n > -1 )
+				if ( n > -1 ) {
 					size = n + 1;
-				else
+				}
+				else {
 					size *= 2;
+				}
 			}
 			return str;
 		}
@@ -138,8 +158,9 @@ namespace XS {
 			std::stringstream ss( s );
 			std::string item;
 
-			while ( std::getline( ss, item, delim ) )
+			while ( std::getline( ss, item, delim ) ) {
 				elems.push_back( item );
+			}
 
 			return elems;
 		}
@@ -158,8 +179,9 @@ namespace XS {
 			const auto &end = strings.end();
 			for ( const auto &it : strings ) {
 				ss << it;
-				if ( it != *end )
+				if ( it != *end ) {
 					ss << separator;
+				}
 			}
 
 			return ss.str();

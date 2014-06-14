@@ -40,17 +40,20 @@ namespace XS {
 					// destroys both structs
 					png_destroy_info_struct( png_ptr, &info_ptr );
 				}
-				else if ( png_ptr )
+				else if ( png_ptr ) {
 					png_destroy_read_struct( &png_ptr, NULL, NULL );
+				}
 			}
 
 			// returns true on successful read, must delete[] data from caller
 			bool Read( byte **data, uint32_t *outWidth, uint32_t *outHeight ) {
 				*data = NULL;
-				if ( outWidth )
+				if ( outWidth ) {
 					*outWidth = 0;
-				if ( outHeight)
+				}
+				if ( outHeight ) {
 					*outHeight = 0;
+				}
 
 				// make sure we're actually reading PNG data.
 				const int SIGNATURE_LEN = 8;
@@ -68,8 +71,9 @@ namespace XS {
 				}
 
 				info_ptr = png_create_info_struct( png_ptr );
-				if ( setjmp( png_jmpbuf( png_ptr ) ) )
+				if ( setjmp( png_jmpbuf( png_ptr ) ) ) {
 					return false;
+				}
 
 				// We've read the signature
 				offset += SIGNATURE_LEN;
@@ -102,8 +106,9 @@ namespace XS {
 
 				// Read the png data
 				// Expand RGB -> RGBA
-				if ( colortype == PNG_COLOR_TYPE_RGB )
+				if ( colortype == PNG_COLOR_TYPE_RGB ) {
 					png_set_add_alpha( png_ptr, 0xff, PNG_FILLER_AFTER );
+				}
 
 				png_read_update_info( png_ptr, info_ptr );
 
@@ -129,8 +134,9 @@ namespace XS {
 					return false;
 				}
 
-				for ( unsigned int i=0, j=0; i<height_; i++, j += 4 )
+				for ( unsigned int i=0, j=0; i<height_; i++, j += 4 ) {
 					row_pointers[i] = tempData + j*width_;
+				}
 
 				png_read_image( png_ptr, row_pointers );
 
@@ -139,10 +145,12 @@ namespace XS {
 				delete[] row_pointers;
 
 				*data = tempData;
-				if ( outWidth )
+				if ( outWidth ) {
 					*outWidth = width_;
-				if ( outHeight )
+				}
+				if ( outHeight ) {
 					*outHeight = height_;
+				}
 
 				return true;
 			}

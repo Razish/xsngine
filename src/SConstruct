@@ -97,7 +97,7 @@ if plat == 'Linux':
 		'-Wold-style-definition',
 		'-Wstrict-prototypes' ]
 	env['CXXFLAGS'] = [ '-std=c++11' ]
-	env['CPPDEFINES'] = [ '__GCC__' ]
+	env['CPPDEFINES'] = [ '' ]
 	env['CCFLAGS'] = [ '-msse3',
 		'-Wall', '-Wextra',
 		'-Wno-char-subscripts',
@@ -135,7 +135,7 @@ if plat == 'Linux':
 	if analyse:
 		env['CC'] = 'clang'
 		env['CXX'] = 'clang++'
-		env['CCFLAGS'] += [ '--analyze -O3' ]
+		env['CCFLAGS'] += [ '--analyze' ]
 	if force32:
 		env['CCFLAGS'] += [ '-m32' ]
 		env['LINKFLAGS'] += [ '-m32' ]
@@ -154,8 +154,8 @@ elif plat == 'Windows':
 
 # debug / release
 if not debug or debug == 2:
-	if plat == 'Linux' and not analyse:
-		env['CCFLAGS'] += [ '-O2' ] # analysis sets higher optimisation level
+	if plat == 'Linux':
+		env['CCFLAGS'] += [ '-O3' ]
 	elif plat == 'Windows':
 		env['CCFLAGS'] += [ '/GL', '/Gm-', '/MD', '/O2', '/Oi' ]
 		if bits == 64:

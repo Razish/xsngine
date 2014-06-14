@@ -74,8 +74,9 @@ namespace XS {
 
 			glGenFramebuffers( 1, &id );
 
-			if ( !id )
+			if ( !id ) {
 				throw( XSError( "Failed to create framebuffer" ) );
+			}
 		}
 
 		Framebuffer::~Framebuffer() {
@@ -147,8 +148,9 @@ namespace XS {
 				break;
 			}
 
-			if ( status != GL_FRAMEBUFFER_COMPLETE )
+			if ( status != GL_FRAMEBUFFER_COMPLETE ) {
 				Console::Print( "Creation of framebuffer %d could not be completed.\n", id );
+			}
 		}
 
 	}

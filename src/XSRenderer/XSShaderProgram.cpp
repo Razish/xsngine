@@ -67,10 +67,8 @@ namespace XS {
 		// Shaders
 		//
 
-		static GLenum GetGLShaderType (ShaderType type)
-		{
-			switch ( type )
-			{
+		static GLenum GetGLShaderType( ShaderType type ) {
+			switch ( type ) {
 				case ShaderType::Vertex: return GL_VERTEX_SHADER;
 				case ShaderType::Geometry: return GL_GEOMETRY_SHADER;
 				case ShaderType::Fragment: return GL_FRAGMENT_SHADER;
@@ -114,7 +112,7 @@ namespace XS {
 		Shader::Shader( ShaderType type, const char *name ) {
 			std::string path;
 
-			switch( type ) {
+			switch ( type ) {
 			case ShaderType::Vertex:
 				path = String::Format( "shaders/v_%s.glsl", name );
 				break;
@@ -129,8 +127,9 @@ namespace XS {
 			}
 
 			const File f( path.c_str(), FileMode::READ );
-			if ( !f.open )
+			if ( !f.open ) {
 				throw( XSError( String::Format( "Shader(): Could not open file \"%s\"", name ).c_str() ) );
+			}
 
 			std::string contents (f.length, '\0');
 
@@ -153,8 +152,9 @@ namespace XS {
 			Shader *vertexShader = nullptr;
 
 			id = glCreateProgram();
-			if ( !id )
+			if ( !id ) {
 				throw( XSError( "Failed to create shader program" ) );
+			}
 
 			if ( vertexShaderName && !vertexShader ) {
 				vertexShader = new Shader( ShaderType::Vertex, vertexShaderName );
@@ -175,8 +175,7 @@ namespace XS {
 
 			// Until there are some data files to describe the shader, we'll do it like this for now.
 			GLint perFrame = glGetUniformBlockIndex (id, "PerFrame");
-			if ( perFrame >= 0 )
-			{
+			if ( perFrame >= 0 ) {
 				glUniformBlockBinding (id, perFrame, 6);
 			}
 
@@ -192,20 +191,20 @@ namespace XS {
 		}
 
 		ShaderProgram::~ShaderProgram() {
-			if ( lastProgramUsed == this )
+			if ( lastProgramUsed == this ) {
 				lastProgramUsed = NULL;
+			}
 
 			glDeleteProgram( id );
 		}
 
 		// will create if necessary
 		ProgramVariable &ShaderProgram::GetUniform( const char *name ) {
-			auto var = std::find_if (std::begin (uniforms), std::end (uniforms), [name](const ProgramVariable& uniform)
-			{
-				return strcmp (uniform.name, name) == 0;
+			auto var = std::find_if( std::begin(uniforms), std::end(uniforms), [name](const ProgramVariable& uniform) {
+				return strcmp( uniform.name, name ) == 0;
 			});
 
-			if ( var != std::end (uniforms) ) {
+			if ( var != std::end( uniforms ) ) {
 				return *var;
 			}
 
@@ -213,9 +212,9 @@ namespace XS {
 			uniform.name = name;
 			uniform.location = glGetUniformLocation( id, name );
 
-			uniforms.push_back (uniform);
+			uniforms.push_back( uniform );
 
-			return uniforms.back ();
+			return uniforms.back();
 		}
 
 		void ShaderProgram::Link( void ) const {

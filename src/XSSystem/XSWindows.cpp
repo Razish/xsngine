@@ -31,8 +31,9 @@ namespace XS {
 			assert( outPath && inPath );
 
 			if ( /*Stat( inPath ) &&*/ !_fullpath( outPath, inPath, pathLen ) ) {
-				if ( Common::com_developer->GetBool() )
+				if ( Common::com_developer->GetBool() ) {
 					Console::Print( "Could not resolve path: \"%s\" (%s)\n", inPath, strerror( errno ) );
+				}
 				outPath[0] = '\0';
 
 				return false;
@@ -44,8 +45,9 @@ namespace XS {
 		bool Stat( const char *path ) {
 			struct _stat buf;
 
-			if ( _stat( path, &buf ) )
+			if ( _stat( path, &buf ) ) {
 				return false;
+			}
 
 			return true;
 		}

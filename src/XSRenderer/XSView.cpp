@@ -14,13 +14,11 @@ namespace XS {
 
 	namespace Renderer {
 
-		View::View()
-		{
-			perFrameData = new Buffer (BufferType::Uniform, nullptr, sizeof (float) * 16 * 2);
+		View::View() {
+			perFrameData = new Buffer( BufferType::Uniform, nullptr, sizeof(float) * 16 * 2 );
 		}
 
-		View::~View()
-		{
+		View::~View() {
 			delete perFrameData;
 		}
 
@@ -28,7 +26,8 @@ namespace XS {
 			// set up 2d/3d perspective
 			if ( is2D ) {
 				projectionMatrix = ortho( 0.0f, 1280.0f, 0.0f, 720.0f, 0.0f, 1.0f );
-			} else {
+			}
+			else {
 				projectionMatrix = perspectiveFov( 60.0f, static_cast<float>(width) / static_cast<float>(height), 4.0f, 1000.0f );
 			}
 
@@ -37,7 +36,7 @@ namespace XS {
 			*m = projectionMatrix;
 
 			perFrameData->Unmap();
-			perFrameData->BindRange (6);
+			perFrameData->BindRange( 6 );
 		}
 
 		void View::PostRender( void ) const {
@@ -49,8 +48,9 @@ namespace XS {
 		}
 
 		void View::Register( void ) {
-			if ( !width || !height )
+			if ( !width || !height ) {
 				throw( XSError( "Registered view with 0 width or 0 height" ) );
+			}
 
 			RegisterView( this );
 		}

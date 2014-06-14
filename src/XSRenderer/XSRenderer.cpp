@@ -31,6 +31,7 @@ namespace XS {
 		static SDL_GLContext context;
 
 		static Cvar *r_multisample;
+		static Cvar *r_skipRender;
 		static Cvar *r_swapInterval;
 		static Cvar *vid_height;
 		static Cvar *vid_noBorder;
@@ -117,8 +118,10 @@ namespace XS {
 
 			glewExperimental = GL_TRUE;
 			GLenum error = glewInit();
-			if ( error != GLEW_OK )
-				throw( XSError( String::Format( "Failed to initialise GLEW: %s\n", glewGetErrorString( error ) ).c_str() ) );
+			if ( error != GLEW_OK ) {
+				throw( XSError( String::Format( "Failed to initialise GLEW: %s\n",
+					glewGetErrorString( error ) ).c_str() ) );
+			}
 
 		#ifdef _DEBUG
 			if ( GLEW_ARB_debug_output ) {
@@ -151,6 +154,8 @@ namespace XS {
 
 		void RegisterCvars( void ) {
 			r_multisample = Cvar::Create( "r_multisample", "2", "Multisample Anti-Aliasing (MSAA) level", CVAR_ARCHIVE );
+			r_skipRender = Cvar::Create( "r_skipRender", "0", "1 - skip 3D views, 2 - skip 2D views, 3 - skip all views",
+				CVAR_ARCHIVE );
 			r_swapInterval = Cvar::Create( "r_swapInterval", "0", "Enable vertical sync", CVAR_ARCHIVE );
 			vid_height = Cvar::Create( "vid_height", "720", "Window height", CVAR_ARCHIVE );
 			vid_noBorder = Cvar::Create( "vid_noBorder", "0", "Disable window border", CVAR_ARCHIVE );
@@ -164,8 +169,9 @@ namespace XS {
 				return;
 			}
 
-			if ( vid_noBorder->GetInt() )
+			if ( vid_noBorder->GetBool() ) {
 				windowFlags |= SDL_WINDOW_BORDERLESS;
+			}
 
 			SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 3 );
 			SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 1 );
@@ -177,8 +183,9 @@ namespace XS {
 				SDL_GL_SetAttribute( SDL_GL_MULTISAMPLEBUFFERS, 1 );
 				SDL_GL_SetAttribute( SDL_GL_MULTISAMPLESAMPLES, multisample );
 			}
-			else
+			else {
 				SDL_GL_SetAttribute( SDL_GL_MULTISAMPLEBUFFERS, 0 );
+			}
 
 		#ifdef _DEBUG
 			SDL_GL_SetAttribute( SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG );
@@ -208,13 +215,19 @@ namespace XS {
 		}
 
 		void Update( void ) {
+
 			glClearColor( 0.5f, 0.125f, 0.125f, 1.0f );
 			glClear( GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT );
 
 			for ( const auto &view : views ) {
+				if ( r_skipRender->GetInt() & (1<<view->is2D) ) {
+					continue;
+				}
+
 				view->PreRender();
-				for ( const auto &cmd : view->renderCommands )
+				for ( const auto &cmd : view->renderCommands ) {
 					cmd.Execute();
+				}
 				view->PostRender();
 				view->renderCommands.clear();
 			}

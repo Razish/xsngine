@@ -37,18 +37,19 @@ namespace XS {
 		}
 
 		void Font::Init( void ) {
-			if ( FT_Init_FreeType( &ft ) )
+			if ( FT_Init_FreeType( &ft ) ) {
 				throw( XSError( "Could not initialise freetype library" ) );
+			}
 
 			fonts["menu"] = new font_t( "menu", 48 );
 
-			Renderer::VertexAttribute attributes[] = {
+			static const Renderer::VertexAttribute attributes[] = {
 				{ 0, "in_Position" },
 				{ 1, "in_TexCoord" },
 				{ 2, "in_Color" }
 			};
 
-			fontProgram = new ShaderProgram( "text", "text", attributes, sizeof (attributes) / sizeof (attributes[0]) );
+			fontProgram = new ShaderProgram( "text", "text", attributes, sizeof(attributes) / sizeof(attributes[0]) );
 
 			for ( const auto &it : fonts ) {
 				font_t *font = it.second;
@@ -81,8 +82,9 @@ namespace XS {
 					FT_Glyph glyph;
 
 					uint32_t index = FT_Get_Char_Index( face, c );
-					if ( !index )
+					if ( !index ) {
 						continue;
+					}
 
 					// render the character's glyph
 					FT_Load_Glyph( face, index, FT_LOAD_RENDER );
@@ -124,15 +126,17 @@ namespace XS {
 		}
 
 		void Font::Shutdown( void ) {
-			for ( const auto &it : fonts )
+			for ( const auto &it : fonts ) {
 				delete it.second;
+			}
 
 			delete fontProgram;
 		}
 
 		void Font::Draw( const vector2 pos, const std::string &text, const font_t *font ) {
-			if ( text.empty() )
+			if ( text.empty() ) {
 				return;
+			}
 			//TODO: Font::Draw
 		}
 

@@ -38,8 +38,9 @@ namespace XS {
 		static const size_t numFilters = ARRAY_LEN( filterTable );
 		static size_t GetTextureFilter( const char *string ) {
 			for ( size_t filter=0; filter<numFilters; filter++ ) {
-				if ( !String::Compare( string, filterTable[filter].name ) )
+				if ( !String::Compare( string, filterTable[filter].name ) ) {
 					return filter;
+				}
 			}
 			return 0;
 		}
@@ -55,8 +56,9 @@ namespace XS {
 				CVAR_ARCHIVE );
 
 			// get anisotropic filtering settings
-			if ( GLEW_EXT_texture_filter_anisotropic )
+			if ( GLEW_EXT_texture_filter_anisotropic ) {
 				anisotropy = true;
+			}
 			glGetFloatv( GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maxAnisotropy );
 		}
 
@@ -65,21 +67,26 @@ namespace XS {
 			size_t filterMode = GetTextureFilter( r_textureFilter->GetCString() );
 
 			glGenTextures( 1, &id );
-			if ( !id )
+			if ( !id ) {
 				throw( XSError( "Failed to create blank texture" ) );
+			}
 
+			/*
 			// fp16 textures don't play nicely with filtering (performance, support)
-			//	if ( internalFormat == IF_RGBA16F )
-			//		filterMode = GL_NEAREST;
+			if ( internalFormat == IF_RGBA16F ) {
+				filterMode = GL_NEAREST;
+			}
+			*/
 
-			Bind (0);
+			Bind( 0 );
 
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
 
-			if ( anisotropy && r_textureAnisotropy->GetBool() )
+			if ( anisotropy && r_textureAnisotropy->GetBool() ) {
 				glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT,
 					std::min( r_textureAnisotropyMax->GetFloat(), maxAnisotropy ) );
+			}
 
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filterTable[filterMode].min );
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filterTable[filterMode].mag );

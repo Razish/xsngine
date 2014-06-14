@@ -6,8 +6,7 @@ namespace XS {
 
 	namespace Renderer {
 
-		GLenum GetGLBufferType (BufferType type)
-		{
+		GLenum GetGLBufferType( BufferType type ) {
 			switch ( type ) {
 				case BufferType::Vertex: return GL_ARRAY_BUFFER;
 				case BufferType::Index: return GL_ELEMENT_ARRAY_BUFFER;
@@ -16,46 +15,46 @@ namespace XS {
 			}
 		}
 
-		Buffer::Buffer (BufferType type, const void *data, size_t size)
-			: type (GetGLBufferType (type)), size (size) {
-			glGenBuffers (1, &id);
-			glBindBuffer (this->type, id);
-			glBufferData (this->type, size, data, GL_STREAM_DRAW);
+		Buffer::Buffer( BufferType type, const void *data, size_t size )
+			: type(GetGLBufferType( type )), size(size) {
+			glGenBuffers( 1, &id );
+			glBindBuffer( this->type, id );
+			glBufferData( this->type, size, data, GL_STREAM_DRAW );
 		}
 
-		Buffer::~Buffer () {
-			glDeleteBuffers (1, &id);
+		Buffer::~Buffer() {
+			glDeleteBuffers( 1, &id );
 		}
 
-		void *Buffer::Map () {
-			glBindBuffer (type, id);
-			return glMapBufferRange (type, 0, size, GL_MAP_WRITE_BIT);
+		void *Buffer::Map( void ) {
+			glBindBuffer( type, id );
+			return glMapBufferRange( type, 0, size, GL_MAP_WRITE_BIT );
 		}
 
-		void Buffer::Unmap () {
-			glUnmapBuffer (type);
+		void Buffer::Unmap( void ) {
+			glUnmapBuffer( type );
 		}
 
-		void Buffer::BindRange (int index) const {
-			glBindBufferRange (type, index, id, 0, size);
+		void Buffer::BindRange( int index ) const {
+			glBindBufferRange( type, index, id, 0, size );
 		}
 
-		void Buffer::Bind() const {
-			glBindBuffer (type, id);
+		void Buffer::Bind( void ) const {
+			glBindBuffer( type, id );
 		}
 
-		void Material::Bind () const {
-			shaderProgram->Bind ();
+		void Material::Bind( void ) const {
+			shaderProgram->Bind();
 
 			for ( const auto& binding : bufferBindings ) {
-				binding.buffer->BindRange (binding.index);
+				binding.buffer->BindRange( binding.index );
 			}
 
 			for ( const auto& binding : samplerBindings ) {
-				binding.texture->Bind (binding.unit);
+				binding.texture->Bind( binding.unit );
 			}
 		}
 
-	}
+	} // Renderer
 
-}
+} // XS

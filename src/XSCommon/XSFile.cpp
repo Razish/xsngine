@@ -56,8 +56,9 @@ namespace XS {
 
 	// returns true if requested file does not attempt directory traversal
 	static bool ValidPath( const char *gamePath ) {
-		if ( strstr( gamePath, ".." ) || strstr( gamePath, "::" ) )
+		if ( strstr( gamePath, ".." ) || strstr( gamePath, "::" ) ) {
 			return false;
+		}
 
 		return true;
 	}
@@ -97,8 +98,9 @@ namespace XS {
 		for ( char *s = strchr( path, PATH_SEP ) + 1; s && *s; s++ ) {
 			if ( *s == PATH_SEP ) {
 				*s = '\0';
-				if ( !OS::MkDir( path ) )
+				if ( !OS::MkDir( path ) ) {
 					throw( XSError( String::Format( "failed to create path \"%s\"", path ).c_str() ) );
+				}
 				*s = PATH_SEP;
 			}
 		}
@@ -146,25 +148,29 @@ namespace XS {
 			fseek( file, 0L, SEEK_SET );
 
 			// account for null terminator
-			if ( mode == READ )
+			if ( mode == READ ) {
 				length++;
+			}
 		}
 	}
 
 	// read len bytes into buf
 	// if len is 0, read as much as possible
 	void File::Read( byte *buf, size_t len ) const {
-		if ( len == 0 )
+		if ( len == 0u ) {
 			len = length;
+		}
 
 		size_t res = fread( (void *)buf, 1, len, file );
-		if ( res == 0u )
+		if ( res == 0u ) {
 			buf[0] = '\0';
+		}
 		//TODO: determine cause of failure via feof, ferror
 
 		// account for null terminator
-		if ( mode == READ )
+		if ( mode == READ ) {
 			buf[len-1] = '\0';
+		}
 	}
 
 	void File::AppendString( const char *str ) const {
