@@ -68,8 +68,9 @@ files = [ 'XSClient/XSClient.cpp', 'XSClient/XSInput.cpp', 'XSClient/XSKeys.cpp'
 	'XSCommon/XSCvar.cpp', 'XSCommon/XSEvent.cpp', 'XSCommon/XSFile.cpp', 'XSCommon/XSLogger.cpp',
 	'XSCommon/XSString.cpp', 'XSCommon/XSTimer.cpp', 'XSCommon/XSVector.cpp',
 	'GLEW/glew.c', 'XSRenderer/XSBackend.cpp', 'XSRenderer/XSFont.cpp', 'XSRenderer/XSFramebuffer.cpp',
-	'XSRenderer/XSImagePNG.cpp', 'XSRenderer/XSInternalFormat.cpp', 'XSRenderer/XSRenderCommand.cpp',
-	'XSRenderer/XSRenderer.cpp', 'XSRenderer/XSShaderProgram.cpp', 'XSRenderer/XSTexture.cpp', 'XSRenderer/XSView.cpp' ]
+	'XSRenderer/XSImagePNG.cpp', 'XSRenderer/XSInternalFormat.cpp', 'XSRenderer/XSMaterial.cpp',
+	'XSRenderer/XSRenderCommand.cpp', 'XSRenderer/XSRenderer.cpp', 'XSRenderer/XSShaderProgram.cpp',
+	'XSRenderer/XSTexture.cpp', 'XSRenderer/XSView.cpp' ]
 if plat == 'Linux':
 	files += [ 'XSSystem/XSLinux.cpp' ]
 elif plat == 'Windows':

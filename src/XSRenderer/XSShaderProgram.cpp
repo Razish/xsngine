@@ -43,7 +43,7 @@ namespace XS {
 
 				glGetProgramInfoLog( program, logLength - 1, NULL, &logText[0] );
 
-				Console::Print( "%s\n", logText );
+				Console::Print( "%s\n", logText.c_str() );
 			}
 		}
 
@@ -59,7 +59,7 @@ namespace XS {
 
 				glGetShaderInfoLog( shader, logLength - 1, NULL, &logText[0] );
 
-				Console::Print( "%s\n", logText );
+				Console::Print( "%s\n", logText.c_str() );
 			}
 		}
 
