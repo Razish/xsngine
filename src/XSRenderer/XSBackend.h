@@ -7,7 +7,7 @@ namespace XS {
 		namespace Backend {
 
 			void	Init		( void );
-			void	Shutdown	( );
+			void	Shutdown	( void );
 
 		} // namespace Backend
 

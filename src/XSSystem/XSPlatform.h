@@ -21,6 +21,7 @@
 	#define DLL_EXT ".dll"
 
 	#define XS_LITTLE_ENDIAN
+	#define XS_OS_WINDOWS
 
 // Win32
 #elif defined(_WIN32) || defined(__WIN32__)
@@ -30,10 +31,11 @@
 	#elif defined(__MINGW32__)
 		#define OS_STRING "win_mingw"
 	#endif
-
 	#define PATH_SEP '\\'
 	#define DLL_EXT ".dll"
+
 	#define XS_LITTLE_ENDIAN
+	#define XS_OS_WINDOWS
 
 // MAC OS X
 #elif defined(MACOS_X) || defined(__APPLE_CC__)
@@ -43,6 +45,8 @@
 	#define DLL_EXT ".dylib"
 
 	//TODO: endianness?
+
+	#define XS_OS_MAC
 
 // Linux
 #elif defined(__linux__)
@@ -56,6 +60,8 @@
 	//FIXME: String::Compare?
 	#define stricmp strcasecmp
 	#define strnicmp strncasecmp
+
+	#define XS_OS_LINUX
 
 #endif
 

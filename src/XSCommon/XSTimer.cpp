@@ -1,5 +1,3 @@
-#include "XSSystem/XSInclude.h"
-
 #include "XSCommon/XSCommon.h"
 #include "XSCommon/XSTimer.h"
 
@@ -8,17 +6,17 @@
 namespace XS {
 
 	Timer::Timer() {
-	#ifdef _WIN32
+	#if defined(XS_OS_WINDOWS)
 		QueryPerformanceCounter( &start );
-	#elif defined(__linux__)
+	#elif defined(XS_OS_LINUX)
 		gettimeofday( &start, NULL );
 	#endif
 	}
 
 	void Timer::Stop( void ) {
-	#ifdef _WIN32
+	#if defined(XS_OS_WINDOWS)
 		QueryPerformanceCounter( &stop );
-	#elif defined(__linux__)
+	#elif defined(XS_OS_LINUX)
 		gettimeofday( &stop, NULL );
 	#endif
 	}
@@ -28,21 +26,21 @@ namespace XS {
 
 		Stop();
 
-	#ifdef _WIN32
+	#if defined(XS_OS_WINDOWS)
 		TimeVal frequency;
 		QueryPerformanceFrequency( &frequency );
 
 		startTime = start.QuadPart * (1000000.0 / frequency.QuadPart);
 		stopTime = stop.QuadPart * (1000000.0 / frequency.QuadPart);
-	#elif defined(__linux__)
+	#elif defined(XS_OS_LINUX)
 		startTime = (start.tv_sec * 1000000.0) + start.tv_usec;
 		stopTime = (stop.tv_sec * 1000000.0) + stop.tv_usec;
 	#endif
 
 		if ( restart ) {
-		#ifdef _WIN32
+		#if defined(XS_OS_WINDOWS)
 			QueryPerformanceCounter( &start );
-		#elif defined(__linux__)
+		#elif defined(XS_OS_LINUX)
 			gettimeofday( &start, NULL );
 		#endif
 		}

@@ -1,14 +1,8 @@
-#include "XSSystem/XSInclude.h"
-#include "XSSystem/XSPlatform.h"
-
 #include "XSCommon/XSCommon.h"
 #include "XSCommon/XSFile.h"
 #include "XSCommon/XSCvar.h"
-#include "XSCommon/XSString.h"
-#include "XSCommon/XSCommand.h"
 #include "XSCommon/XSConsole.h"
-#include "XSCommon/XSError.h"
-#include "XSCommon/XSGlobals.h"
+#include "XSCommon/XSString.h"
 #include "XSSystem/XSOS.h"
 
 namespace XS {

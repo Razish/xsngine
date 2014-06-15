@@ -1,8 +1,6 @@
-#include "XSSystem/XSInclude.h"
-
 #include "XSCommon/XSCommon.h"
-#include "XSCommon/XSString.h"
 #include "XSCommon/XSVector.h"
+#include "XSCommon/XSString.h"
 
 namespace XS {
 

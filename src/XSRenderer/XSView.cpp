@@ -1,14 +1,6 @@
-#include "XSSystem/XSInclude.h"
-
 #include "XSCommon/XSCommon.h"
-#include "XSCommon/XSError.h"
-#include "XSRenderer/XSRenderCommand.h"
-#include "XSRenderer/XSView.h"
-#include "XSRenderer/XSBackend.h"
-#include "XSRenderer/XSInternalFormat.h"
-#include "XSRenderer/XSTexture.h"
 #include "XSRenderer/XSRenderer.h"
-#include "XSRenderer/XSMaterial.h"
+#include "XSRenderer/XSView.h"
 
 namespace XS {
 
@@ -25,7 +17,7 @@ namespace XS {
 		void View::PreRender( void ) {
 			// set up 2d/3d perspective
 			if ( is2D ) {
-				projectionMatrix = ortho( 0.0f, 1280.0f, 0.0f, 720.0f, 0.0f, 1.0f );
+				projectionMatrix = ortho( 0.0f, width, 0.0f, height, 0.0f, 1.0f );
 			}
 			else {
 				projectionMatrix = perspectiveFov( 60.0f, static_cast<float>(width) / static_cast<float>(height), 4.0f, 1000.0f );

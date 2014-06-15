@@ -1,6 +1,7 @@
-#include "XSSystem/XSInclude.h"
+#include <sstream>
+
+#include "XSCommon/XSCommon.h"
 #include "XSCommon/XSString.h"
-#include "XSCommon/XSError.h"
 
 namespace XS {
 

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "XSCommon/XSCommand.h"
+
 namespace XS {
 
 	namespace Console {

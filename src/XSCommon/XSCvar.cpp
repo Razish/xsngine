@@ -1,14 +1,12 @@
-#include "XSSystem/XSInclude.h"
+#include <map>
+#include <unordered_map>
 
 #include "XSCommon/XSCommon.h"
-#include "XSCommon/XSFile.h"
+#include "XSCommon/XSGlobals.h"
 #include "XSCommon/XSCvar.h"
 #include "XSCommon/XSString.h"
-#include "XSCommon/XSCommand.h"
 #include "XSCommon/XSConsole.h"
-#include "XSCommon/XSGlobals.h"
-#include "XSCommon/XSVector.h"
-#include "XSCommon/XSMatrix.h"
+
 
 namespace XS {
 

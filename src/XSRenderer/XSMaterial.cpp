@@ -1,3 +1,5 @@
+#include "XSCommon/XSCommon.h"
+#include "XSRenderer/XSRenderer.h"
 #include "XSRenderer/XSMaterial.h"
 #include "XSRenderer/XSShaderProgram.h"
 #include "XSRenderer/XSTexture.h"

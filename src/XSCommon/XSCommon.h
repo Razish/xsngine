@@ -1,5 +1,23 @@
 #pragma once
 
+// Responsible for defining common data types and including common library headers
+
+#include <cassert>
+#include <cerrno>
+#include <cmath>
+#include <cstdarg>
+#include <cstdint>
+#include <cstdio>
+#include <cstring>
+#include <ctime>
+
+#include <algorithm>
+#include <string>
+#include <vector>
+
+#include "XSSystem/XSPlatform.h"
+#include "XSCommon/XSError.h"
+
 namespace XS {
 
 	#ifndef REVISION

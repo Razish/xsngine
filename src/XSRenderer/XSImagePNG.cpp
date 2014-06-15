@@ -1,13 +1,10 @@
-#include "XSSystem/XSInclude.h"
-
 #include <png.h>
 
 #include "XSCommon/XSCommon.h"
-#include "XSCommon/XSCommand.h"
 #include "XSCommon/XSConsole.h"
 #include "XSCommon/XSFile.h"
-#include "XSCommon/XSCvar.h"
 #include "XSCommon/XSGlobals.h"
+#include "XSRenderer/XSRenderer.h"
 #include "XSRenderer/XSImagePNG.h"
 
 namespace XS {

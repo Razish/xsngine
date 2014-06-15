@@ -1,8 +1,5 @@
 #pragma once
 
-#include <GL/glew.h>
-#include <vector>
-
 namespace XS {
 
 	namespace Renderer {
@@ -18,19 +15,19 @@ namespace XS {
 
 		class Buffer {
 		public:
-			Buffer () = delete;
-			Buffer (const Buffer&) = delete;
+			Buffer() = delete;
+			Buffer( const Buffer& ) = delete;
 
-			Buffer (BufferType type, const void *data, size_t dataSize);
-			~Buffer ();
+			Buffer( BufferType type, const void *data, size_t dataSize );
+			~Buffer();
 
-			void *Map ();
-			void Unmap ();
+			void *Map( void );
+			void Unmap( void );
 
-			GLuint GetID () const { return id; }
+			GLuint GetID() const { return id; }
 
-			void Bind() const;
-			void BindRange ( int index ) const;
+			void Bind( void ) const;
+			void BindRange( int index ) const;
 
 		private:
 			GLuint id;
@@ -53,9 +50,9 @@ namespace XS {
 			std::vector<SamplerBinding> samplerBindings;
 			std::vector<BufferBinding> bufferBindings;
 
-			void Bind () const;
+			void Bind( void ) const;
 		};
 
-	}
+	} // namespace Renderer
 
-}
+} // namespace XS

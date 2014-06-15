@@ -1,13 +1,8 @@
-#include "XSSystem/XSInclude.h"
-
-#include "SDL2/SDL_events.h"
-#include "SDL2/SDL_keycode.h"
+#include <SDL2/SDL.h>
 
 #include "XSCommon/XSCommon.h"
-#include "XSCommon/XSCommand.h"
-#include "XSCommon/XSEvent.h"
-#include "XSCommon/XSFile.h"
 #include "XSCommon/XSError.h"
+#include "XSCommon/XSEvent.h"
 #include "XSClient/XSInput.h"
 #include "XSClient/XSKeys.h"
 

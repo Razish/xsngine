@@ -1,7 +1,4 @@
-#include "XSSystem/XSInclude.h"
-
 #include "XSCommon/XSCommon.h"
-#include "XSCommon/XSVector.h"
 #include "XSCommon/XSColours.h"
 
 namespace XS {

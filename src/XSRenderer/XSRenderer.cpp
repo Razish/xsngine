@@ -1,27 +1,17 @@
-#include "XSSystem/XSInclude.h"
-#include "XSSystem/XSPlatform.h"
-
-#include "GLEW/GL/glew.h"
-#include "SDL2/SDL.h"
+#include <SDL2/SDL.h>
 
 #include "XSCommon/XSCommon.h"
-#include "XSCommon/XSCommand.h"
-#include "XSCommon/XSConsole.h"
-#include "XSCommon/XSFile.h"
 #include "XSCommon/XSCvar.h"
-#include "XSCommon/XSVector.h"
+#include "XSCommon/XSConsole.h"
 #include "XSCommon/XSString.h"
-#include "XSCommon/XSError.h"
-#include "XSRenderer/XSInternalFormat.h"
-#include "XSRenderer/XSTexture.h"
-#include "XSRenderer/XSRenderCommand.h"
-#include "XSRenderer/XSMaterial.h"
-#include "XSRenderer/XSView.h"
 #include "XSRenderer/XSRenderer.h"
-#include "XSRenderer/XSFont.h"
-#include "XSRenderer/XSShaderProgram.h"
-#include "XSRenderer/XSFramebuffer.h"
+#include "XSRenderer/XSView.h"
+#include "XSRenderer/XSRenderCommand.h"
 #include "XSRenderer/XSBackend.h"
+#include "XSRenderer/XSFramebuffer.h"
+#include "XSRenderer/XSShaderProgram.h"
+#include "XSRenderer/XSTexture.h"
+#include "XSRenderer/XSFont.h"
 
 namespace XS {
 

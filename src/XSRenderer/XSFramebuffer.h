@@ -1,5 +1,7 @@
 #pragma once
 
+#include "XSRenderer/XSTexture.h"
+
 namespace XS {
 
 	namespace Renderer {

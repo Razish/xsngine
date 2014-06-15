@@ -1,27 +1,16 @@
-#include "XSSystem/XSInclude.h"
-#include "XSSystem/XSPlatform.h"
-
-#include "SDL2/SDL.h"
-#include "SDL2/SDL_keycode.h"
+#include <SDL2/SDL_timer.h>
 
 #include "XSCommon/XSCommon.h"
-#include "XSCommon/XSFile.h"
-#include "XSCommon/XSCvar.h"
-#include "XSCommon/XSEvent.h"
 #include "XSCommon/XSCommand.h"
 #include "XSCommon/XSConsole.h"
-#include "XSCommon/XSString.h"
-#include "XSCommon/XSError.h"
+#include "XSCommon/XSCvar.h"
+#include "XSCommon/XSEvent.h"
+#include "XSCommon/XSFile.h"
 #include "XSCommon/XSTimer.h"
-#include "XSClient/XSInput.h"
 #include "XSClient/XSClient.h"
+#include "XSClient/XSInput.h"
 #include "XSClient/XSKeys.h"
-#include "XSRenderer/XSInternalFormat.h"
-#include "XSRenderer/XSTexture.h"
-#include "XSRenderer/XSRenderCommand.h"
-#include "XSRenderer/XSView.h"
 #include "XSRenderer/XSRenderer.h"
-#include "XSSystem/XSOS.h"
 
 namespace XS {
 

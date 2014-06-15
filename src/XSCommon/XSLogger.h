@@ -1,5 +1,7 @@
 #pragma once
 
+#include "XSCommon/XSFile.h"
+
 namespace XS {
 
 	class Logger {

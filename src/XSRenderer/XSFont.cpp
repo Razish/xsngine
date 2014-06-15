@@ -1,26 +1,16 @@
-#include "XSSystem/XSInclude.h"
-
-#include <GL/glew.h>
-#include "SDL2/SDL.h"
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include "freetype/ftglyph.h"
 
+#include <unordered_map>
+
 #include "XSCommon/XSCommon.h"
-#include "XSCommon/XSFile.h"
-#include "XSCommon/XSCvar.h"
-#include "XSCommon/XSCommand.h"
-#include "XSCommon/XSConsole.h"
 #include "XSCommon/XSString.h"
-#include "XSCommon/XSVector.h"
-#include "XSCommon/XSError.h"
+#include "XSCommon/XSFile.h"
+#include "XSCommon/XSConsole.h"
+#include "XSRenderer/XSRenderer.h"
 #include "XSRenderer/XSFont.h"
 #include "XSRenderer/XSShaderProgram.h"
-#include "XSRenderer/XSInternalFormat.h"
-#include "XSRenderer/XSTexture.h"
-#include "XSRenderer/XSRenderCommand.h"
-#include "XSRenderer/XSView.h"
-#include "XSRenderer/XSRenderer.h"
 #include "XSRenderer/XSVertexAttributes.h"
 
 namespace XS {

@@ -1,13 +1,11 @@
-#include "XSSystem/XSInclude.h"
-
-#include "XSCommon/XSCommon.h"
-#include "XSCommon/XSCommand.h"
-#include "XSCommon/XSConsole.h"
-#include "XSCommon/XSCvar.h"
-#include "XSCommon/XSGlobals.h"
-
 #include <Windows.h> // curse you, monolithic headers!
 #include <sys/stat.h>
+#include <direct.h>
+
+#include "XSCommon/XSCommon.h"
+#include "XSCommon/XSConsole.h"
+#include "XSCommon/XSGlobals.h"
+#include "XSSystem/XSOS.h"
 
 namespace XS {
 

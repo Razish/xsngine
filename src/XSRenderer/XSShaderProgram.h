@@ -1,7 +1,5 @@
 #pragma once
 
-#include "XSSystem/XSInclude.h"
-
 namespace XS {
 
 	namespace Renderer {
@@ -21,6 +19,7 @@ namespace XS {
 			~Shader();
 
 			friend class ShaderProgram;
+
 		private:
 			int			id;
 			ShaderType	type;

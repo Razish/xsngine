@@ -1,6 +1,5 @@
-#include <GL/glew.h>
-#include "SDL2/SDL.h"
-
+#include "XSCommon/XSCommon.h"
+#include "XSRenderer/XSRenderer.h"
 #include "XSRenderer/XSInternalFormat.h"
 
 namespace XS {

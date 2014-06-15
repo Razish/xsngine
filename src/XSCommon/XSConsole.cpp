@@ -1,30 +1,16 @@
-#include "XSSystem/XSInclude.h"
-
-#if defined(_WIN32) && defined(_DEBUG)
-	#define WIN32_LEAN_AND_MEAN
-	#define VC_EXTRALEAN
-	#ifndef NOMINMAX
-		#define NOMINMAX /* Don't define min() and max() */
-	#endif
-	#include <Windows.h>
-#endif
+#include <iostream>
 
 #include "XSCommon/XSCommon.h"
-#include "XSCommon/XSString.h"
-#include "XSCommon/XSVector.h"
-#include "XSCommon/XSColours.h"
-#include "XSCommon/XSFile.h"
-#include "XSCommon/XSCvar.h"
-#include "XSCommon/XSCommand.h"
+#include "XSCommon/XSConsole.h"
 #include "XSCommon/XSLogger.h"
-#include "XSRenderer/XSInternalFormat.h"
-#include "XSRenderer/XSMaterial.h"
-#include "XSRenderer/XSTexture.h"
-#include "XSRenderer/XSRenderCommand.h"
-#include "XSRenderer/XSView.h"
+#include "XSCommon/XSCvar.h"
+#include "XSCommon/XSString.h"
+#include "XSCommon/XSColours.h"
 #include "XSRenderer/XSRenderer.h"
 #include "XSRenderer/XSImagePNG.h"
+#include "XSRenderer/XSTexture.h"
 #include "XSRenderer/XSShaderProgram.h"
+#include "XSRenderer/XSView.h"
 #include "XSRenderer/XSVertexAttributes.h"
 
 namespace XS {
@@ -203,7 +189,11 @@ namespace XS {
 		static void AdjustWidth( void ) {
 			Cvar *cv = Cvar::Get( "vid_width" );
 			if ( cv ) {
-				lineLength = cv->GetInt() / characterSize;
+				const int newWidth = cv->GetInt() / characterSize;
+				if ( lineLength != newWidth ) {
+					Console::Print( String::Format( "lineLength: %i -> %i\n", lineLength, newWidth ).c_str() );
+				}
+				lineLength = newWidth;
 			}
 		}
 
@@ -212,7 +202,7 @@ namespace XS {
 			float frow, fcol;
 			const float size = 1.0f / characterSize;
 
-			if ( c == ' ' ) {
+			if ( c == ' ' || c == '\n' || c == '\r' ) {
 				return;
 			}
 

@@ -1,13 +1,10 @@
-#include "XSSystem/XSInclude.h"
+#include <sys/stat.h>
+#include <unistd.h>
 
 #include "XSCommon/XSCommon.h"
-#include "XSCommon/XSCommand.h"
 #include "XSCommon/XSConsole.h"
-#include "XSCommon/XSCvar.h"
 #include "XSCommon/XSGlobals.h"
 #include "XSSystem/XSOS.h"
-
-#include <sys/stat.h>
 
 namespace XS {
 

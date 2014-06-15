@@ -51,7 +51,7 @@ namespace XS {
 			return *this;
 		}
 
-		
+
 	};
 
 	inline matrix4 ortho( float left, float right, float top, float bottom, float znear, float zfar ) {
@@ -63,13 +63,13 @@ namespace XS {
 		m[3][0] = (right + left) / (left - right);
 		m[3][1] = (top + bottom) / (bottom - top);
 		m[3][2] = (znear - zfar) / (zfar - znear);
-		
+
 		return m;
 	}
 
 	inline matrix4 perspectiveFov( float fovy, float aspectRatio, float znear, float zfar ) {
 		matrix4 m;
-		
+
 		float f = 1.0f / tanf(fovy * static_cast<float>(M_PI) / 360.0f);  // convert degrees to radians and divide by 2
 		m[0][0] = f / aspectRatio;
 		m[1][1] = f;

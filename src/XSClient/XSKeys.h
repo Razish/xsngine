@@ -1,5 +1,11 @@
 #pragma once
 
+#include <unordered_map>
+
+#include <SDL2/SDL_keycode.h>
+
+#include "XSCommon/XSCommand.h"
+
 namespace XS {
 
 	namespace Client {

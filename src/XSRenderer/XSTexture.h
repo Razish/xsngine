@@ -1,7 +1,6 @@
 #pragma once
 
 #include "XSRenderer/XSInternalFormat.h"
-#include "XSCommon/XSCommon.h"
 
 namespace XS {
 
@@ -14,7 +13,7 @@ namespace XS {
 		private:
 			static const Texture *lastUsedTexture[MAX_TEXTURE_UNITS];
 			static int lastUsedTextureUnit;
-		private:
+
 			Texture();
 
 			unsigned int width, height;
@@ -27,7 +26,7 @@ namespace XS {
 				byte *data = NULL );
 			~Texture();
 
-			void Bind ( int unit ) const;
+			void Bind( int unit ) const;
 
 			uint32_t id;
 		};

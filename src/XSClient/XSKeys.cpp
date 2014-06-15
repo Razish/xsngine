@@ -1,13 +1,11 @@
-#include "XSSystem/XSInclude.h"
-#include "XSSystem/XSPlatform.h"
+#include <SDL2/SDL_keycode.h>
 
-#include "SDL2/SDL_keycode.h"
+#include <map>
 
 #include "XSCommon/XSCommon.h"
-#include "XSCommon/XSCommand.h"
-#include "XSCommon/XSConsole.h"
-#include "XSCommon/XSFile.h"
 #include "XSCommon/XSString.h"
+#include "XSCommon/XSConsole.h"
+#include "XSClient/XSKeys.h"
 
 namespace XS {
 

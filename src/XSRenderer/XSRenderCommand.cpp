@@ -1,11 +1,8 @@
-#include "XSSystem/XSInclude.h"
-
-#include <GL/glew.h>
-
 #include "XSCommon/XSCommon.h"
 #include "XSCommon/XSVector.h"
-#include "XSRenderer/XSMaterial.h"
+#include "XSRenderer/XSRenderer.h"
 #include "XSRenderer/XSRenderCommand.h"
+#include "XSRenderer/XSMaterial.h"
 
 namespace XS {
 

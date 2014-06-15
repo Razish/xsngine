@@ -1,6 +1,8 @@
 #pragma once
 
 #include "XSCommon/XSMatrix.h"
+#include "XSRenderer/XSMaterial.h"
+#include "XSRenderer/XSRenderCommand.h"
 
 namespace XS {
 

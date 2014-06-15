@@ -1,17 +1,8 @@
-#include "XSSystem/XSInclude.h"
-#include "XSSystem/XSPlatform.h"
-
-#include "SDL2/SDL_keycode.h"
-#include "SDL2/SDL_loadso.h"
+#include <SDL2/SDL_loadso.h>
 
 #include "XSCommon/XSCommon.h"
-#include "XSCommon/XSCommand.h"
 #include "XSCommon/XSConsole.h"
-#include "XSCommon/XSFile.h"
-#include "XSCommon/XSCvar.h"
-#include "XSCommon/XSError.h"
-#include "XSCommon/XSString.h"
-#include "XSClient/XSKeys.h"
+#include "XSClient/XSClient.h"
 
 namespace XS {
 
@@ -22,7 +13,7 @@ namespace XS {
 		typedef const char * (*initFunc_t)(uint32_t);
 		#define MODULE_NAME "client" ARCH_STRING DLL_EXT
 		static const uint32_t MODULE_VERSION = 1u;
-		void *moduleHandle = NULL;
+		void *moduleHandle = nullptr;
 
 		void Init( void ) {
 #if 0
