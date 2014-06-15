@@ -179,7 +179,7 @@ namespace XS {
 			Append( finalOut.c_str(), false );
 			consoleLog.Print( finalOut.c_str() );
 
-		#if defined(_WIN32) && defined(_DEBUG)
+		#if defined(XS_OS_WINDOWS) && defined(_DEBUG)
 			if ( !finalOut.empty() ) {
 				OutputDebugString( finalOut.c_str() );
 			}
