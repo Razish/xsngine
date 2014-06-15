@@ -1,4 +1,5 @@
 #include <SDL2/SDL_timer.h>
+#include <SDL2/SDL.h>
 
 #include "XSCommon/XSCommon.h"
 #include "XSCommon/XSCommand.h"
@@ -12,6 +13,7 @@
 #include "XSClient/XSInput.h"
 #include "XSClient/XSKeys.h"
 #include "XSRenderer/XSRenderer.h"
+
 
 namespace XS {
 

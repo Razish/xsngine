@@ -13,6 +13,15 @@
 #include "XSRenderer/XSView.h"
 #include "XSRenderer/XSVertexAttributes.h"
 
+#if defined(XS_OS_WINDOWS) && defined(_DEBUG)
+	#define WIN32_LEAN_AND_MEAN
+	#define VC_EXTRALEAN
+	#ifndef NOMINMAX
+		#define NOMINMAX /* Don't define min() and max() */
+	#endif
+	#include <Windows.h>
+#endif
+
 namespace XS {
 
 	namespace Console {
