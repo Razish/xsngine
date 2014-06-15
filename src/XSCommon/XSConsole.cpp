@@ -84,12 +84,10 @@ namespace XS {
 		}
 
 		static void Append( const char *text, bool multiLine ) {
-			size_t len = strlen( text )+1;
+			size_t len = strlen( text );
 			size_t accumLength = 0;
 			size_t i = 0;
-			char *insert = new char[len];
-			String::Copy( insert, text, len );
-			std::string tmp = insert;
+			std::string tmp = text;
 
 			if ( scrollAmount < 0 ) {
 				if ( consoleText.size() >= lineCount ) {
@@ -100,6 +98,7 @@ namespace XS {
 				}
 			}
 
+			char *thisLine = new char[len+1];
 			for ( i=0; i<len; i++ ) {
 				char *p = (char *)&text[i];
 
@@ -111,7 +110,6 @@ namespace XS {
 					char lastColour = COLOUR_GREEN;
 					size_t j = i;
 					size_t savedOffset = i;
-					char *tempMessage = new char[len];
 
 					// attempt to back-track, find a space (' ') within X characters
 					while ( text[i] != ' ' ) {
@@ -123,9 +121,10 @@ namespace XS {
 						j--;
 					}
 
-					String::Copy( insert, text, i );
-					consoleText.push_back( insert );
+					String::Copy( thisLine, text, i + 1 );
+					consoleText.push_back( thisLine );
 
+					// find the last colour used
 					for ( j=i; j>0; j-- ) {
 						if ( IsColourString( &text[j] ) ) {
 							lastColour = text[j+1];
@@ -133,14 +132,17 @@ namespace XS {
 						}
 					}
 
-					String::FormatBuffer( tempMessage, len, "%c%c%s", COLOUR_ESCAPE, lastColour, text + i - 1 );
-					Append( tempMessage, true );
+					char *nextLine = new char[i + strlen( "^x" ) + 1];
+					String::FormatBuffer( nextLine, i + strlen( "^x" ), "%c%c%s", COLOUR_ESCAPE, lastColour,
+						text + i );
+					Append( nextLine, true );
 					return;
 				}
 			}
 
-			String::Copy( insert, text, i );
-			consoleText.push_back( insert );
+			// didn't split the line, copy the full contents
+			String::Copy( thisLine, text, i );
+			consoleText.push_back( thisLine );
 		}
 
 		void Print( const char *fmt, ... ) {
@@ -189,11 +191,7 @@ namespace XS {
 		static void AdjustWidth( void ) {
 			Cvar *cv = Cvar::Get( "vid_width" );
 			if ( cv ) {
-				const int newWidth = cv->GetInt() / characterSize;
-				if ( lineLength != newWidth ) {
-					Console::Print( String::Format( "lineLength: %i -> %i\n", lineLength, newWidth ).c_str() );
-				}
-				lineLength = newWidth;
+				lineLength = cv->GetInt() / characterSize;
 			}
 		}
 

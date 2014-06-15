@@ -7,6 +7,7 @@
 #include "XSCommon/XSEvent.h"
 #include "XSCommon/XSFile.h"
 #include "XSCommon/XSTimer.h"
+#include "XSCommon/XSString.h"
 #include "XSClient/XSClient.h"
 #include "XSClient/XSInput.h"
 #include "XSClient/XSKeys.h"
