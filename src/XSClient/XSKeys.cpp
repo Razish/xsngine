@@ -121,7 +121,7 @@ namespace XS {
 		static const size_t keymapSize = ARRAY_LEN( keymap );
 
 		static SDL_Keycode GetKeycodeForName( const char *name ) {
-			const keyMap_t *km = NULL;
+			const keyMap_t *km = nullptr;
 			size_t i = 0;
 
 			for ( i=0, km = keymap; i<keymapSize; i++, km++ ) {
@@ -133,7 +133,7 @@ namespace XS {
 		}
 
 		static const char *GetNameForKeycode( SDL_Keycode keycode ) {
-			const keyMap_t *km = NULL;
+			const keyMap_t *km = nullptr;
 			size_t i = 0;
 
 			for ( i=0, km = keymap; i<keymapSize; i++, km++ ) {
@@ -141,7 +141,7 @@ namespace XS {
 					return km->name;
 				}
 			}
-			return NULL;
+			return nullptr;
 		}
 
 		void Cmd_ListBinds( const commandContext_t * const context ) {

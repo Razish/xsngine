@@ -17,7 +17,7 @@ namespace XS {
 		bool timestamp;
 
 	public:
-		Logger( const char *filename, bool timestamp = true ) : f( NULL ), filename( filename ), timestamp( timestamp ) {}
+		Logger( const char *filename, bool timestamp = true ) : f( nullptr ), filename( filename ), timestamp( timestamp ) {}
 		~Logger() { delete f; }
 
 		void Print( const char *message );

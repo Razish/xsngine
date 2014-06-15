@@ -31,20 +31,20 @@ namespace XS {
 			png_infop info_ptr;
 
 		public:
-			PNGFileReader( byte *buf ) : buf( buf ), offset( 0 ), png_ptr( NULL ), info_ptr( NULL ){}
+			PNGFileReader( byte *buf ) : buf( buf ), offset( 0 ), png_ptr( nullptr ), info_ptr( nullptr ){}
 			~PNGFileReader() {
 				if ( info_ptr ) {
 					// destroys both structs
 					png_destroy_info_struct( png_ptr, &info_ptr );
 				}
 				else if ( png_ptr ) {
-					png_destroy_read_struct( &png_ptr, NULL, NULL );
+					png_destroy_read_struct( &png_ptr, nullptr, nullptr );
 				}
 			}
 
 			// returns true on successful read, must delete[] data from caller
 			bool Read( byte **data, uint32_t *outWidth, uint32_t *outHeight ) {
-				*data = NULL;
+				*data = nullptr;
 				if ( outWidth ) {
 					*outWidth = 0;
 				}
@@ -61,7 +61,7 @@ namespace XS {
 					return false;
 				}
 
-				png_ptr = png_create_read_struct( PNG_LIBPNG_VER_STRING, NULL, png_print_error, png_print_error );
+				png_ptr = png_create_read_struct( PNG_LIBPNG_VER_STRING, nullptr, png_print_error, png_print_error );
 				if ( !png_ptr ) {
 					Console::Print( "Could not allocate enough memory to load the image\n" );
 					return false;
@@ -85,7 +85,7 @@ namespace XS {
 				int depth;
 				int colortype;
 
-				png_get_IHDR( png_ptr, info_ptr, &width_, &height_, &depth, &colortype, NULL, NULL, NULL );
+				png_get_IHDR( png_ptr, info_ptr, &width_, &height_, &depth, &colortype, nullptr, nullptr, nullptr );
 
 				// While modern OpenGL can handle non-PoT textures, it's faster to handle only PoT
 				//	so that the graphics driver doesn't have to fiddle about with the texture when uploading.
@@ -138,7 +138,7 @@ namespace XS {
 				png_read_image( png_ptr, row_pointers );
 
 				// Finish reading
-				png_read_end( png_ptr, NULL );
+				png_read_end( png_ptr, nullptr );
 				delete[] row_pointers;
 
 				*data = tempData;
@@ -166,12 +166,12 @@ namespace XS {
 
 		// Loads a PNG image from file.
 		byte *LoadPNG( const char *filename, uint32_t *outWidth, uint32_t *outHeight ) {
-			byte *out = NULL;
+			byte *out = nullptr;
 
 			const File f = File( filename, FileMode::READ_BINARY );
 			if ( !f.open ) {
 				Console::Print( "Could not open PNG file \"%s\"\n", filename );
-				return NULL;
+				return nullptr;
 			}
 
 			if ( Common::com_developer->GetBool() )
@@ -183,7 +183,7 @@ namespace XS {
 			PNGFileReader r( buf );
 			if ( !r.Read( &out, outWidth, outHeight ) ) {
 				delete[] buf;
-				return NULL;
+				return nullptr;
 			}
 
 			delete[] buf;

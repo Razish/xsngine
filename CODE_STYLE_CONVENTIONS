@@ -26,6 +26,8 @@ Do not use include guards.
 
 Every file must have a trailing newline
 
+Assume full C++11 support. Use auto, nullptr, lambdas, foreach syntax, etc
+
 We can assume the only platforms are:
 	Win32 (x86) where ARCH_WIDTH is 32
 	Win64 (x86_64) where ARCH_WIDTH is 64
@@ -220,7 +222,7 @@ Get/Set shall only be used when there are side-effects such as announcing Cvar c
 	};
 	X.x = 10;
 
-Iterators should always be named 'it' except for when they would alias another iterator in that scope
+Iterators should be named 'it' except for when they would alias another iterator in that scope
 
 Always use prefix increment operator on iterators for performance reasons
 	for ( /* ... */; ++it ) {}
@@ -228,6 +230,8 @@ Always use prefix increment operator on iterators for performance reasons
 Use the 'auto' keyword when dealing with iterators
 	for ( auto it = x.begin(); it != x.end(); ++it ) {}
 
+Even better would be to use C++11 foreach syntax
+	for ( const auto &it : list ) {}
 
 
 6. TYPES

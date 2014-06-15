@@ -19,7 +19,7 @@ namespace XS {
 
 		static FT_Library ft;
 		static std::unordered_map<const char *, font_t *> fonts;
-		static ShaderProgram *fontProgram = NULL;
+		static ShaderProgram *fontProgram = nullptr;
 
 		font_t::font_t( const char *name, uint16_t size ) {
 			this->file = String::Format( "fonts/%s.ttf", name );
@@ -43,7 +43,7 @@ namespace XS {
 
 			for ( const auto &it : fonts ) {
 				font_t *font = it.second;
-				FT_Face face = NULL;
+				FT_Face face = nullptr;
 
 				const File f( font->file.c_str(), FileMode::READ_BINARY );
 				if ( !f.open ) {

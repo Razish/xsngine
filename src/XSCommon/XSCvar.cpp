@@ -98,7 +98,7 @@ namespace XS {
 			return cv;
 		}
 
-		return NULL; //new Cvar( name );
+		return nullptr;
 	}
 
 	void Cvar::List( void ) {

@@ -11,7 +11,7 @@ namespace XS {
 
 	namespace Event {
 
-		static Cvar *debug_events = NULL;
+		static Cvar *debug_events = nullptr;
 
 		// this is cleared each pump. we may just want to expand
 		//	as necessary and set the head to 0 at the end of each pump

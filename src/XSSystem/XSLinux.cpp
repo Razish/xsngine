@@ -11,7 +11,7 @@ namespace XS {
 	namespace OS {
 
 		void GetCurrentWorkingDirectory( char *cwd, size_t bufferLen ) {
-			if ( getcwd( cwd, (int)bufferLen - 1 ) == NULL ) {
+			if ( getcwd( cwd, (int)bufferLen - 1 ) == nullptr ) {
 				cwd[0] = '\0';
 			}
 			//TODO: determine cause of failure via errno

@@ -7,8 +7,8 @@ namespace XS {
 
 	namespace Renderer {
 
-		const Framebuffer *Framebuffer::currentReadFramebuffer = NULL;
-		const Framebuffer *Framebuffer::currentWriteFramebuffer = NULL;
+		const Framebuffer *Framebuffer::currentReadFramebuffer = nullptr;
+		const Framebuffer *Framebuffer::currentWriteFramebuffer = nullptr;
 
 		void Framebuffer::Init( void ) {
 			// No initialization required
@@ -17,8 +17,8 @@ namespace XS {
 		void Framebuffer::BindDefault( void ) {
 			if ( currentReadFramebuffer || currentWriteFramebuffer ) {
 				glBindFramebuffer( GL_FRAMEBUFFER, 0 );
-				currentReadFramebuffer	= NULL;
-				currentWriteFramebuffer	= NULL;
+				currentReadFramebuffer	= nullptr;
+				currentWriteFramebuffer	= nullptr;
 			}
 		}
 

@@ -174,13 +174,13 @@ namespace XS {
 	void File::Clear( void ) {
 		length = 0L;
 		open = false;
-		file = NULL;
+		file = nullptr;
 	}
 
 	File::~File() {
 		if ( file ) {
 			fclose( file );
-			file = NULL;
+			file = nullptr;
 		}
 	}
 

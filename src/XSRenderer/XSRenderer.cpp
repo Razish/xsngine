@@ -28,7 +28,7 @@ namespace XS {
 		static Cvar *vid_width;
 
 		std::vector<View*> views;
-		static View *currentView = NULL;
+		static View *currentView = nullptr;
 
 	#ifdef _DEBUG
 		static const char *GLErrSeverityToString( GLenum severity ) {
@@ -116,7 +116,7 @@ namespace XS {
 		#ifdef _DEBUG
 			if ( GLEW_ARB_debug_output ) {
 				glEnable( GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB );
-				glDebugMessageCallbackARB( OnGLError, NULL );
+				glDebugMessageCallbackARB( OnGLError, nullptr );
 			}
 		#endif
 
@@ -196,10 +196,10 @@ namespace XS {
 
 		void DestroyDisplay( void ) {
 			SDL_GL_DeleteContext( context );
-			context = NULL;
+			context = nullptr;
 
 			SDL_DestroyWindow( window );
-			window = NULL;
+			window = nullptr;
 
 			SDL_Quit();
 		}

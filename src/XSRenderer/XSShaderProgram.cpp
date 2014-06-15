@@ -12,10 +12,10 @@ namespace XS {
 
 		#define MAX_SHADER_LENGTH (1024*32) // 32kb
 
-		const ShaderProgram *ShaderProgram::lastProgramUsed = NULL;
+		const ShaderProgram *ShaderProgram::lastProgramUsed = nullptr;
 
 		void ShaderProgram::Init( void ) {
-			lastProgramUsed = NULL;
+			lastProgramUsed = nullptr;
 		}
 
 		static void OutputProgramInfoLog( int program ) {
@@ -28,7 +28,7 @@ namespace XS {
 			if ( logLength > 1 ) {
 				std::string logText (logLength - 1, '\0');
 
-				glGetProgramInfoLog( program, logLength - 1, NULL, &logText[0] );
+				glGetProgramInfoLog( program, logLength - 1, nullptr, &logText[0] );
 
 				Console::Print( "%s\n", logText.c_str() );
 			}
@@ -44,7 +44,7 @@ namespace XS {
 			if ( logLength > 1 ) {
 				std::string logText (logLength - 1, '\0');
 
-				glGetShaderInfoLog( shader, logLength - 1, NULL, &logText[0] );
+				glGetShaderInfoLog( shader, logLength - 1, nullptr, &logText[0] );
 
 				Console::Print( "%s\n", logText.c_str() );
 			}
@@ -73,7 +73,7 @@ namespace XS {
 				throw( XSError( String::Format( "Shader(): Failed to create shader object for shader \"%s\"\n", path ).c_str() ) );
 			}
 
-			glShaderSource( id, 1, (const GLchar **)&source, NULL );
+			glShaderSource( id, 1, (const GLchar **)&source, nullptr );
 			if ( glGetError() == GL_INVALID_OPERATION ) {
 				OutputShaderInfoLog( id );
 
@@ -179,7 +179,7 @@ namespace XS {
 
 		ShaderProgram::~ShaderProgram() {
 			if ( lastProgramUsed == this ) {
-				lastProgramUsed = NULL;
+				lastProgramUsed = nullptr;
 			}
 
 			glDeleteProgram( id );

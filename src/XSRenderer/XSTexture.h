@@ -23,7 +23,7 @@ namespace XS {
 			static void Init( void );
 
 			Texture( unsigned int width, unsigned int height, InternalFormat internalFormat = InternalFormat::RGBA8,
-				byte *data = NULL );
+				byte *data = nullptr );
 			~Texture();
 
 			void Bind( int unit ) const;

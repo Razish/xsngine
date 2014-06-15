@@ -42,7 +42,7 @@ namespace XS {
 
 			// concatenate argv[] to commandLine
 			for ( int i=1; i<argc; i++ ) {
-				const bool containsSpaces = strchr( argv[i], ' ' ) != NULL;
+				const bool containsSpaces = strchr( argv[i], ' ' ) != nullptr;
 
 				if ( containsSpaces ) {
 					commandLine += "\"";
@@ -92,13 +92,13 @@ namespace XS {
 					while ( current ) {
 						Command::Append( current );
 						Command::ExecuteBuffer();
-						current = strtok( NULL, "\n" );
+						current = strtok( nullptr, "\n" );
 					}
 				delete[] buffer;
 			}
 		}
 
-		static void WriteConfig( const char *cfg = NULL ) {
+		static void WriteConfig( const char *cfg = nullptr ) {
 			std::string str = "";
 			Cvar::WriteCvars( str );
 			if ( !com_dedicated->GetBool() ) {
@@ -120,7 +120,7 @@ namespace XS {
 		}
 
 		static void Cmd_WriteConfig( const commandContext_t * const context ) {
-			const char *cfg = NULL;
+			const char *cfg = nullptr;
 			if ( context->size() ) {
 				 cfg = (*context)[0].c_str();
 			 }

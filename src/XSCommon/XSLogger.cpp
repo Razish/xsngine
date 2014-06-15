@@ -40,7 +40,7 @@ namespace XS {
 			else {
 				// can't open yet, queue it
 				delete f;
-				f = NULL;
+				f = nullptr;
 				Queue( out );
 				return;
 			}

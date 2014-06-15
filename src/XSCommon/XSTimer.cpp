@@ -9,7 +9,7 @@ namespace XS {
 	#if defined(XS_OS_WINDOWS)
 		QueryPerformanceCounter( &start );
 	#elif defined(XS_OS_LINUX)
-		gettimeofday( &start, NULL );
+		gettimeofday( &start, nullptr );
 	#endif
 	}
 
@@ -17,7 +17,7 @@ namespace XS {
 	#if defined(XS_OS_WINDOWS)
 		QueryPerformanceCounter( &stop );
 	#elif defined(XS_OS_LINUX)
-		gettimeofday( &stop, NULL );
+		gettimeofday( &stop, nullptr );
 	#endif
 	}
 
@@ -41,7 +41,7 @@ namespace XS {
 		#if defined(XS_OS_WINDOWS)
 			QueryPerformanceCounter( &start );
 		#elif defined(XS_OS_LINUX)
-			gettimeofday( &start, NULL );
+			gettimeofday( &start, nullptr );
 		#endif
 		}
 
