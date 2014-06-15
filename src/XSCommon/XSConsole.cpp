@@ -24,7 +24,6 @@ namespace XS {
 		static int scrollAmount = 0;
 		static unsigned int lineLength = 128; // changes at runtime based on window width
 		static const uint32_t characterSize = 16;
-		static const float fontSize = 12.0f;
 		static const unsigned int lineCount = 24;
 
 		static Renderer::Texture *fontTexture;
@@ -34,9 +33,12 @@ namespace XS {
 
 		static Logger consoleLog( "console.log" );
 
-		static void CreateFontMaterial (Renderer::Texture& fontTexture);
+		static void CreateFontMaterial( Renderer::Texture& fontTexture );
+
+		static Cvar *con_fontSize;
 
 		void Init( void ) {
+			con_fontSize = Cvar::Create( "con_fontSize", "12.0", "Size of the console font", CVAR_ARCHIVE );
 			view = new Renderer::View();
 			view->is2D = true;
 			view->width = Cvar::Get( "vid_width" )->GetInt();
@@ -44,7 +46,8 @@ namespace XS {
 			view->Register();
 
 			byte *fontTextureData = Renderer::LoadPNG( "fonts/console.png" );
-			fontTexture = new Renderer::Texture( 16*characterSize, 16*characterSize, Renderer::InternalFormat::RGBA8, fontTextureData );
+			fontTexture = new Renderer::Texture( 16*characterSize, 16*characterSize, Renderer::InternalFormat::RGBA8,
+				fontTextureData );
 
 			// Ew
 			delete[] fontTextureData;
@@ -191,7 +194,7 @@ namespace XS {
 		static void AdjustWidth( void ) {
 			Cvar *cv = Cvar::Get( "vid_width" );
 			if ( cv ) {
-				lineLength = cv->GetInt() / characterSize;
+				lineLength = cv->GetInt() / con_fontSize->GetFloat();
 			}
 		}
 
@@ -212,7 +215,8 @@ namespace XS {
 			frow = row*size;
 			fcol = col*size;
 
-			Renderer::DrawQuad( x, y, fontSize, fontSize, fcol, frow, fcol+size, frow+size, *fontMaterial );
+			Renderer::DrawQuad( x, y, con_fontSize->GetFloat(), con_fontSize->GetFloat(), fcol, frow, fcol+size, frow+size,
+				*fontMaterial );
 		}
 
 		void Display( void ) {
@@ -235,7 +239,7 @@ namespace XS {
 				auto it = consoleText.at(i);
 				size_t len = strlen( it );
 				for ( size_t c=0; c<len; c++ ) {
-					DrawChar( (float)(c*fontSize), (float)(line*fontSize), it[c] );
+					DrawChar( (float)(c*con_fontSize->GetFloat()), (float)(line*con_fontSize->GetFloat()), it[c] );
 				}
 			}
 		}
