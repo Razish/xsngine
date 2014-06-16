@@ -39,7 +39,6 @@ namespace XS {
 					break;
 				default:
 					throw( XSError( String::Format( "Event::Queue: Unknown event %i", type ).c_str() ) );
-					break;
 				}
 			}
 
@@ -54,12 +53,11 @@ namespace XS {
 					break;
 				default:
 					throw( XSError( String::Format( "Event::Pump: Unknown event %i", it.type ).c_str() ) );
-					break;
 				}
 			}
 			events.clear();
 		}
 
-	} // Event
+	} // namespace Event
 
-} // XS
+} // namespace XS

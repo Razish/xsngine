@@ -31,7 +31,7 @@ namespace XS {
 
 		static std::vector<char*> consoleText;
 		static int scrollAmount = 0;
-		static unsigned int lineLength = 128; // changes at runtime based on window width
+		static unsigned int lineLength = 1280 / 12; // changes at runtime based on window width
 		static const uint32_t characterSize = 16;
 		static const unsigned int lineCount = 24;
 
@@ -48,20 +48,16 @@ namespace XS {
 
 		void Init( void ) {
 			con_fontSize = Cvar::Create( "con_fontSize", "12.0", "Size of the console font", CVAR_ARCHIVE );
-			view = new Renderer::View();
-			view->is2D = true;
-			view->width = Cvar::Get( "vid_width" )->GetInt();
-			view->height = Cvar::Get( "vid_height" )->GetInt();
-			view->Register();
+
+			// register the console view
+			view = new Renderer::View( Cvar::Get( "vid_width" )->GetInt(), Cvar::Get( "vid_height" )->GetInt(), true );
 
 			byte *fontTextureData = Renderer::LoadPNG( "fonts/console.png" );
 			fontTexture = new Renderer::Texture( 16*characterSize, 16*characterSize, Renderer::InternalFormat::RGBA8,
 				fontTextureData );
-
-			// Ew
 			delete[] fontTextureData;
 
-			CreateFontMaterial (*fontTexture);
+			CreateFontMaterial( *fontTexture );
 		}
 
 		void Close( void ) {
@@ -145,8 +141,7 @@ namespace XS {
 					}
 
 					char *nextLine = new char[i + strlen( "^x" ) + 1];
-					String::FormatBuffer( nextLine, i + strlen( "^x" ), "%c%c%s", COLOUR_ESCAPE, lastColour,
-						text + i );
+					String::FormatBuffer( nextLine, i + strlen( "^x" ), "%c%c%s", COLOUR_ESCAPE, lastColour, text + i );
 					Append( nextLine, true );
 					return;
 				}
@@ -224,8 +219,8 @@ namespace XS {
 			frow = row*size;
 			fcol = col*size;
 
-			Renderer::DrawQuad( x, y, con_fontSize->GetFloat(), con_fontSize->GetFloat(), fcol, frow, fcol+size, frow+size,
-				*fontMaterial );
+			Renderer::DrawQuad( x, y, con_fontSize->GetFloat(), con_fontSize->GetFloat(), fcol, frow, fcol+size,
+				frow+size, *fontMaterial );
 		}
 
 		void Display( void ) {

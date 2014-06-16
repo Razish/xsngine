@@ -26,7 +26,6 @@ namespace XS {
 				switch ( e.type ) {
 				case SDL_QUIT:
 					throw( XSError( "Quit application" ) );
-					break;
 
 				case SDL_KEYDOWN:
 					{

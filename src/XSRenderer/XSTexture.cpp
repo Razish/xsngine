@@ -8,10 +8,12 @@ namespace XS {
 
 	namespace Renderer {
 
-		static Cvar *r_textureAnisotropy, *r_textureAnisotropyMax, *r_textureFilter;
+		static Cvar *r_textureAnisotropy = nullptr;
+		static Cvar *r_textureAnisotropyMax = nullptr;
+		static Cvar *r_textureFilter = nullptr;
 
-		static bool anisotropy;
-		static float maxAnisotropy;
+		static bool anisotropy = false;
+		static float maxAnisotropy = 0.0f;
 
 		static const struct {
 			const char *name;
@@ -47,8 +49,8 @@ namespace XS {
 			// get anisotropic filtering settings
 			if ( GLEW_EXT_texture_filter_anisotropic ) {
 				anisotropy = true;
+				glGetFloatv( GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maxAnisotropy );
 			}
-			glGetFloatv( GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maxAnisotropy );
 		}
 
 		Texture::Texture( unsigned int width, unsigned int height, InternalFormat internalFormat, byte *data )
@@ -98,12 +100,12 @@ namespace XS {
 
 		void Texture::Bind (int unit) const {
 			if ( lastUsedTextureUnit != unit ) {
-				glActiveTexture (GL_TEXTURE0 + unit);
+				glActiveTexture( GL_TEXTURE0 + unit );
 				lastUsedTextureUnit = unit;
 			}
 
 			if ( lastUsedTexture[unit] != this ) {
-				glBindTexture (GL_TEXTURE_2D, id);
+				glBindTexture( GL_TEXTURE_2D, id );
 			}
 		}
 

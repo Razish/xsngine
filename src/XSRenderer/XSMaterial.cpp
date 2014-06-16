@@ -10,15 +10,21 @@ namespace XS {
 
 		GLenum GetGLBufferType( BufferType type ) {
 			switch ( type ) {
-				case BufferType::Vertex: return GL_ARRAY_BUFFER;
-				case BufferType::Index: return GL_ELEMENT_ARRAY_BUFFER;
-				case BufferType::Uniform: return GL_UNIFORM_BUFFER;
-				default: return GL_NONE;
+			case BufferType::Vertex:
+				return GL_ARRAY_BUFFER;
+
+			case BufferType::Index:
+				return GL_ELEMENT_ARRAY_BUFFER;
+
+			case BufferType::Uniform:
+				return GL_UNIFORM_BUFFER;
+
+			default:
+				return GL_NONE;
 			}
 		}
 
-		Buffer::Buffer( BufferType type, const void *data, size_t size )
-			: type(GetGLBufferType( type )), size(size) {
+		Buffer::Buffer( BufferType type, const void *data, size_t size ) : type(GetGLBufferType( type )), size(size) {
 			glGenBuffers( 1, &id );
 			glBindBuffer( this->type, id );
 			glBufferData( this->type, size, data, GL_STREAM_DRAW );
@@ -57,6 +63,6 @@ namespace XS {
 			}
 		}
 
-	} // Renderer
+	} // namespace Renderer
 
-} // XS
+} // namespace XS

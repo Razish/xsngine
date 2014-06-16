@@ -124,11 +124,11 @@ namespace XS {
 				break;
 
 			case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE:
-				Console::Print ("Number of samples is not the same for all rendertargets and color attachments.\n");
+				Console::Print( "Number of samples is not the same for all rendertargets and color attachments.\n" );
 				break;
 
 			case GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS:
-				Console::Print ("Not all layered attachments are valid.\n");
+				Console::Print( "Not all layered attachments are valid.\n" );
 				break;
 
 			case GL_FRAMEBUFFER_COMPLETE:
@@ -140,6 +140,6 @@ namespace XS {
 			}
 		}
 
-	}
+	} // namespace Renderer
 
-}
+} // namespace XS

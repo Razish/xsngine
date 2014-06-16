@@ -22,19 +22,17 @@ namespace XS {
 	}
 
 	double Timer::GetTiming( bool restart, Resolution resolution ) {
-		double startTime = 0.0, stopTime = 0.0;
-
 		Stop();
 
 	#if defined(XS_OS_WINDOWS)
 		TimeVal frequency;
 		QueryPerformanceFrequency( &frequency );
 
-		startTime = start.QuadPart * (1000000.0 / frequency.QuadPart);
-		stopTime = stop.QuadPart * (1000000.0 / frequency.QuadPart);
+		double startTime = start.QuadPart * (1000000.0 / frequency.QuadPart);
+		double stopTime = stop.QuadPart * (1000000.0 / frequency.QuadPart);
 	#elif defined(XS_OS_LINUX)
-		startTime = (start.tv_sec * 1000000.0) + start.tv_usec;
-		stopTime = (stop.tv_sec * 1000000.0) + stop.tv_usec;
+		double startTime = (start.tv_sec * 1000000.0) + start.tv_usec;
+		double stopTime = (stop.tv_sec * 1000000.0) + stop.tv_usec;
 	#endif
 
 		if ( restart ) {
@@ -53,7 +51,7 @@ namespace XS {
 		case Resolution::MICROSECONDS:
 			return (stopTime - startTime);
 		default:
-			// should not happen
+			assert( !"Invalid timer resolution" );
 			return 0.0;
 		}
 	}

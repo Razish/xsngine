@@ -151,7 +151,6 @@ namespace XS {
 					size *= 2;
 				}
 			}
-			return str;
 		}
 
 		// by Evan Teran http://stackoverflow.com/a/236803

@@ -9,12 +9,14 @@ namespace XS {
 
 		namespace Backend {
 
-			static Cvar *r_fov;
+			Cvar *r_fov = nullptr;
+			Cvar *r_zRange = nullptr;
 
 			static GLuint defaultVao;
 
 			static void RegisterCvars( void ) {
 				r_fov = Cvar::Create( "r_fov", "110", "Field of view", CVAR_ARCHIVE );
+				r_zRange = Cvar::Create( "r_zRange", "4.0 1000.0", "Clipping plane range", CVAR_ARCHIVE );
 			}
 
 			void Init( void ) {
@@ -38,12 +40,12 @@ namespace XS {
 				glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
 				// activate the default vertex array object
-				glGenVertexArrays (1, &defaultVao);
-				glBindVertexArray (defaultVao);
+				glGenVertexArrays( 1, &defaultVao );
+				glBindVertexArray( defaultVao );
 			}
 
-			void Shutdown( ) {
-				glDeleteVertexArrays (1, &defaultVao);
+			void Shutdown( void ) {
+				glDeleteVertexArrays( 1, &defaultVao );
 			}
 
 		} // namespace Backend

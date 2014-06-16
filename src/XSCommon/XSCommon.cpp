@@ -14,7 +14,6 @@
 #include "XSClient/XSKeys.h"
 #include "XSRenderer/XSRenderer.h"
 
-
 namespace XS {
 
 	namespace Common {
@@ -22,17 +21,19 @@ namespace XS {
 		#define DEFAULT_CONFIG			"cfg/xsn.cfg"
 		#define DEFAULT_CONFIG_SERVER	"cfg/xsn_server.cfg"
 
-		Cvar *com_dedicated, *com_developer;
-		static Cvar *com_framerate, *r_framerate;
+		Cvar *com_dedicated;
+		Cvar *com_developer;
+		static Cvar *com_framerate;
+		static Cvar *r_framerate;
 
 		static void RegisterCvars( void ) {
 			Cvar::Create( "com_date", __DATE__, "Compilation date", CVAR_READONLY );
 			com_dedicated = Cvar::Create( "com_dedicated", "0", "Running a dedicated server", CVAR_INIT );
-#ifdef _DEBUG
+		#ifdef _DEBUG
 			com_developer = Cvar::Create( "com_developer", "1", "Developer mode", CVAR_NONE );
-#else
+		#else
 			com_developer = Cvar::Create( "com_developer", "0", "Developer mode", CVAR_NONE );
-#endif
+		#endif // _DEBUG
 			com_framerate = Cvar::Create( "com_framerate", "50", "Game tick rate", CVAR_NONE );
 			r_framerate = Cvar::Create( "r_framerate", "120", "Render framerate", CVAR_NONE );
 		}
@@ -85,7 +86,7 @@ namespace XS {
 
 			if ( f.open ) {
 				char *buffer = new char[f.length];
-					f.Read( (byte *)buffer );
+					f.Read( reinterpret_cast<byte *>(buffer) );
 
 					Command::ExecuteBuffer(); // flush buffer before we issue commands
 					char *current = strtok( buffer, "\n" );
@@ -165,7 +166,7 @@ int main( int argc, char **argv ) {
 
 		if ( XS::Common::com_developer->GetBool() ) {
 			double t = timer.GetTiming( true, XS::Timer::Resolution::MILLISECONDS );
-			XS::Console::Print( "Init time: %.0f milliseconds\n", (float)t );
+			XS::Console::Print( "Init time: %.0f milliseconds\n", t );
 		}
 
 		if ( !XS::Common::com_dedicated->GetBool() ) {
@@ -222,21 +223,21 @@ int main( int argc, char **argv ) {
 			XS::Client::DrawFrame( frameTime );
 			XS::Renderer::Update( /*state*/ );
 
-			const double renderMsec = 1000.0 / XS::Common::r_framerate->GetDouble();
+			const double frameRate = XS::Common::r_framerate->GetDouble();
+			const double renderMsec = 1000.0 / frameRate;
 			if ( frameTime < renderMsec ) {
 				SDL_Delay( (uint32_t)(renderMsec - frameTime) );
 			}
 		}
 	}
 	catch( const XS::XSError &e ) {
-		bool developer = XS::Common::com_developer->GetBool();
+		const bool developer = XS::Common::com_developer->GetBool();
 
-		XS::Console::Print( "\n*** XSNGINE Shutdown: %s\n\n"
-			"Cleaning up...\n", e.what() );
+		XS::Console::Print( "\n*** xsngine is shutting down\nReason: %s\n\n", e.what() );
 
 		if ( developer ) {
-			double t = timer.GetTiming( true, XS::Timer::Resolution::MILLISECONDS );
-			XS::Console::Print( "Run time: %.0f milliseconds\n", (float)t );
+			const double runtime = timer.GetTiming( true, XS::Timer::Resolution::SECONDS );
+			XS::Console::Print( "Run time: %.3f seconds\n", runtime );
 		}
 
 		// indent the console for this scope
@@ -250,8 +251,8 @@ int main( int argc, char **argv ) {
 		}
 
 		if ( developer ) {
-			double t = timer.GetTiming( false, XS::Timer::Resolution::MILLISECONDS );
-			XS::Console::Print( "Shutdown time: %.0f milliseconds\n\n\n", (float)t );
+			const double shutdownTIme = timer.GetTiming( false, XS::Timer::Resolution::SECONDS );
+			XS::Console::Print( "Shutdown time: %.3f seconds\n\n\n", shutdownTIme );
 		}
 
 		XS::Console::Close();

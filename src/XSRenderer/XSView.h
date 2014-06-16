@@ -11,20 +11,19 @@ namespace XS {
 		class Buffer;
 
 		struct View {
+		private:
+			uint32_t width, height;
+
+		public:
 			matrix4 projectionMatrix;
 			matrix4 viewMatrix;
-
 			Buffer *perFrameData;
-
+			std::vector<RenderCommand> renderCommands;
 			bool is2D;
 
-			uint32_t width, height;
-			std::vector<RenderCommand> renderCommands;
-
-			View();
+			View( uint32_t width, uint32_t height, bool is2D );
 			~View();
 
-			void Register( void );
 			void Bind( void );
 			void PreRender( void );
 			void PostRender( void ) const;

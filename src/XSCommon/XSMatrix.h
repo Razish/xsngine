@@ -70,7 +70,7 @@ namespace XS {
 	inline matrix4 perspectiveFov( float fovy, float aspectRatio, float znear, float zfar ) {
 		matrix4 m;
 
-		float f = 1.0f / tanf(fovy * static_cast<float>(M_PI) / 360.0f);  // convert degrees to radians and divide by 2
+		float f = 1.0f / tanf( fovy * static_cast<float>(M_PI) / 360.0f );  // convert degrees to radians and divide by 2
 		m[0][0] = f / aspectRatio;
 		m[1][1] = f;
 		m[2][2] = (zfar + znear) / (zfar - znear);

@@ -10,7 +10,6 @@ namespace XS {
 		struct View;
 
 		// private
-		void	CheckGLErrors	( const char *filename, int line );
 		void	RegisterCvars	( void );
 		void	CreateDisplay	( void );
 		void	DestroyDisplay	( void );

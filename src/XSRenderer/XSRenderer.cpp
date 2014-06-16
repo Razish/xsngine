@@ -17,50 +17,83 @@ namespace XS {
 
 	namespace Renderer {
 
-		static SDL_Window *window;
+		static SDL_Window *window = nullptr;
 		static SDL_GLContext context;
 
-		static Cvar *r_multisample;
-		static Cvar *r_skipRender;
-		static Cvar *r_swapInterval;
-		static Cvar *vid_height;
-		static Cvar *vid_noBorder;
-		static Cvar *vid_width;
+		static Cvar *r_multisample = nullptr;
+		static Cvar *r_skipRender = nullptr;
+		static Cvar *r_swapInterval = nullptr;
+		static Cvar *vid_height = nullptr;
+		static Cvar *vid_noBorder = nullptr;
+		static Cvar *vid_width = nullptr;
 
-		std::vector<View*> views;
+		std::vector<View *> views;
 		static View *currentView = nullptr;
 
 	#ifdef _DEBUG
 		static const char *GLErrSeverityToString( GLenum severity ) {
 			switch ( severity ) {
-				case GL_DEBUG_SEVERITY_HIGH_ARB: return "High";
-				case GL_DEBUG_SEVERITY_MEDIUM_ARB: return "Medium";
-				case GL_DEBUG_SEVERITY_LOW_ARB: return "Low";
-				default: return "?";
+			case GL_DEBUG_SEVERITY_HIGH_ARB:
+				return "High";
+
+			case GL_DEBUG_SEVERITY_MEDIUM_ARB:
+				return "Medium";
+
+			case GL_DEBUG_SEVERITY_LOW_ARB:
+				return "Low";
+
+			default:
+				return "?";
 			}
 		}
 
 		static const char *GLErrSourceToString( GLenum source ) {
 			switch ( source ) {
-				case GL_DEBUG_SOURCE_API_ARB: return "API";
-				case GL_DEBUG_SOURCE_WINDOW_SYSTEM_ARB: return "WS";
-				case GL_DEBUG_SOURCE_SHADER_COMPILER_ARB: return "GLSL";
-				case GL_DEBUG_SOURCE_THIRD_PARTY_ARB: return "3rd";
-				case GL_DEBUG_SOURCE_APPLICATION_ARB: return "App";
-				case GL_DEBUG_SOURCE_OTHER_ARB: return "Other";
-				default: return "?";
+			case GL_DEBUG_SOURCE_API_ARB:
+				return "API";
+
+			case GL_DEBUG_SOURCE_WINDOW_SYSTEM_ARB:
+				return "WS";
+
+			case GL_DEBUG_SOURCE_SHADER_COMPILER_ARB:
+				return "GLSL";
+
+			case GL_DEBUG_SOURCE_THIRD_PARTY_ARB:
+				return "3rd";
+
+			case GL_DEBUG_SOURCE_APPLICATION_ARB:
+				return "App";
+
+			case GL_DEBUG_SOURCE_OTHER_ARB:
+				return "Other";
+
+			default:
+				return "?";
 			}
 		}
 
 		static const char *GLErrTypeToString( GLenum type ) {
 			switch ( type ) {
-				case GL_DEBUG_TYPE_ERROR_ARB: return "Error";
-				case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR_ARB: return "Deprecated";
-				case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR_ARB: return "UB";
-				case GL_DEBUG_TYPE_PORTABILITY_ARB: return "Portability";
-				case GL_DEBUG_TYPE_PERFORMANCE_ARB: return "Performance";
-				case GL_DEBUG_TYPE_OTHER_ARB: return "Other";
-				default: return "?";
+			case GL_DEBUG_TYPE_ERROR_ARB:
+				return "Error";
+
+			case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR_ARB:
+				return "Deprecated";
+
+			case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR_ARB:
+				return "UB";
+
+			case GL_DEBUG_TYPE_PORTABILITY_ARB:
+				return "Portability";
+
+			case GL_DEBUG_TYPE_PERFORMANCE_ARB:
+				return "Performance";
+
+			case GL_DEBUG_TYPE_OTHER_ARB:
+				return "Other";
+
+			default:
+				return "?";
 			}
 		}
 
@@ -71,35 +104,6 @@ namespace XS {
 				GLErrTypeToString( type ), message );
 		}
 	#endif
-
-		void CheckGLErrors( const char *filename, int line ) {
-			unsigned int error = glGetError();
-			if ( error != GL_NO_ERROR ) {
-				switch ( error ) {
-				case GL_INVALID_ENUM:
-					Console::Print( "GL_INVALID_ENUM in file %s:%d.\n", filename, line );
-					break;
-				case GL_INVALID_VALUE:
-					Console::Print( "GL_INVALID_VALUE in file %s:%d.\n", filename, line );
-					break;
-				case GL_INVALID_OPERATION:
-					Console::Print( "GL_INVALID_OPERATION in file %s:%d.\n", filename, line );
-					break;
-				case GL_STACK_OVERFLOW:
-					Console::Print( "GL_STACK_OVERFLOW in file %s:%d.\n", filename, line );
-					break;
-				case GL_STACK_UNDERFLOW:
-					Console::Print( "GL_STACK_UNDERFLOW in file %s:%d.\n", filename, line );
-					break;
-				case GL_OUT_OF_MEMORY:
-					Console::Print( "GL_OUT_OF_MEMORY in file %s:%d.\n", filename, line );
-					break;
-				default:
-					Console::Print( "Error code 0x%X on line %d.\n", error, line );
-					break;
-				}
-			}
-		}
 
 		void Init( void ) {
 			RegisterCvars();

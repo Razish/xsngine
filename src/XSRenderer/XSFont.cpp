@@ -21,9 +21,8 @@ namespace XS {
 		static std::unordered_map<const char *, font_t *> fonts;
 		static ShaderProgram *fontProgram = nullptr;
 
-		font_t::font_t( const char *name, uint16_t size ) {
+		font_t::font_t( const char *name, uint16_t size ) : size(size) {
 			this->file = String::Format( "fonts/%s.ttf", name );
-			this->size = size;
 		}
 
 		void Font::Init( void ) {

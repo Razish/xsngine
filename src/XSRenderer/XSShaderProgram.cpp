@@ -26,7 +26,7 @@ namespace XS {
 			glGetProgramiv( program, GL_INFO_LOG_LENGTH, &logLength );
 
 			if ( logLength > 1 ) {
-				std::string logText (logLength - 1, '\0');
+				std::string logText( logLength - 1, '\0' );
 
 				glGetProgramInfoLog( program, logLength - 1, nullptr, &logText[0] );
 
@@ -42,7 +42,7 @@ namespace XS {
 			glGetShaderiv( shader, GL_INFO_LOG_LENGTH, &logLength );
 
 			if ( logLength > 1 ) {
-				std::string logText (logLength - 1, '\0');
+				std::string logText( logLength - 1, '\0' );
 
 				glGetShaderInfoLog( shader, logLength - 1, nullptr, &logText[0] );
 
@@ -109,8 +109,6 @@ namespace XS {
 			case ShaderType::Fragment:
 				path = String::Format( "shaders/f_%s.glsl", name );
 				break;
-			default:
-				throw( XSError( String::Format( "Shader(): Unknown shader type %d", type ).c_str() ) );
 			}
 
 			const File f( path.c_str(), FileMode::READ );
@@ -118,7 +116,7 @@ namespace XS {
 				throw( XSError( String::Format( "Shader(): Could not open file \"%s\"", name ).c_str() ) );
 			}
 
-			std::string contents (f.length, '\0');
+			std::string contents( f.length, '\0' );
 
 			f.Read( reinterpret_cast<byte *>(&contents[0]) );
 

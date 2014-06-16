@@ -7,6 +7,10 @@
 	#define PRODUCT_VERSION		"0.1"
 #endif
 
+#ifndef ARCH_STRING
+	#error "Unknown architecture"
+#endif // ARCH_STRING
+
 #define WINDOW_TITLE			"xsngine [" PRODUCT_VERSION "] " ARCH_STRING
 
 // Win64

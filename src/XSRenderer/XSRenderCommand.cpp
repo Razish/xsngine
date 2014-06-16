@@ -11,14 +11,14 @@ namespace XS {
 		static Buffer *quadsVertexBuffer;
 		static Buffer *quadsIndexBuffer;
 
-		void RenderCommand::Init() {
+		void RenderCommand::Init( void ) {
 			const unsigned short indices[6] = { 0, 2, 1, 1, 2, 3 };
 
 			quadsVertexBuffer = new Buffer( BufferType::Vertex, nullptr, 576 );
 			quadsIndexBuffer = new Buffer( BufferType::Index, indices, sizeof(indices) );
 		}
 
-		void RenderCommand::Shutdown() {
+		void RenderCommand::Shutdown( void ) {
 			delete quadsVertexBuffer;
 			delete quadsIndexBuffer;
 		}
