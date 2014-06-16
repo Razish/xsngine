@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="xsn" />
+		<Option platforms="Windows;Unix;" />
+		<Option pch_mode="2" />
+		<Option compiler="clang" />
+		<Build>
+			<Target title="Debug">
+				<Option platforms="Windows;Unix;" />
+				<Option output="bin/Debug/xsngine" prefix_auto="0" extension_auto="1" />
+				<Option working_dir="../../bin/" />
+				<Option object_output="obj/Debug/xsngine/" />
+				<Option type="1" />
+				<Option compiler="clang" />
+				<Option use_console_runner="0" />
+				<Compiler>
+					<Add option="-g3" />
+					<Add option="-D_DEBUG" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option platforms="Windows;Unix;" />
+				<Option output="bin/Release/xsngine" prefix_auto="0" extension_auto="1" />
+				<Option working_dir="../../bin/" />
+				<Option object_output="obj/Release/xsngine/" />
+				<Option type="1" />
+				<Option compiler="clang" />
+				<Option use_console_runner="0" />
+				<Compiler>
+					<Add option="-O3" />
+					<Add option="-DNDEBUG" />
+				</Compiler>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-std=c++11" />
+			<Add option="-Wdeclaration-after-statement" />
+			<Add option="-Wnested-externs" />
+			<Add option="-Wold-style-definition" />
+			<Add option="-Wstrict-prototypes" />
+			<Add option="-msse3" />
+			<Add option="-Wextra" />
+			<Add option="-Wno-char-subscripts" />
+			<Add option="-Wno-missing-braces" />
+			<Add option="-Wno-missing-field-initializers" />
+			<Add option="-Wno-sign-compare" />
+			<Add option="-Wno-unused-parameter" />
+			<Add option="-Winit-self" />
+			<Add option="-Winline" />
+			<Add option="-Wmissing-include-dirs" />
+			<Add option="-Woverlength-strings" />
+			<Add option="-Wpointer-arith" />
+			<Add option="-Wredundant-decls" />
+			<Add option="-Wundef" />
+			<Add option="-Wuninitialized" />
+			<Add option="-Wunreachable-code" />
+			<Add option="-Wwrite-strings" />
+			<Add option="-DGLEW_STATIC" />
+			<Add option="-DARCH_WIDTH=64" />
+			<Add option='-DARCH_STRING=\\&quot;x86_64\\&quot;' />
+			<Add directory="../" />
+			<Add directory="../freetype/" />
+			<Add directory="../GLEW/" />
+			<Add directory="../libpng/" />
+			<Add directory="../zlib/" />
+		</Compiler>
+		<Linker>
+			<Add library="freetype" />
+			<Add library="GL" />
+			<Add library="m" />
+			<Add library="png16" />
+			<Add library="SDL2" />
+		</Linker>
+		<Unit filename="../GLEW/glew.c">
+			<Option compilerVar="CPP" />
+		</Unit>
+		<Unit filename="../XSClient/XSClient.cpp" />
+		<Unit filename="../XSClient/XSClient.h" />
+		<Unit filename="../XSClient/XSInput.cpp" />
+		<Unit filename="../XSClient/XSInput.h" />
+		<Unit filename="../XSClient/XSKeys.cpp" />
+		<Unit filename="../XSClient/XSKeys.h" />
+		<Unit filename="../XSCommon/XSColours.cpp" />
+		<Unit filename="../XSCommon/XSColours.h" />
+		<Unit filename="../XSCommon/XSCommand.cpp" />
+		<Unit filename="../XSCommon/XSCommand.h" />
+		<Unit filename="../XSCommon/XSCommon.cpp" />
+		<Unit filename="../XSCommon/XSCommon.h" />
+		<Unit filename="../XSCommon/XSConsole.cpp" />
+		<Unit filename="../XSCommon/XSConsole.h" />
+		<Unit filename="../XSCommon/XSCvar.cpp" />
+		<Unit filename="../XSCommon/XSCvar.h" />
+		<Unit filename="../XSCommon/XSError.h" />
+		<Unit filename="../XSCommon/XSEvent.cpp" />
+		<Unit filename="../XSCommon/XSEvent.h" />
+		<Unit filename="../XSCommon/XSFile.cpp" />
+		<Unit filename="../XSCommon/XSFile.h" />
+		<Unit filename="../XSCommon/XSGlobals.h" />
+		<Unit filename="../XSCommon/XSLogger.cpp" />
+		<Unit filename="../XSCommon/XSLogger.h" />
+		<Unit filename="../XSCommon/XSMatrix.cpp" />
+		<Unit filename="../XSCommon/XSMatrix.h" />
+		<Unit filename="../XSCommon/XSString.cpp" />
+		<Unit filename="../XSCommon/XSString.h" />
+		<Unit filename="../XSCommon/XSTimer.cpp" />
+		<Unit filename="../XSCommon/XSTimer.h" />
+		<Unit filename="../XSCommon/XSVector.cpp" />
+		<Unit filename="../XSCommon/XSVector.h" />
+		<Unit filename="../XSRenderer/XSBackend.cpp" />
+		<Unit filename="../XSRenderer/XSBackend.h" />
+		<Unit filename="../XSRenderer/XSFont.cpp" />
+		<Unit filename="../XSRenderer/XSFont.h" />
+		<Unit filename="../XSRenderer/XSFramebuffer.cpp" />
+		<Unit filename="../XSRenderer/XSFramebuffer.h" />
+		<Unit filename="../XSRenderer/XSImagePNG.cpp" />
+		<Unit filename="../XSRenderer/XSImagePNG.h" />
+		<Unit filename="../XSRenderer/XSInternalFormat.cpp" />
+		<Unit filename="../XSRenderer/XSInternalFormat.h" />
+		<Unit filename="../XSRenderer/XSMaterial.cpp" />
+		<Unit filename="../XSRenderer/XSMaterial.h" />
+		<Unit filename="../XSRenderer/XSRenderCommand.cpp" />
+		<Unit filename="../XSRenderer/XSRenderCommand.h" />
+		<Unit filename="../XSRenderer/XSRenderer.cpp" />
+		<Unit filename="../XSRenderer/XSRenderer.h" />
+		<Unit filename="../XSRenderer/XSShaderProgram.cpp" />
+		<Unit filename="../XSRenderer/XSShaderProgram.h" />
+		<Unit filename="../XSRenderer/XSTexture.cpp" />
+		<Unit filename="../XSRenderer/XSTexture.h" />
+		<Unit filename="../XSRenderer/XSVertexAttributes.h" />
+		<Unit filename="../XSRenderer/XSView.cpp" />
+		<Unit filename="../XSRenderer/XSView.h" />
+		<Unit filename="../XSSystem/XSLinux.cpp" />
+		<Unit filename="../XSSystem/XSOS.h" />
+		<Unit filename="../XSSystem/XSPlatform.h" />
+		<Extensions>
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
