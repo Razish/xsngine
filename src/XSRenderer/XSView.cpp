@@ -25,7 +25,8 @@ namespace XS {
 		void View::PreRender( void ) {
 			// set up 2d/3d perspective
 			if ( is2D ) {
-				projectionMatrix = ortho( 0.0f, width, 0.0f, height, 0.0f, 1.0f );
+				projectionMatrix = ortho( 0.0f, static_cast<float>(width), 0.0f, static_cast<float>(height),
+					0.0f, 1.0f);
 			}
 			else {
 				const float fov = Backend::r_fov->GetFloat();

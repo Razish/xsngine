@@ -214,7 +214,7 @@ namespace XS {
 			glClear( GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT );
 
 			for ( const auto &view : views ) {
-				if ( r_skipRender->GetInt() & (1<<view->is2D) ) {
+				if ( r_skipRender->GetInt() & (1<<static_cast<uint32_t>(view->is2D)) ) {
 					continue;
 				}
 

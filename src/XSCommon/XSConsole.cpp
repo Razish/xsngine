@@ -198,7 +198,7 @@ namespace XS {
 		static void AdjustWidth( void ) {
 			Cvar *cv = Cvar::Get( "vid_width" );
 			if ( cv ) {
-				lineLength = cv->GetInt() / con_fontSize->GetFloat();
+				lineLength = static_cast<unsigned int>( cv->GetFloat() / con_fontSize->GetFloat() );
 			}
 		}
 
