@@ -12,6 +12,9 @@ namespace XS {
 			case InternalFormat::RGBA8:
 				return GL_RGBA8;
 
+			case InternalFormat::R8:
+				return GL_R8;
+
 			case InternalFormat::RGBA16F:
 				return GL_RGBA16F_ARB;
 
@@ -38,6 +41,9 @@ namespace XS {
 			case InternalFormat::RGBA8:
 			case InternalFormat::RGBA16F:
 				return GL_RGBA;
+
+			case InternalFormat::R8:
+				return GL_RED;
 
 			case InternalFormat::DEPTH_COMPONENT16:
 			case InternalFormat::DEPTH_COMPONENT24:

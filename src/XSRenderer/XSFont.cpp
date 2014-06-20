@@ -63,9 +63,9 @@ namespace XS {
 				return;
 			}
 
-			const size_t numChars = 0xFFu;
-			byte *atlas = new byte[numChars * size * size * 4];
-			std::memset( atlas, 0, numChars * size * size * 4 );
+			const size_t numChars = 256u;
+			byte *atlas = new byte[numChars * size * size];
+			std::memset( atlas, 0, numChars * size * size );
 
 			fontData_t fontData[numChars], *currentFD = fontData;
 			std::memset( fontData, 0, sizeof(fontData) );
@@ -93,13 +93,11 @@ namespace XS {
 
 				// generate an RGBA texture from the 8bpp glyph
 				// atlas will be 16 chars by 16 chars
-				const size_t rowSize = size * 16 * 4;
-				const size_t offset = (c * size * size * 4);
-				for ( size_t row = 0; row < height; row++ ) {
-					for ( size_t col = 0; col < width; col++ ) {
-						for ( size_t channel = 0; channel < 4; channel++ ) {
-							atlas[offset + (col * 4) + (row * rowSize) + channel] = bitmap.buffer[(row * (rowSize * (int)(c / 16))) + col];
-						}
+				const size_t rowSize = size * 16;
+				const size_t topleft = ((c / 16) * size) * rowSize + (c % 16) * size;
+				for ( size_t y = 0; y < height; y++ ) {
+					for ( size_t x = 0; x < width; x++ ) {
+						atlas[topleft + (y * rowSize) + x] = bitmap.buffer[y * width + x];
 					}
 				}
 				currentFD->size = vector2( width, height );
@@ -115,7 +113,7 @@ namespace XS {
 			const File fontdat( String::Format( "cache/fonts/%s.fontdat", name.c_str() ).c_str(), FileMode::WRITE_BINARY );
 			fontdat.Write( &fontData, sizeof(fontData) );
 
-			texture = new Texture( size * 16, size * 16, InternalFormat::RGBA8, atlas );
+			texture = new Texture( size * 16, size * 16, InternalFormat::R8, atlas );
 			SDL_assert( texture );
 			material = CreateFontMaterial( *texture );
 			SDL_assert( material );

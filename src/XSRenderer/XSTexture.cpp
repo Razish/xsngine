@@ -82,6 +82,8 @@ namespace XS {
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filterTable[filterMode].min );
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filterTable[filterMode].mag );
 
+			glPixelStorei (GL_UNPACK_ALIGNMENT, 1);
+
 			glTexImage2D( GL_TEXTURE_2D, 0, GetGLInternalFormat( internalFormat ), width, height, 0,
 				GetGLFormat( internalFormat ), GetDataTypeForFormat( internalFormat ), data );
 

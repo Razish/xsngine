@@ -6,6 +6,7 @@ namespace XS {
 
 		enum class InternalFormat {
 			NONE=0,
+			R8,
 			RGBA8,
 			RGBA16F,
 			DEPTH_COMPONENT16,
