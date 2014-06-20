@@ -2,9 +2,9 @@
 
 #define PRODUCT_NAME			"xsngine"
 #ifdef _DEBUG
-	#define PRODUCT_VERSION		"0.1 DEBUG"
+	#define PRODUCT_VERSION		"dev DEBUG"
 #else
-	#define PRODUCT_VERSION		"0.1"
+	#define PRODUCT_VERSION		"dev"
 #endif
 
 #ifndef ARCH_STRING

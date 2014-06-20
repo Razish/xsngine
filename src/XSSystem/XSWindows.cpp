@@ -26,7 +26,7 @@ namespace XS {
 		}
 
 		bool ResolvePath( char *outPath, const char *inPath, size_t pathLen ) {
-			assert( outPath && inPath );
+			SDL_assert( outPath && inPath && "OS::ResolvePath called with invalid parameters" );
 
 			if ( /*Stat( inPath ) &&*/ !_fullpath( outPath, inPath, pathLen ) ) {
 				if ( Common::com_developer->GetBool() ) {

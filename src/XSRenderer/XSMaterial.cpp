@@ -52,6 +52,7 @@ namespace XS {
 		}
 
 		void Material::Bind( void ) const {
+			SDL_assert( shaderProgram && "Material::Bind: invalid shader program" );
 			shaderProgram->Bind();
 
 			for ( const auto& binding : bufferBindings ) {

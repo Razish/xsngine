@@ -2,7 +2,6 @@
 
 // Responsible for defining common data types and including common library headers
 
-#include <cassert>
 #include <cerrno>
 #include <cmath>
 #include <cstdarg>
@@ -15,6 +14,8 @@
 #include <string>
 #include <vector>
 
+#include <SDL2/SDL_assert.h>
+
 #include "XSSystem/XSPlatform.h"
 #include "XSCommon/XSError.h"
 
@@ -24,7 +25,7 @@ namespace XS {
 		#define REVISION "unavailable"
 	#endif
 
-	#define XS_MAX_FILENAME (64)
+	#define XS_MAX_FILENAME (96)
 
 	typedef unsigned char byte; // unsigned 8 bits
 	typedef float number; // signed 32 bits

@@ -203,24 +203,22 @@ namespace XS {
 		}
 
 		static void DrawChar( float x, float y, char c ) {
-			int row, col;
-			float frow, fcol;
-			const float size = 1.0f / characterSize;
-
 			if ( c == ' ' || c == '\n' || c == '\r' ) {
 				return;
 			}
 
+			const float size = 1.0f / characterSize;
+
 			// assumes 16x16
 			// sqrt( 256 ) = 16
-			row = c>>4;
-			col = c&15;
+			const int row = c>>4;
+			const int col = c&15;
 
-			frow = row*size;
-			fcol = col*size;
+			const float frow = row*size;
+			const float fcol = col*size;
 
-			Renderer::DrawQuad( x, y, con_fontSize->GetFloat(), con_fontSize->GetFloat(), fcol, frow, fcol+size,
-				frow+size, *fontMaterial );
+			Renderer::DrawQuad( x, y, con_fontSize->GetFloat(), con_fontSize->GetFloat(),
+				fcol, frow, fcol+size, frow+size, *fontMaterial );
 		}
 
 		void Display( void ) {

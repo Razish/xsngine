@@ -65,6 +65,7 @@ namespace XS {
 		~File();
 		void Read( byte *buf, size_t len = 0U ) const;
 		void AppendString( const char *str ) const;
+		void Write( const void *buf, size_t len ) const;
 	};
 
 } // namespace XS

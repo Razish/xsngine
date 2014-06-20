@@ -26,6 +26,8 @@ namespace XS {
 		static void DrawQuad( const rcDrawQuad_t *quad ) {
 			static const vector4 color = vector4( 1.0f, 1.0f, 1.0f, 1.0f );
 
+			SDL_assert( quad->material && "Renderer::DrawQuad with invalid material" );
+
 			quad->material->Bind();
 
 			vector2 vertices[4];

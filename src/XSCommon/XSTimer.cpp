@@ -51,7 +51,7 @@ namespace XS {
 		case Resolution::MICROSECONDS:
 			return (stopTime - startTime);
 		default:
-			assert( !"Invalid timer resolution" );
+			SDL_assert( !"Invalid timer resolution" );
 			return 0.0;
 		}
 	}

@@ -20,6 +20,7 @@ namespace XS {
 		static SDL_Window *window = nullptr;
 		static SDL_GLContext context;
 
+		static Cvar *r_debug = nullptr;
 		static Cvar *r_multisample = nullptr;
 		static Cvar *r_skipRender = nullptr;
 		static Cvar *r_swapInterval = nullptr;
@@ -30,7 +31,6 @@ namespace XS {
 		std::vector<View *> views;
 		static View *currentView = nullptr;
 
-	#ifdef _DEBUG
 		static const char *GLErrSeverityToString( GLenum severity ) {
 			switch ( severity ) {
 			case GL_DEBUG_SEVERITY_HIGH_ARB:
@@ -100,10 +100,14 @@ namespace XS {
 		static void OnGLError( GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length,
 			const GLchar *message, GLvoid *userParam )
 		{
+			const int level = r_debug->GetInt();
+			if ( !level || (level == 1 && type == GL_DEBUG_TYPE_PERFORMANCE_ARB) ) {
+				return;
+			}
+
 			Console::Print( "[%s] [%s] %s: %s\n", GLErrSeverityToString( severity ), GLErrSourceToString( source ),
 				GLErrTypeToString( type ), message );
 		}
-	#endif
 
 		void Init( void ) {
 			RegisterCvars();
@@ -117,12 +121,10 @@ namespace XS {
 					glewGetErrorString( error ) ).c_str() ) );
 			}
 
-		#ifdef _DEBUG
 			if ( GLEW_ARB_debug_output ) {
 				glEnable( GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB );
 				glDebugMessageCallbackARB( OnGLError, nullptr );
 			}
-		#endif
 
 			Backend::Init();
 
@@ -147,6 +149,7 @@ namespace XS {
 		}
 
 		void RegisterCvars( void ) {
+			r_debug = Cvar::Create( "r_debug", "0", "Enable debugging information", CVAR_ARCHIVE );
 			r_multisample = Cvar::Create( "r_multisample", "2", "Multisample Anti-Aliasing (MSAA) level", CVAR_ARCHIVE );
 			r_skipRender = Cvar::Create( "r_skipRender", "0", "1 - skip 3D views, 2 - skip 2D views, 3 - skip all views",
 				CVAR_ARCHIVE );
@@ -240,6 +243,10 @@ namespace XS {
 		void DrawQuad( float x, float y, float w, float h, float s1, float t1, float s2, float t2,
 			const Material& material )
 		{
+			if ( !currentView ) {
+				throw( XSError( "Attempted to issue render command without binding a view" ) );
+			}
+
 			RenderCommand cmd( RenderCommand::DRAWQUAD );
 			cmd.drawQuad.x = x;
 			cmd.drawQuad.y = y;

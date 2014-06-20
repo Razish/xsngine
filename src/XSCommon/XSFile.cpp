@@ -171,6 +171,10 @@ namespace XS {
 		fputs( str, file );
 	}
 
+	void File::Write( const void *buf, size_t len ) const {
+		fwrite( buf, 1, len, file );
+	}
+
 	void File::Clear( void ) {
 		length = 0L;
 		open = false;

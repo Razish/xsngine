@@ -2,21 +2,30 @@
 
 #include "XSCommon/XSCommon.h"
 #include "XSCommon/XSConsole.h"
+#include "XSCommon/XSString.h"
+#include "XSCommon/XSCvar.h"
 #include "XSClient/XSClient.h"
+#include "XSRenderer/XSFont.h"
+#include "XSRenderer/XSView.h"
 
 namespace XS {
 
 	namespace Client {
 
+//#define BUILD_CLIENT_MODULE
+
 		static uint64_t frameNum = 0u;
 
+	#ifdef BUILD_CLIENT_MODULE
 		typedef const char * (*initFunc_t)(uint32_t);
 		#define MODULE_NAME "client" ARCH_STRING DLL_EXT
 		static const uint32_t MODULE_VERSION = 1u;
 		void *moduleHandle = nullptr;
+	#endif // BUILD_CLIENT_MODULE
+		Renderer::View *hudView = nullptr;
 
 		void Init( void ) {
-#if 0
+#ifdef BUILD_CLIENT_MODULE
 			// initialise the client library
 			char modulePath[XS_MAX_FILENAME];
 			File::GetFullPath( MODULE_NAME, modulePath, sizeof( modulePath ) );
@@ -35,13 +44,19 @@ namespace XS {
 			else {
 				throw( XSError( "Could not load client module (" MODULE_NAME ")" ) );
 			}
-#endif
+#endif // BUILD_CLIENT_MODULE
+
+			const uint32_t width = Cvar::Get( "vid_width" )->GetInt();
+			const uint32_t height= Cvar::Get( "vid_height" )->GetInt();
+			hudView = new Renderer::View( width, height, true );
 		}
 
 		void Shutdown( void ) {
+		#ifdef BUILD_CLIENT_MODULE
 			if ( moduleHandle ) {
 				SDL_UnloadObject( moduleHandle );
 			}
+		#endif // BUILD_CLIENT_MODULE
 		}
 
 		void NetworkPump( void ) {
@@ -65,7 +80,27 @@ namespace XS {
 
 		void DrawFrame( double frametime ) {
 			// draw game view
+
 			// draw HUD
+			hudView->Bind();
+			static const vector2 pos = vector2( 0.0f, 0.0f );
+			static Renderer::font_t *font = nullptr;
+			if ( !font ) {
+				font = Renderer::Font::Register( "tahoma", 16 );
+			}
+
+			static double samples[16];
+			static unsigned int index = 0;
+			samples[index++] = frametime;
+			if ( index >= 16 ) {
+				index = 0u;
+			}
+			double avg = 0.0;
+			for ( int i = 0; i < 16; i++ ) {
+				avg += samples[i];
+			}
+			avg /= 16.0;
+			Renderer::Font::Draw( pos, String::Format( "FPS:%.5f", 1000.0 / avg ), font );
 
 			// draw console
 			Console::Display();
