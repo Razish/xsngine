@@ -8,11 +8,11 @@
 
 namespace XS {
 
-	class XSError : public std::exception {
-	private:
-		XSError();
+	struct XSError : public std::exception {
+		// don't allow default instantiation
+		XSError() = delete;
+		XSError& operator=( const XSError& ) = delete;
 
-	public:
 		XSError( std::string &msg ) : msg( msg ) {}
 		XSError( const char *msg ) : msg( msg ) {}
 		virtual const char* what() const throw () {

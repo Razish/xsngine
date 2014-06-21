@@ -47,6 +47,10 @@ namespace XS {
 		static Cvar *Get( const std::string &name );
 		static void List( void );
 
+		// don't allow default instantiation
+		Cvar( const Cvar& ) = delete;
+		Cvar& operator=( const Cvar& ) = delete;
+
 		void SetFlags( uint32_t flags );
 
 		bool Set( const std::string &value, bool initial = false );

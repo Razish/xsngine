@@ -22,7 +22,7 @@ namespace XS {
 			if ( !cv ) {
 				// shouldn't happen
 				if ( Common::com_developer->GetBool() ) {
-					Console::Print( "WriteCvars: NULL cvar \"%s\"\n", name );
+					console.Print( "WriteCvars: NULL cvar \"%s\"\n", name );
 				}
 				continue;
 			}
@@ -33,7 +33,7 @@ namespace XS {
 	}
 
 	void Cvar::Clean( void ) {
-		Console::Print( "Cleaning up cvars\n" );
+		console.Print( "Cleaning up cvars\n" );
 		for ( const auto &it : cvars ) {
 			delete it.second;
 		}
@@ -68,7 +68,7 @@ namespace XS {
 			if ( !value.empty() ) {
 				// INIT cvars should not be initialised with differing values
 				if ( cvar->flags & CVAR_INIT ) {
-					Console::Print( "WARNING: CVAR_INIT Cvar \"%s\" was created twice with values \"%s\" and \"%s\"\n",
+					console.Print( "WARNING: CVAR_INIT Cvar \"%s\" was created twice with values \"%s\" and \"%s\"\n",
 						name.c_str(), cvar->fullString.c_str(), value.c_str() );
 				}
 
@@ -102,7 +102,7 @@ namespace XS {
 	}
 
 	void Cvar::List( void ) {
-		Console::Print( "Listing cvars...\n" );
+		console.Print( "Listing cvars...\n" );
 
 		std::map<std::string, Cvar*> sorted( cvars.begin(), cvars.end() );
 
@@ -110,7 +110,7 @@ namespace XS {
 		for ( const auto &cvar : sorted ) {
 			char buf[64];
 			String::FormatBuffer( buf, sizeof(buf), "%s \"%s\"", cvar.first.c_str(), cvar.second->fullString.c_str() );
-			Console::Print( "%-48s: %s\n", buf, cvar.second->description.c_str() );
+			console.Print( "%-48s: %s\n", buf, cvar.second->description.c_str() );
 		}
 	}
 
@@ -124,7 +124,7 @@ namespace XS {
 
 	bool Cvar::Set( const char *value, bool initial ) {
 		if ( !initial && (flags & CVAR_READONLY) ) {
-			Console::Print( "Attempt to set read-only cvar \"%s\"\n", name.c_str() );
+			console.Print( "Attempt to set read-only cvar \"%s\"\n", name.c_str() );
 			return false;
 		}
 

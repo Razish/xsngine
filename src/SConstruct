@@ -63,10 +63,10 @@ env = Environment()
 if plat != 'Windows':
 	env['ENV']['TERM'] = os.environ['TERM']
 
-files = [ 'XSClient/XSClient.cpp', 'XSClient/XSInput.cpp', 'XSClient/XSKeys.cpp',
+files = [ 'XSClient/XSClient.cpp', 'XSClient/XSInput.cpp', 'XSClient/XSInputField.cpp', 'XSClient/XSKeys.cpp',
 	'XSCommon/XSColours.cpp', 'XSCommon/XSCommand.cpp', 'XSCommon/XSCommon.cpp', 'XSCommon/XSConsole.cpp',
 	'XSCommon/XSCvar.cpp', 'XSCommon/XSEvent.cpp', 'XSCommon/XSFile.cpp', 'XSCommon/XSLogger.cpp',
-	'XSCommon/XSString.cpp', 'XSCommon/XSTimer.cpp', 'XSCommon/XSVector.cpp',
+	'XSCommon/XSMessageBuffer.h', 'XSCommon/XSString.cpp', 'XSCommon/XSTimer.cpp', 'XSCommon/XSVector.cpp',
 	'GLEW/glew.c', 'XSRenderer/XSBackend.cpp', 'XSRenderer/XSFont.cpp', 'XSRenderer/XSFramebuffer.cpp',
 	'XSRenderer/XSImagePNG.cpp', 'XSRenderer/XSInternalFormat.cpp', 'XSRenderer/XSMaterial.cpp',
 	'XSRenderer/XSRenderCommand.cpp', 'XSRenderer/XSRenderer.cpp', 'XSRenderer/XSShaderProgram.cpp',

@@ -34,7 +34,7 @@ namespace XS {
 			if ( debug_events->GetBool() ) {
 				switch( type ) {
 				case EventType::KEY:
-					Console::Print( "Event::Queue: %s (%i) key: %i, down: %i\n", eventNames[type], type,
+					console.Print( "Event::Queue: %s (%i) key: %i, down: %i\n", eventNames[type], type,
 						ev->keyEvent.key, ev->keyEvent.down );
 					break;
 				default:

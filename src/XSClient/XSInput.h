@@ -5,10 +5,7 @@ namespace XS {
 	namespace Client {
 
 		// exists in XSClient/XSInput.cpp for now
-		extern class Input {
-		private:
-
-		public:
+		extern struct Input {
 			Input();
 			void Poll( void ) const;
 		} input;

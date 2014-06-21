@@ -6,8 +6,6 @@ namespace XS {
 
 	class Logger {
 	private:
-		Logger();
-
 		std::vector<std::string> queue;
 		void PrintQueued( void );
 		void Queue( std::string &str );
@@ -17,6 +15,11 @@ namespace XS {
 		bool timestamp;
 
 	public:
+		// don't allow default instantiation
+		Logger() = delete;
+		Logger( const Logger& ) = delete;
+		Logger& operator=( const Logger& ) = delete;
+
 		Logger( const char *filename, bool timestamp = true ) : f( nullptr ), filename( filename ), timestamp( timestamp ) {}
 		~Logger() { delete f; }
 

@@ -43,7 +43,7 @@ namespace XS {
 	// finalise the basepath
 	void File::SetBasePath( void ) {
 		OS::ResolvePath( basePath, com_path->GetCString(), sizeof(basePath) );
-		Console::Print( "Base path: %s\n", basePath );
+		console.Print( "Base path: %s\n", basePath );
 
 		initialised = true;
 	}
@@ -74,7 +74,7 @@ namespace XS {
 		}
 
 		if ( !ValidPath( gamePath ) ) {
-			Console::Print( "WARNING: attempted directory traversal: \"%s\"\n", gamePath );
+			console.Print( "WARNING: attempted directory traversal: \"%s\"\n", gamePath );
 			outPath[0] = '\0';
 			return false;
 		}

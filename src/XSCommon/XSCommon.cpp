@@ -72,10 +72,10 @@ namespace XS {
 			Command::Append( &commandLine[start + 1], delimiter );
 
 		#ifdef _DEBUG
-			Console::Print( "Startup parameters:\n" );
+			console.Print( "Startup parameters:\n" );
 			Indent indent(1);
 			for ( const auto &arg : String::Split( &commandLine[start + 1], delimiter ) ) {
-				Console::Print( "%s\n", arg.c_str() );
+				console.Print( "%s\n", arg.c_str() );
 			}
 		#endif
 		}
@@ -113,7 +113,7 @@ namespace XS {
 
 			const File f( cfg, FileMode::WRITE );
 			if ( !f.open ) {
-				Console::Print( "Failed to write config! (%s)\n", cfg );
+				console.Print( "Failed to write config! (%s)\n", cfg );
 				return;
 			}
 
@@ -153,20 +153,18 @@ int main( int argc, char **argv ) {
 		// DO NOT LOAD MEDIA BEFORE THIS POINT
 		//
 
-		XS::Console::Print( WINDOW_TITLE " (" XSTR( ARCH_WIDTH ) " bits) built on " __DATE__ " [git " REVISION "]\n" );
+		XS::console.Print( WINDOW_TITLE " (" XSTR( ARCH_WIDTH ) " bits) built on " __DATE__ " [git " REVISION "]\n" );
 
 		if ( !XS::Common::com_dedicated->GetBool() ) {
 			XS::Renderer::Init();
 		}
-
-		XS::Console::Init();
 
 		XS::Event::Init();
 	//	XS::Network::Init();
 
 		if ( XS::Common::com_developer->GetBool() ) {
 			double t = timer.GetTiming( true, XS::Timer::Resolution::MILLISECONDS );
-			XS::Console::Print( "Init time: %.0f milliseconds\n", t );
+			XS::console.Print( "Init time: %.0f milliseconds\n", t );
 		}
 
 		if ( !XS::Common::com_dedicated->GetBool() ) {
@@ -233,11 +231,11 @@ int main( int argc, char **argv ) {
 	catch( const XS::XSError &e ) {
 		const bool developer = XS::Common::com_developer->GetBool();
 
-		XS::Console::Print( "\n*** xsngine is shutting down\nReason: %s\n\n", e.what() );
+		XS::console.Print( "\n*** xsngine is shutting down\nReason: %s\n\n", e.what() );
 
 		if ( developer ) {
 			const double runtime = timer.GetTiming( true, XS::Timer::Resolution::SECONDS );
-			XS::Console::Print( "Run time: %.3f seconds\n", runtime );
+			XS::console.Print( "Run time: %.3f seconds\n", runtime );
 		}
 
 		// indent the console for this scope
@@ -252,10 +250,8 @@ int main( int argc, char **argv ) {
 
 		if ( developer ) {
 			const double shutdownTIme = timer.GetTiming( false, XS::Timer::Resolution::SECONDS );
-			XS::Console::Print( "Shutdown time: %.3f seconds\n\n\n", shutdownTIme );
+			XS::console.Print( "Shutdown time: %.3f seconds\n\n\n", shutdownTIme );
 		}
-
-		XS::Console::Close();
 
 		return EXIT_SUCCESS;
 	}

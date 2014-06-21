@@ -105,7 +105,7 @@ namespace XS {
 				return;
 			}
 
-			Console::Print( "[%s] [%s] %s: %s\n", GLErrSeverityToString( severity ), GLErrSourceToString( source ),
+			console.Print( "[%s] [%s] %s: %s\n", GLErrSeverityToString( severity ), GLErrSourceToString( source ),
 				GLErrTypeToString( type ), message );
 		}
 
@@ -139,7 +139,7 @@ namespace XS {
 		}
 
 		void Shutdown( void ) {
-			Console::Print( "Shutting down renderer...\n" );
+			console.Print( "Shutting down renderer...\n" );
 
 			RenderCommand::Shutdown();
 			Font::Shutdown();
@@ -196,8 +196,8 @@ namespace XS {
 
 			SDL_GL_SetSwapInterval( r_swapInterval->GetInt() );
 
-			Console::Print( "OpenGL device: %s %s\n", glGetString( GL_VENDOR ), glGetString( GL_RENDERER ) );
-			Console::Print( "OpenGL version: %s with GLSL %s\n", glGetString( GL_VERSION ),
+			console.Print( "OpenGL device: %s %s\n", glGetString( GL_VENDOR ), glGetString( GL_RENDERER ) );
+			console.Print( "OpenGL version: %s with GLSL %s\n", glGetString( GL_VERSION ),
 				glGetString( GL_SHADING_LANGUAGE_VERSION ) );
 		}
 

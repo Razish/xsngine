@@ -16,9 +16,16 @@ namespace XS {
 		};
 
 		class Buffer {
+		private:
+			GLuint id;
+			GLenum type;
+			size_t size;
+
 		public:
+			// don't allow default instantiation
 			Buffer() = delete;
 			Buffer( const Buffer& ) = delete;
+			Buffer& operator=( const Buffer& ) = delete;
 
 			Buffer( BufferType type, const void *data, size_t dataSize );
 			~Buffer();
@@ -31,10 +38,6 @@ namespace XS {
 			void Bind( void ) const;
 			void BindRange( int index ) const;
 
-		private:
-			GLuint id;
-			GLenum type;
-			size_t size;
 		};
 
 		struct Material {

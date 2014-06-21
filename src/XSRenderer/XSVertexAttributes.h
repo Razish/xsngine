@@ -9,6 +9,6 @@ namespace XS {
 			const char *name;
 		};
 
-	} // Renderer
+	} // namespace Renderer
 
-} // XS
+} // namespace XS

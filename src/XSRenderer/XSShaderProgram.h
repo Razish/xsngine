@@ -13,19 +13,22 @@ namespace XS {
 		};
 
 		class Shader {
-		public:
-
-			Shader( ShaderType type, const char *name );
-			~Shader();
-
-			friend class ShaderProgram;
-
 		private:
 			int			id;
 			ShaderType	type;
 
-			Shader();
+			// don't allow default instantiation
+			Shader() = delete;
+			Shader( const Shader& ) = delete;
+			Shader& operator=( const Shader& ) = delete;
+
 			void Create( const char *path, const char *source, ShaderType shaderType );
+
+		public:
+			Shader( ShaderType type, const char *name );
+			~Shader();
+
+			friend class ShaderProgram;
 		};
 
 		class ProgramVariable {

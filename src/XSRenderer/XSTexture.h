@@ -14,10 +14,10 @@ namespace XS {
 			static const Texture *lastUsedTexture[MAX_TEXTURE_UNITS];
 			static int lastUsedTextureUnit;
 
-			Texture();
-
-			unsigned int width, height;
-			InternalFormat internalFormat;
+			// don't allow default instantiation
+			Texture() = delete;
+			Texture( const Texture& ) = delete;
+			Texture& operator=( const Texture& ) = delete;
 
 		public:
 			static void Init( void );

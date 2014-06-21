@@ -72,7 +72,7 @@ namespace XS {
 
 		void Framebuffer::AttachColorTexture( const Texture *texture, unsigned int slot ) {
 			if ( slot >= MAX_FBO_COLOR_TEXTURES ) {
-				Console::Print( "Invalid slot number given (%d), valid range is 0 - %d", slot, MAX_FBO_COLOR_TEXTURES-1 );
+				console.Print( "Invalid slot number given (%d), valid range is 0 - %d", slot, MAX_FBO_COLOR_TEXTURES-1 );
 				return;
 			}
 
@@ -104,31 +104,31 @@ namespace XS {
 
 			switch ( status ) {
 			case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
-				Console::Print( "One or more framebuffer attachment points are not complete.\n" );
+				console.Print( "One or more framebuffer attachment points are not complete.\n" );
 				break;
 
 			case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER:
-				Console::Print( "Invalid framebuffer attachment object type used.\n" );
+				console.Print( "Invalid framebuffer attachment object type used.\n" );
 				break;
 
 			case GL_FRAMEBUFFER_UNSUPPORTED:
-				Console::Print( "More than one internal format was used in the color attachments.\n" );
+				console.Print( "More than one internal format was used in the color attachments.\n" );
 				break;
 
 			case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER:
-				Console::Print( "Missing a read buffer.\n" );
+				console.Print( "Missing a read buffer.\n" );
 				break;
 
 			case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
-				Console::Print( "No images were attached to the framebuffer.\n" );
+				console.Print( "No images were attached to the framebuffer.\n" );
 				break;
 
 			case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE:
-				Console::Print( "Number of samples is not the same for all rendertargets and color attachments.\n" );
+				console.Print( "Number of samples is not the same for all rendertargets and color attachments.\n" );
 				break;
 
 			case GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS:
-				Console::Print( "Not all layered attachments are valid.\n" );
+				console.Print( "Not all layered attachments are valid.\n" );
 				break;
 
 			case GL_FRAMEBUFFER_COMPLETE:
@@ -136,7 +136,7 @@ namespace XS {
 			}
 
 			if ( status != GL_FRAMEBUFFER_COMPLETE ) {
-				Console::Print( "Creation of framebuffer %d could not be completed.\n", id );
+				console.Print( "Creation of framebuffer %d could not be completed.\n", id );
 			}
 		}
 

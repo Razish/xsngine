@@ -18,7 +18,7 @@ namespace XS {
 
 		void user_read_data( png_structp png_ptr, png_bytep data, png_size_t length );
 		void png_print_error( png_structp png_ptr, png_const_charp msg ) {
-			Console::Print( "%s\n", msg );
+			console.Print( "%s\n", msg );
 		}
 
 		bool IsPowerOfTwo( int i ) { return (i & (i - 1)) == 0; }
@@ -57,13 +57,13 @@ namespace XS {
 				byte ident[SIGNATURE_LEN];
 				memcpy( ident, buf, SIGNATURE_LEN );
 				if ( !png_check_sig( ident, SIGNATURE_LEN ) ) {
-					Console::Print( "PNG signature not found in given image\n" );
+					console.Print( "PNG signature not found in given image\n" );
 					return false;
 				}
 
 				png_ptr = png_create_read_struct( PNG_LIBPNG_VER_STRING, nullptr, png_print_error, png_print_error );
 				if ( !png_ptr ) {
-					Console::Print( "Could not allocate enough memory to load the image\n" );
+					console.Print( "Could not allocate enough memory to load the image\n" );
 					return false;
 				}
 
@@ -90,14 +90,14 @@ namespace XS {
 				// While modern OpenGL can handle non-PoT textures, it's faster to handle only PoT
 				//	so that the graphics driver doesn't have to fiddle about with the texture when uploading.
 				if ( !IsPowerOfTwo( width_ ) || !IsPowerOfTwo( height_ ) ) {
-					Console::Print( "Width or height is not a power-of-two.\n" );
+					console.Print( "Width or height is not a power-of-two.\n" );
 					return false;
 				}
 
 				// If we need to load a non-RGB(A)8 image, colortype should be PNG_COLOR_TYPE_PALETTE or
 				//	PNG_COLOR_TYPE_GRAY.
 				if ( colortype != PNG_COLOR_TYPE_RGB && colortype != PNG_COLOR_TYPE_RGBA ) {
-					Console::Print( "Image is not 24-bit or 32-bit\n" );
+					console.Print( "Image is not 24-bit or 32-bit\n" );
 					return false;
 				}
 
@@ -112,14 +112,14 @@ namespace XS {
 				// We always assume there are 4 channels. RGB channels are expanded to RGBA when read.
 				byte *tempData = new byte[width_ * height_ * 4];
 				if ( !tempData ) {
-					Console::Print( "Could not allocate enough memory to load the image\n" );
+					console.Print( "Could not allocate enough memory to load the image\n" );
 					return false;
 				}
 
 				// Dynamic array of row pointers, with 'height' elements, initialized to NULL.
 				byte **row_pointers = new byte*[sizeof(byte *) * height_];
 				if ( !row_pointers ) {
-					Console::Print( "Could not allocate enough memory to load the image\n" );
+					console.Print( "Could not allocate enough memory to load the image\n" );
 					delete[] tempData;
 					return false;
 				}
@@ -168,14 +168,14 @@ namespace XS {
 		byte *LoadPNG( const char *filename, uint32_t *outWidth, uint32_t *outHeight ) {
 			byte *out = nullptr;
 
-			const File f = File( filename, FileMode::READ_BINARY );
+			const File f( filename, FileMode::READ_BINARY );
 			if ( !f.open ) {
-				Console::Print( "Could not open PNG file \"%s\"\n", filename );
+				console.Print( "Could not open PNG file \"%s\"\n", filename );
 				return nullptr;
 			}
 
 			if ( Common::com_developer->GetBool() )
-				Console::Print( "Loading \"%s\"...\n", filename );
+				console.Print( "Loading \"%s\"...\n", filename );
 
 			byte *buf = new byte[f.length];
 			f.Read( buf );
@@ -217,8 +217,11 @@ namespace XS {
 			if ( numChannels == 4 ) {
 				colourType = PNG_COLOR_TYPE_RGBA;
 			}
+			else if ( numChannels == 1 ) {
+				colourType = PNG_COLOR_TYPE_GRAY;
+			}
 			else if ( numChannels != 3 ) {
-				SDL_assert( !"Renderer::WritePNG: invalid numChannels, expected 3 or 4" );
+				SDL_assert( !"Renderer::WritePNG: invalid numChannels, expected 1, 3 or 4" );
 			}
 
 			png_set_IHDR( png, info, w, h, 8/*depth*/, colourType, PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_BASE,

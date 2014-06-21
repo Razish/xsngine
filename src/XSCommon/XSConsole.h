@@ -1,28 +1,35 @@
 #pragma once
 
-#include "XSCommon/XSCommand.h"
+#include "XSCommon/XSMessageBuffer.h"
 
 namespace XS {
 
-	namespace Console {
+	extern struct Console {
+		Console() { buffer = new MessageBuffer( "console.log" ); }
+		~Console() { delete buffer; }
+		unsigned int indentation;
+		MessageBuffer *buffer;
 
-		void	Init		( void );
-		void	Close		( void );
-		void	Print		( const char *fmt, ... );
-		void	Toggle		( const commandContext_t * const context );
-		void	Display		( void );
-		void	Indent		( int level );
+		void Print( const char *fmt, ... );
+		void Indent( int level ) { indentation += level; }
 
-	} // namespace Console
+	private:
+		void Append( const char *text, bool multiLine );
+	} console;
 
 	// Instantiate a local (stack-level) Indent object to indent subsequent console prints
 	class Indent {
 	private:
-		Indent();
 		unsigned int level;
+
 	public:
-		Indent( int level ) { this->level = (unsigned)level; Console::Indent( this->level ); }
-		~Indent() { Console::Indent( -(signed)level ); }
+		// don't allow default instantiation
+		Indent() = delete;
+		Indent( const Indent& ) = delete;
+		Indent& operator=( const Indent& ) = delete;
+
+		Indent( int level ) : level((unsigned)level) { console.Indent( level ); }
+		~Indent() { console.Indent( -(signed)level ); }
 	};
 
 } // namespace XS

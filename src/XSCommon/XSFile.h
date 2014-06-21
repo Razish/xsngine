@@ -44,8 +44,6 @@ namespace XS {
 
 	class File {
 	private:
-		File();
-
 		void Clear( void );
 
 		FILE *file;
@@ -60,6 +58,11 @@ namespace XS {
 		static void SetBasePath( void );
 		static bool GetFullPath( const char *gamePath, char *outPath, size_t outLen );
 		static void ReplaceSeparators( char *path );
+
+		// don't allow default instantiation
+		File() = delete;
+		File( const File& ) = delete;
+		File& operator=( const File& ) = delete;
 
 		File( const char *gamePath, FileMode mode = FileMode::READ );
 		~File();

@@ -6,6 +6,7 @@
 #include "XSCommon/XSConsole.h"
 #include "XSCommon/XSString.h"
 #include "XSClient/XSKeys.h"
+#include "XSClient/XSClient.h"
 
 namespace XS {
 
@@ -23,24 +24,24 @@ namespace XS {
 
 		static void Cmd_PrintCvar( const commandContext_t * const context ) {
 			if ( context->size() < 1 ) {
-				Console::Print( "\"print\" failed. Must specify at-least one cvar\n" );
+				console.Print( "\"print\" failed. Must specify at-least one cvar\n" );
 				return;
 			}
 
 			for ( const auto &it : *context ) {
 				const Cvar *cv = Cvar::Get( it );
 				if ( cv ) {
-					Console::Print( "%s: \"%s\"\n", it.c_str(), cv->GetFullCString() );
+					console.Print( "%s: \"%s\"\n", it.c_str(), cv->GetFullCString() );
 				}
 				else {
-					Console::Print( "%s: does not exist\n", it.c_str() );
+					console.Print( "%s: does not exist\n", it.c_str() );
 				}
 			}
 		}
 
 		static void Cmd_SetCvar( const commandContext_t * const context ) {
 			if ( context->size() < 2 ) {
-				Console::Print( "\"set\" failed. Must specify a cvar and value\n" );
+				console.Print( "\"set\" failed. Must specify a cvar and value\n" );
 				return;
 			}
 
@@ -74,7 +75,7 @@ namespace XS {
 			AddCommand( "print", Cmd_PrintCvar );
 			AddCommand( "set", Cmd_SetCvar );
 			AddCommand( "toggle", Cmd_ToggleCvar );
-			AddCommand( "toggleconsole", Console::Toggle );
+			AddCommand( "toggleconsole", Client::Cmd_ToggleConsole );
 			AddCommand( "quit", Cmd_Quit );
 		}
 
@@ -122,7 +123,7 @@ namespace XS {
 		bool AddCommand( const char *name, commandFunc_t cmd ) {
 			commandFunc_t &func = commands[name];
 			if ( func ) {
-				Console::Print( "Tried to register command \"%s\" twice\n", name );
+				console.Print( "Tried to register command \"%s\" twice\n", name );
 				return false;
 			}
 

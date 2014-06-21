@@ -33,7 +33,7 @@ namespace XS {
 					return filter;
 				}
 			}
-			return 0;
+			return 0u;
 		}
 
 		const Texture *Texture::lastUsedTexture[MAX_TEXTURE_UNITS] = {};
@@ -53,8 +53,7 @@ namespace XS {
 			}
 		}
 
-		Texture::Texture( unsigned int width, unsigned int height, InternalFormat internalFormat, byte *data )
-			: width( width ), height( height ), internalFormat( internalFormat ) {
+		Texture::Texture( unsigned int width, unsigned int height, InternalFormat internalFormat, byte *data ) {
 			size_t filterMode = GetTextureFilter( r_textureFilter->GetCString() );
 
 			glGenTextures( 1, &id );
@@ -82,7 +81,7 @@ namespace XS {
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filterTable[filterMode].min );
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filterTable[filterMode].mag );
 
-			glPixelStorei (GL_UNPACK_ALIGNMENT, 1);
+			glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
 
 			glTexImage2D( GL_TEXTURE_2D, 0, GetGLInternalFormat( internalFormat ), width, height, 0,
 				GetGLFormat( internalFormat ), GetDataTypeForFormat( internalFormat ), data );
@@ -100,7 +99,7 @@ namespace XS {
 			glDeleteTextures( 1, &id );
 		}
 
-		void Texture::Bind (int unit) const {
+		void Texture::Bind( int unit ) const {
 			if ( lastUsedTextureUnit != unit ) {
 				glActiveTexture( GL_TEXTURE0 + unit );
 				lastUsedTextureUnit = unit;

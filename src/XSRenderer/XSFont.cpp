@@ -16,12 +16,13 @@ namespace XS {
 	namespace Renderer {
 
 		static FT_Library ft;
-		static std::unordered_map<std::string, font_t *> fonts;
+		static std::unordered_map<std::string, Font *> fonts;
 		static ShaderProgram *fontProgram = nullptr;
 
 
-		font_t::font_t( const char *name, uint16_t size ) : name(name), size(size) {
+		Font::Font( const char *name, uint16_t size ) : name(name), size(size) {
 			file = String::Format( "fonts/%s.ttf", name );
+			std::memset( data, 0, sizeof(data) );
 		}
 
 		static Material *CreateFontMaterial( Texture& fontTexture ) {
@@ -37,12 +38,12 @@ namespace XS {
 			return fontMaterial;
 		}
 
-		void font_t::RenderGlyphs( void ) {
+		void Font::RenderGlyphs( void ) {
 			FT_Face face = nullptr;
 
 			const File ttf( file.c_str(), FileMode::READ_BINARY );
 			if ( !ttf.open ) {
-				Console::Print( "WARNING: Could not load font file \"%s\"\n", ttf.path );
+				console.Print( "WARNING: Could not load font file \"%s\"\n", ttf.path );
 				return;
 			}
 
@@ -51,7 +52,7 @@ namespace XS {
 			ttf.Read( contents );
 
 			if ( FT_New_Memory_Face( ft, contents, ttf.length, 0, &face ) ) {
-				Console::Print( "WARNING: Could not register font \"%s\"\n", file.c_str() );
+				console.Print( "WARNING: Could not register font \"%s\"\n", file.c_str() );
 				delete[] contents;
 				return;
 			}
@@ -67,23 +68,19 @@ namespace XS {
 			byte *atlas = new byte[numChars * size * size];
 			std::memset( atlas, 0, numChars * size * size );
 
-			fontData_t fontData[numChars], *currentFD = fontData;
-			std::memset( fontData, 0, sizeof(fontData) );
-
 			// load the printable characters
-			for ( char c = 0x20;
-				c < numChars;
-				c++, currentFD++ )
-			{
+			for ( char c = 0x20; c < numChars; c++ ) {
 				uint32_t index = FT_Get_Char_Index( face, c );
 				if ( !index ) {
 					continue;
 				}
 
 				// render the character's glyph
-				FT_Glyph glyph;
 				FT_Load_Glyph( face, index, FT_LOAD_RENDER );
-				FT_Render_Glyph( face->glyph, FT_RENDER_MODE_MONO );
+				if ( FT_Render_Glyph( face->glyph, FT_RENDER_MODE_MONO ) ) {
+					continue;
+				}
+				FT_Glyph glyph;
 				FT_Get_Glyph( face->glyph, &glyph );
 
 				FT_GlyphSlot slot = face->glyph;
@@ -100,8 +97,8 @@ namespace XS {
 						atlas[topleft + (y * rowSize) + x] = bitmap.buffer[y * width + x];
 					}
 				}
-				currentFD->size = vector2( width, height );
-				std::memcpy( &currentFD->metrics, &slot->metrics, sizeof(FT_Glyph_Metrics) );
+				data[c].size = vector2( width, height );
+				std::memcpy( &data[c].metrics, &slot->metrics, sizeof(FT_Glyph_Metrics) );
 
 				FT_Done_Glyph( glyph );
 			}
@@ -109,9 +106,14 @@ namespace XS {
 			FT_Done_Face( face );
 			delete[] contents;
 
-			// save out the glyph positioning data
-			const File fontdat( String::Format( "cache/fonts/%s.fontdat", name.c_str() ).c_str(), FileMode::WRITE_BINARY );
-			fontdat.Write( &fontData, sizeof(fontData) );
+			// save out the glyph atlas with positioning data
+			WritePNG( String::Format( "cache/fonts/%s_%i.png", name.c_str(), size ).c_str(), atlas,
+				size * 16, size * 16, 1 );
+
+			const size_t skip = 0x20u;
+			const File fontdat( String::Format( "cache/fonts/%s_%i.fontdat", name.c_str(), size ).c_str(),
+				FileMode::WRITE_BINARY );
+			fontdat.Write( &data[skip], sizeof(data) - (sizeof(*data) * skip) );
 
 			texture = new Texture( size * 16, size * 16, InternalFormat::R8, atlas );
 			SDL_assert( texture );
@@ -121,12 +123,36 @@ namespace XS {
 			delete[] atlas;
 		}
 
+		void Font::Draw( const vector2 &pos, const std::string &text ) {
+			if ( text.empty() ) {
+				return;
+			}
+
+		#if 0
+			vector2 currentPos = pos;
+			for ( size_t i = 0; i < text.length(); i++ ) {
+				const char c = text[i];
+				const vector4 *v = &glyph[c].dimensions;
+				DrawQuad( currentPos.x + v->z, currentPos.y + v->w, // x, y
+					v->x, v->y, // width, height
+					0.0f, 0.0f, 1.0f, 1.0f, // st coords
+					*font->glyph[c].material );
+				currentPos.x += v->x;
+				if ( c == '\n' ) {
+					currentPos.y += v->y;
+				}
+			}
+		#endif
+			DrawQuad( pos.x, pos.y, size * 16, size * 16, 0.0f, 0.0f, 1.0f, 1.0f, *material );
+		}
+
 		void Font::Init( void ) {
 			if ( FT_Init_FreeType( &ft ) ) {
 				throw( XSError( "Could not initialise freetype library" ) );
 			}
 
-			fonts["menu"] = new font_t( "menu", 48 );
+			fonts["menu"] = new Font( "menu", 24 );
+			fonts["console"] = new Font( "console", 12 );
 
 			static const VertexAttribute attributes[] = {
 				{ 0, "in_Position" },
@@ -149,8 +175,8 @@ namespace XS {
 			delete fontProgram;
 		}
 
-		font_t *Font::Register( const char *name, uint16_t size ) {
-			font_t *font = fonts[name];
+		Font *Font::Register( const char *name, uint16_t size ) {
+			Font *font = fonts[name];
 			if ( font ) {
 				if ( font->size == size ) {
 					return font;
@@ -161,34 +187,9 @@ namespace XS {
 				}
 			}
 
-			font = fonts[name] = new font_t( name, size );
+			font = fonts[name] = new Font( name, size );
 			font->RenderGlyphs();
 			return font;
-		}
-
-		void Font::Draw( const vector2 pos, const std::string &text, const font_t *font ) {
-			SDL_assert( font && "Tried to call Font::Draw with an unregistered font" );
-
-			if ( text.empty() ) {
-				return;
-			}
-
-		#if 0
-			vector2 currentPos = pos;
-			for ( size_t i = 0; i < text.length(); i++ ) {
-				const char c = text[i];
-				const vector4 *v = &font->glyph[c].dimensions;
-				DrawQuad( currentPos.x + v->z, currentPos.y + v->w, // x, y
-					v->x, v->y, // width, height
-					0.0f, 0.0f, 1.0f, 1.0f, // st coords
-					*font->glyph[c].material );
-				currentPos.x += v->x;
-				if ( c == '\n' ) {
-					currentPos.y += v->y;
-				}
-			}
-		#endif
-		//	DrawQuad( pos.x, pos.y, font->size * 16, font->size * 16, 0.0f, 0.0f, 1.0f, 1.0f, *font->material );
 		}
 
 	} // namespace Renderer

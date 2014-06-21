@@ -12,33 +12,34 @@ namespace XS {
 
 	namespace Renderer {
 
-		struct fontData_t {
+		struct FontData {
 			vector2				size;
 			FT_Glyph_Metrics	metrics;
 		};
 
-		struct font_t {
-			font_t() : file( "" ), name(""), size( 24 ) {}
-			font_t( const char *name, uint16_t size );
-			void RenderGlyphs( void );
+		class Font {
+		private:
+			Texture			*texture;
+			Material		*material;
 
+		public:
 			std::string		file;
 			std::string		name;
 			uint16_t		size;
-			Texture			*texture;
-			Material		*material;
-		};
+			FontData		data[256];
 
-		// should not be instantiated
-		class Font {
-		private:
-			Font();
+			// don't allow default instantiation
+			Font() = delete;
+			Font( const Font& ) = delete;
+			Font& operator=( const Font& ) = delete;
 
-		public:
+			Font( const char *name, uint16_t size );
+			void RenderGlyphs( void );
+			void Draw( const vector2 &pos, const std::string &text );
+
 			static void Init( void );
 			static void Shutdown( void );
-			static font_t *Register( const char *name, uint16_t size );
-			static void Draw( const vector2 pos, const std::string &text, const font_t *font );
+			static Font *Register( const char *name, uint16_t size );
 		};
 
 	} // namespace Renderer
