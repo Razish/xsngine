@@ -30,7 +30,7 @@ namespace XS {
 
 			if ( /*Stat( inPath ) &&*/ !_fullpath( outPath, inPath, pathLen ) ) {
 				if ( Common::com_developer->GetBool() ) {
-					Console::Print( "Could not resolve path: \"%s\" (%s)\n", inPath, strerror( errno ) );
+					console.Print( "Could not resolve path: \"%s\" (%s)\n", inPath, strerror( errno ) );
 				}
 				outPath[0] = '\0';
 
