@@ -1,7 +1,6 @@
 #include <SDL2/SDL.h>
 
 #include "XSCommon/XSCommon.h"
-#include "XSCommon/XSCvar.h"
 #include "XSCommon/XSConsole.h"
 #include "XSCommon/XSString.h"
 #include "XSRenderer/XSRenderer.h"
@@ -20,13 +19,13 @@ namespace XS {
 		static SDL_Window *window = nullptr;
 		static SDL_GLContext context;
 
-		static Cvar *r_debug = nullptr;
-		static Cvar *r_multisample = nullptr;
-		static Cvar *r_skipRender = nullptr;
-		static Cvar *r_swapInterval = nullptr;
-		static Cvar *vid_height = nullptr;
-		static Cvar *vid_noBorder = nullptr;
-		static Cvar *vid_width = nullptr;
+		Cvar *r_debug = nullptr;
+		Cvar *r_multisample = nullptr;
+		Cvar *r_skipRender = nullptr;
+		Cvar *r_swapInterval = nullptr;
+		Cvar *vid_height = nullptr;
+		Cvar *vid_noBorder = nullptr;
+		Cvar *vid_width = nullptr;
 
 		std::vector<View *> views;
 		static View *currentView = nullptr;
@@ -212,7 +211,6 @@ namespace XS {
 		}
 
 		void Update( void ) {
-
 			glClearColor( 0.5f, 0.125f, 0.125f, 1.0f );
 			glClear( GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT );
 

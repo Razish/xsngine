@@ -14,6 +14,13 @@ namespace XS {
 			const Material *material;
 		};
 
+		struct rcScreenshot_t {
+			int width, height;
+			GLuint pbo;
+			GLsync sync;
+			const char *name;
+		};
+
 		struct RenderCommand {
 		public:
 			static void Init();
@@ -22,10 +29,12 @@ namespace XS {
 		public:
 			enum RenderCommandType {
 				DRAWQUAD = 0,
+				SCREENSHOT,
 				NUM_RCMDS
 			};
 			union {
 				rcDrawQuad_t drawQuad;
+				rcScreenshot_t screenshot;
 			};
 
 			RenderCommand( RenderCommandType type ) : type( type ) {}

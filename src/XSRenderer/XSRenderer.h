@@ -2,9 +2,19 @@
 
 #include <GL/glew.h>
 
+#include "XSCommon/XSCvar.h"
+
 namespace XS {
 
 	namespace Renderer {
+
+		extern Cvar *r_debug;
+		extern Cvar *r_multisample;
+		extern Cvar *r_skipRender;
+		extern Cvar *r_swapInterval;
+		extern Cvar *vid_height;
+		extern Cvar *vid_noBorder;
+		extern Cvar *vid_width;
 
 		struct Material;
 		struct View;

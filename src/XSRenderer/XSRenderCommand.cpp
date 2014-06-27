@@ -1,8 +1,11 @@
+#include <SDL2/SDL.h>
+
 #include "XSCommon/XSCommon.h"
 #include "XSCommon/XSVector.h"
 #include "XSRenderer/XSRenderer.h"
 #include "XSRenderer/XSRenderCommand.h"
 #include "XSRenderer/XSMaterial.h"
+#include "XSRenderer/XSImagePNG.h"
 
 namespace XS {
 
@@ -94,10 +97,31 @@ namespace XS {
 			glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0 );
 		}
 
+		static void Screenshot( const rcScreenshot_t *ss ) {
+			GLint signalled;
+			glGetSynciv( ss->sync, GL_SYNC_STATUS, 1, NULL, &signalled );
+
+			//TODO: remove this when we wait until next frame
+			while ( signalled != GL_SIGNALED ) {
+				SDL_Delay( 1 );
+			}
+
+			if ( signalled == GL_SIGNALED ) {
+				glDeleteSync( ss->sync );
+				glBindBuffer( GL_PIXEL_PACK_BUFFER, ss->pbo );
+				void *data = glMapBuffer( GL_PIXEL_PACK_BUFFER, GL_READ_ONLY );
+					WritePNG( ss->name, (uint8_t*)data, ss->width, ss->height, 4 );
+				glUnmapBuffer( GL_PIXEL_PACK_BUFFER );
+			}
+		}
+
 		void RenderCommand::Execute( void ) const {
 			switch( type ) {
 			case DRAWQUAD:
 				DrawQuad( &drawQuad );
+				break;
+			case SCREENSHOT:
+				Screenshot( &screenshot );
 				break;
 			default:
 				break;
