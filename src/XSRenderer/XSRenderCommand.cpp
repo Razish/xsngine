@@ -99,11 +99,12 @@ namespace XS {
 
 		static void Screenshot( const rcScreenshot_t *ss ) {
 			GLint signalled;
-			glGetSynciv( ss->sync, GL_SYNC_STATUS, 1, NULL, &signalled );
 
+			glGetSynciv( ss->sync, GL_SYNC_STATUS, 1, NULL, &signalled );
 			//TODO: remove this when we wait until next frame
 			while ( signalled != GL_SIGNALED ) {
 				SDL_Delay( 1 );
+				glGetSynciv( ss->sync, GL_SYNC_STATUS, 1, NULL, &signalled );
 			}
 
 			if ( signalled == GL_SIGNALED ) {
