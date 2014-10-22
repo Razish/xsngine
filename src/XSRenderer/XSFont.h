@@ -13,8 +13,10 @@ namespace XS {
 	namespace Renderer {
 
 		struct FontData {
-			vector2				size;
-			FT_Glyph_Metrics	metrics;
+			vector2		size;
+			vector2		s, t;
+			vector2		offset;
+			float		advance;
 		};
 
 		class Font {
@@ -27,6 +29,9 @@ namespace XS {
 			std::string		name;
 			uint16_t		size;
 			FontData		data[256];
+
+			// metrics
+			float			lineHeight;
 
 			// don't allow default instantiation
 			Font() = delete;

@@ -105,12 +105,20 @@ namespace XS {
 		console.Print( "Listing cvars...\n" );
 
 		std::map<std::string, Cvar*> sorted( cvars.begin(), cvars.end() );
+		std::vector<std::string> keyValues;
 
 		Indent indent( 1 );
+		size_t maxLen = 1u;
 		for ( const auto &cvar : sorted ) {
-			char buf[64];
-			String::FormatBuffer( buf, sizeof(buf), "%s \"%s\"", cvar.first.c_str(), cvar.second->fullString.c_str() );
-			console.Print( "%-48s: %s\n", buf, cvar.second->description.c_str() );
+			keyValues.push_back( String::Format( "%s = \"%s\"", cvar.first.c_str(), cvar.second->fullString.c_str() ) );
+			const size_t len = strlen( keyValues.back().c_str() );
+			if ( len > maxLen ) {
+				maxLen = len;
+			}
+		}
+		int i = 0;
+		for ( const auto &cvar : sorted ) {
+			console.Print( "%-*s: %s\n", maxLen + 1, keyValues[i++].c_str(), cvar.second->description.c_str() );
 		}
 	}
 

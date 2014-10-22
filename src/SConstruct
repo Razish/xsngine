@@ -5,68 +5,102 @@
 # options:
 #	debug		generate debug information
 #	force32		force 32 bit target when on 64 bit machine
-#	analyse		run static analysis
 #
 # example:
 #	scons debug=1 force32=1
 #
+# envvars:
+#	MORE_WARNINGS	enable additional warnings (gcc/clang only)
+#
+
+debug = int( ARGUMENTS.get( 'debug', 0 ) )
+force32 = int( ARGUMENTS.get( 'force32', 0 ) )
+
+def cmp_version( v1, v2 ):
+	def normalise( v ):
+		import re
+		return [int(x) for x in re.sub( r'(\.0+)*$', '', v ).split( '.' )]
+	return cmp( normalise( v1 ), normalise( v2 ) )
 
 import platform
-import os
-import commands
-
 plat = platform.system() # Windows or Linux
 try:
 	bits = int( platform.architecture()[0][:2] ) # 32 or 64
-except (ValueError, TypeError):
+except( ValueError, TypeError ):
 	bits = None
 arch = None # platform-specific, set manually
-
-print( 'Configuring build environment...' )
-
-analyse = int( ARGUMENTS.get( 'analyse', 0 ) )
-compiler = ARGUMENTS.get( 'compiler', 'gcc' )
-debug = int( ARGUMENTS.get( 'debug', 0 ) )
-force32 = int( ARGUMENTS.get( 'force32', 0 ) )
 
 # architecture settings, needed for binary names, also passed as a preprocessor definition
 if force32:
 	bits = 32
-
 if bits == 32:
 	if plat == 'Windows':
 		arch = 'x86'
 	elif plat == 'Linux':
-		arch = 'i386'
-	#TODO: Mac
-
+		if platform.machine()[:3] == 'arm':
+			arch = 'arm'
+		else:
+			arch = 'i386'
 elif bits == 64:
 	if plat == 'Windows':
 		arch = 'x64'
 	elif plat == 'Linux':
 		arch = 'x86_64'
-	#TODO: Mac
 
-# Notify the user of the build configuration
-print( 'Building for ' + plat + ' (' + str(bits) + ' bits, treated as \'' + arch + '\')' )
-if debug:
-	print( 'With debugging symbols' )
-if not debug or debug == 2:
-	print( 'Optimisation enabled' )
-if force32:
-	print( 'Forcing 32 bit compile' )
-if analyse:
-	print( 'WARNING: Running static analysis mode. Will not produce binaries' )
-print( '' )
+# fatal error if the cpu architecture can't be detected
+if arch is None:
+	raise Exception( 'could not determine architecture' )
+if bits is None:
+	raise Exception( 'could not determine architecture width' )
 
-env = Environment()
+# create the build environment
+import os
+env = Environment( TARGET_ARCH = arch )
+env['CC'] = os.getenv( 'CC' ) or env[ 'CC' ]
+env['CXX'] = os.getenv( 'CXX' ) or env[ 'CXX' ]
+env['ENV'].update( x for x in os.environ.items() if x[0].startswith( 'CCC_' ) )
 if plat != 'Windows':
 	env['ENV']['TERM'] = os.environ['TERM']
+
+# prettify the compiler output
+import sys
+def cc_output( s, target, src, env ):
+	if len( src ) > 1:
+		sys.stdout.write( '  --> %s\n' % (''.join([str(x) for x in target])) )
+	else:
+		sys.stdout.write( '  compiling %s\n' % (''.join([str(x) for x in src])) )
+env['PRINT_CMD_LINE_FUNC'] = cc_output
+
+# obtain the compiler version
+import commands
+if plat == 'Windows':
+	ccversion = env['MSVS_VERSION']
+else:
+	status, ccrawversion = commands.getstatusoutput( env['CC'] + ' -dumpversion' )
+	ccversion = None if status else ccrawversion
+
+# git revision
+status, rawrevision = commands.getstatusoutput( 'git rev-parse HEAD' )
+revision = None if status else rawrevision
+
+# notify the user of the build configuration
+if not env.GetOption( 'clean' ):
+	msg = 'Building for ' + plat + ' ' + str(bits) + ' bits (' + env['CC'] + ' ' + ccversion + ', python ' + platform.python_version() + ')'
+	if debug:
+		msg += ', debug symbols'
+	if debug == 0 or debug == 2:
+		msg += ', optimised'
+	msg += ', x87 fpu' if 'NO_SSE' in os.environ else ', SSE'
+	if force32:
+		msg += ', forcing 32 bit build'
+	if revision:
+		msg += '\ngit revision: ' + revision
+	print( msg )
 
 files = [ 'XSClient/XSClient.cpp', 'XSClient/XSInput.cpp', 'XSClient/XSInputField.cpp', 'XSClient/XSKeys.cpp',
 	'XSCommon/XSColours.cpp', 'XSCommon/XSCommand.cpp', 'XSCommon/XSCommon.cpp', 'XSCommon/XSConsole.cpp',
 	'XSCommon/XSCvar.cpp', 'XSCommon/XSEvent.cpp', 'XSCommon/XSFile.cpp', 'XSCommon/XSLogger.cpp',
-	'XSCommon/XSMessageBuffer.h', 'XSCommon/XSString.cpp', 'XSCommon/XSTimer.cpp', 'XSCommon/XSVector.cpp',
+	'XSCommon/XSMessageBuffer.cpp', 'XSCommon/XSString.cpp', 'XSCommon/XSTimer.cpp', 'XSCommon/XSVector.cpp',
 	'GLEW/glew.c', 'XSRenderer/XSBackend.cpp', 'XSRenderer/XSFont.cpp', 'XSRenderer/XSFramebuffer.cpp',
 	'XSRenderer/XSImagePNG.cpp', 'XSRenderer/XSInternalFormat.cpp', 'XSRenderer/XSMaterial.cpp',
 	'XSRenderer/XSRenderCommand.cpp', 'XSRenderer/XSRenderer.cpp', 'XSRenderer/XSShaderProgram.cpp',
@@ -89,56 +123,67 @@ elif plat == 'Windows':
 # compiler options
 env['CPPPATH'] = [ '.', './freetype/', './GLEW/', './libpng/', './zlib/' ]
 
-# tool-specific flags
+# compiler switches
 if plat == 'Linux':
-	env['CC'] = compiler
-	env['CFLAGS'] = [ '-Wdeclaration-after-statement',
-		'-Wnested-externs',
-		'-Wold-style-definition',
-		'-Wstrict-prototypes' ]
-	env['CXXFLAGS'] = [ '-std=c++11' ]
-	env['CPPDEFINES'] = [ '' ]
-	env['CCFLAGS'] = [ '-msse3',
-		'-Wall', '-Wextra',
-		'-Wno-char-subscripts',
-		'-Wno-missing-braces',
-		'-Wno-missing-field-initializers',
-		'-Wno-sign-compare',
-		'-Wno-unused-parameter',
-	#	'-Waggregate-return',
-	#	'-Wbad-function-cast',
-	#	'-Wcast-qual',
-	#	'-Wdouble-promotion',
-	#	'-Wfloat-equal',
-		'-Winit-self',
-		'-Winline',
-	#	'-Wlong-long',
-		'-Wmissing-include-dirs',
-		'-Woverlength-strings',
-		'-Wpointer-arith',
-		'-Wredundant-decls',
-	#	'-Wshadow',
-	#	'-Wsign-conversion',
-	#	'-Wsuggest-attribute=const',
-	#	'-Wswitch-default',
-		'-Wundef',
-		'-Wuninitialized',
-		'-Wunreachable-code',
-	#	'-Wunsuffixed-float-constants',
-		'-Wwrite-strings',
-		]
-	if compiler != 'clang':
-		env['CCFLAGS'] += [
-			'-Wlogical-op',
-			'-Wstack-usage=32768'
-			]
-	if analyse:
-		env['CC'] = 'clang'
-		env['CXX'] = 'clang++'
-		env['CCFLAGS'] += [ '--analyze' ]
-	if force32:
-		env['CCFLAGS'] += [ '-m32' ]
-		env['LINKFLAGS'] += [ '-m32' ]
+	env['CPPDEFINES'] = []
+	env['CFLAGS'] = []
+	env['CCFLAGS'] = []
+	env['CXXFLAGS'] = []
+
+	# set job/thread count
+	status, res = commands.getstatusoutput( 'cat /proc/cpuinfo | grep processor | wc -l' )
+	env.SetOption( 'num_jobs', res if status == 0 else 1 )
+
+	# c warnings
+	env['CFLAGS'] += [ '-Wdeclaration-after-statement', '-Wnested-externs', '-Wold-style-definition',
+	'-Wstrict-prototypes', ]
+
+	# c/cpp warnings
+	env['CCFLAGS'] += [ '-Wall', '-Wextra', '-Wno-missing-braces', '-Wno-missing-field-initializers',
+	'-Wno-sign-compare', '-Wno-unused-parameter', '-Winit-self', '-Winline', '-Wmissing-include-dirs',
+	'-Woverlength-strings', '-Wpointer-arith', '-Wredundant-decls', '-Wundef', '-Wuninitialized', '-Wwrite-strings' ]
+
+	# strict c/cpp warnings
+	if 'MORE_WARNINGS' in os.environ:
+		env['CCFLAGS'] += [ '-Waggregate-return', '-Wbad-function-cast', '-Wcast-qual', '-Wdouble-promotion',
+		'-Wfloat-equal', '-Wlong-long', '-Wshadow', '-Wsign-conversion', '-Wsuggest-attribute=const',
+		'-Wswitch-default', '-Wunreachable-code', '-Wunsuffixed-float-constants' ]
+
+	# gcc-specific warnings
+	if env['CC'] == 'gcc' and arch != 'arm':
+		env['CCFLAGS'] += [ '-Wlogical-op' ]
+
+		# requires gcc 4.7 or above
+		if cmp_version( ccversion, '4.7' ) >= 0:
+			env['CCFLAGS'] += [ '-Wstack-usage=32768' ]
+
+	# disable warnings
+	env['CCFLAGS'] += [ '-Wno-char-subscripts' ]
+
+	# c/cpp flags
+	if arch == 'arm':
+		env['CCFLAGS'] += [ '-fsigned-char' ]
+	else:
+		env['CCFLAGS'] += [ '-mstackrealign' ]
+		if 'NO_SSE' in os.environ:
+			env['CCFLAGS'] += [ '-mfpmath=387', '-mno-sse2', '-ffloat-store' ]
+			if env['CC'] == 'gcc':
+				env['CCFLAGS'] += [ '-fexcess-precision=standard' ]
+		else:
+			env['CCFLAGS'] += [ '-mfpmath=sse', '-msse2' ]
+		if arch == 'i386':
+			env['CCFLAGS'] += [ '-m32', '-march=i686' ]
+			env['LINKFLAGS'] += [ '-m32' ]
+		elif arch == 'x86_64':
+			env['CCFLAGS'] += [ '-mtune=generic' ]
+	env['CCFLAGS'] += [ '-fvisibility=hidden', '-fomit-frame-pointer' ]
+
+	# c flags
+	env['CFLAGS'] += [ '-std=gnu99' ]
+
+	# c++ flags
+	env['CXXFLAGS'] += [ '-fvisibility-inlines-hidden', '-std=c++11' ]
+
 elif plat == 'Windows':
 	# assume msvc
 	env['CFLAGS'] = [ '/TC' ]
@@ -153,35 +198,47 @@ elif plat == 'Windows':
 		env['CPPDEFINES'] += [ '_M_AMD64=100', '_M_X64=100', '_WIN64' ]
 
 # debug / release
-if not debug or debug == 2:
+if debug == 0 or debug == 2:
 	if plat == 'Linux':
 		env['CCFLAGS'] += [ '-O3' ]
+		if debug == 0:
+			env['LINKFLAGS'] += [ '-s' ]
 	elif plat == 'Windows':
 		env['CCFLAGS'] += [ '/GL', '/Gm-', '/MD', '/O2', '/Oi' ]
 		if bits == 64:
 			env['CCFLAGS'] += [ '/Oy' ]
-	if not debug:
+	if debug == 0:
 		env['CPPDEFINES'] += [ 'NDEBUG' ]
 if debug:
 	if plat == 'Linux':
 		env['CCFLAGS'] += [ '-g3' ]
 	elif plat == 'Windows':
+		env['CPPDEFINES'] += [ '__MSVC_RUNTIME_CHECKS' ]
 		env['CCFLAGS'] += [ '/Gm', '/FD', '/MDd', '/Od', '/RTC1', '/RTCs', '/RTCu' ]
 		if bits == 32:
 			env['CCFLAGS'] += [ '/FC', '/ZI' ]
-	env['CPPDEFINES'] += [ '_DEBUG', '__MSVC_RUNTIME_CHECKS' ]
+	env['CPPDEFINES'] += [ '_DEBUG' ]
 
-env['CPPDEFINES'] += [ 'GLEW_STATIC' ]
+env['CPPDEFINES'] += [ 'GLEW_STATIC', 'SCONS_BUILD' ]
 
-# get git revision
-status, rev = commands.getstatusoutput( 'git rev-parse HEAD' )
-if status == 0:
-	env['CPPDEFINES'] += [ 'REVISION=\\"'+rev+'\\"' ]
+if revision:
+	env['CPPDEFINES'] += [ 'REVISION=\\"' + revision + '\\"' ]
 
 # arch width
 env['CPPDEFINES'] += [ 'ARCH_WIDTH='+str(bits), 'ARCH_STRING=\\"'+arch+'\\"' ]
 
+# set up the build directory
+if debug == 1:
+	configuration = 'debug'
+elif debug == 2:
+	configuration = 'optimised-debug'
+else:
+	configuration = 'release'
+build_dir = 'build' + '/' + configuration + '/' + env['CC'] + '/' + str(bits) + '/'
+env.VariantDir( build_dir, '.', duplicate = 0 )
+files = [build_dir + f for f in files]
+
 # targets
 env['LIBS'] = libs
 env['LIBPREFIX'] = ''
-env.Program( 'xsn'+'.'+arch+env['PROGSUFFIX'], files )
+env.Program( 'xsn' + '.' + arch + env['PROGSUFFIX'], files )

@@ -1,7 +1,7 @@
-what does do about sound backend?? THIS IS BROKEN
-networking raknet library? or roll our own?
-video - bother at all?
-scripting - necessary? just use native code
+what does do about sound backend?? THIS IS BROKEN - openalsoft, sdl2
+networking: sctp? tcp auth + udp game? raknet? zeromq?
+video - bother at all? theora+vorbis
+scripting - necessary? just use native code. if anything, JIT
 
 MAIN LOOP
 	input poll

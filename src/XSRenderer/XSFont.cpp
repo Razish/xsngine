@@ -4,6 +4,7 @@
 #include "XSCommon/XSString.h"
 #include "XSCommon/XSFile.h"
 #include "XSCommon/XSConsole.h"
+#include "XSCommon/XSGlobals.h"
 #include "XSRenderer/XSRenderer.h"
 #include "XSRenderer/XSFont.h"
 #include "XSRenderer/XSShaderProgram.h"
@@ -65,19 +66,27 @@ namespace XS {
 			}
 
 			const size_t numChars = 256u;
-			byte *atlas = new byte[numChars * size * size];
-			std::memset( atlas, 0, numChars * size * size );
+			const size_t skip = 0x20u;
+			const size_t atlasSize = numChars * size * size;
+			byte *atlas = new byte[atlasSize];
+			std::memset( atlas, 0, atlasSize );
+
+			if ( Common::com_developer->GetBool() ) {
+				console.Print( "Generating font atlas for '%s' (%ix%i)\n", name.c_str(), size * 16, size * 16 );
+			}
+
+			lineHeight = (float)face->size->metrics.height / 64.0f;
 
 			// load the printable characters
-			for ( char c = 0x20; c < numChars; c++ ) {
+			for ( char c = skip; c < numChars; c++ ) {
 				uint32_t index = FT_Get_Char_Index( face, c );
 				if ( !index ) {
 					continue;
 				}
 
 				// render the character's glyph
-				FT_Load_Glyph( face, index, FT_LOAD_RENDER );
-				if ( FT_Render_Glyph( face->glyph, FT_RENDER_MODE_MONO ) ) {
+				FT_Load_Glyph( face, index, FT_LOAD_RENDER | FT_LOAD_FORCE_AUTOHINT );
+				if ( FT_Render_Glyph( face->glyph, FT_RENDER_MODE_NORMAL ) ) {
 					continue;
 				}
 				FT_Glyph glyph;
@@ -88,29 +97,53 @@ namespace XS {
 				const int width = bitmap.width;
 				const int height = bitmap.rows;
 
+				if ( !width || !height ) {
+					FT_Done_Glyph( glyph );
+					continue;
+				}
+
 				// generate an RGBA texture from the 8bpp glyph
-				// atlas will be 16 chars by 16 chars
+				// atlas will be 16 chars by 16 chars, where chars are WxH but spaced by size*size
+				const int col = c % 16, row = c / 16;
 				const size_t rowSize = size * 16;
-				const size_t topleft = ((c / 16) * size) * rowSize + (c % 16) * size;
+				const size_t x = col * size; // horizontal position
+				const size_t y = row * size * rowSize; // vertical position
+
+				const size_t topLeft = y + x; // row + column
+			//	const size_t topRight = y + x + size; // (row + column) + charWidth
+			//	const size_t bottomLeft = y + x + (size * rowSize);
+			//	const size_t bottomRight = y + x + (size * rowSize) + size;
+
 				for ( size_t y = 0; y < height; y++ ) {
 					for ( size_t x = 0; x < width; x++ ) {
-						atlas[topleft + (y * rowSize) + x] = bitmap.buffer[y * width + x];
+						atlas[topLeft + (y * rowSize) + x] = bitmap.buffer[y * width + x];
 					}
 				}
-				data[c].size = vector2( width, height );
-				std::memcpy( &data[c].metrics, &slot->metrics, sizeof(FT_Glyph_Metrics) );
 
+				// calculate glyph metrics
+				//FT_BitmapGlyph bitmapGlyph = (FT_BitmapGlyph)glyph;
+				FontData &fd = data[c];
+				fd.size = vector2( width, height );
+				const float colPos = (float)(col) / 16.0f, rowPos = (float)(row) / 16.0f;
+				fd.s = vector2( colPos, colPos + ((float)width / 256.0f) );
+				fd.t = vector2( rowPos, rowPos + ((float)height / 256.0f) );
+				fd.advance = (float)slot->advance.x / 64.0f;
+				fd.offset.x = (float)slot->metrics.horiBearingX / 64.0f;
+				fd.offset.y = lineHeight + -((float)slot->metrics.horiBearingY / 64.0f);
+
+			//	WritePNG( String::Format( "cache/fonts/%s_%i_%c.png", name.c_str(), size, c ).c_str(), bitmap.buffer,
+			//		width, height, 1 );
 				FT_Done_Glyph( glyph );
 			}
 
 			FT_Done_Face( face );
 			delete[] contents;
 
-			// save out the glyph atlas with positioning data
-			WritePNG( String::Format( "cache/fonts/%s_%i.png", name.c_str(), size ).c_str(), atlas,
-				size * 16, size * 16, 1 );
+			// save out the font atlas
+			WritePNG( String::Format( "cache/fonts/%s_%i.png", name.c_str(), size ).c_str(), atlas, size * 16,
+				size * 16, 1 );
 
-			const size_t skip = 0x20u;
+			// and now the glyph metrics
 			const File fontdat( String::Format( "cache/fonts/%s_%i.fontdat", name.c_str(), size ).c_str(),
 				FileMode::WRITE_BINARY );
 			fontdat.Write( &data[skip], sizeof(data) - (sizeof(*data) * skip) );
@@ -128,22 +161,23 @@ namespace XS {
 				return;
 			}
 
-		#if 0
 			vector2 currentPos = pos;
 			for ( size_t i = 0; i < text.length(); i++ ) {
 				const char c = text[i];
-				const vector4 *v = &glyph[c].dimensions;
-				DrawQuad( currentPos.x + v->z, currentPos.y + v->w, // x, y
-					v->x, v->y, // width, height
-					0.0f, 0.0f, 1.0f, 1.0f, // st coords
-					*font->glyph[c].material );
-				currentPos.x += v->x;
+				const FontData &fd = data[c];
+				DrawQuad( currentPos.x + fd.offset.x, currentPos.y + fd.offset.y, // x, y
+					fd.size.x, fd.size.y, // width, height
+					fd.s.x, fd.t.x, fd.s.y, fd.t.y, // st coords
+					*material );
+				currentPos.x += fd.advance;
 				if ( c == '\n' ) {
-					currentPos.y += v->y;
+					currentPos.x = pos.x;
+					currentPos.y += lineHeight;
+				}
+				else if ( c == ' ' ) {
+					currentPos.x += data['W'].advance;
 				}
 			}
-		#endif
-			DrawQuad( pos.x, pos.y, size * 16, size * 16, 0.0f, 0.0f, 1.0f, 1.0f, *material );
 		}
 
 		void Font::Init( void ) {
@@ -187,6 +221,9 @@ namespace XS {
 				}
 			}
 
+			if ( Common::com_developer->GetBool() ) {
+				console.Print( "Generating new font '%s' at size %i\n", name, size );
+			}
 			font = fonts[name] = new Font( name, size );
 			font->RenderGlyphs();
 			return font;

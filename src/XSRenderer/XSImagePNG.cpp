@@ -226,7 +226,7 @@ namespace XS {
 
 			png_set_IHDR( png, info, w, h, 8/*depth*/, colourType, PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_BASE,
 				PNG_FILTER_TYPE_BASE );
-			png_colorp palette;
+			png_colorp palette = NULL;
 			if ( numChannels != 1 ) {
 				palette = (png_colorp)png_malloc( png, PNG_MAX_PALETTE_LENGTH * sizeof(png_color) );
 				if ( !palette ) {
@@ -246,7 +246,7 @@ namespace XS {
 
 			png_write_image( png, rows );
 			png_write_end( png, info );
-			if ( numChannels != 1 ) {
+			if ( palette ) {
 				png_free( png, palette );
 			}
 			png_destroy_write_struct( &png, &info );

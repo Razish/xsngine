@@ -28,7 +28,7 @@ namespace XS {
 
 		static void RegisterCvars( void ) {
 			Cvar::Create( "com_date", __DATE__, "Compilation date", CVAR_READONLY );
-			com_dedicated = Cvar::Create( "com_dedicated", "0", "Running a dedicated server", CVAR_INIT );
+			com_dedicated = Cvar::Create( "com_dedicated", "0", "True if running a dedicated server", CVAR_INIT );
 		#ifdef _DEBUG
 			com_developer = Cvar::Create( "com_developer", "1", "Developer mode", CVAR_NONE );
 		#else

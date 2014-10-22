@@ -6,9 +6,9 @@ ARGSLEN=${#ARGS[@]}
 
 # options
 DEBUG=0
-ANALYSE=0
 FORCE32=0
-COMPILER='gcc'
+
+build='scons -Q'
 
 for (( i=0; i<${ARGSLEN}; i++ ));
 do
@@ -19,11 +19,8 @@ do
 	"fastdebug")
 		DEBUG=2
 		;;
-	"clang")
-		COMPILER='clang'
-		;;
 	"analyse")
-		ANALYSE=1
+		build='scan-build scons -Q'
 		;;
 	"force32")
 		FORCE32=1
@@ -33,4 +30,4 @@ do
 	esac
 done
 
-scons debug=$DEBUG compiler=$COMPILER analyse=$ANALYSE force32=$FORCE32 >/dev/null
+$build debug=$DEBUG force32=$FORCE32

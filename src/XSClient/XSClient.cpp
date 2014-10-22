@@ -150,7 +150,7 @@ namespace XS {
 				avg += samples[i];
 			}
 			avg /= 16.0;
-			font->Draw( pos, String::Format( "FPS:%.5f", 1000.0 / avg ) );
+			font->Draw( pos, String::Format( "FPS:%.5f\nTesting second line.", 1000.0 / avg ) );
 		}
 
 		static void DrawConsole( void ) {
@@ -162,13 +162,14 @@ namespace XS {
 
 			static Renderer::Font *font = nullptr;
 			if ( !font ) {
-				font = Renderer::Font::Register( "console", 12 );
+				font = Renderer::Font::Register( "console", con_fontSize->GetInt() );
 			}
 
 			std::vector<std::string> lines = console.buffer->GetLines( lineCount );
-			const vector2 pos( 0.0f, 0.0f );
+			vector2 pos( 0.0f, 0.0f );
 			for ( const auto &it : lines ) {
 				font->Draw( pos, it );
+				pos.y += font->lineHeight;
 			}
 		}
 

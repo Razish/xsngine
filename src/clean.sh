@@ -7,6 +7,7 @@ ARGSLEN=${#ARGS[@]}
 # options
 DEBUG=0
 FORCE32=0
+clean='scons -Q'
 
 for (( i=0; i<${ARGSLEN}; i++ ));
 do
@@ -25,4 +26,7 @@ do
 	esac
 done
 
-scons debug=$DEBUG force32=$FORCE32 -c >/dev/null
+$clean debug=$DEBUG force32=$FORCE32 -c
+
+# remove any lingering object files
+#find . -type f -name "*.o" -delete
