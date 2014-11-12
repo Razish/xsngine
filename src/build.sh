@@ -7,7 +7,6 @@ ARGSLEN=${#ARGS[@]}
 # options
 DEBUG=0
 FORCE32=0
-
 build='scons -Q'
 
 for (( i=0; i<${ARGSLEN}; i++ ));

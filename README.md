@@ -22,10 +22,17 @@ All code must be compatible with the MIT licence (see LICENSE)
 ## Windows ##
 
 There is a pre-built solution for Visual Studio 2010 capable of producing x86 and x64 builds with Debug and Release configurations
+You can also use scons, if you have Python 2.7 installed. I recommend using msys/git bash
+```bash
+$ cd src
+$ python.exe /c/Python27/scripts/scons.py -Q
+```
 
 ## Linux ##
 
-Linux is currently using a scons solution capable of producing i386 and x86_64 builds with Debug and Release configurations
+Linux is currently using a scons solution capable of producing i386 and x86_64 builds with Debug and Release configurations.
+There is also a Code::Blocks project which invokes scons.
+
 You will require libfreetype6-dev and libpng16-dev (which is not available in the main repositories as of 14.10)
 Beware a dependency issue for libfreetype6-dev, which requires libpng12, you must install libpng16-dev from [dimensio/libpng16-deb](https://github.com/dimensio/libpng16-deb)
 
@@ -39,7 +46,7 @@ $ dpkg -i ./*.deb
 
 ```bash
 $ cd src
-$ scons
+$ scons -Q
 $ ./xsn.x86_64 +set com_path ../bin
 ```
 

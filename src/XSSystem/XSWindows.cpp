@@ -1,3 +1,5 @@
+#ifdef _WIN32
+
 #include <Windows.h> // curse you, monolithic headers!
 #include <sys/stat.h>
 #include <direct.h>
@@ -53,3 +55,5 @@ namespace XS {
 	} // namespace OS
 
 } // namespace XS
+
+#endif

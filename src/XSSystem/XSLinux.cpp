@@ -1,3 +1,5 @@
+#ifdef __linux__
+
 #include <sys/stat.h>
 #include <unistd.h>
 
@@ -66,3 +68,5 @@ namespace XS {
 	} // namespace OS
 
 } // namespace XS
+
+#endif

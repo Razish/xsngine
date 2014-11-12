@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="xsngine" />
+		<Option makefile="SConstruct" />
+		<Option makefile_is_custom="1" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<MakeCommands>
+			<Build command="" />
+			<CompileFile command="" />
+			<Clean command="" />
+			<DistClean command="" />
+			<AskRebuildNeeded command="" />
+			<SilentBuild command="" />
+		</MakeCommands>
+		<Build>
+			<Target title="Debug">
+				<Option output="debug.sh" prefix_auto="0" extension_auto="0" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<MakeCommands>
+					<Build command="scons -Q -f $makefile debug=1" />
+					<CompileFile command="scons -Q -f $makefile debug=1 $file" />
+					<Clean command="scons -Q -f $makefile debug=1 -c" />
+					<DistClean command="$make -f $makefile distclean$target" />
+					<AskRebuildNeeded command="scons -Q -f $makefile debug=1 -q" />
+					<SilentBuild command="scons -Q -f $makefile debug=1 -s" />
+				</MakeCommands>
+			</Target>
+			<Target title="Release">
+				<Option output="debug.sh" prefix_auto="0" extension_auto="0" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<MakeCommands>
+					<Build command="scons -Q -f $makefile debug=0" />
+					<CompileFile command="scons -Q -f $makefile debug=0 $file" />
+					<Clean command="scons -Q -f $makefile debug=0 -c" />
+					<DistClean command="$make -f $makefile distclean$target" />
+					<AskRebuildNeeded command="scons -Q -f $makefile debug=0 -q" />
+					<SilentBuild command="scons -Q -f $makefile debug=0 -s" />
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="GLEW/GL/glew.h" />
+		<Unit filename="GLEW/GL/glxew.h" />
+		<Unit filename="GLEW/GL/wglew.h" />
+		<Unit filename="GLEW/glew.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="SConstruct" />
+		<Unit filename="SDL2/SDL.h" />
+		<Unit filename="SDL2/SDL_assert.h" />
+		<Unit filename="SDL2/SDL_atomic.h" />
+		<Unit filename="SDL2/SDL_audio.h" />
+		<Unit filename="SDL2/SDL_bits.h" />
+		<Unit filename="SDL2/SDL_blendmode.h" />
+		<Unit filename="SDL2/SDL_clipboard.h" />
+		<Unit filename="SDL2/SDL_config.h" />
+		<Unit filename="SDL2/SDL_cpuinfo.h" />
+		<Unit filename="SDL2/SDL_endian.h" />
+		<Unit filename="SDL2/SDL_error.h" />
+		<Unit filename="SDL2/SDL_events.h" />
+		<Unit filename="SDL2/SDL_filesystem.h" />
+		<Unit filename="SDL2/SDL_gamecontroller.h" />
+		<Unit filename="SDL2/SDL_gesture.h" />
+		<Unit filename="SDL2/SDL_haptic.h" />
+		<Unit filename="SDL2/SDL_hints.h" />
+		<Unit filename="SDL2/SDL_joystick.h" />
+		<Unit filename="SDL2/SDL_keyboard.h" />
+		<Unit filename="SDL2/SDL_keycode.h" />
+		<Unit filename="SDL2/SDL_loadso.h" />
+		<Unit filename="SDL2/SDL_log.h" />
+		<Unit filename="SDL2/SDL_main.h" />
+		<Unit filename="SDL2/SDL_messagebox.h" />
+		<Unit filename="SDL2/SDL_mouse.h" />
+		<Unit filename="SDL2/SDL_mutex.h" />
+		<Unit filename="SDL2/SDL_name.h" />
+		<Unit filename="SDL2/SDL_opengl.h" />
+		<Unit filename="SDL2/SDL_opengles.h" />
+		<Unit filename="SDL2/SDL_opengles2.h" />
+		<Unit filename="SDL2/SDL_pixels.h" />
+		<Unit filename="SDL2/SDL_platform.h" />
+		<Unit filename="SDL2/SDL_power.h" />
+		<Unit filename="SDL2/SDL_quit.h" />
+		<Unit filename="SDL2/SDL_rect.h" />
+		<Unit filename="SDL2/SDL_render.h" />
+		<Unit filename="SDL2/SDL_revision.h" />
+		<Unit filename="SDL2/SDL_rwops.h" />
+		<Unit filename="SDL2/SDL_scancode.h" />
+		<Unit filename="SDL2/SDL_shape.h" />
+		<Unit filename="SDL2/SDL_stdinc.h" />
+		<Unit filename="SDL2/SDL_surface.h" />
+		<Unit filename="SDL2/SDL_system.h" />
+		<Unit filename="SDL2/SDL_syswm.h" />
+		<Unit filename="SDL2/SDL_test.h" />
+		<Unit filename="SDL2/SDL_test_assert.h" />
+		<Unit filename="SDL2/SDL_test_common.h" />
+		<Unit filename="SDL2/SDL_test_compare.h" />
+		<Unit filename="SDL2/SDL_test_crc32.h" />
+		<Unit filename="SDL2/SDL_test_font.h" />
+		<Unit filename="SDL2/SDL_test_fuzzer.h" />
+		<Unit filename="SDL2/SDL_test_harness.h" />
+		<Unit filename="SDL2/SDL_test_images.h" />
+		<Unit filename="SDL2/SDL_test_log.h" />
+		<Unit filename="SDL2/SDL_test_md5.h" />
+		<Unit filename="SDL2/SDL_test_random.h" />
+		<Unit filename="SDL2/SDL_thread.h" />
+		<Unit filename="SDL2/SDL_timer.h" />
+		<Unit filename="SDL2/SDL_touch.h" />
+		<Unit filename="SDL2/SDL_types.h" />
+		<Unit filename="SDL2/SDL_version.h" />
+		<Unit filename="SDL2/SDL_video.h" />
+		<Unit filename="SDL2/begin_code.h" />
+		<Unit filename="SDL2/close_code.h" />
+		<Unit filename="XSClient/XSClient.cpp" />
+		<Unit filename="XSClient/XSClient.h" />
+		<Unit filename="XSClient/XSInput.cpp" />
+		<Unit filename="XSClient/XSInput.h" />
+		<Unit filename="XSClient/XSInputField.cpp" />
+		<Unit filename="XSClient/XSInputField.h" />
+		<Unit filename="XSClient/XSKeys.cpp" />
+		<Unit filename="XSClient/XSKeys.h" />
+		<Unit filename="XSCommon/XSColours.cpp" />
+		<Unit filename="XSCommon/XSColours.h" />
+		<Unit filename="XSCommon/XSCommand.cpp" />
+		<Unit filename="XSCommon/XSCommand.h" />
+		<Unit filename="XSCommon/XSCommon.cpp" />
+		<Unit filename="XSCommon/XSCommon.h" />
+		<Unit filename="XSCommon/XSConsole.cpp" />
+		<Unit filename="XSCommon/XSConsole.h" />
+		<Unit filename="XSCommon/XSCvar.cpp" />
+		<Unit filename="XSCommon/XSCvar.h" />
+		<Unit filename="XSCommon/XSError.h" />
+		<Unit filename="XSCommon/XSEvent.cpp" />
+		<Unit filename="XSCommon/XSEvent.h" />
+		<Unit filename="XSCommon/XSFile.cpp" />
+		<Unit filename="XSCommon/XSFile.h" />
+		<Unit filename="XSCommon/XSGlobals.h" />
+		<Unit filename="XSCommon/XSLogger.cpp" />
+		<Unit filename="XSCommon/XSLogger.h" />
+		<Unit filename="XSCommon/XSMatrix.cpp" />
+		<Unit filename="XSCommon/XSMatrix.h" />
+		<Unit filename="XSCommon/XSMessageBuffer.cpp" />
+		<Unit filename="XSCommon/XSMessageBuffer.h" />
+		<Unit filename="XSCommon/XSModule.cpp" />
+		<Unit filename="XSCommon/XSModule.h" />
+		<Unit filename="XSCommon/XSNetAddress.cpp" />
+		<Unit filename="XSCommon/XSNetAddress.h" />
+		<Unit filename="XSCommon/XSSocket.cpp" />
+		<Unit filename="XSCommon/XSSocket.h" />
+		<Unit filename="XSCommon/XSString.cpp" />
+		<Unit filename="XSCommon/XSString.h" />
+		<Unit filename="XSCommon/XSTimer.cpp" />
+		<Unit filename="XSCommon/XSTimer.h" />
+		<Unit filename="XSCommon/XSVector.cpp" />
+		<Unit filename="XSCommon/XSVector.h" />
+		<Unit filename="XSRenderer/XSBackend.cpp" />
+		<Unit filename="XSRenderer/XSBackend.h" />
+		<Unit filename="XSRenderer/XSFont.cpp" />
+		<Unit filename="XSRenderer/XSFont.h" />
+		<Unit filename="XSRenderer/XSFramebuffer.cpp" />
+		<Unit filename="XSRenderer/XSFramebuffer.h" />
+		<Unit filename="XSRenderer/XSImagePNG.cpp" />
+		<Unit filename="XSRenderer/XSImagePNG.h" />
+		<Unit filename="XSRenderer/XSInternalFormat.cpp" />
+		<Unit filename="XSRenderer/XSInternalFormat.h" />
+		<Unit filename="XSRenderer/XSMaterial.cpp" />
+		<Unit filename="XSRenderer/XSMaterial.h" />
+		<Unit filename="XSRenderer/XSRenderCommand.cpp" />
+		<Unit filename="XSRenderer/XSRenderCommand.h" />
+		<Unit filename="XSRenderer/XSRenderer.cpp" />
+		<Unit filename="XSRenderer/XSRenderer.h" />
+		<Unit filename="XSRenderer/XSShaderProgram.cpp" />
+		<Unit filename="XSRenderer/XSShaderProgram.h" />
+		<Unit filename="XSRenderer/XSTexture.cpp" />
+		<Unit filename="XSRenderer/XSTexture.h" />
+		<Unit filename="XSRenderer/XSVertexAttributes.h" />
+		<Unit filename="XSRenderer/XSView.cpp" />
+		<Unit filename="XSRenderer/XSView.h" />
+		<Unit filename="XSSystem/XSLinux.cpp" />
+		<Unit filename="XSSystem/XSOS.h" />
+		<Unit filename="XSSystem/XSPlatform.h" />
+		<Unit filename="XSSystem/XSWindows.cpp" />
+		<Unit filename="build.sh" />
+		<Unit filename="clean.sh" />
+		<Unit filename="debug.sh" />
+		<Unit filename="freetype/freetype/config/ftconfig.h" />
+		<Unit filename="freetype/freetype/config/ftheader.h" />
+		<Unit filename="freetype/freetype/config/ftmodule.h" />
+		<Unit filename="freetype/freetype/config/ftoption.h" />
+		<Unit filename="freetype/freetype/config/ftstdlib.h" />
+		<Unit filename="freetype/freetype/freetype.h" />
+		<Unit filename="freetype/freetype/ftadvanc.h" />
+		<Unit filename="freetype/freetype/ftautoh.h" />
+		<Unit filename="freetype/freetype/ftbbox.h" />
+		<Unit filename="freetype/freetype/ftbdf.h" />
+		<Unit filename="freetype/freetype/ftbitmap.h" />
+		<Unit filename="freetype/freetype/ftbzip2.h" />
+		<Unit filename="freetype/freetype/ftcache.h" />
+		<Unit filename="freetype/freetype/ftcffdrv.h" />
+		<Unit filename="freetype/freetype/ftchapters.h" />
+		<Unit filename="freetype/freetype/ftcid.h" />
+		<Unit filename="freetype/freetype/fterrdef.h" />
+		<Unit filename="freetype/freetype/fterrors.h" />
+		<Unit filename="freetype/freetype/ftgasp.h" />
+		<Unit filename="freetype/freetype/ftglyph.h" />
+		<Unit filename="freetype/freetype/ftgxval.h" />
+		<Unit filename="freetype/freetype/ftgzip.h" />
+		<Unit filename="freetype/freetype/ftimage.h" />
+		<Unit filename="freetype/freetype/ftincrem.h" />
+		<Unit filename="freetype/freetype/ftlcdfil.h" />
+		<Unit filename="freetype/freetype/ftlist.h" />
+		<Unit filename="freetype/freetype/ftlzw.h" />
+		<Unit filename="freetype/freetype/ftmac.h" />
+		<Unit filename="freetype/freetype/ftmm.h" />
+		<Unit filename="freetype/freetype/ftmodapi.h" />
+		<Unit filename="freetype/freetype/ftmoderr.h" />
+		<Unit filename="freetype/freetype/ftotval.h" />
+		<Unit filename="freetype/freetype/ftoutln.h" />
+		<Unit filename="freetype/freetype/ftpfr.h" />
+		<Unit filename="freetype/freetype/ftrender.h" />
+		<Unit filename="freetype/freetype/ftsizes.h" />
+		<Unit filename="freetype/freetype/ftsnames.h" />
+		<Unit filename="freetype/freetype/ftstroke.h" />
+		<Unit filename="freetype/freetype/ftsynth.h" />
+		<Unit filename="freetype/freetype/ftsystem.h" />
+		<Unit filename="freetype/freetype/fttrigon.h" />
+		<Unit filename="freetype/freetype/ftttdrv.h" />
+		<Unit filename="freetype/freetype/fttypes.h" />
+		<Unit filename="freetype/freetype/ftwinfnt.h" />
+		<Unit filename="freetype/freetype/ftxf86.h" />
+		<Unit filename="freetype/freetype/t1tables.h" />
+		<Unit filename="freetype/freetype/ttnameid.h" />
+		<Unit filename="freetype/freetype/tttables.h" />
+		<Unit filename="freetype/freetype/tttags.h" />
+		<Unit filename="freetype/freetype/ttunpat.h" />
+		<Unit filename="freetype/ft2build.h" />
+		<Unit filename="libpng/png.h" />
+		<Unit filename="libpng/pngconf.h" />
+		<Unit filename="libpng/pngdebug.h" />
+		<Unit filename="libpng/pnginfo.h" />
+		<Unit filename="libpng/pnglibconf.h" />
+		<Unit filename="libpng/pngpriv.h" />
+		<Unit filename="libpng/pngstruct.h" />
+		<Unit filename="zlib/zlib.h" />
+		<Extensions>
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

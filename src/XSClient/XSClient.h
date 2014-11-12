@@ -1,5 +1,7 @@
 #pragma once
 
+#include <SDL2/SDL_keycode.h>
+
 #include "XSCommon/XSCommand.h"
 
 namespace XS {

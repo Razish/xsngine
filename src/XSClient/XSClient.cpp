@@ -1,12 +1,10 @@
 #include <iostream>
 
-#include <SDL2/SDL_loadso.h>
-#include <SDL2/SDL_keycode.h>
-
 #include "XSCommon/XSCommon.h"
 #include "XSCommon/XSConsole.h"
 #include "XSCommon/XSString.h"
 #include "XSCommon/XSCvar.h"
+#include "XSCommon/XSModule.h"
 #include "XSClient/XSClient.h"
 #include "XSClient/XSInputField.h"
 #include "XSRenderer/XSFont.h"
@@ -16,16 +14,10 @@ namespace XS {
 
 	namespace Client {
 
-//#define BUILD_CLIENT_MODULE
-
 		static uint64_t frameNum = 0u;
 
-	#ifdef BUILD_CLIENT_MODULE
-		typedef const char * (*initFunc_t)(uint32_t);
-		#define MODULE_NAME "client" ARCH_STRING DLL_EXT
-		static const uint32_t MODULE_VERSION = 1u;
-		static void *moduleHandle = nullptr;
-	#endif // BUILD_CLIENT_MODULE
+		static const uint32_t clientVersion = 2u;
+		static Module *clientModule = nullptr;
 
 		static Renderer::View *hudView = nullptr;
 
@@ -73,42 +65,23 @@ namespace XS {
 		}
 
 		void Init( void ) {
-#ifdef BUILD_CLIENT_MODULE
-			// initialise the client library
-			char modulePath[XS_MAX_FILENAME];
-			File::GetFullPath( MODULE_NAME, modulePath, sizeof( modulePath ) );
-			moduleHandle = SDL_LoadObject( modulePath );
-			if ( !moduleHandle ) {
-				throw( XSError( "Could not find client module (" MODULE_NAME ")" ) );
-				return;
-			}
-
-			if ( initFunc_t init = (initFunc_t)SDL_LoadFunction( moduleHandle, "LoadModule" ) ) {
-				const char *msg = init( MODULE_VERSION );
-				if ( msg ) {
-					throw( XSError( msg ) );
-				}
-			}
-			else {
-				throw( XSError( "Could not load client module (" MODULE_NAME ")" ) );
-			}
-#endif // BUILD_CLIENT_MODULE
-
+			// hud
 			const uint32_t width = Cvar::Get( "vid_width" )->GetInt();
 			const uint32_t height= Cvar::Get( "vid_height" )->GetInt();
 			hudView = new Renderer::View( width, height, true );
 
+			// console
 			con_fontSize = Cvar::Create( "con_fontSize", "12", "Size of the console font", CVAR_ARCHIVE );
 			consoleInput = new InputField( ConsoleInputCallback );
 			consoleView = new Renderer::View( width, height, true );
+
+			// client module
+			//clientModule = new Module( "client", clientVersion );
 		}
 
 		void Shutdown( void ) {
-		#ifdef BUILD_CLIENT_MODULE
-			if ( moduleHandle ) {
-				SDL_UnloadObject( moduleHandle );
-			}
-		#endif // BUILD_CLIENT_MODULE
+			delete clientModule;
+			clientModule = nullptr;
 		}
 
 		void NetworkPump( void ) {

@@ -29,4 +29,4 @@ done
 $clean debug=$DEBUG force32=$FORCE32 -c
 
 # remove any lingering object files
-#find . -type f -name "*.o" -delete
+find . -type f -name "*.os" -delete
