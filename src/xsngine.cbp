@@ -156,6 +156,8 @@
 		<Unit filename="XSCommon/XSTimer.h" />
 		<Unit filename="XSCommon/XSVector.cpp" />
 		<Unit filename="XSCommon/XSVector.h" />
+		<Unit filename="XSCrypto/XSMD5.cpp" />
+		<Unit filename="XSCrypto/XSMD5.h" />
 		<Unit filename="XSRenderer/XSBackend.cpp" />
 		<Unit filename="XSRenderer/XSBackend.h" />
 		<Unit filename="XSRenderer/XSFont.cpp" />

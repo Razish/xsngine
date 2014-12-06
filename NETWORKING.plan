@@ -1,3 +1,6 @@
+transparent SOCKSv5 support
+IPv6? not yet, but make it easy to add later
+
 CLIENT FRAME
 	Client creates input command
 		has access to keystates -> create trinary move[3], buttons

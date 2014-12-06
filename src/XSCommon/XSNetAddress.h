@@ -7,7 +7,7 @@ namespace XS {
 		bool resolved;
 		bool valid;
 
-		char hostname[64];
+		char hostname[256];
 		union {
 			struct {
 				union {

@@ -73,3 +73,7 @@ Desktop.ini
 # Code::Blocks
 *.depend
 *.layout
+
+# Codelite
+.codelite
+*.workspace

@@ -79,7 +79,7 @@ namespace XS {
 
 			// load the printable characters
 			for ( char c = skip; c < numChars; c++ ) {
-				uint32_t index = FT_Get_Char_Index( face, c );
+				const uint32_t index = FT_Get_Char_Index( face, c );
 				if ( !index ) {
 					continue;
 				}
@@ -94,21 +94,31 @@ namespace XS {
 
 				FT_GlyphSlot slot = face->glyph;
 				FT_Bitmap& bitmap = slot->bitmap;
-				const int width = bitmap.width;
+				const int width = bitmap.width ? bitmap.width : (float)slot->advance.x / 64.0f;
 				const int height = bitmap.rows;
 
-				if ( !width || !height ) {
-					FT_Done_Glyph( glyph );
-					continue;
-				}
-
-				// generate an RGBA texture from the 8bpp glyph
 				// atlas will be 16 chars by 16 chars, where chars are WxH but spaced by size*size
 				const int col = c % 16, row = c / 16;
 				const size_t rowSize = size * 16;
 				const size_t x = col * size; // horizontal position
 				const size_t y = row * size * rowSize; // vertical position
 
+				// calculate glyph metrics
+				FontData &fd = data[c];
+				fd.size = vector2( width, height );
+				const float colPos = (float)(col) / 16.0f, rowPos = (float)(row) / 16.0f;
+				fd.s = vector2( colPos, colPos + ((float)width / 256.0f) );
+				fd.t = vector2( rowPos, rowPos + ((float)height / 256.0f) );
+				fd.advance = (float)slot->advance.x / 64.0f;
+				fd.offset.x = (float)slot->metrics.horiBearingX / 64.0f;
+				fd.offset.y = lineHeight + -((float)slot->metrics.horiBearingY / 64.0f);
+
+				if ( !bitmap.buffer /*|| !width || !height*/ ) {
+					FT_Done_Glyph( glyph );
+					continue;
+				}
+
+				// generate an RGBA texture from the 8bpp glyph
 				const size_t topLeft = y + x; // row + column
 			//	const size_t topRight = y + x + size; // (row + column) + charWidth
 			//	const size_t bottomLeft = y + x + (size * rowSize);
@@ -119,17 +129,6 @@ namespace XS {
 						atlas[topLeft + (y * rowSize) + x] = bitmap.buffer[y * width + x];
 					}
 				}
-
-				// calculate glyph metrics
-				//FT_BitmapGlyph bitmapGlyph = (FT_BitmapGlyph)glyph;
-				FontData &fd = data[c];
-				fd.size = vector2( width, height );
-				const float colPos = (float)(col) / 16.0f, rowPos = (float)(row) / 16.0f;
-				fd.s = vector2( colPos, colPos + ((float)width / 256.0f) );
-				fd.t = vector2( rowPos, rowPos + ((float)height / 256.0f) );
-				fd.advance = (float)slot->advance.x / 64.0f;
-				fd.offset.x = (float)slot->metrics.horiBearingX / 64.0f;
-				fd.offset.y = lineHeight + -((float)slot->metrics.horiBearingY / 64.0f);
 
 			//	WritePNG( String::Format( "cache/fonts/%s_%i_%c.png", name.c_str(), size, c ).c_str(), bitmap.buffer,
 			//		width, height, 1 );
@@ -173,9 +172,6 @@ namespace XS {
 				if ( c == '\n' ) {
 					currentPos.x = pos.x;
 					currentPos.y += lineHeight;
-				}
-				else if ( c == ' ' ) {
-					currentPos.x += data['W'].advance;
 				}
 			}
 		}

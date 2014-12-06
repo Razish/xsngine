@@ -107,11 +107,11 @@ files = [ 'XSClient/XSClient.cpp', 'XSClient/XSInput.cpp', 'XSClient/XSInputFiel
 	'XSCommon/XSColours.cpp', 'XSCommon/XSCommand.cpp', 'XSCommon/XSCommon.cpp', 'XSCommon/XSConsole.cpp',
 	'XSCommon/XSCvar.cpp', 'XSCommon/XSEvent.cpp', 'XSCommon/XSFile.cpp', 'XSCommon/XSLogger.cpp',
 	'XSCommon/XSMessageBuffer.cpp', 'XSCommon/XSModule.cpp', 'XSCommon/XSNetAddress.cpp', 'XSCommon/XSSocket.cpp',
-	'XSCommon/XSString.cpp', 'XSCommon/XSTimer.cpp', 'XSCommon/XSVector.cpp',
-	'GLEW/glew.c', 'XSRenderer/XSBackend.cpp', 'XSRenderer/XSFont.cpp', 'XSRenderer/XSFramebuffer.cpp',
-	'XSRenderer/XSImagePNG.cpp', 'XSRenderer/XSInternalFormat.cpp', 'XSRenderer/XSMaterial.cpp',
-	'XSRenderer/XSRenderCommand.cpp', 'XSRenderer/XSRenderer.cpp', 'XSRenderer/XSShaderProgram.cpp',
-	'XSRenderer/XSTexture.cpp', 'XSRenderer/XSView.cpp' ]
+	'XSCommon/XSString.cpp', 'XSCommon/XSTimer.cpp', 'XSCommon/XSVector.cpp', 'XSCrypto/XSMD5.cpp', 'GLEW/glew.c',
+	'XSRenderer/XSBackend.cpp', 'XSRenderer/XSFont.cpp', 'XSRenderer/XSFramebuffer.cpp', 'XSRenderer/XSImagePNG.cpp',
+	'XSRenderer/XSInternalFormat.cpp', 'XSRenderer/XSMaterial.cpp', 'XSRenderer/XSRenderCommand.cpp',
+	'XSRenderer/XSRenderer.cpp', 'XSRenderer/XSShaderProgram.cpp', 'XSRenderer/XSTexture.cpp', 'XSRenderer/XSView.cpp'
+]
 if plat == 'Linux':
 	files += [ 'XSSystem/XSLinux.cpp' ]
 elif plat == 'Windows':
