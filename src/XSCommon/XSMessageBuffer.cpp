@@ -26,7 +26,7 @@ namespace XS {
 		return buffer.empty();
 	}
 
-	std::vector<std::string> MessageBuffer::GetLines( unsigned int lineCount ) {
+	std::vector<std::string> MessageBuffer::GetLines( unsigned int lineCount ) const {
 		return std::vector<std::string>( buffer.end() - std::min( buffer.size(), static_cast<size_t>(lineCount) ),
 			buffer.end() );
 	}

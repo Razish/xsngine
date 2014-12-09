@@ -158,14 +158,20 @@
     <File Name="SDL2/close_code.h"/>
   </VirtualDirectory>
   <VirtualDirectory Name="XSClient">
-    <File Name="XSClient/XSInputField.cpp"/>
-    <File Name="XSClient/XSInputField.h"/>
-    <File Name="XSClient/XSKeys.h"/>
     <File Name="XSClient/XSClient.h"/>
     <File Name="XSClient/XSClient.cpp"/>
-    <File Name="XSClient/XSInput.cpp"/>
-    <File Name="XSClient/XSInput.h"/>
-    <File Name="XSClient/XSKeys.cpp"/>
+    <File Name="XSClient/XSClientConsole.cpp"/>
+    <File Name="XSClient/XSClientConsole.h"/>
+    <File Name="XSClient/XSClientGame.cpp"/>
+    <File Name="XSClient/XSClientGame.h"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="XSInput">
+    <File Name="XSInput/XSInputField.cpp"/>
+    <File Name="XSInput/XSInputField.h"/>
+    <File Name="XSInput/XSKeys.h"/>
+    <File Name="XSInput/XSInput.cpp"/>
+    <File Name="XSInput/XSInput.h"/>
+    <File Name="XSInput/XSKeys.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="XSCommon">
     <File Name="XSCommon/XSLogger.h"/>
@@ -231,6 +237,16 @@
     <File Name="XSRenderer/XSImagePNG.cpp"/>
     <File Name="XSRenderer/XSVertexAttributes.h"/>
     <File Name="XSRenderer/XSBackend.h"/>
+    <File Name="XSRenderer/XSScreenshot.cpp"/>
+    <File Name="XSRenderer/XSScreenshot.h"/>
+    <File Name="XSRenderer/XSRenderable.cpp"/>
+    <File Name="XSRenderer/XSRenderable.h"/>
+    <File Name="XSRenderer/XSModel.cpp"/>
+    <File Name="XSRenderer/XSModel.h"/>
+    <File Name="XSRenderer/XSMesh.cpp"/>
+    <File Name="XSRenderer/XSMesh.h"/>
+    <File Name="XSRenderer/XSBuffer.cpp"/>
+    <File Name="XSRenderer/XSBuffer.h"/>
   </VirtualDirectory>
   <VirtualDirectory Name="XSSystem">
     <File Name="XSSystem/XSOS.h"/>

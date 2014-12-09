@@ -1,0 +1,17 @@
+Import( '*' )
+
+# environment
+env.VariantDir( build_dir, '#', duplicate = 0 )
+client_env = env.Clone()
+
+# sources
+files = [
+	'XSClient/XSClientGame.cpp'
+]
+files = [build_dir + f for f in files]
+
+
+
+# targets
+result = client_env.StaticLibrary( build_dir + 'XSClient' + arch, files )
+Return( "result" )

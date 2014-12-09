@@ -1,5 +1,7 @@
 #pragma once
 
+#include "XSRenderer/XSRenderer.h"
+
 namespace XS {
 
 	namespace Renderer {
@@ -26,23 +28,28 @@ namespace XS {
 			static void Init();
 			static void Shutdown();
 
-		public:
-			enum RenderCommandType {
+			enum class Type {
 				DRAWQUAD = 0,
 				SCREENSHOT,
-				NUM_RCMDS
+				NUM_RENDER_CMDS
 			};
 			union {
 				rcDrawQuad_t drawQuad;
 				rcScreenshot_t screenshot;
 			};
 
-			RenderCommand( RenderCommandType type ) : type( type ) {}
+			// don't allow default instantiation
+			RenderCommand() = delete;
+
+			RenderCommand( Type type )
+			: type( type )
+			{
+			}
+
 			void Execute( void ) const;
 
 		private:
-			RenderCommand();
-			RenderCommandType type;
+			Type type;
 		};
 
 	} // namespace Renderer

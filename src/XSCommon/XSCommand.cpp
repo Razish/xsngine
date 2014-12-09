@@ -5,7 +5,7 @@
 #include "XSCommon/XSCvar.h"
 #include "XSCommon/XSConsole.h"
 #include "XSCommon/XSString.h"
-#include "XSClient/XSKeys.h"
+#include "XSInput/XSKeys.h"
 #include "XSClient/XSClient.h"
 
 namespace XS {
@@ -49,9 +49,9 @@ namespace XS {
 
 			size_t size = context->size();
 			std::string value;
-			for ( size_t i=1; i<size; i++ ) {
+			for ( size_t i = 1; i < size; i++ ) {
 				value += (*context)[i];
-				if ( i != size-1 ) {
+				if ( i != size - 1 ) {
 					value += " ";
 				}
 			}
@@ -97,16 +97,13 @@ namespace XS {
 				size_t start = it.find( delim );
 				std::string name = it.substr( 0, start );
 
-				if ( start != std::string::npos && start != it.size()-1 ) {
-					context = String::Split( &it[start+1], ' ' );
+				if ( start != std::string::npos && start != it.size() - 1 ) {
+					context = String::Split( &it[start + 1], ' ' );
 
 					// strip any quotes around the arguments
 					for ( auto &tok : context ) {
 						tok.erase( std::remove( tok.begin(), tok.end(), '"' ), tok.end() );
 					}
-
-				//	if ( !context->size() )
-				//		continue;
 				}
 
 				commandFunc_t &func = commands[name];

@@ -38,12 +38,12 @@ namespace XS {
 			*a += b;
 		}
 
-		#ifdef Q3_LITTLE_ENDIAN
+		#ifdef XS_LITTLE_ENDIAN
 
 		#define SET( n ) (*(uint32_t *)&ptr[(n) * 4])
 		#define GET( n ) SET( n )
 
-		#else // Q3_BIG_ENDIAN
+		#else // XS_LITTLE_ENDIAN
 
 		#define SET( n ) \
 			(ctx->block[(n)] = \
@@ -53,21 +53,17 @@ namespace XS {
 			((uint32_t)ptr[(n) * 4 + 3] << 24))
 		#define GET( n ) \
 			(ctx->block[(n)])
-
 		#endif
 
 		static const void *MD5_Body( MD5Context *ctx, const void *data, unsigned long size ) {
-			const byte *ptr;
-			uint32_t a, b, c, d;
+			const byte *ptr = (const byte *)data;
+
+			uint32_t a = ctx->a;
+			uint32_t b = ctx->b;
+			uint32_t c = ctx->c;
+			uint32_t d = ctx->d;
+
 			uint32_t saved_a, saved_b, saved_c, saved_d;
-
-			ptr = (const byte *)data;
-
-			a = ctx->a;
-			b = ctx->b;
-			c = ctx->c;
-			d = ctx->d;
-
 			do {
 				saved_a = a;
 				saved_b = b;
@@ -166,19 +162,16 @@ namespace XS {
 		}
 
 		static void MD5_Update( MD5Context *ctx, const void *data, unsigned long size ) {
-			uint32_t saved_lo;
-			unsigned long used, available;
-
-			saved_lo = ctx->lo;
+			uint32_t saved_lo = ctx->lo;
 			if ( (ctx->lo = (saved_lo + size) & 0x1fffffff) < saved_lo ) {
 				ctx->hi++;
 			}
 			ctx->hi += size >> 29;
 
-			used = saved_lo & 0x3f;
+			unsigned long used = saved_lo & 0x3f;
 
 			if ( used ) {
-				available = chunkSize - used;
+				unsigned long available = chunkSize - used;
 
 				if ( size < available ) {
 					memcpy( &ctx->buffer[used], data, size );
@@ -200,13 +193,11 @@ namespace XS {
 		}
 
 		static void MD5_Final( MD5Context *ctx, byte *result ) {
-			unsigned long used, available;
-
-			used = ctx->lo & 0x3f;
+			unsigned long used = ctx->lo & 0x3f;
 
 			ctx->buffer[used++] = 0x80;
 
-			available = chunkSize - used;
+			unsigned long available = chunkSize - used;
 
 			if ( available < 8 ) {
 				memset( &ctx->buffer[used], 0, available );
@@ -250,16 +241,15 @@ namespace XS {
 		}
 
 		void ChecksumMD5( const char *in, size_t inLen, char out[16] ) {
-			byte digest[16] = { '\0' };
 			MD5Context md5;
-			int i;
+			byte digest[16] = { '\0' };
 
 			MD5_Init( &md5 );
 			MD5_Update( &md5, (byte *)in, inLen );
 			MD5_Final( &md5, digest );
 
 			out[0] = '\0';
-			for ( i = 0; i < 16; i++ ) {
+			for ( int i = 0; i < 16; i++ ) {
 				String::Concatenate( out, sizeof(out), String::Format( "%02X", digest[i] ).c_str() );
 			}
 		}

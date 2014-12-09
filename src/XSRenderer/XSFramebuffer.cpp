@@ -11,7 +11,7 @@ namespace XS {
 		const Framebuffer *Framebuffer::currentWriteFramebuffer = nullptr;
 
 		void Framebuffer::Init( void ) {
-			// No initialization required
+			// no initialization required
 		}
 
 		void Framebuffer::BindDefault( void ) {
@@ -56,9 +56,9 @@ namespace XS {
 		}
 
 		// instance functions
-		Framebuffer::Framebuffer() {
-			id = 0;
-
+		Framebuffer::Framebuffer()
+		: id( 0 )
+		{
 			glGenFramebuffers( 1, &id );
 
 			if ( !id ) {

@@ -28,8 +28,6 @@ namespace XS {
 	#define XS_MAX_FILENAME (96)
 
 	typedef unsigned char byte; // unsigned 8 bits
-	typedef float number; // signed 32 bits
-	typedef signed int integer; // signed 32 bits
 
 	// 32 bit field aliasing
 	typedef union byteAlias_u {

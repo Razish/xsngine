@@ -1,6 +1,6 @@
 #pragma once
 
-#include <GL/glew.h>
+#include "XSRenderer/XSBuffer.h"
 
 namespace XS {
 
@@ -9,46 +9,15 @@ namespace XS {
 		class ShaderProgram;
 		class Texture;
 
-		enum class BufferType {
-			Vertex,
-			Index,
-			Uniform
-		};
-
-		class Buffer {
-		private:
-			GLuint id;
-			GLenum type;
-			size_t size;
-
-		public:
-			// don't allow default instantiation
-			Buffer() = delete;
-			Buffer( const Buffer& ) = delete;
-			Buffer& operator=( const Buffer& ) = delete;
-
-			Buffer( BufferType type, const void *data, size_t dataSize );
-			~Buffer();
-
-			void *Map( void );
-			void Unmap( void );
-
-			GLuint GetID() const { return id; }
-
-			void Bind( void ) const;
-			void BindRange( int index ) const;
-
-		};
-
 		struct Material {
 			struct SamplerBinding {
-				int unit;
-				Texture *texture;
+				int		unit;
+				Texture	*texture;
 			};
 
 			struct BufferBinding {
-				int index;
-				Buffer *buffer;
+				int				index;
+				Backend::Buffer	*buffer;
 			};
 
 			ShaderProgram *shaderProgram;

@@ -5,7 +5,7 @@ namespace XS {
 	namespace Renderer {
 
 		enum class InternalFormat {
-			NONE=0,
+			NONE = 0,
 			R8,
 			RGBA8,
 			RGBA16F,

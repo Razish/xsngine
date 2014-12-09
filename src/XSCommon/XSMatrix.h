@@ -8,7 +8,9 @@ namespace XS {
 		vector4 data[4];
 
 		// xtors
-		matrix4() { identity(); }
+		matrix4() {
+			identity();
+		}
 		std::string tostring( void ) const;
 
 		// access operators
@@ -50,8 +52,6 @@ namespace XS {
 			data[2][2] = data[2][0]*rhs[0]->z + data[2][1]*rhs[1]->z + data[2][2]*rhs[2]->z;
 			return *this;
 		}
-
-
 	};
 
 	inline matrix4 ortho( float left, float right, float top, float bottom, float znear, float zfar ) {
@@ -70,7 +70,8 @@ namespace XS {
 	inline matrix4 perspectiveFov( float fovy, float aspectRatio, float znear, float zfar ) {
 		matrix4 m;
 
-		float f = 1.0f / tanf( fovy * static_cast<float>(M_PI) / 360.0f );  // convert degrees to radians and divide by 2
+		// convert degrees to radians and divide by 2
+		const float f = 1.0f / tanf( fovy * static_cast<float>( M_PI ) / 360.0f );
 		m[0][0] = f / aspectRatio;
 		m[1][1] = f;
 		m[2][2] = (zfar + znear) / (zfar - znear);
@@ -80,4 +81,5 @@ namespace XS {
 
 		return m;
 	}
+
 } // namespace XS

@@ -9,18 +9,26 @@ namespace XS {
 
 	struct vector2 {
 		union {
-			struct { number x, y; };
-			struct { number w, h; };
-			number _raw[2];
+			struct { float x, y; };
+			struct { float w, h; };
+			float _raw[2];
 		};
 
 		// xtors
-		vector2() : x( 0.0f ), y( 0.0f ) {}
-		vector2( number x, number y ) : x( x ), y( y ) {}
+		vector2()
+		: x( 0.0f ), y( 0.0f )
+		{
+		}
+
+		vector2( float x, float y )
+		: x( x ), y( y )
+		{
+		}
+
 		std::string tostring( void ) const;
 
 		// access operators
-		inline number& operator[]( const int idx ) {
+		inline float& operator[]( const int idx ) {
 			return _raw[idx];
 		}
 
@@ -79,10 +87,10 @@ namespace XS {
 		}
 
 		// scalar multiplication
-		inline vector2 operator*( const number scalar ) const {
+		inline vector2 operator*( const float scalar ) const {
 			return vector2( x * scalar, y * scalar );
 		}
-		inline vector2& operator*=( const number scalar ) {
+		inline vector2& operator*=( const float scalar ) {
 			x *= scalar;
 			y *= scalar;
 			return *this;
@@ -99,30 +107,38 @@ namespace XS {
 		}
 
 		// ???
-		static inline vector2 ma( const vector2 &a, number scale, const vector2 &b ) {
+		static inline vector2 ma( const vector2 &a, float scale, const vector2 &b ) {
 			return a + b*scale;
 		}
 
 		// linear interpolation
-		static inline vector2 lerp( const vector2 &a, number scale, const vector2 &b ) {
+		static inline vector2 lerp( const vector2 &a, float scale, const vector2 &b ) {
 			return a + (b-a)*scale;
 		}
 	};
 
 	struct vector3 {
 		union {
-			struct { number x, y, z; };
-			struct { number r, g, b; }; // red, green, blue?
-			number _raw[3];
+			struct { float x, y, z; };
+			struct { float r, g, b; }; // red, green, blue?
+			float _raw[3];
 		};
 
 		// xtors
-		vector3() : x( 0.0f ), y( 0.0f ), z( 0.0f ) {}
-		vector3( number x, number y, number z ) : x( x ), y( y ), z( z ) {}
+		vector3()
+		: x( 0.0f ), y( 0.0f ), z( 0.0f )
+		{
+		}
+
+		vector3( float x, float y, float z )
+		: x( x ), y( y ), z( z )
+		{
+		}
+
 		std::string tostring( void ) const;
 
 		// access operators
-		inline number& operator[]( const int idx ) {
+		inline float& operator[]( const int idx ) {
 			return _raw[idx];
 		}
 
@@ -186,10 +202,10 @@ namespace XS {
 		}
 
 		// scalar multiplication
-		inline vector3 operator*( const number scalar ) const {
+		inline vector3 operator*( const float scalar ) const {
 			return vector3( x * scalar, y * scalar, z * scalar );
 		}
-		inline vector3& operator*=( const number scalar ) {
+		inline vector3& operator*=( const float scalar ) {
 			x *= scalar;
 			y *= scalar;
 			z *= scalar;
@@ -208,34 +224,34 @@ namespace XS {
 		}
 
 		// ???
-		static inline vector3 ma( const vector3 &a, number scale, const vector3 &b ) {
+		static inline vector3 ma( const vector3 &a, float scale, const vector3 &b ) {
 			return a + b*scale;
 		}
 
 		// linear interpolation
-		static inline vector3 lerp( const vector3 &a, number scale, const vector3 &b ) {
+		static inline vector3 lerp( const vector3 &a, float scale, const vector3 &b ) {
 			return a + (b-a)*scale;
 		}
 
 		// length
-		inline number length( void ) const {
+		inline float length( void ) const {
 			return sqrtf( x*x + y*y + z*z );
 		}
-		static inline number length( const vector3 &vec ) {
+		static inline float length( const vector3 &vec ) {
 			return vec.length();
 		}
-		inline number lengthSquared( void ) const {
+		inline float lengthSquared( void ) const {
 			return x*x + y*y + z*z;
 		}
-		static inline number lengthSquared( const vector3 &vec ) {
+		static inline float lengthSquared( const vector3 &vec ) {
 			return vec.lengthSquared();
 		}
 
 		// distance
-		static inline number distance( const vector3 &a, const vector3 &b ) {
+		static inline float distance( const vector3 &a, const vector3 &b ) {
 			return length( a - b );
 		}
-		static inline number distanceSquared( const vector3 &a, const vector3 &b ) {
+		static inline float distanceSquared( const vector3 &a, const vector3 &b ) {
 			return lengthSquared( a - b );
 		}
 
@@ -243,13 +259,13 @@ namespace XS {
 		// does not check that length != 0
 		// does not return length
 		inline void normaliseFast( void ) {
-			*this *= static_cast<number>(1.0f) / length();
+			*this *= 1.0f / length();
 		}
-		inline number normalise( void ) {
-			number length = this->length();
+		inline float normalise( void ) {
+			float length = this->length();
 
 			if ( length ) {
-				number iLength = 1.0f/length;
+				float iLength = 1.0f / length;
 				*this *= iLength;
 			}
 
@@ -258,9 +274,9 @@ namespace XS {
 		static inline vector3 normalise( const vector3 &vec ) {
 			vector3 result = vec;
 
-			number length = result.length();
+			float length = result.length();
 			if ( length ) {
-				number iLength = 1.0f/length;
+				float iLength = 1.0f / length;
 				result *= iLength;
 			}
 
@@ -268,7 +284,7 @@ namespace XS {
 		}
 
 		// dot
-		inline number dot( const vector3 &vec ) const {
+		inline float dot( const vector3 &vec ) const {
 			return x*vec.x + y*vec.y + z*vec.z;
 		}
 
@@ -291,18 +307,26 @@ namespace XS {
 
 	struct vector4 {
 		union {
-			struct { number x, y, z, w; };
-			struct { number r, g, b, a; }; // red, green, blue?
-			number _raw[4];
+			struct { float x, y, z, w; };
+			struct { float r, g, b, a; }; // red, green, blue?
+			float _raw[4];
 		};
 
 		// xtors
-		vector4() : x( 0.0f ), y( 0.0f ), z( 0.0f ), w( 0.0f ) {}
-		vector4( number x, number y, number z, number w ) : x( x ), y( y ), z( z ), w( w ) {}
+		vector4()
+		: x( 0.0f ), y( 0.0f ), z( 0.0f ), w( 0.0f )
+		{
+		}
+
+		vector4( float x, float y, float z, float w )
+		: x( x ), y( y ), z( z ), w( w )
+		{
+		}
+
 		std::string tostring( void ) const;
 
 		// access operators
-		inline number& operator[]( const int idx ) {
+		inline float& operator[]( const int idx ) {
 			return _raw[idx];
 		}
 
@@ -371,10 +395,10 @@ namespace XS {
 		}
 
 		// scalar multiplication
-		inline vector4 operator*( const number scalar ) const {
+		inline vector4 operator*( const float scalar ) const {
 			return vector4( x * scalar, y * scalar, z * scalar, w * scalar );
 		}
-		inline vector4& operator*=( const number scalar ) {
+		inline vector4& operator*=( const float scalar ) {
 			x *= scalar;
 			y *= scalar;
 			z *= scalar;
@@ -395,12 +419,12 @@ namespace XS {
 		}
 
 		// ???
-		static inline vector4 ma( const vector4 &a, number scale, const vector4 &b ) {
+		static inline vector4 ma( const vector4 &a, float scale, const vector4 &b ) {
 			return a + b*scale;
 		}
 
 		// linear interpolation
-		static inline vector4 lerp( const vector4 &a, number scale, const vector4 &b ) {
+		static inline vector4 lerp( const vector4 &a, float scale, const vector4 &b ) {
 			return a + (b-a)*scale;
 		}
 	};

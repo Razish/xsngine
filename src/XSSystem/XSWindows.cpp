@@ -20,8 +20,9 @@ namespace XS {
 
 		bool MkDir( const char *path ) {
 			if ( !CreateDirectory( path, nullptr ) ) {
-				if ( GetLastError() != ERROR_ALREADY_EXISTS )
+				if ( GetLastError() != ERROR_ALREADY_EXISTS ) {
 					return false;
+				}
 			}
 
 			return true;

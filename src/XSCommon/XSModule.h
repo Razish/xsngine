@@ -15,4 +15,4 @@ namespace XS {
 		~Module();
 	};
 
-}
+} // namespace XS

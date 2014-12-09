@@ -1,10 +1,6 @@
 #pragma once
 
-//
-// XS error
-//
-//	Upon unrecoverable error, throw an XSError to clean up all subsystems
-//
+// upon unrecoverable error, throw an XSError to clean up all subsystems
 
 namespace XS {
 

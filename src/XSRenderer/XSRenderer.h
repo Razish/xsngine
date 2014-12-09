@@ -6,8 +6,11 @@
 
 namespace XS {
 
+	// front-end renderer access
+
 	namespace Renderer {
 
+		extern Cvar *r_clear;
 		extern Cvar *r_debug;
 		extern Cvar *r_multisample;
 		extern Cvar *r_skipRender;

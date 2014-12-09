@@ -10,8 +10,8 @@
 #include "XSCommon/XSTimer.h"
 #include "XSCommon/XSString.h"
 #include "XSClient/XSClient.h"
-#include "XSClient/XSInput.h"
-#include "XSClient/XSKeys.h"
+#include "XSInput/XSInput.h"
+#include "XSInput/XSKeys.h"
 #include "XSRenderer/XSRenderer.h"
 
 namespace XS {
@@ -42,7 +42,7 @@ namespace XS {
 			std::string commandLine;
 
 			// concatenate argv[] to commandLine
-			for ( int i=1; i<argc; i++ ) {
+			for ( int i = 1; i < argc; i++ ) {
 				const bool containsSpaces = strchr( argv[i], ' ' ) != nullptr;
 
 				if ( containsSpaces ) {
@@ -73,7 +73,7 @@ namespace XS {
 
 		#ifdef _DEBUG
 			console.Print( "Startup parameters:\n" );
-			Indent indent(1);
+			Indent indent( 1 );
 			for ( const auto &arg : String::Split( &commandLine[start + 1], delimiter ) ) {
 				console.Print( "%s\n", arg.c_str() );
 			}
@@ -240,7 +240,7 @@ int main( int argc, char **argv ) {
 
 		// indent the console for this scope
 		{
-			XS::Indent indent(1);
+			XS::Indent indent( 1 );
 			XS::Client::Shutdown();
 			XS::Renderer::Shutdown();
 

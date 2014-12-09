@@ -1,6 +1,6 @@
 #include "XSCommon/XSCommon.h"
-#include "XSClient/XSInputField.h"
-#include "XSClient/XSKeys.h"
+#include "XSInput/XSInputField.h"
+#include "XSInput/XSKeys.h"
 
 namespace XS {
 
@@ -22,11 +22,13 @@ namespace XS {
 			}
 			else if ( key == SDLK_RETURN ) {
 				// commit text
-				if ( callback )
+				if ( callback ) {
 					callback( current.c_str() );
+				}
 
-				if ( !current.empty() )
+				if ( !current.empty() ) {
 					history.push_back( current.c_str() );
+				}
 
 				Clear();
 				return true;

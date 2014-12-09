@@ -16,17 +16,20 @@ namespace XS {
 			void (*callback)( const char *text );
 
 		public:
+			InputField( void (*callback)( const char *text ) )
+			: callback( callback )
+			{
+			}
+
 			// don't allow default instantiation
 			InputField() = delete;
 			InputField( const InputField& ) = delete;
 			InputField& operator=( const InputField& ) = delete;
 
-			InputField( void (*callback)( const char *text ) ) : callback( callback ) {}
-
 			// clear the current line
-			void Clear( void );
-			bool KeyEvent( SDL_Keycode key, bool down );
-			const char *GetLine( void );
+			void		 Clear		( void );
+			bool		 KeyEvent	( SDL_Keycode key, bool down );
+			const char	*GetLine	( void );
 		};
 
 	} // namespace Client

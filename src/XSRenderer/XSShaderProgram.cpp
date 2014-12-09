@@ -21,7 +21,7 @@ namespace XS {
 		static void OutputProgramInfoLog( int program ) {
 			int logLength = 0;
 
-			Indent indent(1);
+			Indent indent( 1 );
 
 			glGetProgramiv( program, GL_INFO_LOG_LENGTH, &logLength );
 
@@ -37,7 +37,7 @@ namespace XS {
 		static void OutputShaderInfoLog( int shader ) {
 			int logLength = 0;
 
-			Indent indent (1);
+			Indent indent ( 1 );
 
 			glGetShaderiv( shader, GL_INFO_LOG_LENGTH, &logLength );
 
@@ -56,9 +56,9 @@ namespace XS {
 
 		static GLenum GetGLShaderType( ShaderType type ) {
 			switch ( type ) {
-				case ShaderType::Vertex: return GL_VERTEX_SHADER;
-				case ShaderType::Geometry: return GL_GEOMETRY_SHADER;
-				case ShaderType::Fragment: return GL_FRAGMENT_SHADER;
+				case ShaderType::VERTEX: return GL_VERTEX_SHADER;
+				case ShaderType::GEOMETRY: return GL_GEOMETRY_SHADER;
+				case ShaderType::FRAGMENT: return GL_FRAGMENT_SHADER;
 				default: return GL_NONE;
 			}
 		}
@@ -100,13 +100,13 @@ namespace XS {
 			std::string path;
 
 			switch ( type ) {
-			case ShaderType::Vertex:
+			case ShaderType::VERTEX:
 				path = String::Format( "shaders/v_%s.glsl", name );
 				break;
-			case ShaderType::Geometry:
+			case ShaderType::GEOMETRY:
 				path = String::Format( "shaders/g_%s.glsl", name );
 				break;
-			case ShaderType::Fragment:
+			case ShaderType::FRAGMENT:
 				path = String::Format( "shaders/f_%s.glsl", name );
 				break;
 			}
@@ -132,22 +132,23 @@ namespace XS {
 		//
 
 		// save some typing..
-		ShaderProgram::ShaderProgram( const char *vertexShaderName, const char *fragmentShaderName, const VertexAttribute *attributes, int numAttributes ) {
-			Shader *fragmentShader = nullptr;
-			Shader *vertexShader = nullptr;
-
+		ShaderProgram::ShaderProgram( const char *vertexShaderName, const char *fragmentShaderName,
+			const VertexAttribute *attributes, int numAttributes )
+		{
 			id = glCreateProgram();
 			if ( !id ) {
 				throw( XSError( "Failed to create shader program" ) );
 			}
 
+			Shader *vertexShader = nullptr;
 			if ( vertexShaderName && !vertexShader ) {
-				vertexShader = new Shader( ShaderType::Vertex, vertexShaderName );
+				vertexShader = new Shader( ShaderType::VERTEX, vertexShaderName );
 				glAttachShader( id, vertexShader->id );
 			}
 
+			Shader *fragmentShader = nullptr;
 			if ( fragmentShaderName && !fragmentShader ) {
-				fragmentShader = new Shader( ShaderType::Fragment, fragmentShaderName );
+				fragmentShader = new Shader( ShaderType::FRAGMENT, fragmentShaderName );
 				glAttachShader( id, fragmentShader->id );
 			}
 
@@ -159,9 +160,9 @@ namespace XS {
 			Bind();
 
 			// Until there are some data files to describe the shader, we'll do it like this for now.
-			GLint perFrame = glGetUniformBlockIndex (id, "PerFrame");
+			GLint perFrame = glGetUniformBlockIndex( id, "PerFrame" );
 			if ( perFrame >= 0 ) {
-				glUniformBlockBinding (id, perFrame, 6);
+				glUniformBlockBinding( id, perFrame, 6 );
 			}
 
 			if ( vertexShader ) {
@@ -185,9 +186,10 @@ namespace XS {
 
 		// will create if necessary
 		ProgramVariable &ShaderProgram::GetUniform( const char *name ) {
-			auto var = std::find_if( std::begin(uniforms), std::end(uniforms), [name](const ProgramVariable& uniform) {
-				return strcmp( uniform.name, name ) == 0;
-			});
+			auto var = std::find_if( std::begin(uniforms), std::end(uniforms),
+				[name](const ProgramVariable& uniform) {
+					return strcmp( uniform.name, name ) == 0;
+				} );
 
 			if ( var != std::end( uniforms ) ) {
 				return *var;

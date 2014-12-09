@@ -22,7 +22,10 @@ namespace XS {
 
 		std::string fullString;
 		struct CvarValue {
-			CvarValue() : str( "" ), integer( 0 ), number( 0.0f ), real( 0.0 ), boolean( false ) {}
+			CvarValue()
+			: str( "" ), integer( 0 ), number( 0.0f ), real( 0.0 ), boolean( false )
+			{
+			}
 			std::string str;
 			int integer;
 			float number;
@@ -42,7 +45,7 @@ namespace XS {
 
 		static bool initialised;
 
-		static Cvar *Create( std::string name, std::string value="", std::string description="none",
+		static Cvar *Create( std::string name, std::string value = "", std::string description = "none",
 			uint32_t flags=CVAR_NONE );
 		static Cvar *Get( const std::string &name );
 		static void List( void );
@@ -59,14 +62,30 @@ namespace XS {
 		bool Set( const float value, bool initial = false );
 		bool Set( const bool value, bool initial = false );
 
-		inline const std::string &GetString( size_t index = 0u ) const { return this->values[index].str; }
-		inline const char *GetCString( size_t index = 0u ) const { return this->values[index].str.c_str(); }
-		inline const std::string &GetFullString( void ) const { return this->fullString; }
-		inline const char *GetFullCString( void ) const { return this->fullString.c_str(); }
-		inline int GetInt( size_t index = 0u ) const { return this->values[index].integer; }
-		inline float GetFloat( size_t index = 0u ) const { return this->values[index].number; }
-		inline double GetDouble( size_t index = 0u ) const { return this->values[index].real; }
-		inline bool GetBool( size_t index = 0u ) const { return this->values[index].boolean; }
+		inline const std::string &GetString( size_t index = 0u ) const {
+			return this->values[index].str;
+		}
+		inline const char *GetCString( size_t index = 0u ) const {
+			return this->values[index].str.c_str();
+		}
+		inline const std::string &GetFullString( void ) const {
+			return this->fullString;
+		}
+		inline const char *GetFullCString( void ) const {
+			return this->fullString.c_str();
+		}
+		inline int GetInt( size_t index = 0u ) const {
+			return this->values[index].integer;
+		}
+		inline float GetFloat( size_t index = 0u ) const {
+			return this->values[index].number;
+		}
+		inline double GetDouble( size_t index = 0u ) const {
+			return this->values[index].real;
+		}
+		inline bool GetBool( size_t index = 0u ) const {
+			return this->values[index].boolean;
+		}
 	};
 
 } // namespace XS

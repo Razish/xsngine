@@ -8,13 +8,13 @@ namespace XS {
 	namespace String {
 
 		void Concatenate( char *dst, size_t len, const char *src ) {
-			size_t l1 = strlen( dst );
+			size_t destLen = strlen( dst );
 
-			if ( l1 >= len ) {
+			if ( destLen >= len ) {
 				throw( XSError( "XS::String::Concatenate: already overflowed" ) );
 			}
 
-			Copy( dst+l1, src, len-l1 );
+			Copy( dst + destLen, src, len - destLen);
 		}
 
 		// safe strncpy that ensures a trailing zero
@@ -31,8 +31,8 @@ namespace XS {
 				throw( XSError( "XS::String::Copy: destsize < 1" ) );
 			}
 
-			strncpy( dst, src, len-1 );
-			dst[len-1] = 0;
+			strncpy( dst, src, len - 1 );
+			dst[len - 1] = '\0';
 		}
 
 		// safe sprintf-like
@@ -45,7 +45,7 @@ namespace XS {
 
 			if ( outLen >= (signed)len ) {
 				throw( XSError( String::Format( "FormatBuffer: Output length %d too short, requires %d bytes.", len,
-					outLen+1 ).c_str() ) );
+					outLen + 1 ).c_str() ) );
 			}
 
 			return outLen;

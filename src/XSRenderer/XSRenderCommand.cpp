@@ -3,6 +3,7 @@
 #include "XSCommon/XSCommon.h"
 #include "XSCommon/XSVector.h"
 #include "XSRenderer/XSRenderer.h"
+#include "XSRenderer/XSBuffer.h"
 #include "XSRenderer/XSRenderCommand.h"
 #include "XSRenderer/XSMaterial.h"
 #include "XSRenderer/XSImagePNG.h"
@@ -11,14 +12,14 @@ namespace XS {
 
 	namespace Renderer {
 
-		static Buffer *quadsVertexBuffer;
-		static Buffer *quadsIndexBuffer;
+		static Backend::Buffer *quadsVertexBuffer;
+		static Backend::Buffer *quadsIndexBuffer;
 
 		void RenderCommand::Init( void ) {
 			const unsigned short indices[6] = { 0, 2, 1, 1, 2, 3 };
 
-			quadsVertexBuffer = new Buffer( BufferType::Vertex, nullptr, 576 );
-			quadsIndexBuffer = new Buffer( BufferType::Index, indices, sizeof(indices) );
+			quadsVertexBuffer = new Backend::Buffer( Backend::Buffer::Type::VERTEX, nullptr, 576 );
+			quadsIndexBuffer = new Backend::Buffer( Backend::Buffer::Type::INDEX, indices, sizeof(indices) );
 		}
 
 		void RenderCommand::Shutdown( void ) {
@@ -27,7 +28,7 @@ namespace XS {
 		}
 
 		static void DrawQuad( const rcDrawQuad_t *quad ) {
-			static const vector4 color = vector4( 1.0f, 1.0f, 1.0f, 1.0f );
+			static const vector4 color = vector4( 1.0f, 0.0f, 1.0f, 1.0f );
 
 			SDL_assert( quad->material && "Renderer::DrawQuad with invalid material" );
 
@@ -65,8 +66,7 @@ namespace XS {
 			texcoords[3].y = quad->t2;
 			colors[3] = color;
 
-			float *vertexBuffer = static_cast<float *>(quadsVertexBuffer->Map());
-			int offset = 0;
+			float *vertexBuffer = static_cast<float *>( quadsVertexBuffer->Map() );
 
 			std::memcpy( vertexBuffer, vertices, sizeof(vertices) );
 			vertexBuffer += 8;
@@ -84,15 +84,15 @@ namespace XS {
 			glEnableVertexAttribArray( 1 );
 			glEnableVertexAttribArray( 2 );
 
-			offset = 0;
+			intptr_t offset = 0;
 
 			glVertexAttribPointer( 0, 2, GL_FLOAT, GL_FALSE, 0, 0 );
 			offset += sizeof(vertices);
 
-			glVertexAttribPointer( 1, 2, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<const GLvoid *>(offset) );
+			glVertexAttribPointer( 1, 2, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<const GLvoid *>( offset ) );
 			offset += sizeof(texcoords);
 
-			glVertexAttribPointer( 2, 4, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<const GLvoid *>(offset) );
+			glVertexAttribPointer( 2, 4, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<const GLvoid *>( offset ) );
 
 			glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0 );
 		}
@@ -118,10 +118,10 @@ namespace XS {
 
 		void RenderCommand::Execute( void ) const {
 			switch( type ) {
-			case DRAWQUAD:
+			case Type::DRAWQUAD:
 				DrawQuad( &drawQuad );
 				break;
-			case SCREENSHOT:
+			case Type::SCREENSHOT:
 				Screenshot( &screenshot );
 				break;
 			default:

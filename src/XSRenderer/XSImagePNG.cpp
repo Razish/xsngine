@@ -21,7 +21,9 @@ namespace XS {
 			console.Print( "%s\n", msg );
 		}
 
-		bool IsPowerOfTwo( int i ) { return (i & (i - 1)) == 0; }
+		bool IsPowerOfTwo( int i ) {
+			return (i & (i - 1)) == 0;
+		}
 
 		struct PNGFileReader {
 		private:
@@ -31,7 +33,11 @@ namespace XS {
 			png_infop info_ptr;
 
 		public:
-			PNGFileReader( byte *buf ) : buf( buf ), offset( 0 ), png_ptr( nullptr ), info_ptr( nullptr ){}
+			PNGFileReader( byte *buf )
+			: buf( buf ), offset( 0 ), png_ptr( nullptr ), info_ptr( nullptr )
+			{
+			}
+
 			~PNGFileReader() {
 				if ( info_ptr ) {
 					// destroys both structs
@@ -131,7 +137,7 @@ namespace XS {
 					return false;
 				}
 
-				for ( unsigned int i=0, j=0; i<height_; i++, j += 4 ) {
+				for ( unsigned int i = 0, j = 0; i < height_; i++, j += 4 ) {
 					row_pointers[i] = tempData + j*width_;
 				}
 
@@ -160,7 +166,7 @@ namespace XS {
 
 		void user_read_data( png_structp png_ptr, png_bytep data, png_size_t length ) {
 			png_voidp r = png_get_io_ptr( png_ptr );
-			PNGFileReader *reader = (PNGFileReader *)r;
+			PNGFileReader *reader = static_cast<PNGFileReader *>( r );
 			reader->ReadBytes( data, length );
 		}
 
@@ -228,7 +234,7 @@ namespace XS {
 				PNG_FILTER_TYPE_BASE );
 			png_colorp palette = NULL;
 			if ( numChannels != 1 ) {
-				palette = (png_colorp)png_malloc( png, PNG_MAX_PALETTE_LENGTH * sizeof(png_color) );
+				palette = static_cast<png_colorp>( png_malloc( png, PNG_MAX_PALETTE_LENGTH * sizeof(png_color) ) );
 				if ( !palette ) {
 					fclose( fp );
 					png_destroy_write_struct( &png, &info );
@@ -239,7 +245,7 @@ namespace XS {
 			png_write_info( png, info );
 			png_set_packing( png );
 
-			png_bytepp rows = (png_bytepp)png_malloc( png, h * sizeof(png_bytep) );
+			png_bytepp rows = static_cast<png_bytepp>( png_malloc( png, h * sizeof(png_bytep) ) );
 			for ( int i = 0; i < h; ++i ) {
 				rows[i] = (png_bytep)(pixels + (h - i) * w * numChannels);
 			}

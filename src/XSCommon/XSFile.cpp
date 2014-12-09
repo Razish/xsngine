@@ -60,8 +60,9 @@ namespace XS {
 	// normalise path separators for the current platform
 	void File::ReplaceSeparators( char *path ) {
 		for ( char *s = path; *s; s++ ) {
-			if ( *s == '/' || *s == '\\' )
+			if ( *s == '/' || *s == '\\' ) {
 				*s = PATH_SEP;
+			}
 		}
 	}
 
@@ -82,6 +83,20 @@ namespace XS {
 		String::FormatBuffer( outPath, outLen, "%s%c%s", basePath, PATH_SEP, gamePath );
 		File::ReplaceSeparators( outPath );
 
+		return true;
+	}
+
+	// return the extension for the specified relative gamepath
+	//	e.g. "obj" for "models/box.obj"
+	bool File::GetExtension( const char *gamePath, char *outExtension, size_t outLen ) {
+		std::string path( gamePath );
+		const size_t dot = path.rfind( '.' );
+		if ( dot == std::string::npos || gamePath[dot + 1] == '\0' ) {
+			outExtension[0] = '\0';
+			return false;
+		}
+
+		String::Copy( outExtension, &gamePath[dot + 1], outLen );
 		return true;
 	}
 

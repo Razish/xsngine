@@ -20,8 +20,9 @@ namespace XS {
 		static std::unordered_map<std::string, Font *> fonts;
 		static ShaderProgram *fontProgram = nullptr;
 
-
-		Font::Font( const char *name, uint16_t size ) : name(name), size(size) {
+		Font::Font( const char *name, uint16_t size )
+		: name( name ), size( size )
+		{
 			file = String::Format( "fonts/%s.ttf", name );
 			std::memset( data, 0, sizeof(data) );
 		}
@@ -94,7 +95,7 @@ namespace XS {
 
 				FT_GlyphSlot slot = face->glyph;
 				FT_Bitmap& bitmap = slot->bitmap;
-				const int width = bitmap.width ? bitmap.width : (float)slot->advance.x / 64.0f;
+				const int width = bitmap.width ? bitmap.width : static_cast<float>( slot->advance.x ) / 64.0f;
 				const int height = bitmap.rows;
 
 				// atlas will be 16 chars by 16 chars, where chars are WxH but spaced by size*size
@@ -106,12 +107,12 @@ namespace XS {
 				// calculate glyph metrics
 				FontData &fd = data[c];
 				fd.size = vector2( width, height );
-				const float colPos = (float)(col) / 16.0f, rowPos = (float)(row) / 16.0f;
-				fd.s = vector2( colPos, colPos + ((float)width / 256.0f) );
-				fd.t = vector2( rowPos, rowPos + ((float)height / 256.0f) );
-				fd.advance = (float)slot->advance.x / 64.0f;
-				fd.offset.x = (float)slot->metrics.horiBearingX / 64.0f;
-				fd.offset.y = lineHeight + -((float)slot->metrics.horiBearingY / 64.0f);
+				const float colPos = static_cast<float>( col ) / 16.0f, rowPos = static_cast<float>( row ) / 16.0f;
+				fd.s = vector2( colPos, colPos + (static_cast<float>( width ) / 256.0f) );
+				fd.t = vector2( rowPos, rowPos + (static_cast<float>( height ) / 256.0f) );
+				fd.advance = static_cast<float>( slot->advance.x ) / 64.0f;
+				fd.offset.x = static_cast<float>( slot->metrics.horiBearingX ) / 64.0f;
+				fd.offset.y = lineHeight + -(static_cast<float>( slot->metrics.horiBearingY ) / 64.0f);
 
 				if ( !bitmap.buffer /*|| !width || !height*/ ) {
 					FT_Done_Glyph( glyph );
@@ -190,7 +191,7 @@ namespace XS {
 				{ 2, "in_Color" }
 			};
 
-			fontProgram = new ShaderProgram( "text", "text", attributes, sizeof(attributes) / sizeof(attributes[0]) );
+			fontProgram = new ShaderProgram( "text", "text", attributes, ARRAY_LEN( attributes ) );
 
 			for ( const auto &it: fonts ) {
 				it.second->RenderGlyphs();

@@ -46,14 +46,13 @@ namespace XS {
 		short port; // stored in network byte order
 
 	public:
+		Socket( const NetAddress *address, short port );
+
 		Socket() = delete;
 		Socket( const Socket& ) = delete;
 		Socket& operator=( const Socket& ) = delete;
 
-		Socket( const NetAddress *address, short port );
-		~Socket() {}
-
-		void Send( const byte *buf, size_t bufSize ) const;
+		void	Send	( const byte *buf, size_t bufSize ) const;
 	};
 
 } // namespace XS

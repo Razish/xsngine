@@ -5,7 +5,7 @@
 #include "XSCommon/XSCommon.h"
 #include "XSCommon/XSString.h"
 #include "XSCommon/XSConsole.h"
-#include "XSClient/XSKeys.h"
+#include "XSInput/XSKeys.h"
 #include "XSClient/XSClient.h"
 
 namespace XS {
@@ -126,7 +126,7 @@ namespace XS {
 			const keyMap_t *km = nullptr;
 			size_t i = 0;
 
-			for ( i=0, km = keymap; i<keymapSize; i++, km++ ) {
+			for ( i = 0, km = keymap; i < keymapSize; i++, km++ ) {
 				if ( !String::Compare( name, km->name ) ) {
 					return km->keycode;
 				}
@@ -138,7 +138,7 @@ namespace XS {
 			const keyMap_t *km = nullptr;
 			size_t i = 0;
 
-			for ( i=0, km = keymap; i<keymapSize; i++, km++ ) {
+			for ( i = 0, km = keymap; i < keymapSize; i++, km++ ) {
 				if ( keycode == km->keycode ) {
 					return km->name;
 				}
@@ -150,9 +150,10 @@ namespace XS {
 			const keyMap_t *km = NULL;
 			size_t i = 0;
 
-			for ( i=0, km = keymap; i<keymapSize; i++, km++ ) {
-				if ( km->keycode == keycode )
+			for ( i = 0, km = keymap; i < keymapSize; i++, km++ ) {
+				if ( km->keycode == keycode ) {
 					return km->printable;
+				}
 			}
 			return '\0';
 		}
@@ -188,7 +189,7 @@ namespace XS {
 			// join all args, so we can do /bind x command argument
 			const size_t size = context->size();
 			std::string value;
-			for ( size_t i=1; i<size; i++ ) {
+			for ( size_t i = 1; i < size; i++ ) {
 				value += (*context)[i];
 				if ( i != size-1 ) {
 					value += " ";
@@ -221,12 +222,12 @@ namespace XS {
 		}
 
 		void KeyEvent( SDL_Keycode key, bool down ) {
-			if ( ConsoleKeyEvent( key, down ) ) {
+			if ( clientConsole && clientConsole->KeyEvent( key, down ) ) {
 				return;
 			}
 
 			/*
-			if ( CGame::KeyEvent( key, down ) ) {
+			if ( XSClientGame->KeyEvent( key, down ) ) {
 				return;
 			}
 			*/

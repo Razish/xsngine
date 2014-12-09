@@ -3,8 +3,8 @@
 #include "XSCommon/XSCommon.h"
 #include "XSCommon/XSError.h"
 #include "XSCommon/XSEvent.h"
-#include "XSClient/XSInput.h"
-#include "XSClient/XSKeys.h"
+#include "XSInput/XSInput.h"
+#include "XSInput/XSKeys.h"
 
 namespace XS {
 

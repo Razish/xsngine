@@ -19,6 +19,7 @@ namespace XS {
 		static SDL_Window *window = nullptr;
 		static SDL_GLContext context;
 
+		Cvar *r_clear = nullptr;
 		Cvar *r_debug = nullptr;
 		Cvar *r_multisample = nullptr;
 		Cvar *r_skipRender = nullptr;
@@ -148,6 +149,7 @@ namespace XS {
 		}
 
 		void RegisterCvars( void ) {
+			r_clear = Cvar::Create( "r_clear", "0.5 0.125 0.125 1.0", "Colour of the backbuffer", CVAR_ARCHIVE );
 			r_debug = Cvar::Create( "r_debug", "0", "Enable debugging information", CVAR_ARCHIVE );
 			r_multisample = Cvar::Create( "r_multisample", "2", "Multisample Anti-Aliasing (MSAA) level", CVAR_ARCHIVE );
 			r_skipRender = Cvar::Create( "r_skipRender", "0", "1 - skip 3D views, 2 - skip 2D views, 3 - skip all views",
@@ -211,7 +213,9 @@ namespace XS {
 		}
 
 		void Update( void ) {
-			glClearColor( 0.5f, 0.125f, 0.125f, 1.0f );
+			const vector4 clear = { r_clear->GetFloat( 0 ), r_clear->GetFloat( 1 ), r_clear->GetFloat( 2 ),
+				r_clear->GetFloat( 3 ) };
+			glClearColor( clear.r, clear.g, clear.b, clear.a );
 			glClear( GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT );
 
 			for ( const auto &view : views ) {
@@ -245,7 +249,7 @@ namespace XS {
 				throw( XSError( "Attempted to issue render command without binding a view" ) );
 			}
 
-			RenderCommand cmd( RenderCommand::DRAWQUAD );
+			RenderCommand cmd( RenderCommand::Type::DRAWQUAD );
 			cmd.drawQuad.x = x;
 			cmd.drawQuad.y = y;
 			cmd.drawQuad.w = w;

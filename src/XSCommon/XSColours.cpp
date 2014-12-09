@@ -22,7 +22,7 @@ namespace XS {
 	16	f	*white, to be changed
 	*/
 
-	const vector4 colourTable[COLOUR_BITS+1] = {
+	const vector4 colourTable[COLOUR_BITS + 1] = {
 		vector4( 0.0f, 0.0f, 0.0f, 1.0f ), // black
 		vector4( 0.5f, 0.5f, 0.5f, 1.0f ), // grey
 		vector4( 1.0f, 1.0f, 1.0f, 1.0f ), // white

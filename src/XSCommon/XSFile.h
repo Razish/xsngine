@@ -57,6 +57,7 @@ namespace XS {
 		static void Init( void );
 		static void SetBasePath( void );
 		static bool GetFullPath( const char *gamePath, char *outPath, size_t outLen );
+		static bool GetExtension( const char *gamePath, char *outExtension, size_t outLen );
 		static void ReplaceSeparators( char *path );
 
 		// don't allow default instantiation

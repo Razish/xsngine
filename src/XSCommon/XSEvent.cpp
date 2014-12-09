@@ -5,7 +5,7 @@
 #include "XSCommon/XSCvar.h"
 #include "XSCommon/XSString.h"
 #include "XSCommon/XSConsole.h"
-#include "XSClient/XSKeys.h"
+#include "XSInput/XSKeys.h"
 
 namespace XS {
 

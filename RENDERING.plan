@@ -1,0 +1,25 @@
+PBR (physically based rendering) is a must. unified lighting for all surfaces.
+as such, all surfaces have a material attached to them, with the base/default material being smooth concrete
+level format may be brush-based (convex) with placed object (i.e. static meshes, effects, triggers and other entities)
+currently not using a scene graph.
+in the game's Update() function, it will add entities and such to be rendered to a local buffer
+in the game's Render() function, it will issue draw commands to the renderer, containing information about what entities are placed where, with which properties for their materials.
+TODO: look into caching info for materials + properties for surfaces? see how other engines approach this
+
+
+relationships:
+
+object
+	mesh[] (car)
+		surface[] (tyres, body, windows)
+			properties (cast-shadows)
+			material (rubber, metal, glass)
+				properties (green tint, wireframe?)
+
+world / 3D view
+	world
+		object
+	entities[] (players, pickups, interactive items)
+		mesh
+		[skeleton]
+			animation

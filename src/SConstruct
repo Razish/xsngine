@@ -103,14 +103,45 @@ if not env.GetOption( 'clean' ):
 		msg += '\ngit revision: ' + revision
 	print( msg )
 
-files = [ 'XSClient/XSClient.cpp', 'XSClient/XSInput.cpp', 'XSClient/XSInputField.cpp', 'XSClient/XSKeys.cpp',
-	'XSCommon/XSColours.cpp', 'XSCommon/XSCommand.cpp', 'XSCommon/XSCommon.cpp', 'XSCommon/XSConsole.cpp',
-	'XSCommon/XSCvar.cpp', 'XSCommon/XSEvent.cpp', 'XSCommon/XSFile.cpp', 'XSCommon/XSLogger.cpp',
-	'XSCommon/XSMessageBuffer.cpp', 'XSCommon/XSModule.cpp', 'XSCommon/XSNetAddress.cpp', 'XSCommon/XSSocket.cpp',
-	'XSCommon/XSString.cpp', 'XSCommon/XSTimer.cpp', 'XSCommon/XSVector.cpp', 'XSCrypto/XSMD5.cpp', 'GLEW/glew.c',
-	'XSRenderer/XSBackend.cpp', 'XSRenderer/XSFont.cpp', 'XSRenderer/XSFramebuffer.cpp', 'XSRenderer/XSImagePNG.cpp',
-	'XSRenderer/XSInternalFormat.cpp', 'XSRenderer/XSMaterial.cpp', 'XSRenderer/XSRenderCommand.cpp',
-	'XSRenderer/XSRenderer.cpp', 'XSRenderer/XSShaderProgram.cpp', 'XSRenderer/XSTexture.cpp', 'XSRenderer/XSView.cpp'
+files = [
+	'XSClient/XSClient.cpp',
+	'XSClient/XSClientConsole.cpp',
+	'XSCommon/XSColours.cpp',
+	'XSCommon/XSCommand.cpp',
+	'XSCommon/XSCommon.cpp',
+	'XSCommon/XSConsole.cpp',
+	'XSCommon/XSCvar.cpp',
+	'XSCommon/XSEvent.cpp',
+	'XSCommon/XSFile.cpp',
+	'XSCommon/XSLogger.cpp',
+	'XSCommon/XSMessageBuffer.cpp',
+	'XSCommon/XSModule.cpp',
+	'XSCommon/XSNetAddress.cpp',
+	'XSCommon/XSSocket.cpp',
+	'XSCommon/XSString.cpp',
+	'XSCommon/XSTimer.cpp',
+	'XSCommon/XSVector.cpp',
+	'XSCrypto/XSMD5.cpp',
+	'XSInput/XSInput.cpp',
+	'XSInput/XSInputField.cpp',
+	'XSInput/XSKeys.cpp',
+	'XSRenderer/XSBackend.cpp',
+	'XSRenderer/XSBuffer.cpp',
+	'XSRenderer/XSFont.cpp',
+	'XSRenderer/XSFramebuffer.cpp',
+	'XSRenderer/XSImagePNG.cpp',
+	'XSRenderer/XSInternalFormat.cpp',
+	'XSRenderer/XSMaterial.cpp',
+	'XSRenderer/XSMesh.cpp',
+	'XSRenderer/XSModel.cpp',
+	'XSRenderer/XSRenderable.cpp',
+	'XSRenderer/XSRenderCommand.cpp',
+	'XSRenderer/XSRenderer.cpp',
+	'XSRenderer/XSScreenshot.cpp',
+	'XSRenderer/XSShaderProgram.cpp',
+	'XSRenderer/XSTexture.cpp',
+	'XSRenderer/XSView.cpp',
+	'GLEW/glew.c',
 ]
 if plat == 'Linux':
 	files += [ 'XSSystem/XSLinux.cpp' ]
@@ -128,7 +159,7 @@ elif plat == 'Windows':
 	libs = [ 'OpenGL32', 'SDL2', 'SDL2main', 'freetype250d', 'zlibd', 'libpng16d' ]
 
 # compiler options
-env['CPPPATH'] = [ '.', './freetype/', './GLEW/', './libpng/', './zlib/' ]
+env['CPPPATH'] = [ '#', '#/freetype', '#/GLEW', '#/libpng', '#/zlib' ]
 
 # compiler switches
 if plat == 'Linux':
@@ -240,11 +271,23 @@ elif debug == 2:
 	configuration = 'optimised-debug'
 else:
 	configuration = 'release'
+
 build_dir = 'build' + '/' + configuration + '/' + env['CC'] + '/' + str(bits) + '/'
 env.VariantDir( build_dir, '.', duplicate = 0 )
 files = [build_dir + f for f in files]
 
-# targets
-env['LIBS'] = libs
+# libraries
+libraries = [
+	'XSClient'
+]
+env['LIBS'] = [
+	env.SConscript(
+		'#/' + lib + '/SConscript',
+		exports = [ 'arch', 'bits', 'build_dir', 'configuration', 'env', 'plat' ]
+	) for lib in libraries
+]
+env['LIBS'] += libs
 env['LIBPREFIX'] = ''
+
+# targets
 env.Program( 'xsn' + '.' + arch + env['PROGSUFFIX'], files )

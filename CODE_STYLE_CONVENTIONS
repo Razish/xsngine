@@ -252,6 +252,8 @@ Avoid using enums for bit-values *in general* in favour of preprocessor definiti
 	if ( bits & (1<<WP_ROCKET) ) { // acceptable, as WP_ is a list of weapons and not necessarily used for bit values
 	if ( bits & BIT_ONE ) { // good, if #define BIT_ONE (0x0001u)
 
+Prefer explicitly stating the size of primitive types, i.e. int32_t over int
+
 Avoid aggregate returns where possible. Prefer pointers, and document if the caller must free that memory or if it may
 be overwritten
 

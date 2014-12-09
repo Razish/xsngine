@@ -3,7 +3,9 @@
 
 namespace XS {
 
-	NetAddress::NetAddress( const char *hostname ) : resolved(false), valid(false) {
+	NetAddress::NetAddress( const char *hostname )
+	: resolved( false ), valid( false )
+	{
 		// ...
 	}
 

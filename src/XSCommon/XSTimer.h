@@ -26,7 +26,8 @@ namespace XS {
 			MICROSECONDS,
 		};
 
-		void	Stop( void );
-		double	GetTiming( bool restart = false, Resolution resolution = Resolution::MICROSECONDS );
+		void	Stop		( void );
+		double	GetTiming	( bool restart = false, Resolution resolution = Resolution::MICROSECONDS );
 	};
-}
+
+} // namespace XS

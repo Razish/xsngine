@@ -50,8 +50,8 @@ namespace XS {
 
 	// public
 	Cvar::Cvar( const std::string &name, const std::string &value, const std::string &description, uint32_t flags )
-		: name( name ), defaultStr( value ), description( description ), modified( false ) {
-
+	: name( name ), defaultStr( value ), description( description ), modified( false )
+	{
 		cvars[name] = this;
 		SetFlags( flags );
 		Set( value, true );

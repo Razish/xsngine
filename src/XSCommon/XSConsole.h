@@ -5,13 +5,23 @@
 namespace XS {
 
 	extern struct Console {
-		Console() { buffer = new MessageBuffer( "console.log" ); }
-		~Console() { delete buffer; }
 		unsigned int indentation;
 		MessageBuffer *buffer;
 
+		Console()
+		: indentation( 0u )
+		{
+			buffer = new MessageBuffer( "console.log" );
+		}
+		~Console() {
+			delete buffer;
+		}
+
 		void Print( const char *fmt, ... );
-		void Indent( int level ) { indentation += level; }
+
+		void Indent( int level ) {
+			indentation += level;
+		}
 
 	private:
 		void Append( const char *text, bool multiLine );
@@ -28,8 +38,15 @@ namespace XS {
 		Indent( const Indent& ) = delete;
 		Indent& operator=( const Indent& ) = delete;
 
-		Indent( int level ) : level((unsigned)level) { console.Indent( level ); }
-		~Indent() { console.Indent( -(signed)level ); }
+		Indent( int level )
+		: level( (unsigned)level )
+		{
+			console.Indent( level );
+		}
+
+		~Indent() {
+			console.Indent( -(signed)level );
+		}
 	};
 
 } // namespace XS

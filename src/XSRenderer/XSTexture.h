@@ -14,11 +14,6 @@ namespace XS {
 			static const Texture *lastUsedTexture[MAX_TEXTURE_UNITS];
 			static int lastUsedTextureUnit;
 
-			// don't allow default instantiation
-			Texture() = delete;
-			Texture( const Texture& ) = delete;
-			Texture& operator=( const Texture& ) = delete;
-
 		public:
 			static void Init( void );
 
@@ -26,7 +21,12 @@ namespace XS {
 				byte *data = nullptr );
 			~Texture();
 
-			void Bind( int unit ) const;
+			// don't allow default instantiation
+			Texture() = delete;
+			Texture( const Texture& ) = delete;
+			Texture& operator=( const Texture& ) = delete;
+
+			void	Bind	( int unit ) const;
 
 			uint32_t id;
 		};
