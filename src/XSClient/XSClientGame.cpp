@@ -23,15 +23,16 @@ namespace XS {
 		static Renderer::Texture *terrainTexture = nullptr;
 
 		static void LoadTerrain( void ) {
-			const File &f = File( "textures/terrain.raw" );
+			const File f( "textures/terrain.raw" );
 			if ( !f.open ) {
 				console.Print( "WARNING: Could not load terrain heightmap \"%s\"\n", f.path );
 				return;
 			}
 
 			byte *terrainBuf = new byte[f.length];
-			std::memset( terrainBuf, 0, f.length );
-			f.Read( terrainBuf );
+				std::memset( terrainBuf, 0, f.length );
+				f.Read( terrainBuf );
+			delete[] terrainBuf;
 
 			const int textureSize = static_cast<int>( sqrtf( static_cast<float>( f.length ) ) );
 
@@ -78,17 +79,27 @@ namespace XS {
 			};
 		};
 
+		static std::vector<GameObject*> objects;
+
+		static void RenderScene( void ) {
+			// the view is already bound
+			for ( const auto &object : objects ) {
+				sceneView->AddObject( object->renderObject );
+			}
+		}
+
 		void Init( void ) {
 			const uint32_t width = Cvar::Get( "vid_width" )->GetInt();
 			const uint32_t height = Cvar::Get( "vid_height" )->GetInt();
 			sceneView = new Renderer::View( width, height, false );
+			sceneView->SetPreRenderCallback( RenderScene );
 
 #if 0
 			LoadTerrain();
 #else
-			GameObject box;
-			box.renderObject = Renderer::Model::Register( "models/box.obj" );
-			sceneView->AddObject( box.renderObject );
+			GameObject *box = new GameObject();
+			objects.push_back( box );
+			//box->renderObject = Renderer::Model::Register( "models/monkey.obj" );
 #endif
 		}
 
@@ -97,7 +108,7 @@ namespace XS {
 		}
 
 		void DrawFrame( void ) {
-			// ...
+			sceneView->Bind();
 		}
 
 	} // namespace ClientGame

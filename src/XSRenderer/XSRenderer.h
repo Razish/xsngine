@@ -2,11 +2,11 @@
 
 #include <GL/glew.h>
 
-#include "XSCommon/XSCvar.h"
-
 namespace XS {
 
 	// front-end renderer access
+
+	class Cvar;
 
 	namespace Renderer {
 
@@ -21,6 +21,7 @@ namespace XS {
 
 		struct Material;
 		struct View;
+		class Model;
 
 		// private
 		void	RegisterCvars	( void );
@@ -37,8 +38,9 @@ namespace XS {
 		void	SetView		( View *view );
 
 		// render commands
-		void	DrawQuad( float x, float y, float w, float h, float s1, float t1, float s2, float t2,
+		void	DrawQuad	( float x, float y, float w, float h, float s1, float t1, float s2, float t2,
 			const Material& material);
+		void	DrawModel	( const Model *model );
 
 	} // namespace Renderer
 

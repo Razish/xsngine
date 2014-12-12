@@ -1,10 +1,14 @@
-#include <iostream>
-
 #include "XSCommon/XSCommon.h"
+#include "XSCommon/XSError.h"
 #include "XSCommon/XSString.h"
+#include "XSCommon/XSCvar.h"
+#include "XSCommon/XSConsole.h"
+#include "XSCommon/XSVector.h"
 #include "XSClient/XSClient.h"
 #include "XSClient/XSClientGame.h"
 #include "XSClient/XSClientConsole.h"
+#include "XSRenderer/XSFont.h"
+#include "XSRenderer/XSView.h"
 
 namespace XS {
 

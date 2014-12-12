@@ -3,6 +3,7 @@
 #include "XSCommon/XSCommon.h"
 #include "XSCommon/XSConsole.h"
 #include "XSCommon/XSString.h"
+#include "XSCommon/XSMessageBuffer.h"
 
 #if defined(XS_OS_WINDOWS) && defined(_DEBUG)
 	#define WIN32_LEAN_AND_MEAN
@@ -16,6 +17,15 @@
 namespace XS {
 
 	Console console;
+
+	Console::Console()
+	: indentation( 0u )
+	{
+		buffer = new MessageBuffer( "console.log" );
+	}
+	Console::~Console() {
+		delete buffer;
+	}
 
 	void Console::Print( const char *fmt, ... ) {
 		size_t size = 128;

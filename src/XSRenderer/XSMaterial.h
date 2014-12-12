@@ -1,10 +1,14 @@
 #pragma once
 
-#include "XSRenderer/XSBuffer.h"
+#include <vector>
 
 namespace XS {
 
 	namespace Renderer {
+
+		namespace Backend {
+			class Buffer;
+		} // namespace Backend
 
 		class ShaderProgram;
 		class Texture;

@@ -1,17 +1,18 @@
 #pragma once
 
+#include <vector>
+#include <string>
+
 #include "XSRenderer/XSRenderable.h"
 
 namespace XS {
 
 	namespace Renderer {
 
+		class Mesh;
+
 		// shared between all instances of a "model" (i.e. mesh + skin combinations)
 		class Model : public Renderable {
-		private:
-			uint32_t id;
-			std::vector<Mesh *> meshes;
-
 		public:
 			enum class Type {
 				UNKNOWN = 0,
@@ -19,12 +20,20 @@ namespace XS {
 				NUM_MODEL_TYPES
 			};
 
+		private:
+			Type type;
+			uint32_t refCount;
+
+		public:
 			~Model();
 
-			// will add associated meshes
 			static Model *Register( const char *path );
 
-			Type type;
+			virtual bool LoadMeshes( void ) = 0;
+			void Draw( void ) const;
+
+			std::string modelPath;
+			std::vector<Mesh *> meshes; // will be shared among duplicates to save memory
 		};
 
 	} // namespace Renderer

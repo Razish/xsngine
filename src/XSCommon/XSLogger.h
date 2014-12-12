@@ -1,8 +1,11 @@
 #pragma once
 
-#include "XSCommon/XSFile.h"
+#include <vector>
+#include <string>
 
 namespace XS {
+
+	class File;
 
 	class Logger {
 	private:
@@ -19,9 +22,8 @@ namespace XS {
 		: f( nullptr ), filename( filename ), timestamp( timestamp )
 		{
 		}
-		~Logger() {
-			delete f;
-		}
+
+		~Logger();
 
 		// don't allow default instantiation
 		Logger() = delete;

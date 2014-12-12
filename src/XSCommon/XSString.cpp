@@ -1,6 +1,7 @@
 #include <sstream>
 
 #include "XSCommon/XSCommon.h"
+#include "XSCommon/XSError.h"
 #include "XSCommon/XSString.h"
 
 namespace XS {

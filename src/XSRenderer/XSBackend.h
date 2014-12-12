@@ -2,6 +2,8 @@
 
 namespace XS {
 
+	class Cvar;
+
 	namespace Renderer {
 
 		namespace Backend {

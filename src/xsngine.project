@@ -208,6 +208,8 @@
     <File Name="XSCommon/XSMessageBuffer.h"/>
     <File Name="XSCommon/XSModule.h"/>
     <File Name="XSCommon/XSCvar.cpp"/>
+    <File Name="XSCommon/XSTokenParser.cpp"/>
+    <File Name="XSCommon/XSTokenParser.h"/>
   </VirtualDirectory>
   <VirtualDirectory Name="XSCrypto">
     <File Name="XSCrypto/XSMD5.cpp"/>
@@ -247,6 +249,8 @@
     <File Name="XSRenderer/XSMesh.h"/>
     <File Name="XSRenderer/XSBuffer.cpp"/>
     <File Name="XSRenderer/XSBuffer.h"/>
+    <File Name="XSRenderer/XSModelObj.cpp"/>
+    <File Name="XSRenderer/XSModelObj.h"/>
   </VirtualDirectory>
   <VirtualDirectory Name="XSSystem">
     <File Name="XSSystem/XSOS.h"/>

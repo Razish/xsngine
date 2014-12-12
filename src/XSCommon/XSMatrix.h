@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #include "XSCommon/XSVector.h"
 
 namespace XS {
@@ -68,17 +70,16 @@ namespace XS {
 	}
 
 	inline matrix4 perspectiveFov( float fovy, float aspectRatio, float znear, float zfar ) {
-		matrix4 m;
-
 		// convert degrees to radians and divide by 2
 		const float f = 1.0f / tanf( fovy * static_cast<float>( M_PI ) / 360.0f );
+
+		matrix4 m;
 		m[0][0] = f / aspectRatio;
 		m[1][1] = f;
 		m[2][2] = (zfar + znear) / (zfar - znear);
 		m[2][3] = 2.0f * zfar * znear / (zfar - znear);
 		m[3][2] = -1.0f;
 		m[3][3] = 0.0f;
-
 		return m;
 	}
 

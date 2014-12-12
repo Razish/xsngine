@@ -1,5 +1,8 @@
 #pragma once
 
+#include <string>
+#include <vector>
+
 namespace XS {
 
 	// uint32_t
@@ -22,15 +25,16 @@ namespace XS {
 
 		std::string fullString;
 		struct CvarValue {
-			CvarValue()
-			: str( "" ), integer( 0 ), number( 0.0f ), real( 0.0 ), boolean( false )
-			{
-			}
 			std::string str;
 			int integer;
 			float number;
 			double real;
 			bool boolean;
+
+			CvarValue()
+			: str( "" ), integer( 0 ), number( 0.0f ), real( 0.0 ), boolean( false )
+			{
+			}
 		};
 		std::vector<CvarValue> values; // separated by whitespace
 
@@ -46,7 +50,7 @@ namespace XS {
 		static bool initialised;
 
 		static Cvar *Create( std::string name, std::string value = "", std::string description = "none",
-			uint32_t flags=CVAR_NONE );
+			uint32_t flags = CVAR_NONE );
 		static Cvar *Get( const std::string &name );
 		static void List( void );
 

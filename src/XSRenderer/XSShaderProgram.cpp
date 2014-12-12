@@ -2,6 +2,7 @@
 #include "XSCommon/XSConsole.h"
 #include "XSCommon/XSString.h"
 #include "XSCommon/XSFile.h"
+#include "XSCommon/XSError.h"
 #include "XSRenderer/XSRenderer.h"
 #include "XSRenderer/XSShaderProgram.h"
 #include "XSRenderer/XSVertexAttributes.h"

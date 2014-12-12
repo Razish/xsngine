@@ -1,5 +1,8 @@
 #pragma once
 
+#include <vector>
+#include <string>
+
 namespace XS {
 
 	typedef std::vector<std::string> commandContext_t;

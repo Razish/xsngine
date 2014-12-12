@@ -19,8 +19,9 @@ namespace XS {
 	//
 	//	Example of reading a text file:
 	//		const File f( "path/to.file", FileMode::READ );
-	//		if ( !f.open )
+	//		if ( !f.open ) {
 	//			return;
+	//		}
 	//		char *buffer = new char[f.length];
 	//			f.Read( (byte *)buffer, f.length );	// second argument is optional, defaults to file.length
 	//			// do things to buffer here
@@ -28,8 +29,9 @@ namespace XS {
 	//
 	//	Example of writing a text file:
 	//		const File f( "path/to.file", FileMode::WRITE );
-	//		if ( !f.open )
+	//		if ( !f.open ) {
 	//			return;
+	//		}
 	//		f.AppendString( "Herp derp\n" );
 	//
 

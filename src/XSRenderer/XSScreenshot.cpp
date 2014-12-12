@@ -12,10 +12,10 @@ namespace XS {
 
 		namespace Backend {
 
-			static const uint32_t numScreenshotsPerFrame = 4u;
+			static auto constexpr numScreenshotsPerFrame = 4u;
 
 			static const char *GetScreenshotName( void ) {
-				static char timestamp[numScreenshotsPerFrame][1024];
+				static char timestamp[numScreenshotsPerFrame][XS_MAX_FILENAME];
 				time_t rawtime;
 				time( &rawtime );
 				static uint32_t index = 0u;

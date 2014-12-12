@@ -1,9 +1,11 @@
-#include <map>
+#include <unordered_map>
 
 #include "XSCommon/XSCommon.h"
 #include "XSCommon/XSConsole.h"
 #include "XSCommon/XSString.h"
+#include "XSCommon/XSFile.h"
 #include "XSRenderer/XSModel.h"
+#include "XSRenderer/XSModelObj.h"
 #include "XSRenderer/XSRenderer.h"
 
 namespace XS {
@@ -11,8 +13,7 @@ namespace XS {
 	namespace Renderer {
 
 		// list of registered models
-		static uint32_t numModels = 0u;
-		static std::map<uint32_t, Model*> models;
+		static std::unordered_map<std::string, Model*> models;
 
 		// map file extensions to internal model formats
 		static const struct {
@@ -34,37 +35,56 @@ namespace XS {
 		Model *Model::Register( const char *path ) {
 			//TODO: check for duplicates? or only for mesh info etc?
 			// for now, just add a new entry
-			Model *model = models[numModels];
+			Model *model = models[path];
 
 			if ( model ) {
-				console.Print( "Model::Register() using existing model for '%s' (%02u)\n", path, model->id );
+				console.Print( "Model::Register( '%s' ) using existing model\n", path );
+				model->refCount++;
 				return model;
 			}
 
 			char extension[XS_MAX_FILENAME];
 			if ( !File::GetExtension( path, extension, sizeof(extension) ) ) {
-				console.Print( "Model::Register() Unable to determine model format for '%s'\n", path );
+				console.Print( "Model::Register( '%s' ) Unable to determine model format\n", path );
 				return NULL;
 			}
 
-			model = models[numModels] = new Model();
-			model->id = numModels++;
-			model->type = GetTypeForExtension( extension );
-			console.Print( "Model::Register() loaded '%s' for the first time\n", path );
+			Model::Type type = GetTypeForExtension( extension );
+			if ( type == Model::Type::OBJ ) {
+				model = models[path] = new Obj();
+			}
+			else {
+				SDL_assert( !"Model::Register() tried to instantiate invalid model type. Should not happen!" );
+			}
+
+			console.Print( "Model::Register( '%s' ) loaded for the first time\n", path );
+			model->type = type;
+			model->modelPath = path;
+			model->LoadMeshes();
 
 			return model;
 		}
 
 		Model::~Model() {
-			Model *model = models[id];
+			Model *model = models[modelPath];
 			if ( model ) {
-				console.Print( "Model::~Model() removing model with id %02u\n", id );
-				models[id] = nullptr;
+				model->refCount--;
+				if ( !model->refCount ) {
+					console.Print( "Model::~Model( '%s' ) removed last model\n", modelPath.c_str() );
+					models[modelPath] = nullptr;
+				}
+				else {
+					console.Print( "Model::~Model( '%s' ) removing model\n", modelPath.c_str() );
+				}
 			}
 			else {
 				SDL_assert( !"Model::~Model() could not find model" );
-				console.Print( "Model::~Model() could not find model with id %02u\n", id );
+				console.Print( "Model::~Model( '%s' ) could not find model\n", modelPath.c_str() );
 			}
+		}
+
+		void Model::Draw( void ) const {
+			Renderer::DrawModel( this );
 		}
 
 	} // namespace Renderer

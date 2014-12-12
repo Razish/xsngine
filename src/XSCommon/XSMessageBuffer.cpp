@@ -2,6 +2,7 @@
 
 #include "XSCommon/XSCommon.h"
 #include "XSCommon/XSMessageBuffer.h"
+#include "XSCommon/XSLogger.h"
 
 namespace XS {
 
@@ -12,6 +13,9 @@ namespace XS {
 		else {
 			log = nullptr;
 		}
+	}
+	MessageBuffer::~MessageBuffer() {
+		delete log;
 	}
 
 	void MessageBuffer::Append( std::string message ) {

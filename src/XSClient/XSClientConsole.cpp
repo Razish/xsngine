@@ -1,9 +1,13 @@
-#include <iostream>
-
 #include <SDL2/SDL.h>
 
 #include "XSCommon/XSCommon.h"
+#include "XSCommon/XSConsole.h"
+#include "XSCommon/XSCvar.h"
+#include "XSCommon/XSMessageBuffer.h"
+#include "XSInput/XSInputField.h"
 #include "XSClient/XSClientConsole.h"
+#include "XSRenderer/XSFont.h"
+#include "XSRenderer/XSView.h"
 
 namespace XS {
 

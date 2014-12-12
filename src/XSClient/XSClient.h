@@ -3,13 +3,10 @@
 #include <SDL2/SDL_keycode.h>
 
 #include "XSCommon/XSCommand.h"
-#include "XSClient/XSClientConsole.h"
 
 namespace XS {
 
 	namespace Client {
-
-		extern ClientConsole *clientConsole;
 
 		void	Init				( void );
 		void	Shutdown			( void );

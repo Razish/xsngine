@@ -1,6 +1,7 @@
 #include "XSCommon/XSCommon.h"
 #include "XSCommon/XSCvar.h"
 #include "XSCommon/XSString.h"
+#include "XSCommon/XSError.h"
 #include "XSRenderer/XSRenderer.h"
 #include "XSRenderer/XSTexture.h"
 

@@ -1,16 +1,18 @@
 #include "XSCommon/XSCommon.h"
 #include "XSCommon/XSCvar.h"
+#include "XSCommon/XSError.h"
 #include "XSRenderer/XSRenderer.h"
 #include "XSRenderer/XSBuffer.h"
 #include "XSRenderer/XSView.h"
 #include "XSRenderer/XSBackend.h"
+#include "XSRenderer/XSRenderable.h"
 
 namespace XS {
 
 	namespace Renderer {
 
 		View::View( uint32_t width, uint32_t height, bool is2D )
-		: width( width ), height( height ), is2D( is2D )
+		: width( width ), height( height ), callbackPreRender( nullptr ), is2D( is2D )
 		{
 			if ( !width || !height ) {
 				throw( XSError( "Registered View with 0 width or 0 height" ) );
@@ -45,6 +47,18 @@ namespace XS {
 
 			perFrameData->Unmap();
 			perFrameData->BindRange( 6 );
+
+			if ( callbackPreRender ) {
+				callbackPreRender();
+			}
+
+			// sort surfaces etc?
+
+			for ( const auto &object : renderObjects ) {
+				if ( object ) {
+					object->Draw();
+				}
+			}
 		}
 
 		void View::PostRender( void ) const {
@@ -53,6 +67,10 @@ namespace XS {
 
 		void View::Bind( void ) {
 			SetView( this );
+		}
+
+		void View::SetPreRenderCallback( void (*callback)( void ) ) {
+			callbackPreRender = callback;
 		}
 
 		void View::AddObject( const Renderable *renderObject ) {

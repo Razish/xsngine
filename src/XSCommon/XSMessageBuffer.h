@@ -1,12 +1,11 @@
 #pragma once
 
-#include <string>
 #include <vector>
-
-#include "XSCommon/XSLogger.h"
-#include "XSCommon/XSFile.h"
+#include <string>
 
 namespace XS {
+
+	class Logger;
 
 	class MessageBuffer {
 	private:
@@ -15,9 +14,7 @@ namespace XS {
 
 	public:
 		MessageBuffer( const char *logfile = NULL );
-		~MessageBuffer() {
-			delete log;
-		}
+		~MessageBuffer();
 
 		// don't allow default instantiation
 		MessageBuffer() = delete;

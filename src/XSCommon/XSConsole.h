@@ -1,27 +1,21 @@
 #pragma once
 
-#include "XSCommon/XSMessageBuffer.h"
-
 namespace XS {
+
+	class MessageBuffer;
 
 	extern struct Console {
 		unsigned int indentation;
 		MessageBuffer *buffer;
 
-		Console()
-		: indentation( 0u )
-		{
-			buffer = new MessageBuffer( "console.log" );
-		}
-		~Console() {
-			delete buffer;
+		Console();
+		~Console();
+
+		inline void Indent( int level ) {
+			indentation += level;
 		}
 
 		void Print( const char *fmt, ... );
-
-		void Indent( int level ) {
-			indentation += level;
-		}
 
 	private:
 		void Append( const char *text, bool multiLine );

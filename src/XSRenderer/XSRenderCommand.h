@@ -7,6 +7,7 @@ namespace XS {
 	namespace Renderer {
 
 		struct Material;
+		class Model;
 
 		struct rcDrawQuad_t {
 			float x, y;
@@ -23,6 +24,10 @@ namespace XS {
 			const char *name;
 		};
 
+		struct rcDrawModel_t {
+			const Model *model;
+		};
+
 		struct RenderCommand {
 		public:
 			static void Init();
@@ -30,12 +35,14 @@ namespace XS {
 
 			enum class Type {
 				DRAWQUAD = 0,
+				DRAWMODEL,
 				SCREENSHOT,
 				NUM_RENDER_CMDS
 			};
 			union {
 				rcDrawQuad_t drawQuad;
 				rcScreenshot_t screenshot;
+				rcDrawModel_t drawModel;
 			};
 
 			// don't allow default instantiation

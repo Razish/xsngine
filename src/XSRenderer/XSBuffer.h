@@ -1,7 +1,5 @@
 #pragma once
 
-#include <GL/glew.h>
-
 namespace XS {
 
 	namespace Renderer {

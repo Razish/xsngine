@@ -2,19 +2,16 @@
 
 #include <SDL2/SDL_keycode.h>
 
-//
-// XS event pump
-//
 //	events are generated throughout the frame and timestamped (i.e. keyboard/mouse input)
-//	They are processed at key points in the frame, such as before executing the command buffer and before running a
+//	they are processed at key points in the frame, such as before executing the command buffer and before running a
 //		client frame or server frame
-//	Internal functions are encapsulated in XSEvent.cpp
-//
+//	internal functions are encapsulated in XSEvent.cpp
 
 namespace XS {
 
 	enum EventType {
-		KEY = 0,
+		UNKNOWN = 0,
+		KEY,
 		NUM_EVENTS
 	};
 
@@ -29,13 +26,18 @@ namespace XS {
 				bool		down;
 			} keyEvent;
 		};
+
+		XSEvent()
+		: type( UNKNOWN ), time( 0u )
+		{
+		}
 	};
 
 	namespace Event {
 
-		void Init( void );
-		void Queue( EventType type, XSEvent *ev );
-		void Pump( void );
+		void	Init	( void );
+		void	Queue	( EventType type, XSEvent *ev );
+		void	Pump	( void );
 
 	} // namespace Event
 

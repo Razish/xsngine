@@ -1,19 +1,25 @@
 #pragma once
 
+#include <vector>
+
 #include "XSCommon/XSMatrix.h"
-#include "XSRenderer/XSBuffer.h"
-#include "XSRenderer/XSMaterial.h"
-#include "XSRenderer/XSRenderable.h"
 #include "XSRenderer/XSRenderCommand.h"
 
 namespace XS {
 
 	namespace Renderer {
 
+		namespace Backend {
+			class Buffer;
+		} // namespace Backend
+
+		class Renderable;
+
 		struct View {
 		private:
 			uint32_t width, height;
 			std::vector<const Renderable*> renderObjects;
+			void (*callbackPreRender)( void );
 
 		public:
 			matrix4 projectionMatrix;
@@ -29,6 +35,7 @@ namespace XS {
 			void PreRender( void );
 			void PostRender( void ) const;
 
+			void SetPreRenderCallback( void (*callback)( void ) );
 			void AddObject( const Renderable *renderObject );
 		};
 

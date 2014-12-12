@@ -1,10 +1,9 @@
-#include <unordered_map>
-
 #include "XSCommon/XSCommon.h"
 #include "XSCommon/XSCommand.h"
 #include "XSCommon/XSCvar.h"
 #include "XSCommon/XSConsole.h"
 #include "XSCommon/XSString.h"
+#include "XSCommon/XSError.h"
 #include "XSInput/XSKeys.h"
 #include "XSClient/XSClient.h"
 

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "XSCommon/XSCvar.h"
-
 namespace XS {
+
+	class Cvar;
 
 	namespace Common {
 

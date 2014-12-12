@@ -4,6 +4,7 @@
 #include "XSCommon/XSConsole.h"
 #include "XSCommon/XSFile.h"
 #include "XSCommon/XSGlobals.h"
+#include "XSCommon/XSCvar.h"
 #include "XSRenderer/XSRenderer.h"
 #include "XSRenderer/XSImagePNG.h"
 

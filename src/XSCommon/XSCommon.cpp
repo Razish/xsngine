@@ -6,6 +6,7 @@
 #include "XSCommon/XSConsole.h"
 #include "XSCommon/XSCvar.h"
 #include "XSCommon/XSEvent.h"
+#include "XSCommon/XSError.h"
 #include "XSCommon/XSFile.h"
 #include "XSCommon/XSTimer.h"
 #include "XSCommon/XSString.h"

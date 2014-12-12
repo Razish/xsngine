@@ -2,19 +2,22 @@
 
 #include <SDL2/SDL_keycode.h>
 
-#include "XSCommon/XSConsole.h"
 #include "XSCommon/XSCommand.h"
-#include "XSCommon/XSCvar.h"
-#include "XSInput/XSInputField.h"
-#include "XSRenderer/XSFont.h"
-#include "XSRenderer/XSView.h"
 
 namespace XS {
+
+	class Console;
+	class Cvar;
+	class InputField;
+	namespace Renderer {
+		class View;
+		class Font;
+	} // namespace Renderer
 
 	namespace Client {
 
 		// driver for global Console instance to handle client interaction/rendering
-		class ClientConsole {
+		extern class ClientConsole {
 		private:
 			Console			*console;
 
@@ -37,7 +40,7 @@ namespace XS {
 			void	Draw	( void );
 			bool	KeyEvent( SDL_Keycode key, bool down );
 			void	Toggle	( void );
-		};
+		} *clientConsole;
 
 	} // namespace Client
 

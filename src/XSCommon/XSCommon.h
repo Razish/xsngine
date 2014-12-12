@@ -7,17 +7,13 @@
 #include <cstdarg>
 #include <cstdint>
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include <ctime>
-
-#include <algorithm>
-#include <string>
-#include <vector>
 
 #include <SDL2/SDL_assert.h>
 
 #include "XSSystem/XSPlatform.h"
-#include "XSCommon/XSError.h"
 
 namespace XS {
 

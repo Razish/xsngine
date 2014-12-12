@@ -2,29 +2,42 @@
 
 #include "XSCommon/XSCommon.h"
 #include "XSCommon/XSVector.h"
+#include "XSCommon/XSConsole.h"
 #include "XSRenderer/XSRenderer.h"
 #include "XSRenderer/XSBuffer.h"
 #include "XSRenderer/XSRenderCommand.h"
 #include "XSRenderer/XSMaterial.h"
+#include "XSRenderer/XSMesh.h"
+#include "XSRenderer/XSModel.h"
 #include "XSRenderer/XSImagePNG.h"
 
 namespace XS {
 
 	namespace Renderer {
 
-		static Backend::Buffer *quadsVertexBuffer;
-		static Backend::Buffer *quadsIndexBuffer;
+		// render commands are actually backend
+		using namespace Backend;
+
+		static Buffer *quadsVertexBuffer;
+		static Buffer *quadsIndexBuffer;
+		static Buffer *modelVertexBuffer;
+		static Buffer *modelIndexBuffer;
 
 		void RenderCommand::Init( void ) {
-			const unsigned short indices[6] = { 0, 2, 1, 1, 2, 3 };
+			const unsigned short quadIndices[6] = { 0, 2, 1, 1, 2, 3 };
 
-			quadsVertexBuffer = new Backend::Buffer( Backend::Buffer::Type::VERTEX, nullptr, 576 );
-			quadsIndexBuffer = new Backend::Buffer( Backend::Buffer::Type::INDEX, indices, sizeof(indices) );
+			quadsVertexBuffer = new Buffer( Buffer::Type::VERTEX, nullptr, 144 * sizeof(float) );
+			quadsIndexBuffer = new Buffer( Buffer::Type::INDEX, quadIndices, sizeof(quadIndices) );
+
+			modelVertexBuffer = new Buffer( Buffer::Type::VERTEX, nullptr, 1024 * sizeof(float) );
+			modelIndexBuffer = new Buffer( Buffer::Type::INDEX, nullptr, 1024 * sizeof(int16_t) );
 		}
 
 		void RenderCommand::Shutdown( void ) {
 			delete quadsVertexBuffer;
 			delete quadsIndexBuffer;
+			delete modelVertexBuffer;
+			delete modelIndexBuffer;
 		}
 
 		static void DrawQuad( const rcDrawQuad_t *quad ) {
@@ -97,6 +110,44 @@ namespace XS {
 			glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0 );
 		}
 
+		static void DrawMesh( const Mesh *mesh ) {
+			float *vertexBuffer = static_cast<float *>( modelVertexBuffer->Map() );
+
+			std::memcpy( vertexBuffer, mesh->vertices, mesh->numVertices * sizeof(vector3) );
+			vertexBuffer += 8;
+
+			std::memcpy( vertexBuffer, mesh->uv, mesh->numUVs * sizeof(vector2) );
+			vertexBuffer += 8;
+
+			std::memcpy( vertexBuffer, mesh->normals, mesh->numNormals * sizeof(vector3) );
+
+			modelVertexBuffer->Unmap();
+
+			modelIndexBuffer->Bind();
+
+			glEnableVertexAttribArray( 0 );
+			glEnableVertexAttribArray( 1 );
+			glEnableVertexAttribArray( 2 );
+
+			intptr_t offset = 0;
+
+			glVertexAttribPointer( 0, 2, GL_FLOAT, GL_FALSE, 0, 0 );
+			offset += mesh->numVertices * sizeof(vector3);
+
+			glVertexAttribPointer( 1, 2, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<const GLvoid *>( offset ) );
+			offset += mesh->numUVs * sizeof(vector2);
+
+			glVertexAttribPointer( 2, 4, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<const GLvoid *>( offset ) );
+
+			glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0 );
+		}
+
+		static void DrawModel( const rcDrawModel_t *model ) {
+			for ( const auto &mesh : model->model->meshes ) {
+				DrawMesh( mesh );
+			}
+		}
+
 		static void Screenshot( const rcScreenshot_t *ss ) {
 			GLint signalled;
 
@@ -111,6 +162,7 @@ namespace XS {
 				glDeleteSync( ss->sync );
 				glBindBuffer( GL_PIXEL_PACK_BUFFER, ss->pbo );
 				void *data = glMapBuffer( GL_PIXEL_PACK_BUFFER, GL_READ_ONLY );
+					console.Print( "Writing screenshot %s (%ix%i)...\n", ss->name, ss->width, ss->height );
 					WritePNG( ss->name, (uint8_t*)data, ss->width, ss->height, 4 );
 				glUnmapBuffer( GL_PIXEL_PACK_BUFFER );
 			}
@@ -120,6 +172,9 @@ namespace XS {
 			switch( type ) {
 			case Type::DRAWQUAD:
 				DrawQuad( &drawQuad );
+				break;
+			case Type::DRAWMODEL:
+				DrawModel( &drawModel );
 				break;
 			case Type::SCREENSHOT:
 				Screenshot( &screenshot );

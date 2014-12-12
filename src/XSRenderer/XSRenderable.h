@@ -1,16 +1,15 @@
 #pragma once
 
-#include "XSRenderer/XSMesh.h"
-
 namespace XS {
 
 	namespace Renderer {
 
-		// abstract base class implemented by e.g. Model
+		// abstract base class implemented by e.g. Model, Effect
 		class Renderable {
 
 		public:
 			virtual ~Renderable() = 0;
+			virtual void Draw( void ) const = 0;
 
 		};
 

@@ -1,12 +1,13 @@
-#include <SDL2/SDL_keycode.h>
-
 #include <map>
+
+#include <SDL2/SDL_keycode.h>
 
 #include "XSCommon/XSCommon.h"
 #include "XSCommon/XSString.h"
 #include "XSCommon/XSConsole.h"
 #include "XSInput/XSKeys.h"
 #include "XSClient/XSClient.h"
+#include "XSClient/XSClientConsole.h"
 
 namespace XS {
 

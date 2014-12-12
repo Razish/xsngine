@@ -1,7 +1,12 @@
 #include "XSCommon/XSCommon.h"
 #include "XSCommon/XSLogger.h"
+#include "XSCommon/XSFile.h"
 
 namespace XS {
+
+	Logger::~Logger() {
+		delete f;
+	}
 
 	void Logger::PrintQueued( void ) {
 		for ( const std::string &str : queue ) {

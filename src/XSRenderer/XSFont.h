@@ -1,16 +1,19 @@
 #pragma once
 
+#include <string>
+
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include "freetype/ftglyph.h"
 
 #include "XSCommon/XSVector.h"
-#include "XSRenderer/XSTexture.h"
-#include "XSRenderer/XSMaterial.h"
 
 namespace XS {
 
 	namespace Renderer {
+
+		class Texture;
+		class Material;
 
 		struct FontData {
 			vector2	size;

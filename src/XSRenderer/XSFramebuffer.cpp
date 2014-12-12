@@ -1,5 +1,6 @@
 #include "XSCommon/XSCommon.h"
 #include "XSCommon/XSConsole.h"
+#include "XSCommon/XSError.h"
 #include "XSRenderer/XSRenderer.h"
 #include "XSRenderer/XSFramebuffer.h"
 
