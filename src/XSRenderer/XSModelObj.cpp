@@ -128,6 +128,13 @@ namespace XS {
 						parser->SkipLine();
 					}
 					else if ( !String::CompareCase( token, "f" ) ) {
+						if ( !mesh ) {
+							// something went wrong, we can't parse faces out if we don't know what mesh they're
+							//	related to
+							console.Print( "Obj::LoadMeshes( '%s' ) tried to parse face without specifying a mesh!\n",
+								modelPath.c_str() );
+							break;
+						}
 						for ( int i = 0; i < 3; i++ ) {
 							const char *str = nullptr;
 							parser->ParseString( &str );

@@ -55,6 +55,7 @@ namespace XS {
 			}
 			else {
 				SDL_assert( !"Model::Register() tried to instantiate invalid model type. Should not happen!" );
+				return NULL;
 			}
 
 			console.Print( "Model::Register( '%s' ) loaded for the first time\n", path );
