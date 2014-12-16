@@ -111,6 +111,7 @@ namespace XS {
 		}
 
 		static void DrawMesh( const Mesh *mesh ) {
+			#if 0
 			float *vertexBuffer = static_cast<float *>( modelVertexBuffer->Map() );
 
 			std::memcpy( vertexBuffer, mesh->vertices, mesh->numVertices * sizeof(vector3) );
@@ -140,6 +141,7 @@ namespace XS {
 			glVertexAttribPointer( 2, 4, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<const GLvoid *>( offset ) );
 
 			glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0 );
+			#endif
 		}
 
 		static void DrawModel( const rcDrawModel_t *model ) {

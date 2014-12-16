@@ -99,7 +99,7 @@ namespace XS {
 #else
 			GameObject *box = new GameObject();
 			objects.push_back( box );
-			//box->renderObject = Renderer::Model::Register( "models/monkey.obj" );
+			box->renderObject = Renderer::Model::Register( "models/monkey.obj" );
 #endif
 		}
 

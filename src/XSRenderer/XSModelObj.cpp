@@ -16,6 +16,7 @@ namespace XS {
 		void Obj::Process( Mesh *mesh, std::vector<vector3> &tmpVertices, std::vector<vector2> &tmpUVs,
 			std::vector<vector3> &tmpNormals )
 		{
+			#if 0
 			if ( mesh->numVertices ) {
 				mesh->vertices = new vector3[mesh->numVertices];
 				for ( size_t i = 0; i < mesh->vertexIndices.size(); i++ ) {
@@ -39,6 +40,9 @@ namespace XS {
 					mesh->normals[i] = tmpNormals[ normalIndex - 1 ];
 				}
 			}
+			#endif
+
+			meshes.push_back( mesh );
 		}
 
 		bool Obj::LoadMeshes( void ) {
