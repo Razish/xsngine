@@ -158,7 +158,7 @@ if plat == 'Linux':
 elif plat == 'Windows':
 	# windows libs are in e.g. "../lib/x86/libpng16d.lib" for 32 bit debug build of libpng
 	env['LIBPATH'] = '#/../lib/' + arch + '/'
-	libs = [ 'OpenGL32', 'SDL2', 'SDL2main', 'freetype250d', 'zlibd', 'libpng16d' ]
+	libs = [ 'OpenGL32', 'SDL2', 'SDL2main', 'freetype250d', 'zlibd', 'libpng16d', 'Ws2_32' ]
 
 # compiler options
 env['CPPPATH'] = [ '#', '#/freetype', '#/GLEW', '#/libpng', '#/zlib' ]
@@ -226,7 +226,9 @@ if plat == 'Linux':
 elif plat == 'Windows':
 	# assume msvc
 	env['CFLAGS'] = [ '/TC' ]
-	env['CCFLAGS'] = [ '/nologo', '/W4', '/WX-', '/GS', '/fp:precise', '/Zc:wchar_t', '/Zc:forScope', '/Gd', '/GF', '/errorReport:prompt', '/EHs', '/EHc', '/Ot', '/Zi' ]
+	env['CCFLAGS'] = [ '/nologo', '/W4', '/WX-', '/GS', '/fp:precise', '/Zc:wchar_t', '/Zc:forScope', '/Gd', '/GF',
+		'/Gm-', '/errorReport:prompt', '/EHs', '/EHc', '/Ot'
+	]
 	env['LINKFLAGS'] = [ '/SUBSYSTEM:WINDOWS', '/MACHINE:'+arch, '/LTCG' ]
 	env['CPPDEFINES'] = [ '_MSC_EXTENSIONS', '_INTEGRAL_MAX_BITS=64', '_WIN32', '_MT', '_M_FP_PRECISE' ]
 	if bits == 32:
@@ -236,6 +238,33 @@ elif plat == 'Windows':
 		env['CCFLAGS'] += [ '/Zp16' ]
 		env['CPPDEFINES'] += [ '_M_AMD64=100', '_M_X64=100', '_WIN64' ]
 
+	env['CCFLAGS'] += [
+		'/W4',
+	#	'/Wall',
+		'/we 4013',
+		'/we 4024',
+		'/we 4026',
+		'/we 4028',
+		'/we 4029',
+		'/we 4033',
+		'/we 4047',
+		'/we 4053',
+		'/we 4087',
+		'/we 4098',
+		'/we 4245',
+		'/we 4305',
+		'/we 4700'
+	]
+	if 'MORE_WARNINGS' not in os.environ:
+		env['CCFLAGS'] += [
+			'/wd 4100',
+			'/wd 4127',
+			'/wd 4131',
+			'/wd 4244',
+			'/wd 4706',
+			'/wd 4996'
+		]
+
 # debug / release
 if debug == 0 or debug == 2:
 	if plat == 'Linux':
@@ -243,7 +272,7 @@ if debug == 0 or debug == 2:
 		if debug == 0:
 			env['LINKFLAGS'] += [ '-s' ]
 	elif plat == 'Windows':
-		env['CCFLAGS'] += [ '/GL', '/Gm-', '/MD', '/O2', '/Oi' ]
+		env['CCFLAGS'] += [ '/GL', '/MD', '/O2', '/Oi' ]
 		if bits == 64:
 			env['CCFLAGS'] += [ '/Oy' ]
 	if debug == 0:
@@ -253,9 +282,9 @@ if debug:
 		env['CCFLAGS'] += [ '-g3' ]
 	elif plat == 'Windows':
 		env['CPPDEFINES'] += [ '__MSVC_RUNTIME_CHECKS' ]
-		env['CCFLAGS'] += [ '/Gm', '/FD', '/MDd', '/Od', '/RTC1', '/RTCs', '/RTCu' ]
+		env['CCFLAGS'] += [ '/FD', '/MDd', '/Od', '/RTC1', '/RTCs', '/RTCu' ]
 		if bits == 32:
-			env['CCFLAGS'] += [ '/FC', '/ZI' ]
+			env['CCFLAGS'] += [ '/FC', '/Z7' ]
 	env['CPPDEFINES'] += [ '_DEBUG' ]
 
 if revision:

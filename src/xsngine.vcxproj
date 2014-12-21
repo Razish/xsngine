@@ -5,49 +5,24 @@
       <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug|x64">
-      <Configuration>Debug</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Win32">
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Release|x64">
-      <Configuration>Release</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{17826333-F316-4D60-B1C5-F517516FD988}</ProjectGuid>
-    <Keyword>Win32Proj</Keyword>
-    <RootNamespace>xsngine</RootNamespace>
+    <ProjectGuid>{AE0284A2-4DE8-4F87-AE0C-30B4B556660E}</ProjectGuid>
+    <Keyword>MakeFileProj</Keyword>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>Makefile</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <CharacterSet>NotSet</CharacterSet>
-    <PlatformToolset>v120</PlatformToolset>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <UseDebugLibraries>true</UseDebugLibraries>
-    <CharacterSet>NotSet</CharacterSet>
     <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>Makefile</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>NotSet</CharacterSet>
-    <PlatformToolset>v120</PlatformToolset>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <UseDebugLibraries>false</UseDebugLibraries>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>NotSet</CharacterSet>
     <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -56,213 +31,22 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LinkIncremental>true</LinkIncremental>
-    <IntDir>..\build\$(Configuration)\$(PlatformShortName)\</IntDir>
-    <OutDir>..\bin\</OutDir>
-    <TargetName>$(ProjectName).$(PlatformShortName)</TargetName>
-    <IncludePath>GLEW/;$(IncludePath)</IncludePath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LinkIncremental>true</LinkIncremental>
-    <IntDir>..\build\$(Configuration)\$(Platform)\</IntDir>
-    <OutDir>..\bin\</OutDir>
-    <TargetName>$(ProjectName).$(Platform)</TargetName>
+    <NMakeBuildCommandLine>scons.bat -Q debug=1</NMakeBuildCommandLine>
+    <NMakeCleanCommandLine>scons.bat -Q -c  debug=1</NMakeCleanCommandLine>
+    <NMakePreprocessorDefinitions>WIN32;_DEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LinkIncremental>false</LinkIncremental>
-    <OutDir>..\bin\</OutDir>
-    <IntDir>..\build\$(Configuration)\$(PlatformShortName)\</IntDir>
-    <TargetName>$(ProjectName).$(PlatformShortName)</TargetName>
-    <IncludePath>GLEW/;$(IncludePath)</IncludePath>
+    <NMakeBuildCommandLine>scons.bat -Q</NMakeBuildCommandLine>
+    <NMakeCleanCommandLine>scons.bat -Q -c</NMakeCleanCommandLine>
+    <NMakePreprocessorDefinitions>WIN32;NDEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LinkIncremental>false</LinkIncremental>
-    <OutDir>..\bin\</OutDir>
-    <IntDir>..\build\$(Configuration)\$(Platform)\</IntDir>
-    <TargetName>$(ProjectName).$(Platform)</TargetName>
-  </PropertyGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <ClCompile>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
-      <WarningLevel>Level4</WarningLevel>
-      <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>GLEW_STATIC;_CRT_SECURE_NO_WARNINGS;WIN32;ARCH_STRING="x86";_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.;freetype;libpng;zlib</AdditionalIncludeDirectories>
-      <DisableSpecificWarnings>4127;4100</DisableSpecificWarnings>
-    </ClCompile>
-    <Link>
-      <SubSystem>Windows</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>../lib/x86/</AdditionalLibraryDirectories>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;SDL2.lib;SDL2main.lib;OpenGL32.lib;freetype250d.lib;zlibd.lib;libpng16d.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Link>
-    <CustomBuildStep>
-      <Command>
-      </Command>
-    </CustomBuildStep>
-    <CustomBuildStep>
-      <Outputs>
-      </Outputs>
-    </CustomBuildStep>
+  <ItemDefinitionGroup>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <ClCompile>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
-      <WarningLevel>Level4</WarningLevel>
-      <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;ARCH_STRING="x64";_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.;freetype;libpng;zlib;GLEW</AdditionalIncludeDirectories>
-      <DisableSpecificWarnings>4127;4100</DisableSpecificWarnings>
-    </ClCompile>
-    <Link>
-      <SubSystem>Windows</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>../lib/x64/</AdditionalLibraryDirectories>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;SDL2.lib;SDL2main.lib;OpenGL32.lib;freetype250d.lib;zlibd.lib;libpng16d.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <UACExecutionLevel>AsInvoker</UACExecutionLevel>
-    </Link>
-    <CustomBuildStep>
-      <Command>
-      </Command>
-    </CustomBuildStep>
-    <CustomBuildStep>
-      <Outputs>
-      </Outputs>
-    </CustomBuildStep>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <ClCompile>
-      <WarningLevel>Level4</WarningLevel>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
-      <Optimization>MaxSpeed</Optimization>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>GLEW_STATIC;_CRT_SECURE_NO_WARNINGS;WIN32;ARCH_STRING="x86";NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.;freetype;libpng;zlib</AdditionalIncludeDirectories>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <DisableSpecificWarnings>4127;4100</DisableSpecificWarnings>
-    </ClCompile>
-    <Link>
-      <SubSystem>Windows</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;SDL2.lib;SDL2main.lib;OpenGL32.lib;freetype250.lib;zlib.lib;libpng16.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>../lib/x86/</AdditionalLibraryDirectories>
-    </Link>
-    <CustomBuildStep>
-      <Command>
-      </Command>
-    </CustomBuildStep>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <ClCompile>
-      <WarningLevel>Level4</WarningLevel>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
-      <Optimization>MaxSpeed</Optimization>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;ARCH_STRING="x64";NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.;freetype;libpng;zlib;GLEW</AdditionalIncludeDirectories>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <DisableSpecificWarnings>4127;4100</DisableSpecificWarnings>
-    </ClCompile>
-    <Link>
-      <SubSystem>Windows</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;SDL2.lib;SDL2main.lib;OpenGL32.lib;freetype250.lib;zlib.lib;libpng16.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>../lib/x64/</AdditionalLibraryDirectories>
-    </Link>
-    <CustomBuildStep>
-      <Command>
-      </Command>
-    </CustomBuildStep>
-  </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="GLEW\glew.c" />
-    <ClCompile Include="XSClient\XSClient.cpp" />
-    <ClCompile Include="XSClient\XSInput.cpp" />
-    <ClCompile Include="XSClient\XSInputField.cpp" />
-    <ClCompile Include="XSClient\XSKeys.cpp" />
-    <ClCompile Include="XSCommon\XSColours.cpp" />
-    <ClCompile Include="XSCommon\XSCommand.cpp" />
-    <ClCompile Include="XSCommon\XSConsole.cpp" />
-    <ClCompile Include="XSCommon\XSCvar.cpp" />
-    <ClCompile Include="XSCommon\XSCommon.cpp" />
-    <ClCompile Include="XSCommon\XSEvent.cpp" />
-    <ClCompile Include="XSCommon\XSFile.cpp" />
-    <ClCompile Include="XSCommon\XSLogger.cpp" />
-    <ClCompile Include="XSCommon\XSMatrix.cpp" />
-    <ClCompile Include="XSCommon\XSMessageBuffer.cpp" />
-    <ClCompile Include="XSCommon\XSString.cpp" />
-    <ClCompile Include="XSCommon\XSTimer.cpp" />
-    <ClCompile Include="XSCommon\XSVector.cpp" />
-    <ClCompile Include="XSRenderer\XSBackend.cpp" />
-    <ClCompile Include="XSRenderer\XSFont.cpp" />
-    <ClCompile Include="XSRenderer\XSFramebuffer.cpp" />
-    <ClCompile Include="XSRenderer\XSImagePNG.cpp" />
-    <ClCompile Include="XSRenderer\XSInternalFormat.cpp" />
-    <ClCompile Include="XSRenderer\XSMaterial.cpp" />
-    <ClCompile Include="XSRenderer\XSRenderCommand.cpp" />
-    <ClCompile Include="XSRenderer\XSRenderer.cpp" />
-    <ClCompile Include="XSRenderer\XSShaderProgram.cpp" />
-    <ClCompile Include="XSRenderer\XSTexture.cpp" />
-    <ClCompile Include="XSRenderer\XSView.cpp" />
-    <ClCompile Include="XSSystem\XSWindows.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="XSClient\XSClient.h" />
-    <ClInclude Include="XSClient\XSInput.h" />
-    <ClInclude Include="XSClient\XSInputField.h" />
-    <ClInclude Include="XSClient\XSKeys.h" />
-    <ClInclude Include="XSCommon\XSColours.h" />
-    <ClInclude Include="XSCommon\XSCommand.h" />
-    <ClInclude Include="XSCommon\XSCommon.h" />
-    <ClInclude Include="XSCommon\XSConsole.h" />
-    <ClInclude Include="XSCommon\XSCvar.h" />
-    <ClInclude Include="XSCommon\XSError.h" />
-    <ClInclude Include="XSCommon\XSEvent.h" />
-    <ClInclude Include="XSCommon\XSFile.h" />
-    <ClInclude Include="XSCommon\XSGlobals.h" />
-    <ClInclude Include="XSCommon\XSLogger.h" />
-    <ClInclude Include="XSCommon\XSMatrix.h" />
-    <ClInclude Include="XSCommon\XSMessageBuffer.h" />
-    <ClInclude Include="XSCommon\XSString.h" />
-    <ClInclude Include="XSCommon\XSTimer.h" />
-    <ClInclude Include="XSCommon\XSVector.h" />
-    <ClInclude Include="XSRenderer\XSBackend.h" />
-    <ClInclude Include="XSRenderer\XSFont.h" />
-    <ClInclude Include="XSRenderer\XSFramebuffer.h" />
-    <ClInclude Include="XSRenderer\XSImagePNG.h" />
-    <ClInclude Include="XSRenderer\XSInternalFormat.h" />
-    <ClInclude Include="XSRenderer\XSMaterial.h" />
-    <ClInclude Include="XSRenderer\XSRenderCommand.h" />
-    <ClInclude Include="XSRenderer\XSRenderer.h" />
-    <ClInclude Include="XSRenderer\XSShaderProgram.h" />
-    <ClInclude Include="XSRenderer\XSTexture.h" />
-    <ClInclude Include="XSRenderer\XSVertexAttributes.h" />
-    <ClInclude Include="XSRenderer\XSView.h" />
-    <ClInclude Include="XSSystem\XSInclude.h" />
-    <ClInclude Include="XSSystem\XSOS.h" />
-    <ClInclude Include="XSSystem\XSPlatform.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

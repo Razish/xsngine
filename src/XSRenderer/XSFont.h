@@ -13,7 +13,7 @@ namespace XS {
 	namespace Renderer {
 
 		class Texture;
-		class Material;
+		struct Material;
 
 		struct FontData {
 			vector2	size;

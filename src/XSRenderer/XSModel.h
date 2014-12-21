@@ -9,7 +9,7 @@ namespace XS {
 
 	namespace Renderer {
 
-		class Mesh;
+		struct Mesh;
 
 		// shared between all instances of a "model" (i.e. mesh + skin combinations)
 		class Model : public Renderable {

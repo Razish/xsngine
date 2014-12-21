@@ -1,6 +1,7 @@
 #pragma once
 
 #include <algorithm>
+#include <string>
 
 // upon unrecoverable error, throw an XSError to clean up all subsystems
 

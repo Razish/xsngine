@@ -6,11 +6,11 @@
 
 namespace XS {
 
-	class Console;
+	struct Console;
 	class Cvar;
 	class InputField;
 	namespace Renderer {
-		class View;
+		struct View;
 		class Font;
 	} // namespace Renderer
 

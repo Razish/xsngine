@@ -66,7 +66,7 @@ namespace XS {
 			view->Bind();
 
 			// have to register it each frame so we can change the font size at runtime
-			font = Renderer::Font::Register( "console", con_fontSize->GetInt() );
+			font = Renderer::Font::Register( "console", static_cast<uint16_t>( con_fontSize->GetInt() ) );
 
 			const uint32_t width = Cvar::Get( "vid_width" )->GetInt();
 			const uint32_t height = Cvar::Get( "vid_height" )->GetInt();

@@ -13,7 +13,7 @@ namespace XS {
 		Logger *log;
 
 	public:
-		MessageBuffer( const char *logfile = NULL );
+		MessageBuffer( const char *logfile );
 		~MessageBuffer();
 
 		// don't allow default instantiation

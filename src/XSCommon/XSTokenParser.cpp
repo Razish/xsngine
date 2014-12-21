@@ -4,8 +4,9 @@
 namespace XS {
 
 	TokenParser::TokenParser( const char *buffer )
-	: token{ '\0' }, numLines( 1 ), data( buffer )
+	: numLines( 1 ), data( buffer )
 	{
+		token[0] = '\0';
 	}
 
 	uint32_t TokenParser::GetCurrentLine( void ) const {

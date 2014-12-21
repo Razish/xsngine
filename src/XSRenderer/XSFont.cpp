@@ -128,8 +128,8 @@ namespace XS {
 			//	const size_t bottomLeft = y + x + (size * rowSize);
 			//	const size_t bottomRight = y + x + (size * rowSize) + size;
 
-				for ( size_t y = 0; y < height; y++ ) {
-					for ( size_t x = 0; x < width; x++ ) {
+				for ( size_t y = 0; y < static_cast<size_t>( height ); y++ ) {
+					for ( size_t x = 0; x < static_cast<size_t>( width ); x++ ) {
 						atlas[topLeft + (y * rowSize) + x] = bitmap.buffer[y * width + x];
 					}
 				}

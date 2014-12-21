@@ -209,6 +209,7 @@ namespace XS {
 			char filepath[XS_MAX_FILENAME];
 			File::GetFullPath( filename, filepath, sizeof( filepath ) );
 
+			//TODO: replace with xsngine file writing
 			FILE *fp = fopen( filepath, "wb" );
 			if ( !fp ) {
 				png_destroy_write_struct( &png, &info );

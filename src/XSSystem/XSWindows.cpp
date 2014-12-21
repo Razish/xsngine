@@ -7,6 +7,7 @@
 #include "XSCommon/XSCommon.h"
 #include "XSCommon/XSConsole.h"
 #include "XSCommon/XSGlobals.h"
+#include "XSCommon/XSCvar.h"
 #include "XSSystem/XSOS.h"
 
 namespace XS {
