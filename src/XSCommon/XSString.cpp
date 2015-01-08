@@ -12,7 +12,7 @@ namespace XS {
 			size_t destLen = strlen( dst );
 
 			if ( destLen >= len ) {
-				throw( XSError( "XS::String::Concatenate: already overflowed" ) );
+				throw( XSError( Format( "%s already overflowed", XS_FUNCTION ).c_str() ) );
 			}
 
 			Copy( dst + destLen, src, len - destLen);
@@ -21,15 +21,15 @@ namespace XS {
 		// safe strncpy that ensures a trailing zero
 		void Copy( char *dst, const char *src, size_t len ) {
 			if ( !dst ) {
-				throw( XSError( "XS::String::Copy: NULL dest" ) );
+				throw( XSError( Format( "%s NULL dest", XS_FUNCTION ).c_str() ) );
 			}
 
 			if ( !src ) {
-				throw( XSError( "XS::String::Copy: NULL src" ) );
+				throw( XSError( Format( "%s NULL src", XS_FUNCTION ).c_str() ) );
 			}
 
 			if ( len < 1 ) {
-				throw( XSError( "XS::String::Copy: destsize < 1" ) );
+				throw( XSError( Format( "%s destsize < 1", XS_FUNCTION ).c_str() ) );
 			}
 
 			strncpy( dst, src, len - 1 );
@@ -45,7 +45,7 @@ namespace XS {
 			va_end( ap );
 
 			if ( outLen >= (signed)len ) {
-				throw( XSError( String::Format( "FormatBuffer: Output length %d too short, requires %d bytes.", len,
+				throw( XSError( Format( "%s output length %d too short, requires %d bytes.", XS_FUNCTION, len,
 					outLen + 1 ).c_str() ) );
 			}
 

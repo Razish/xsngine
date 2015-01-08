@@ -16,6 +16,7 @@ namespace XS {
 		}
 
 		void Print( const char *fmt, ... );
+		void DebugPrint( const char *fmt, ... );
 
 	private:
 		void Append( const char *text, bool multiLine );

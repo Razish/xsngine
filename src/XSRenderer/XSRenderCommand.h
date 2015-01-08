@@ -14,6 +14,7 @@ namespace XS {
 			float w, h;
 			float s1, t1;
 			float s2, t2;
+			const vector4 *colour;
 			const Material *material;
 		};
 

@@ -18,11 +18,11 @@ namespace XS {
 
 		for ( const auto &it : sorted ) {
 			const char *name = it.first.c_str();
-			Cvar *cv = it.second;
+			const Cvar *cv = it.second;
 			if ( !cv ) {
 				// shouldn't happen
 				if ( Common::com_developer->GetBool() ) {
-					console.Print( "WriteCvars: NULL cvar \"%s\"\n", name );
+					console.Print( "%s NULL cvar \"%s\"\n", XS_FUNCTION, name );
 				}
 				continue;
 			}
@@ -33,7 +33,7 @@ namespace XS {
 	}
 
 	void Cvar::Clean( void ) {
-		console.Print( "Cleaning up cvars\n" );
+		console.DebugPrint( "Cleaning up cvars\n" );
 		for ( const auto &it : cvars ) {
 			delete it.second;
 		}

@@ -35,67 +35,85 @@ namespace XS {
 
 		static const char *GLErrSeverityToString( GLenum severity ) {
 			switch ( severity ) {
-			case GL_DEBUG_SEVERITY_HIGH_ARB:
+			case GL_DEBUG_SEVERITY_HIGH_ARB: {
 				return "High";
+			} break;
 
-			case GL_DEBUG_SEVERITY_MEDIUM_ARB:
+			case GL_DEBUG_SEVERITY_MEDIUM_ARB: {
 				return "Medium";
+			} break;
 
-			case GL_DEBUG_SEVERITY_LOW_ARB:
+			case GL_DEBUG_SEVERITY_LOW_ARB: {
 				return "Low";
+			} break;
 
-			default:
+			default: {
 				return "?";
+			} break;
 			}
 		}
 
 		static const char *GLErrSourceToString( GLenum source ) {
 			switch ( source ) {
-			case GL_DEBUG_SOURCE_API_ARB:
+			case GL_DEBUG_SOURCE_API_ARB: {
 				return "API";
+			} break;
 
-			case GL_DEBUG_SOURCE_WINDOW_SYSTEM_ARB:
+			case GL_DEBUG_SOURCE_WINDOW_SYSTEM_ARB: {
 				return "WS";
+			} break;
 
-			case GL_DEBUG_SOURCE_SHADER_COMPILER_ARB:
+			case GL_DEBUG_SOURCE_SHADER_COMPILER_ARB: {
 				return "GLSL";
+			} break;
 
-			case GL_DEBUG_SOURCE_THIRD_PARTY_ARB:
+			case GL_DEBUG_SOURCE_THIRD_PARTY_ARB: {
 				return "3rd";
+			} break;
 
-			case GL_DEBUG_SOURCE_APPLICATION_ARB:
+			case GL_DEBUG_SOURCE_APPLICATION_ARB: {
 				return "App";
+			} break;
 
-			case GL_DEBUG_SOURCE_OTHER_ARB:
+			case GL_DEBUG_SOURCE_OTHER_ARB: {
 				return "Other";
+			} break;
 
-			default:
+			default: {
 				return "?";
+			} break;
 			}
 		}
 
 		static const char *GLErrTypeToString( GLenum type ) {
 			switch ( type ) {
-			case GL_DEBUG_TYPE_ERROR_ARB:
+			case GL_DEBUG_TYPE_ERROR_ARB: {
 				return "Error";
+			} break;
 
-			case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR_ARB:
+			case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR_ARB: {
 				return "Deprecated";
+			} break;
 
-			case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR_ARB:
+			case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR_ARB: {
 				return "UB";
+			} break;
 
-			case GL_DEBUG_TYPE_PORTABILITY_ARB:
+			case GL_DEBUG_TYPE_PORTABILITY_ARB: {
 				return "Portability";
+			} break;
 
-			case GL_DEBUG_TYPE_PERFORMANCE_ARB:
+			case GL_DEBUG_TYPE_PERFORMANCE_ARB: {
 				return "Performance";
+			} break;
 
-			case GL_DEBUG_TYPE_OTHER_ARB:
+			case GL_DEBUG_TYPE_OTHER_ARB: {
 				return "Other";
+			} break;
 
-			default:
+			default: {
 				return "?";
+			} break;
 			}
 		}
 
@@ -244,12 +262,16 @@ namespace XS {
 			currentView = view;
 		}
 
-		void DrawQuad( float x, float y, float w, float h, float s1, float t1, float s2, float t2,
-			const Material& material )
-		{
+		static void AssertView( void ) {
 			if ( !currentView ) {
 				throw( XSError( "Attempted to issue render command without binding a view" ) );
 			}
+		}
+
+		void DrawQuad( float x, float y, float w, float h, float s1, float t1, float s2, float t2,
+			const vector4 *colour, const Material *material )
+		{
+			AssertView();
 
 			RenderCommand cmd( RenderCommand::Type::DRAWQUAD );
 			cmd.drawQuad.x = x;
@@ -260,15 +282,14 @@ namespace XS {
 			cmd.drawQuad.t1 = t1;
 			cmd.drawQuad.s2 = s2;
 			cmd.drawQuad.t2 = t2;
-			cmd.drawQuad.material = &material;
+			cmd.drawQuad.material = material;
+			cmd.drawQuad.colour = colour;
 
 			currentView->renderCommands.push_back( cmd );
 		}
 
 		void DrawModel( const Model *model ) {
-			if ( !currentView ) {
-				throw( XSError( "Attempted to issue render command without binding a view" ) );
-			}
+			AssertView();
 
 			RenderCommand cmd( RenderCommand::Type::DRAWMODEL );
 			cmd.drawModel.model = model;

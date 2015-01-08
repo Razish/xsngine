@@ -7,6 +7,7 @@ namespace XS {
 	// front-end renderer access
 
 	class Cvar;
+	class vector4;
 
 	namespace Renderer {
 
@@ -38,8 +39,11 @@ namespace XS {
 		void	SetView		( View *view );
 
 		// render commands
+
+		// when called with a null material, will use default quad material
+		// when called with a null colour, will use white
 		void	DrawQuad	( float x, float y, float w, float h, float s1, float t1, float s2, float t2,
-			const Material& material);
+			const vector4 *colour, const Material *material );
 		void	DrawModel	( const Model *model );
 
 	} // namespace Renderer

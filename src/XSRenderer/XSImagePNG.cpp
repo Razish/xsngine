@@ -28,13 +28,13 @@ namespace XS {
 
 		struct PNGFileReader {
 		private:
-			byte *buf;
+			uint8_t *buf;
 			size_t offset;
 			png_structp png_ptr;
 			png_infop info_ptr;
 
 		public:
-			PNGFileReader( byte *buf )
+			PNGFileReader( uint8_t *buf )
 			: buf( buf ), offset( 0 ), png_ptr( nullptr ), info_ptr( nullptr )
 			{
 			}
@@ -50,7 +50,7 @@ namespace XS {
 			}
 
 			// returns true on successful read, must delete[] data from caller
-			bool Read( byte **data, uint32_t *outWidth, uint32_t *outHeight ) {
+			bool Read( uint8_t **data, uint32_t *outWidth, uint32_t *outHeight ) {
 				*data = nullptr;
 				if ( outWidth ) {
 					*outWidth = 0;
@@ -61,7 +61,7 @@ namespace XS {
 
 				// make sure we're actually reading PNG data.
 				const int SIGNATURE_LEN = 8;
-				byte ident[SIGNATURE_LEN];
+				uint8_t ident[SIGNATURE_LEN];
 				memcpy( ident, buf, SIGNATURE_LEN );
 				if ( !png_check_sig( ident, SIGNATURE_LEN ) ) {
 					console.Print( "PNG signature not found in given image\n" );
@@ -87,11 +87,8 @@ namespace XS {
 				png_set_sig_bytes( png_ptr, SIGNATURE_LEN );
 				png_read_info( png_ptr, info_ptr );
 
-				png_uint_32 width_;
-				png_uint_32 height_;
-				int depth;
-				int colortype;
-
+				png_uint_32 width_, height_;
+				int depth, colortype;
 				png_get_IHDR( png_ptr, info_ptr, &width_, &height_, &depth, &colortype, nullptr, nullptr, nullptr );
 
 				// While modern OpenGL can handle non-PoT textures, it's faster to handle only PoT
@@ -117,14 +114,14 @@ namespace XS {
 				png_read_update_info( png_ptr, info_ptr );
 
 				// We always assume there are 4 channels. RGB channels are expanded to RGBA when read.
-				byte *tempData = new byte[width_ * height_ * 4];
+				uint8_t *tempData = new uint8_t[width_ * height_ * 4];
 				if ( !tempData ) {
 					console.Print( "Could not allocate enough memory to load the image\n" );
 					return false;
 				}
 
 				// Dynamic array of row pointers, with 'height' elements, initialized to NULL.
-				byte **row_pointers = new byte*[sizeof(byte *) * height_];
+				uint8_t **row_pointers = new uint8_t*[sizeof(uint8_t *) * height_];
 				if ( !row_pointers ) {
 					console.Print( "Could not allocate enough memory to load the image\n" );
 					delete[] tempData;
@@ -172,8 +169,8 @@ namespace XS {
 		}
 
 		// Loads a PNG image from file.
-		byte *LoadPNG( const char *filename, uint32_t *outWidth, uint32_t *outHeight ) {
-			byte *out = nullptr;
+		uint8_t *LoadPNG( const char *filename, uint32_t *outWidth, uint32_t *outHeight ) {
+			uint8_t *out = nullptr;
 
 			const File f( filename, FileMode::READ_BINARY );
 			if ( !f.open ) {
@@ -184,7 +181,7 @@ namespace XS {
 			if ( Common::com_developer->GetBool() )
 				console.Print( "Loading \"%s\"...\n", filename );
 
-			byte *buf = new byte[f.length];
+			uint8_t *buf = new uint8_t[f.length];
 			f.Read( buf );
 
 			PNGFileReader r( buf );
@@ -247,6 +244,7 @@ namespace XS {
 			png_set_packing( png );
 
 			png_bytepp rows = static_cast<png_bytepp>( png_malloc( png, h * sizeof(png_bytep) ) );
+			std::memset( rows, 0, h * sizeof(png_bytep) );
 			for ( int i = 0; i < h; ++i ) {
 				rows[i] = (png_bytep)(pixels + (h - i) * w * numChannels);
 			}
@@ -259,7 +257,7 @@ namespace XS {
 			png_destroy_write_struct( &png, &info );
 
 			fclose( fp );
-			delete[] rows;
+			png_free( png, rows );
 			return true;
 		}
 

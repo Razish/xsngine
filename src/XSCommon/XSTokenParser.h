@@ -23,11 +23,11 @@ namespace XS {
 		bool			SkipLine		( void );
 		const char *	ParseToken		( bool allowLineBreaks = true );
 		bool			ParseString		( const char **s );
-		bool			ParseUInt		( unsigned int *i );
-		bool			ParseInt		( int *i );
-		bool			ParseShort		( short *i );
+		bool			ParseUInt		( uint32_t *i );
+		bool			ParseInt		( int32_t *i );
+		bool			ParseShort		( int16_t *i );
 		bool			ParseFloat		( float *f );
-		bool			ParseByte		( byte *i );
+		bool			ParseByte		( uint8_t *i );
 
 	};
 

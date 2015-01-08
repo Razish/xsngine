@@ -87,7 +87,7 @@ namespace XS {
 
 			if ( f.open ) {
 				char *buffer = new char[f.length];
-					f.Read( reinterpret_cast<byte *>(buffer) );
+					f.Read( reinterpret_cast<uint8_t *>(buffer) );
 
 					Command::ExecuteBuffer(); // flush buffer before we issue commands
 					char *current = strtok( buffer, "\n" );
@@ -165,7 +165,7 @@ int main( int argc, char **argv ) {
 
 		if ( XS::Common::com_developer->GetBool() ) {
 			double t = timer.GetTiming( true, XS::Timer::Resolution::MILLISECONDS );
-			XS::console.Print( "Init time: %.0f milliseconds\n", t );
+			XS::console.DebugPrint( "Init time: %.0f milliseconds\n", t );
 		}
 
 		if ( !XS::Common::com_dedicated->GetBool() ) {
@@ -225,6 +225,8 @@ int main( int argc, char **argv ) {
 			const double frameRate = XS::Common::r_framerate->GetDouble();
 			const double renderMsec = 1000.0 / frameRate;
 			if ( frameTime < renderMsec ) {
+				XS::console.DebugPrint( "frameTime %.5f < %.5f, delaying for %0i\n", frameTime, renderMsec,
+					(uint32_t)(renderMsec - frameTime) );
 				SDL_Delay( (uint32_t)(renderMsec - frameTime) );
 			}
 		}
@@ -236,7 +238,7 @@ int main( int argc, char **argv ) {
 
 		if ( developer ) {
 			const double runtime = timer.GetTiming( true, XS::Timer::Resolution::SECONDS );
-			XS::console.Print( "Run time: %.3f seconds\n", runtime );
+			XS::console.DebugPrint( "Run time: %.3f seconds\n", runtime );
 		}
 
 		// indent the console for this scope
@@ -251,7 +253,7 @@ int main( int argc, char **argv ) {
 
 		if ( developer ) {
 			const double shutdownTIme = timer.GetTiming( false, XS::Timer::Resolution::SECONDS );
-			XS::console.Print( "Shutdown time: %.3f seconds\n\n\n", shutdownTIme );
+			XS::console.DebugPrint( "Shutdown time: %.3f seconds\n\n\n", shutdownTIme );
 		}
 
 		return EXIT_SUCCESS;

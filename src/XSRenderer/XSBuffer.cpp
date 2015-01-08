@@ -10,17 +10,21 @@ namespace XS {
 
 			static GLenum GetGLBufferType( Buffer::Type type ) {
 				switch ( type ) {
-				case Buffer::Type::VERTEX:
+				case Buffer::Type::VERTEX: {
 					return GL_ARRAY_BUFFER;
+				} break;
 
-				case Buffer::Type::INDEX:
+				case Buffer::Type::INDEX: {
 					return GL_ELEMENT_ARRAY_BUFFER;
+				} break;
 
-				case Buffer::Type::UNIFORM:
+				case Buffer::Type::UNIFORM: {
 					return GL_UNIFORM_BUFFER;
+				} break;
 
-				default:
+				default: {
 					return GL_NONE;
+				} break;
 				}
 			}
 

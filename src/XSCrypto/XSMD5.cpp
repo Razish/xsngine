@@ -10,7 +10,7 @@ namespace XS {
 		struct MD5Context {
 			uint32_t lo, hi;
 			uint32_t a, b, c, d;
-			byte buffer[chunkSize];
+			uint8_t buffer[chunkSize];
 			uint32_t block[16];
 		};
 
@@ -56,7 +56,7 @@ namespace XS {
 		#endif
 
 		static const void *MD5_Body( MD5Context *ctx, const void *data, unsigned long size ) {
-			const byte *ptr = (const byte *)data;
+			const uint8_t *ptr = (const uint8_t *)data;
 
 			uint32_t a = ctx->a;
 			uint32_t b = ctx->b;
@@ -179,7 +179,7 @@ namespace XS {
 				}
 
 				memcpy( &ctx->buffer[used], data, available );
-				data = (const byte *)data + available;
+				data = (const uint8_t *)data + available;
 				size -= available;
 				MD5_Body( ctx, ctx->buffer, chunkSize );
 			}
@@ -192,7 +192,7 @@ namespace XS {
 			memcpy( ctx->buffer, data, size );
 		}
 
-		static void MD5_Final( MD5Context *ctx, byte *result ) {
+		static void MD5_Final( MD5Context *ctx, uint8_t *result ) {
 			unsigned long used = ctx->lo & 0x3f;
 
 			ctx->buffer[used++] = 0x80;
@@ -242,10 +242,10 @@ namespace XS {
 
 		void ChecksumMD5( const char *in, size_t inLen, char out[16] ) {
 			MD5Context md5;
-			byte digest[16] = { '\0' };
+			uint8_t digest[16] = { '\0' };
 
 			MD5_Init( &md5 );
-			MD5_Update( &md5, (byte *)in, inLen );
+			MD5_Update( &md5, (uint8_t *)in, inLen );
 			MD5_Final( &md5, digest );
 
 			out[0] = '\0';

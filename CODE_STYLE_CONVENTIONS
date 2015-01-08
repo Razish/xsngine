@@ -8,6 +8,7 @@ Table of contents:
 	6.	TYPES
 	7.	LITERALS
 	8.	FILE NAMES
+	9.	MISCELLANIOUS
 
 
 
@@ -59,6 +60,23 @@ The only exception to this rule is multi-line conditionals/definitions
 	}
 
 	switch ( x ) {
+	}
+
+Stylise switch cases as such...
+	switch ( condition ) {
+	case 1: {
+		// code here
+	} break;
+
+	case 2:
+	case 3: {
+		if ( herp ) {
+			return Derp( 42 );
+		}
+	} break;
+
+	default: {
+	} break;
 	}
 
 Pad parenthesised expressions as such...
@@ -181,6 +199,9 @@ Macros containing multiple sequence points shall be wrapped in braces to avoid d
 	else if ( y )
 		return;
 
+Variables and functions shall use en-GB spelling.
+	vector4 color; // BAD, should be colour
+
 
 
 4. SCOPING / NAMESPACE
@@ -299,4 +320,19 @@ File names should follow this convention...
 			class RenderCommand {
 			};
 		}
+	}
+
+
+
+9.	MISCELLANIOUS
+
+Do not include intended side-effects in print statements, especially if they're conditionally compiled.
+	// BAD - logic should remain the same if the print is removed, commented out or otherwise not compiled (debug print)
+	console.Print( "Loaded something %i times\n", loadCount++ );
+
+Avoid compiler-specific extensions or behaviour
+	void A( const char *msg );
+	void B( void ) {
+		std::string msg = "hello";
+		A( msg ); // BAD, should use .c_str(), implicit conversion from std::string to const char* is an MSVC extension
 	}

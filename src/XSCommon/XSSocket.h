@@ -52,7 +52,7 @@ namespace XS {
 		Socket( const Socket& ) = delete;
 		Socket& operator=( const Socket& ) = delete;
 
-		void	Send	( const byte *buf, size_t bufSize ) const;
+		void	Send	( const uint8_t *buf, size_t bufSize ) const;
 	};
 
 } // namespace XS

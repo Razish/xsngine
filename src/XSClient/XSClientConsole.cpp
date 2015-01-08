@@ -8,6 +8,7 @@
 #include "XSClient/XSClientConsole.h"
 #include "XSRenderer/XSFont.h"
 #include "XSRenderer/XSView.h"
+#include "XSRenderer/XSRenderer.h"
 
 namespace XS {
 
@@ -47,7 +48,7 @@ namespace XS {
 		}
 
 		ClientConsole::ClientConsole( Console *consoleInstance )
-		: console( consoleInstance ), visible( false ), scrollAmount( 0 ), lineCount( 24u )
+		: console( consoleInstance ), visible( false ), scrollAmount( 0 ), lineCount( 24u ), font( nullptr )
 		{
 			const uint32_t width = Cvar::Get( "vid_width" )->GetInt();
 			const uint32_t height = Cvar::Get( "vid_height" )->GetInt();
@@ -64,15 +65,19 @@ namespace XS {
 
 			view->Bind();
 
-			if ( !font ) {
-				font = Renderer::Font::Register( "console", con_fontSize->GetInt() );
-			}
+			// have to register it each frame so we can change the font size at runtime
+			font = Renderer::Font::Register( "console", con_fontSize->GetInt() );
+
+			const uint32_t width = Cvar::Get( "vid_width" )->GetInt();
+			const uint32_t height = Cvar::Get( "vid_height" )->GetInt();
+			static const vector4 colour( 1.0f, 0.0f, 0.0f, 0.25f );
+			Renderer::DrawQuad( 0, 0, width, height / 2, 0.0f, 0.0f, 1.0f, 1.0f, &colour, nullptr );
 
 			std::vector<std::string> lines = console->buffer->GetLines( lineCount );
 			vector2 pos( 0.0f, 0.0f );
 			for ( const auto &it : lines ) {
-				font->Draw( pos, it );
-				pos.y += font->lineHeight;
+				const int linesDrawn = font->Draw( pos, it );
+				pos.y += linesDrawn * font->lineHeight;
 			}
 		}
 

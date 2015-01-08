@@ -12,11 +12,12 @@ namespace XS {
 	enum EventType {
 		UNKNOWN = 0,
 		KEY,
+		MOUSEBUTTON,
+		MOUSEWHEEL,
 		NUM_EVENTS
 	};
 
 	struct XSEvent {
-		// these will be set internally
 		EventType	type;
 		uint32_t	time;
 
@@ -25,18 +26,31 @@ namespace XS {
 				SDL_Keycode	key;
 				bool		down;
 			} keyEvent;
+
+			struct {
+				uint8_t button;
+				bool pressed;
+			} mouseButton;
+
+			struct {
+				bool up;
+				uint32_t amount;
+			} mouseWheel;
 		};
 
-		XSEvent()
-		: type( UNKNOWN ), time( 0u )
+		XSEvent( EventType type )
+		: type( type ), time( 0u )
 		{
 		}
+
+		XSEvent() = delete;
+		XSEvent& operator=( const XSEvent& ) = delete;
 	};
 
 	namespace Event {
 
 		void	Init	( void );
-		void	Queue	( EventType type, XSEvent *ev );
+		void	Queue	( const XSEvent *ev );
 		void	Pump	( void );
 
 	} // namespace Event

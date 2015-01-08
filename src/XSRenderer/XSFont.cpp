@@ -52,7 +52,7 @@ namespace XS {
 				return;
 			}
 
-			byte *contents = new byte[ttf.length];
+			uint8_t *contents = new uint8_t[ttf.length];
 			std::memset( contents, 0, ttf.length );
 			ttf.Read( contents );
 
@@ -72,7 +72,7 @@ namespace XS {
 			const size_t numChars = 256u;
 			const size_t skip = 0x20u;
 			const size_t atlasSize = numChars * size * size;
-			byte *atlas = new byte[atlasSize];
+			uint8_t *atlas = new uint8_t[atlasSize];
 			std::memset( atlas, 0, atlasSize );
 
 			if ( Common::com_developer->GetBool() ) {
@@ -159,25 +159,37 @@ namespace XS {
 			delete[] atlas;
 		}
 
-		void Font::Draw( const vector2 &pos, const std::string &text ) {
+		uint32_t Font::Draw( const vector2 &pos, const std::string &text ) {
+			uint32_t numLines = 0u;
 			if ( text.empty() ) {
-				return;
+				return numLines;
 			}
 
 			vector2 currentPos = pos;
 			for ( size_t i = 0; i < text.length(); i++ ) {
 				const char c = text[i];
 				const FontData &fd = data[c];
+
+				// check for overflow
+				if ( currentPos.x + fd.advance >= vid_width->GetInt() ) {
+					currentPos.x = pos.x;
+					currentPos.y += lineHeight;
+					numLines++;
+				}
+
 				DrawQuad( currentPos.x + fd.offset.x, currentPos.y + fd.offset.y, // x, y
 					fd.size.x, fd.size.y, // width, height
 					fd.s.x, fd.t.x, fd.s.y, fd.t.y, // st coords
-					*material );
+					nullptr, material );
 				currentPos.x += fd.advance;
 				if ( c == '\n' ) {
 					currentPos.x = pos.x;
 					currentPos.y += lineHeight;
+					numLines++;
 				}
 			}
+
+			return numLines;
 		}
 
 		void Font::Init( void ) {

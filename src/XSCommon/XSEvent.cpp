@@ -22,24 +22,34 @@ namespace XS {
 		// for debugging
 		static const char *eventNames[EventType::NUM_EVENTS] = {
 			"EventType::KEY",
+			"EventType::MOUSEBUTTON",
+			"EventType::MOUSEWHEEL",
 		};
 
 		void Init( void ) {
 			debug_events = Cvar::Create( "debug_events", "0", "Print debug messages for input events", CVAR_INIT );
 		}
 
-		void Queue( EventType type, XSEvent *ev ) {
-			ev->time = 0; // FIXME
-			ev->type = type;
-
+		void Queue( const XSEvent *ev ) {
 			if ( debug_events->GetBool() ) {
-				switch( type ) {
-				case EventType::KEY:
-					console.Print( "Event::Queue: %s (%i) key: %i, down: %i\n", eventNames[type], type,
+				switch( ev->type ) {
+				case EventType::KEY: {
+					console.DebugPrint( "%s %s (%i) key: %i, down: %i\n", XS_FUNCTION, eventNames[ev->type], ev->type,
 						ev->keyEvent.key, ev->keyEvent.down );
-					break;
-				default:
-					throw( XSError( String::Format( "Event::Queue: Unknown event %i", type ).c_str() ) );
+				} break;
+
+				case EventType::MOUSEBUTTON: {
+					// ...
+				} break;
+
+				case EventType::MOUSEWHEEL: {
+					// ...
+				} break;
+
+				default: {
+					//TODO: test if stack unwinding/object destruction breaks this message
+					throw( XSError( String::Format( "%s Unknown event %i", XS_FUNCTION, ev->type ).c_str() ) );
+				} break;
 				}
 			}
 
@@ -49,11 +59,21 @@ namespace XS {
 		void Pump( void ) {
 			for ( const auto &it : events ) {
 				switch( it.type ) {
-				case EventType::KEY:
+				case EventType::KEY: {
 					Client::KeyEvent( it.keyEvent.key, it.keyEvent.down );
-					break;
-				default:
-					throw( XSError( String::Format( "Event::Pump: Unknown event %i", it.type ).c_str() ) );
+				} break;
+
+				case EventType::MOUSEBUTTON: {
+					// ...
+				} break;
+
+				case EventType::MOUSEWHEEL: {
+					// ...
+				} break;
+
+				default: {
+					throw( XSError( String::Format( "%s Unknown event %i", XS_FUNCTION, it.type ).c_str() ) );
+				} break;
 				}
 			}
 			events.clear();

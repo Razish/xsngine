@@ -104,36 +104,36 @@ namespace XS {
 			unsigned int status = glCheckFramebufferStatus( GL_FRAMEBUFFER );
 
 			switch ( status ) {
-			case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
+			case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT: {
 				console.Print( "One or more framebuffer attachment points are not complete.\n" );
-				break;
+			} break;
 
-			case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER:
+			case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER: {
 				console.Print( "Invalid framebuffer attachment object type used.\n" );
-				break;
+			} break;
 
-			case GL_FRAMEBUFFER_UNSUPPORTED:
+			case GL_FRAMEBUFFER_UNSUPPORTED: {
 				console.Print( "More than one internal format was used in the color attachments.\n" );
-				break;
+			} break;
 
-			case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER:
+			case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER: {
 				console.Print( "Missing a read buffer.\n" );
-				break;
+			} break;
 
-			case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
+			case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT: {
 				console.Print( "No images were attached to the framebuffer.\n" );
-				break;
+			} break;
 
-			case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE:
+			case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE: {
 				console.Print( "Number of samples is not the same for all rendertargets and color attachments.\n" );
-				break;
+			} break;
 
-			case GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS:
+			case GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS: {
 				console.Print( "Not all layered attachments are valid.\n" );
-				break;
+			} break;
 
-			case GL_FRAMEBUFFER_COMPLETE:
-				break;
+			case GL_FRAMEBUFFER_COMPLETE: {
+			} break;
 			}
 
 			if ( status != GL_FRAMEBUFFER_COMPLETE ) {

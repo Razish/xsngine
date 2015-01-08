@@ -18,7 +18,7 @@ namespace XS {
 			static void Init( void );
 
 			Texture( unsigned int width, unsigned int height, InternalFormat internalFormat = InternalFormat::RGBA8,
-				byte *data = nullptr );
+				const uint8_t *data = nullptr );
 			~Texture();
 
 			// don't allow default instantiation

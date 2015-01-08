@@ -130,7 +130,7 @@ namespace XS {
 		return (*s == nullptr) ? true : false;
 	}
 
-	bool TokenParser::ParseUInt( unsigned int *i ) {
+	bool TokenParser::ParseUInt( uint32_t *i ) {
 		const char *tok = ParseToken( false );
 
 		*i = strtoul( tok, NULL, 0 );
@@ -148,14 +148,14 @@ namespace XS {
 		return false;
 	}
 
-	bool TokenParser::ParseShort( short *i ) {
+	bool TokenParser::ParseShort( int16_t *i ) {
 		const char *tok = ParseToken( false );
 
 		if ( *tok == '\0' ) {
 			return true;
 		}
 
-		*i = static_cast<short>( atoi( tok ) );
+		*i = static_cast<int16_t>( atoi( tok ) );
 		return false;
 	}
 
@@ -170,14 +170,14 @@ namespace XS {
 		return false;
 	}
 
-	bool TokenParser::ParseByte( byte *i ) {
+	bool TokenParser::ParseByte( uint8_t *i ) {
 		const char *tok = ParseToken( false );
 
 		if ( *tok == '\0' ) {
 			return true;
 		}
 
-		*i = (byte)atoi( tok );
+		*i = static_cast<uint8_t>( atoi( tok ) );
 		return false;
 	}
 

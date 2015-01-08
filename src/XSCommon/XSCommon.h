@@ -21,29 +21,28 @@ namespace XS {
 		#define REVISION "unavailable"
 	#endif
 
+	//TODO: determine max filepath for current filesystem at runtime (NTFS, ext4, HFS+)
 	#define XS_MAX_FILENAME (96)
 
-	typedef unsigned char byte; // unsigned 8 bits
-
 	// 32 bit field aliasing
-	typedef union byteAlias_u {
-		float f;
-		int32_t i;
-		uint32_t ui;
-		byte b[4];
-		char c[4];
-	} byteAlias_t;
+	union byteAlias32_t {
+		float f32;
+		int32_t i32;
+		uint32_t ui32;
+		int8_t i8[4];
+		uint8_t ui8[4];
+	};
 
 	// pointer aliasing
-	typedef union pointerAlias_u {
-		intptr_t ip;
+	union pointerAlias_t {
+		intptr_t iptr;
 		void *v;
-		float *f;
-		int32_t *i;
-		uint32_t *ui;
-		byte *b;
-		char *c;
-	} pointerAlias_t;
+		float *f32;
+		int32_t *i32;
+		uint32_t *ui32;
+		uint8_t *ui8;
+		int8_t *i8;
+	};
 
 	#define ARRAY_LEN( x ) (sizeof( (x) ) / sizeof( (*x) ))
 	#define STR( str ) #str

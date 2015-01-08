@@ -57,10 +57,21 @@ namespace XS {
 
 		static GLenum GetGLShaderType( ShaderType type ) {
 			switch ( type ) {
-				case ShaderType::VERTEX: return GL_VERTEX_SHADER;
-				case ShaderType::GEOMETRY: return GL_GEOMETRY_SHADER;
-				case ShaderType::FRAGMENT: return GL_FRAGMENT_SHADER;
-				default: return GL_NONE;
+				case ShaderType::VERTEX: {
+					return GL_VERTEX_SHADER;
+				} break;
+
+				case ShaderType::GEOMETRY: {
+					return GL_GEOMETRY_SHADER;
+				} break;
+
+				case ShaderType::FRAGMENT: {
+					return GL_FRAGMENT_SHADER;
+				} break;
+
+				default: {
+					return GL_NONE;
+				} break;
 			}
 		}
 
@@ -71,7 +82,8 @@ namespace XS {
 			type = shaderType;
 
 			if ( !id ) {
-				throw( XSError( String::Format( "Shader(): Failed to create shader object for shader \"%s\"\n", path ).c_str() ) );
+				throw( XSError( String::Format( "Shader(): Failed to create shader object for shader \"%s\"\n",
+					path ).c_str() ) );
 			}
 
 			glShaderSource( id, 1, (const GLchar **)&source, nullptr );
@@ -91,35 +103,38 @@ namespace XS {
 
 				glDeleteShader( id );
 
-				throw( XSError( String::Format( "Shader(): Failed to compile shader source for shader \"%s\"\n", path ).c_str() ) );
+				throw( XSError( String::Format( "Shader(): Failed to compile shader source for shader \"%s\"\n",
+					path ).c_str() ) );
 			}
 
 			OutputShaderInfoLog (id);
 		}
 
 		Shader::Shader( ShaderType type, const char *name ) {
-			std::string path;
+			char path[XS_MAX_FILENAME] = { '\0' };
 
 			switch ( type ) {
-			case ShaderType::VERTEX:
-				path = String::Format( "shaders/v_%s.glsl", name );
-				break;
-			case ShaderType::GEOMETRY:
-				path = String::Format( "shaders/g_%s.glsl", name );
-				break;
-			case ShaderType::FRAGMENT:
-				path = String::Format( "shaders/f_%s.glsl", name );
-				break;
+			case ShaderType::VERTEX: {
+				String::FormatBuffer( path, sizeof(path), "shaders/v_%s.glsl", name );
+			} break;
+
+			case ShaderType::GEOMETRY: {
+				String::FormatBuffer( path, sizeof(path), "shaders/g_%s.glsl", name );
+			} break;
+
+			case ShaderType::FRAGMENT: {
+				String::FormatBuffer( path, sizeof(path), "shaders/f_%s.glsl", name );
+			} break;
 			}
 
-			const File f( path.c_str(), FileMode::READ );
+			const File f( path, FileMode::READ );
 			if ( !f.open ) {
 				throw( XSError( String::Format( "Shader(): Could not open file \"%s\"", name ).c_str() ) );
 			}
 
 			std::string contents( f.length, '\0' );
 
-			f.Read( reinterpret_cast<byte *>(&contents[0]) );
+			f.Read( reinterpret_cast<uint8_t *>( &contents[0] ) );
 
 			Create( name, contents.c_str(), type );
 		}

@@ -69,4 +69,48 @@ namespace XS {
 	#endif
 	}
 
+	void Console::DebugPrint( const char *fmt, ... ) {
+	#if defined(_DEBUG)
+		size_t size = 128;
+		std::string str;
+		va_list ap;
+
+		while ( 1 ) {
+			str.resize( size );
+
+			va_start( ap, fmt );
+			int n = vsnprintf( (char *)str.c_str(), size, fmt, ap );
+			va_end( ap );
+
+			if ( n > -1 && n < (signed)size ) {
+				str.resize( n );
+				break;
+			}
+			if ( n > -1 ) {
+				size = n + 1;
+			}
+			else {
+				size *= 1.5;
+			}
+		}
+
+		//FIXME: care about printing twice on same line
+		std::string finalOut = "";
+		for ( unsigned int i = 0; i < indentation; i++ ) {
+			finalOut += "  ";
+		}
+		finalOut += str;
+
+		//TODO: strip colours?
+		std::cout << finalOut;
+		buffer->Append( finalOut );
+
+	#if defined(XS_OS_WINDOWS)
+		if ( !finalOut.empty() ) {
+			OutputDebugString( finalOut.c_str() );
+		}
+	#endif // XS_OS_WINDOWS
+	#endif // _DEBUG
+	}
+
 } // namespace XS

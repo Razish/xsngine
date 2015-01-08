@@ -60,6 +60,7 @@ namespace XS {
 
 			void	Link		( void ) const;
 			void	Bind		( void ) const;
+			//TODO: variadic arguments?
 			void	SetUniform1	( const char *name, int i );
 			void	SetUniform1	( const char *name, float f );
 			void	SetUniform2	( const char *name, float f1, float f2 );

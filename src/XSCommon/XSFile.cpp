@@ -25,12 +25,14 @@ namespace XS {
 		switch ( mode ) {
 		default:
 		case FileMode::READ:
-		case FileMode::READ_BINARY:
+		case FileMode::READ_BINARY: {
 			return false;
+		} break;
 		case FileMode::WRITE:
 		case FileMode::WRITE_BINARY:
-		case FileMode::APPEND:
+		case FileMode::APPEND: {
 			return true;
+		} break;
 		}
 	}
 
@@ -166,7 +168,7 @@ namespace XS {
 
 	// read len bytes into buf
 	// if len is 0, read as much as possible
-	void File::Read( byte *buf, size_t len ) const {
+	void File::Read( uint8_t *buf, size_t len ) const {
 		if ( len == 0u ) {
 			len = length;
 		}

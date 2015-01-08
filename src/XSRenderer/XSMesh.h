@@ -2,26 +2,39 @@
 
 #include <vector>
 #include "XSCommon/XSVector.h"
-#include "XSRenderer/XSMaterial.h"
 
 namespace XS {
 
 	namespace Renderer {
 
+		struct Material;
+		class ShaderProgram;
+		class Texture;
+
+		namespace Backend {
+			class Buffer;
+		} // namespace Backend
+
 		struct Mesh {
 
-			vector3 *vertices;
-			size_t numVertices;
-			vector2 *uv;
-			size_t numUVs;
-			vector3 *normals;
-			size_t numNormals;
+			std::vector<vector3> vertices;
+			std::vector<vector3> normals;
+			std::vector<vector2> UVs;
+			std::vector<uint16_t> indices;
 
-			std::vector<uint16_t> vertexIndices;
-			std::vector<uint16_t> uvIndices;
-			std::vector<uint16_t> normalIndices;
+			ShaderProgram *shader;
+			Material *material;
+			Texture *texture;
+			Backend::Buffer *vertexBuffer;
+			Backend::Buffer *indexBuffer;
 
-			Material material;
+			void Upload( void );
+
+			Mesh()
+			: shader( nullptr ), material( nullptr ), texture( nullptr ), vertexBuffer( nullptr ),
+				indexBuffer( nullptr )
+			{
+			}
 
 		};
 

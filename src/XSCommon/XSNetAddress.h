@@ -9,14 +9,9 @@ namespace XS {
 
 		char hostname[256];
 		union {
+			byteAlias32_t ipv4;
 			struct {
-				union {
-					byte b[4];
-					uint32_t i;
-				};
-			} ipv4;
-			struct {
-				int dummy;
+				int32_t dummy;
 			} ipv6;
 		} address;
 

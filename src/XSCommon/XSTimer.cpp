@@ -2,6 +2,7 @@
 #include "XSCommon/XSTimer.h"
 
 // Author: Lourens Elzinga, Kieren McDevitt
+//TODO: move to platform specific code.
 
 namespace XS {
 
@@ -44,15 +45,19 @@ namespace XS {
 		}
 
 		switch ( resolution ) {
-		case Resolution::SECONDS:
+		case Resolution::SECONDS: {
 			return (stopTime - startTime) * 0.000001;
-		case Resolution::MILLISECONDS:
+		} break;
+		case Resolution::MILLISECONDS: {
 			return (stopTime - startTime) * 0.001;
-		case Resolution::MICROSECONDS:
+		} break;
+		case Resolution::MICROSECONDS: {
 			return (stopTime - startTime);
-		default:
+		} break;
+		default: {
 			SDL_assert( !"Invalid timer resolution" );
 			return 0.0;
+		} break;
 		}
 	}
 

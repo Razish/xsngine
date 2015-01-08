@@ -8,7 +8,7 @@ namespace XS {
 		(*this->address) = address->ToNetworkOrder();
 	}
 
-	void Socket::Send( const byte *buf, size_t bufSize ) const {
+	void Socket::Send( const uint8_t *buf, size_t bufSize ) const {
 		// ...
 	}
 

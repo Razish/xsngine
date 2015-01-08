@@ -54,7 +54,7 @@ namespace XS {
 			}
 		}
 
-		Texture::Texture( unsigned int width, unsigned int height, InternalFormat internalFormat, byte *data ) {
+		Texture::Texture( unsigned int width, unsigned int height, InternalFormat internalFormat, const uint8_t *data ) {
 			size_t filterMode = GetTextureFilter( r_textureFilter->GetCString() );
 
 			glGenTextures( 1, &id );

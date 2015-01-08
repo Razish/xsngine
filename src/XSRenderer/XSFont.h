@@ -41,8 +41,8 @@ namespace XS {
 			Font( const Font& ) = delete;
 			Font& operator=( const Font& ) = delete;
 
-			void	RenderGlyphs	( void );
-			void	Draw			( const vector2 &pos, const std::string &text );
+			void		RenderGlyphs	( void );
+			uint32_t	Draw			( const vector2 &pos, const std::string &text );
 
 			static void		Init			( void );
 			static void		Shutdown		( void );

@@ -10,8 +10,7 @@ namespace XS {
 		class Obj : public Model {
 
 			bool	LoadMeshes	( void );
-			void	Process		( Mesh *mesh, std::vector<vector3> &tmpVertices, std::vector<vector2> &tmpUVs,
-				std::vector<vector3> &tmpNormals );
+			void	Process		( Mesh *mesh );
 
 		};
 

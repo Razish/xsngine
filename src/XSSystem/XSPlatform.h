@@ -105,3 +105,13 @@
 		#error "Could not determine architecture width"
 	#endif
 #endif
+
+
+// compiler specific junk, function names etc
+#if !defined(_MSC_VER)
+	#define XS_FUNCTION __PRETTY_FUNCTION__
+	#define XS_FUNCTION_VERBOSE __PRETTY_FUNCTION__
+#else
+	#define XS_FUNCTION "<unknown-func>"
+	#define XS_FUNCTION_VERBOSE XS_FUNCTION
+#endif

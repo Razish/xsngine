@@ -69,7 +69,7 @@ namespace XS {
 
 		File( const char *gamePath, FileMode mode = FileMode::READ );
 		~File();
-		void Read( byte *buf, size_t len = 0U ) const;
+		void Read( uint8_t *buf, size_t len = 0U ) const;
 		void AppendString( const char *str ) const;
 		void Write( const void *buf, size_t len ) const;
 	};

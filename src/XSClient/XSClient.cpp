@@ -82,7 +82,7 @@ namespace XS {
 				avg += samples[i];
 			}
 			avg /= 16.0;
-			font->Draw( pos, String::Format( "FPS:%.5f\nTesting second line.", 1000.0 / avg ) );
+			font->Draw( pos, String::Format( "FPS:%.3f\nTesting second line.", 1000.0 / avg ) );
 		}
 
 		void DrawFrame( double frametime ) {

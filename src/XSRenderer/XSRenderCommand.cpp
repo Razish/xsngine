@@ -10,6 +10,10 @@
 #include "XSRenderer/XSMesh.h"
 #include "XSRenderer/XSModel.h"
 #include "XSRenderer/XSImagePNG.h"
+#include "XSRenderer/XSMaterial.h"
+#include "XSRenderer/XSVertexAttributes.h"
+#include "XSRenderer/XSTexture.h"
+#include "XSRenderer/XSShaderProgram.h"
 
 namespace XS {
 
@@ -20,8 +24,10 @@ namespace XS {
 
 		static Buffer *quadsVertexBuffer;
 		static Buffer *quadsIndexBuffer;
-		static Buffer *modelVertexBuffer;
-		static Buffer *modelIndexBuffer;
+
+		static ShaderProgram *quadProgram = nullptr;
+		static Material *quadMaterial = nullptr;
+		static Texture *quadTexture = nullptr;
 
 		void RenderCommand::Init( void ) {
 			const unsigned short quadIndices[6] = { 0, 2, 1, 1, 2, 3 };
@@ -29,66 +35,87 @@ namespace XS {
 			quadsVertexBuffer = new Buffer( Buffer::Type::VERTEX, nullptr, 144 * sizeof(float) );
 			quadsIndexBuffer = new Buffer( Buffer::Type::INDEX, quadIndices, sizeof(quadIndices) );
 
-			modelVertexBuffer = new Buffer( Buffer::Type::VERTEX, nullptr, 1024 * sizeof(float) );
-			modelIndexBuffer = new Buffer( Buffer::Type::INDEX, nullptr, 1024 * sizeof(int16_t) );
+			// create null quad material
+			static const VertexAttribute attributes[] = {
+				{ 0, "in_Position" },
+				{ 1, "in_TexCoord" },
+				{ 2, "in_Color" }
+			};
+
+			quadProgram = new ShaderProgram( "quad", "quad", attributes, ARRAY_LEN( attributes ) );
+
+			// create texture
+			static const size_t numChannels = 4;
+			static const size_t textureSize = 1;
+			uint8_t textureBuffer[textureSize * textureSize * numChannels] = {};
+			std::memset( textureBuffer, 0xFF, sizeof( textureBuffer ) );
+			quadTexture = new Texture( textureSize, textureSize, InternalFormat::RGBA8, textureBuffer );
+
+			// create material
+			quadMaterial = new Material();
+			Material::SamplerBinding samplerBinding;
+			samplerBinding.unit = 0;
+			samplerBinding.texture = quadTexture;
+			quadMaterial->samplerBindings.push_back( samplerBinding );
+			quadMaterial->shaderProgram = quadProgram;
 		}
 
 		void RenderCommand::Shutdown( void ) {
 			delete quadsVertexBuffer;
 			delete quadsIndexBuffer;
-			delete modelVertexBuffer;
-			delete modelIndexBuffer;
 		}
 
 		static void DrawQuad( const rcDrawQuad_t *quad ) {
-			static const vector4 color = vector4( 1.0f, 0.0f, 1.0f, 1.0f );
-
-			SDL_assert( quad->material && "Renderer::DrawQuad with invalid material" );
-
-			quad->material->Bind();
+			if ( quad->material ) {
+				quad->material->Bind();
+			}
+			else {
+				quadMaterial->Bind();
+			}
 
 			vector2 vertices[4];
 			vector2 texcoords[4];
-			vector4 colors[4];
+			vector4 colour( 1.0f, 1.0f, 1.0f, 1.0f );
+			if ( quad->colour ) {
+				colour = *quad->colour;
+			}
 
 			// Top-left
 			vertices[0].x = quad->x;
 			vertices[0].y = quad->y;
 			texcoords[0].x = quad->s1;
 			texcoords[0].y = quad->t1;
-			colors[0] = color;
 
 			// Top-right
 			vertices[1].x = quad->x + quad->w;
 			vertices[1].y = quad->y;
 			texcoords[1].x = quad->s2;
 			texcoords[1].y = quad->t1;
-			colors[1] = color;
 
 			// Bottom-left
 			vertices[2].x = quad->x;
 			vertices[2].y = quad->y + quad->h;
 			texcoords[2].x = quad->s1;
 			texcoords[2].y = quad->t2;
-			colors[2] = color;
 
 			// Bottom-right
 			vertices[3].x = quad->x + quad->w;
 			vertices[3].y = quad->y + quad->h;
 			texcoords[3].x = quad->s2;
 			texcoords[3].y = quad->t2;
-			colors[3] = color;
 
 			float *vertexBuffer = static_cast<float *>( quadsVertexBuffer->Map() );
+			{
+				std::memcpy( vertexBuffer, vertices, sizeof(vertices) );
+				vertexBuffer += 8;
 
-			std::memcpy( vertexBuffer, vertices, sizeof(vertices) );
-			vertexBuffer += 8;
+				std::memcpy( vertexBuffer, texcoords, sizeof(texcoords) );
+				vertexBuffer += 8;
 
-			std::memcpy( vertexBuffer, texcoords, sizeof(texcoords) );
-			vertexBuffer += 8;
-
-			std::memcpy( vertexBuffer, colors, sizeof(colors) );
-
+				for ( int i = 0; i < 4; i++ ) {
+					*vertexBuffer++ = colour._raw[i];
+				}
+			}
 			quadsVertexBuffer->Unmap();
 
 			quadsIndexBuffer->Bind();
@@ -96,52 +123,64 @@ namespace XS {
 			glEnableVertexAttribArray( 0 );
 			glEnableVertexAttribArray( 1 );
 			glEnableVertexAttribArray( 2 );
+				intptr_t offset = 0;
 
-			intptr_t offset = 0;
+				glVertexAttribPointer( 0, 2, GL_FLOAT, GL_FALSE, 0, 0 );
+				offset += sizeof(vertices);
 
-			glVertexAttribPointer( 0, 2, GL_FLOAT, GL_FALSE, 0, 0 );
-			offset += sizeof(vertices);
+				glVertexAttribPointer( 1, 2, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<const GLvoid *>( offset ) );
+				offset += sizeof(texcoords);
 
-			glVertexAttribPointer( 1, 2, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<const GLvoid *>( offset ) );
-			offset += sizeof(texcoords);
+				glVertexAttribPointer( 2, 4, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<const GLvoid *>( offset ) );
+				offset += sizeof(colour);
 
-			glVertexAttribPointer( 2, 4, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<const GLvoid *>( offset ) );
-
-			glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0 );
+				glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0 );
+			glDisableVertexAttribArray( 2 );
+			glDisableVertexAttribArray( 1 );
+			glDisableVertexAttribArray( 0 );
 		}
 
 		static void DrawMesh( const Mesh *mesh ) {
-			#if 0
-			float *vertexBuffer = static_cast<float *>( modelVertexBuffer->Map() );
+			SDL_assert( mesh->material && "DrawMesh with invalid material" );
 
-			std::memcpy( vertexBuffer, mesh->vertices, mesh->numVertices * sizeof(vector3) );
-			vertexBuffer += 8;
+			mesh->material->Bind();
 
-			std::memcpy( vertexBuffer, mesh->uv, mesh->numUVs * sizeof(vector2) );
-			vertexBuffer += 8;
+			// bind the vertex/normal/uv buffers
+			if ( mesh->vertexBuffer ) {
+				mesh->vertexBuffer->Bind();
+				glEnableVertexAttribArray( 0 );
+				glEnableVertexAttribArray( 1 );
+				glEnableVertexAttribArray( 2 );
 
-			std::memcpy( vertexBuffer, mesh->normals, mesh->numNormals * sizeof(vector3) );
+				size_t offset = 0u;
 
-			modelVertexBuffer->Unmap();
+				glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<const GLvoid *>( offset ) );
+				offset += mesh->vertices.size() * sizeof(vector3);
 
-			modelIndexBuffer->Bind();
+				glVertexAttribPointer( 1, 3, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<const GLvoid *>( offset ) );
+				offset += mesh->normals.size() * sizeof(vector3);
 
-			glEnableVertexAttribArray( 0 );
-			glEnableVertexAttribArray( 1 );
-			glEnableVertexAttribArray( 2 );
+				glVertexAttribPointer( 2, 2, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<const GLvoid *>( offset ) );
+				offset += mesh->UVs.size() * sizeof(vector2);
+			}
 
-			intptr_t offset = 0;
+			// issue the draw command
+			if ( mesh->indexBuffer ) {
+				mesh->indexBuffer->Bind();
+				int size;
+				glGetBufferParameteriv( GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &size );
+				glDrawElements( GL_TRIANGLES, size / sizeof(uint16_t), GL_UNSIGNED_SHORT, 0 );
+			}
+			else {
+				glDrawArrays( GL_TRIANGLES, 0, mesh->vertices.size() );
+			}
 
-			glVertexAttribPointer( 0, 2, GL_FLOAT, GL_FALSE, 0, 0 );
-			offset += mesh->numVertices * sizeof(vector3);
-
-			glVertexAttribPointer( 1, 2, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<const GLvoid *>( offset ) );
-			offset += mesh->numUVs * sizeof(vector2);
-
-			glVertexAttribPointer( 2, 4, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<const GLvoid *>( offset ) );
-
-			glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0 );
-			#endif
+			// clean up state
+			if ( mesh->vertexBuffer ) {
+				glDisableVertexAttribArray( 2 );
+				glDisableVertexAttribArray( 1 );
+				glDisableVertexAttribArray( 0 );
+			}
 		}
 
 		static void DrawModel( const rcDrawModel_t *model ) {
@@ -172,17 +211,17 @@ namespace XS {
 
 		void RenderCommand::Execute( void ) const {
 			switch( type ) {
-			case Type::DRAWQUAD:
+			case Type::DRAWQUAD: {
 				DrawQuad( &drawQuad );
-				break;
-			case Type::DRAWMODEL:
+			} break;
+			case Type::DRAWMODEL: {
 				DrawModel( &drawModel );
-				break;
-			case Type::SCREENSHOT:
+			} break;
+			case Type::SCREENSHOT: {
 				Screenshot( &screenshot );
-				break;
-			default:
-				break;
+			} break;
+			default: {
+			} break;
 			}
 		}
 
