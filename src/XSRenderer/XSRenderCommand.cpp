@@ -30,7 +30,7 @@ namespace XS {
 		static Texture *quadTexture = nullptr;
 
 		void RenderCommand::Init( void ) {
-			const unsigned short quadIndices[6] = { 0, 2, 1, 1, 2, 3 };
+			static const unsigned short quadIndices[6] = { 0, 2, 1, 1, 2, 3 };
 
 			quadsVertexBuffer = new Buffer( Buffer::Type::VERTEX, nullptr, 144 * sizeof(float) );
 			quadsIndexBuffer = new Buffer( Buffer::Type::INDEX, quadIndices, sizeof(quadIndices) );

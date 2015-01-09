@@ -157,11 +157,25 @@ else:
 
 # set up libraries to link with
 if plat == 'Linux':
-	libs = [ 'freetype', 'GL', 'm', 'png16', 'SDL2' ]
+	libs = [
+		'freetype',
+		'GL',
+		'm',
+		'png16',
+		'SDL2'
+	]
 elif plat == 'Windows':
 	# windows libs are in e.g. "../lib/x86/libpng16d.lib" for 32 bit debug build of libpng
 	env['LIBPATH'] = '#/../lib/' + arch + '/'
-	libs = [ 'OpenGL32', 'SDL2', 'SDL2main', 'freetype250d', 'zlibd', 'libpng16d', 'Ws2_32' ]
+	libs = [
+		'OpenGL32',
+		'SDL2',
+		'SDL2main',
+		'freetype250d',
+		'zlibd',
+		'libpng16d',
+		'Ws2_32'
+	]
 
 # compiler switches
 if plat == 'Linux':
@@ -227,17 +241,17 @@ elif plat == 'Windows':
 	# assume msvc
 	env['CFLAGS'] = [ '/TC' ] # compile as c
 	env['CCFLAGS'] = [
-		'/EHs',					# exception handling
-		'/errorReport:none',	# don't send error reports for internal compiler errors
-		'/FC',					# display full path of source code in error messages
-		'/Gd',					# use cdecl calling convention
-		'/GS',					# buffer security check
+		'/EHsc',				# exception handling
+	#	'/errorReport:none',	# don't send error reports for internal compiler errors
+	#	'/FC',					# display full path of source code in error messages
+	#	'/Gd',					# use cdecl calling convention
+	#	'/GS',					# buffer security check
 		'/nologo',				# remove watermark
 	]
 
 	env['LINKFLAGS'] = [
 		'/ERRORREPORT:none',	# don't send error reports for internal linker errors
-		'/MACHINE:' + arch,		# set the linker architecture
+	#	'/MACHINE:' + arch,		# set the linker architecture
 		'/NOLOGO',				# remove watermark
 	]
 	if bits == 64:
@@ -252,11 +266,11 @@ elif plat == 'Windows':
 	# multi-processor compilation
 	if num_cores > 1:
 		env['CCFLAGS'] += [
-			'/FS',							# force synchronous writes to PDB file
-			'/cgthreads' + str(num_cores),	# compiler threads to use for optimisation and code generation
+		#	'/FS',							# force synchronous writes to PDB file
+		#	'/cgthreads' + str(num_cores),	# compiler threads to use for optimisation and code generation
 		]
 		env['LINKFLAGS'] += [
-			'/CGTHREADS:' + str(num_cores),	# linker threads to use for optimisations and code generation
+		#	'/CGTHREADS:' + str(num_cores),	# linker threads to use for optimisations and code generation
 		]
 
 	# fpu control
@@ -296,7 +310,7 @@ elif plat == 'Windows':
 			'/wd 4996'
 		]
 		env['CCFLAGS'] += [
-			'/MDd',		# multi-threaded debug DLL
+			'/MTd',		# multi-threaded debug DLL
 		]
 		env['LINKFLAGS'] += [ '/NODEFAULTLIB:LIBCMTD', '/NODEFAULTLIB:msvcrt' ]
 
@@ -310,12 +324,12 @@ if debug == 0 or debug == 2:
 		env['CCFLAGS'] += [
 		#	'/c',	# compile without linking
 		#	'/GL',	# whole program optimisation
-			'/Gw',	# optimise global data
-			'/MP',	# multiple process compilation
+		#	'/Gw',	# optimise global data
+		#	'/MP',	# multiple process compilation
 			'/O2',	# maximise speed
 		]
 		env['LINKFLAGS'] += [
-			'/INCREMENTAL:NO',	# don't incrementally link
+		#	'/INCREMENTAL:NO',	# don't incrementally link
 		#	'/LTCG',			# link-time code generation
 			'/OPT:REF',			# remove unreferenced functions/data
 			'/STACK:32768',		# stack size
@@ -329,17 +343,17 @@ if debug:
 		env['CCFLAGS'] += [ '-g3' ]
 	elif plat == 'Windows':
 		env['CCFLAGS'] += [
-			'/GF',		# string pooling
-			'/Gy',		# function level linking
+		#	'/GF',		# string pooling
+		#	'/Gy',		# function level linking
 			'/Od',		# disable optimisations
-			'/Oy-',		# disable frame pointer omission
-			'/RTC1',	# runtime checks
+		#	'/Oy-',		# disable frame pointer omission
+		#	'/RTC1',	# runtime checks
 			'/Z7',		# emit debug information
 		]
 		env['PDB'] = 'xsngine.pdb'
 		env['LINKFLAGS'] += [
 			'/DEBUG',		# generate debug info
-			'/INCREMENTAL',	# incrementally link
+		#	'/INCREMENTAL',	# incrementally link
 		]
 
 	env['CPPDEFINES'] += [ '_DEBUG' ]

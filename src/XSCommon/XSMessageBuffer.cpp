@@ -27,7 +27,7 @@ namespace XS {
 	}
 
 	bool MessageBuffer::IsEmpty( void ) const {
-		return buffer.empty();
+		return buffer.empty(); 
 	}
 
 	std::vector<std::string> MessageBuffer::GetLines( unsigned int lineCount ) const {

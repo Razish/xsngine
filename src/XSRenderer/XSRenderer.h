@@ -7,7 +7,7 @@ namespace XS {
 	// front-end renderer access
 
 	class Cvar;
-	class vector4;
+	struct vector4;
 
 	namespace Renderer {
 
