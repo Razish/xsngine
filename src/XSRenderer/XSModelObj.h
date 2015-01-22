@@ -9,8 +9,15 @@ namespace XS {
 
 		class Obj : public Model {
 
-			bool	LoadMeshes	( void );
-			void	Process		( Mesh *mesh );
+			// load the mesh from disk
+			bool LoadMeshes(
+				void
+			);
+
+			// process mesh into GPU-friendly format after loading the model format from disk
+			void Process(
+				Mesh *mesh
+			);
 
 		};
 

@@ -16,10 +16,10 @@ namespace XS {
 		struct Material;
 
 		struct FontData {
-			vector2	size;
-			vector2	s, t;
-			vector2	offset;
-			float	advance;
+			vector2		size;
+			vector2		s, t;
+			vector2		offset;
+			float		advance;
 		};
 
 		class Font {
@@ -34,19 +34,54 @@ namespace XS {
 			FontData	data[256];
 			float		lineHeight;
 
-			Font( const char *name, uint16_t size );
-
 			// don't allow default instantiation
 			Font() = delete;
 			Font( const Font& ) = delete;
 			Font& operator=( const Font& ) = delete;
 
-			void		RenderGlyphs	( void );
-			uint32_t	Draw			( const vector2 &pos, const std::string &text );
+			// register a new font
+			Font(
+				const char *name,
+				uint16_t size
+			);
 
-			static void		Init			( void );
-			static void		Shutdown		( void );
-			static Font		*Register		( const char *name, uint16_t size );
+			// generate a glyph atlas for the font at the current size.
+			void RenderGlyphs(
+				void
+			);
+
+			// draw a string at the given position
+			void Draw(
+				const vector2 &pos,
+				const std::string &text
+			);
+
+			// return the number of lines it would take to draw (for linefeeds and wrapping)
+			uint32_t GetTextLineCount(
+				const vector2 &pos,
+				const std::string &text
+			);
+
+			// return the pixel width of the specified character
+			float GetGlyphWidth(
+				char c
+			) const;
+
+			// initialise the font system (i.e. freetype)
+			static void Init(
+				void
+			);
+
+			// free all font resources
+			static void Shutdown(
+				void
+			);
+
+			// register a new font, or be returned an existing one
+			static Font *Register(
+				const char *name,
+				uint16_t size
+			);
 		};
 
 	} // namespace Renderer

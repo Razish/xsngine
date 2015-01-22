@@ -19,6 +19,20 @@ namespace XS {
 			cwd[FILENAME_MAX - 1] = '\0';
 		}
 
+		bool GetFileTime( const char *path, int32_t *outTime ) {
+			struct _stat buf;
+
+			if ( _stat( path, &buf ) ) {
+				*outTime = 0;
+				return false;
+			}
+
+			long unsigned int modifiedTime = buf.st_mtime;
+			*outTime = static_cast<int32_t>( modifiedTime );
+
+			return true;
+		}
+
 		bool MkDir( const char *path ) {
 			if ( !CreateDirectory( path, nullptr ) ) {
 				if ( GetLastError() != ERROR_ALREADY_EXISTS ) {

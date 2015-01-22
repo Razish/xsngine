@@ -249,7 +249,7 @@ namespace XS {
 			MD5_Final( &md5, digest );
 
 			out[0] = '\0';
-			for ( int i = 0; i < 16; i++ ) {
+			for ( uint32_t i = 0; i < 16u; i++ ) {
 				String::Concatenate( out, sizeof(out), String::Format( "%02X", digest[i] ).c_str() );
 			}
 		}

@@ -7,28 +7,39 @@ namespace XS {
 	namespace Renderer {
 
 		#define MAX_TEXTURES (256)
-		const int MAX_TEXTURE_UNITS = 16;
+		const uint32_t MAX_TEXTURE_UNITS = 16;
 
 		class Texture {
 		private:
-			static const Texture *lastUsedTexture[MAX_TEXTURE_UNITS];
-			static int lastUsedTextureUnit;
+			static const Texture	*lastUsedTexture[MAX_TEXTURE_UNITS];
+			static int				 lastUsedTextureUnit;
 
 		public:
-			static void Init( void );
-
-			Texture( unsigned int width, unsigned int height, InternalFormat internalFormat = InternalFormat::RGBA8,
-				const uint8_t *data = nullptr );
-			~Texture();
+			uint32_t	id;
 
 			// don't allow default instantiation
 			Texture() = delete;
 			Texture( const Texture& ) = delete;
 			Texture& operator=( const Texture& ) = delete;
 
-			void	Bind	( int unit ) const;
+			static void Init(
+				void
+			);
 
-			uint32_t id;
+			// create a texture
+			Texture(
+				uint32_t width,
+				uint32_t height,
+				InternalFormat internalFormat = InternalFormat::RGBA8,
+				const uint8_t *data = nullptr
+			);
+
+			~Texture();
+
+			// bind the current texture to the specified unit for subsequent rendering
+			void Bind(
+				int unit
+			) const;
 		};
 
 	} // namespace Renderer

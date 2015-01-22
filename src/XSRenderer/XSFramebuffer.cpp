@@ -11,15 +11,11 @@ namespace XS {
 		const Framebuffer *Framebuffer::currentReadFramebuffer = nullptr;
 		const Framebuffer *Framebuffer::currentWriteFramebuffer = nullptr;
 
-		void Framebuffer::Init( void ) {
-			// no initialization required
-		}
-
 		void Framebuffer::BindDefault( void ) {
 			if ( currentReadFramebuffer || currentWriteFramebuffer ) {
 				glBindFramebuffer( GL_FRAMEBUFFER, 0 );
-				currentReadFramebuffer	= nullptr;
-				currentWriteFramebuffer	= nullptr;
+				currentReadFramebuffer = nullptr;
+				currentWriteFramebuffer = nullptr;
 			}
 		}
 
@@ -43,14 +39,14 @@ namespace XS {
 			glBlitFramebuffer( sourceWidth, sourceHeight, 0, 0, destWidth, destHeight, 0, 0, bufferBits, GL_NEAREST );
 		}
 
-		void Framebuffer::BlitColor( const Framebuffer *source, const Framebuffer *destination, int sourceWidth,
+		void Framebuffer::BlitColour( const Framebuffer *source, const Framebuffer *destination, int sourceWidth,
 			int sourceHeight, int destWidth, int destHeight )
 		{
 			Blit( source, destination, sourceWidth, sourceHeight, destWidth, destHeight, GL_COLOR_BUFFER_BIT);
 		}
 
-		void Framebuffer::BlitColorAndDepth( const Framebuffer *source, const Framebuffer *destination, int sourceWidth,
-			int sourceHeight, int destWidth, int destHeight )
+		void Framebuffer::BlitColourAndDepth( const Framebuffer *source, const Framebuffer *destination,
+			int sourceWidth, int sourceHeight, int destWidth, int destHeight )
 		{
 			Blit( source, destination, sourceWidth, sourceHeight, destWidth, destHeight,
 				GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
@@ -58,7 +54,7 @@ namespace XS {
 
 		// instance functions
 		Framebuffer::Framebuffer()
-		: id( 0 )
+		: id( 0 ), depthTexture( nullptr ), stencilTexture( 0u )
 		{
 			glGenFramebuffers( 1, &id );
 
@@ -71,14 +67,14 @@ namespace XS {
 			glDeleteFramebuffers( 1, &id );
 		}
 
-		void Framebuffer::AttachColorTexture( const Texture *texture, unsigned int slot ) {
+		void Framebuffer::AttachColourTexture( const Texture *texture, unsigned int slot ) {
 			if ( slot >= MAX_FBO_COLOR_TEXTURES ) {
 				console.Print( "Invalid slot number given (%d), valid range is 0 - %d", slot, MAX_FBO_COLOR_TEXTURES-1 );
 				return;
 			}
 
 			glFramebufferTexture2D( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + slot, GL_TEXTURE_2D, texture->id, 0 );
-			colorTextures[slot] = texture;
+			colourTextures[slot] = texture;
 		}
 
 		void Framebuffer::AttachDepthTexture( const Texture *texture ) {
@@ -113,7 +109,7 @@ namespace XS {
 			} break;
 
 			case GL_FRAMEBUFFER_UNSUPPORTED: {
-				console.Print( "More than one internal format was used in the color attachments.\n" );
+				console.Print( "More than one internal format was used in the colour attachments.\n" );
 			} break;
 
 			case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER: {
@@ -125,7 +121,7 @@ namespace XS {
 			} break;
 
 			case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE: {
-				console.Print( "Number of samples is not the same for all rendertargets and color attachments.\n" );
+				console.Print( "Number of samples is not the same for all rendertargets and colour attachments.\n" );
 			} break;
 
 			case GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS: {

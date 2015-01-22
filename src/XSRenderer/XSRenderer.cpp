@@ -150,7 +150,6 @@ namespace XS {
 
 			Texture::Init();
 			ShaderProgram::Init();
-			Framebuffer::Init();
 			Font::Init();
 
 			RenderCommand::Init();
@@ -258,7 +257,7 @@ namespace XS {
 			views.push_back( view );
 		}
 
-		void SetView( View *view ) {
+		void BindView( View *view ) {
 			currentView = view;
 		}
 
@@ -282,8 +281,8 @@ namespace XS {
 			cmd.drawQuad.t1 = t1;
 			cmd.drawQuad.s2 = s2;
 			cmd.drawQuad.t2 = t2;
-			cmd.drawQuad.material = material;
 			cmd.drawQuad.colour = colour;
+			cmd.drawQuad.material = material;
 
 			currentView->renderCommands.push_back( cmd );
 		}

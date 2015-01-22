@@ -21,19 +21,30 @@ namespace XS {
 			};
 
 		private:
-			Type type;
-			uint32_t refCount;
+			Type		type;
+			uint32_t	refCount;
 
 		public:
+			std::string			modelPath;
+			std::vector<Mesh *>	meshes; // will be shared among duplicates to save memory
+
 			~Model();
 
-			static Model *Register( const char *path );
+			// register a model
+			// type is inferred by the file extension
+			static Model *Register(
+				const char *path
+			);
 
-			virtual bool LoadMeshes( void ) = 0;
-			void Draw( void ) const;
+			// load the meshes associated with the model and upload to GPU
+			virtual bool LoadMeshes(
+				void
+			) = 0;
 
-			std::string modelPath;
-			std::vector<Mesh *> meshes; // will be shared among duplicates to save memory
+			// issue draw command to renderer
+			void Draw(
+				void
+			) const;
 		};
 
 	} // namespace Renderer

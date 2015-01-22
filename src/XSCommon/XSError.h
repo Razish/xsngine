@@ -9,12 +9,20 @@ namespace XS {
 
 	struct XSError : public std::exception {
 	protected:
-		std::string msg;
+		std::string		msg;
 
 	public:
-		XSError( std::string &msg ) : msg( msg ) {}
-		XSError( const char *msg ) : msg( msg ) {}
-		virtual const char* what() const throw () {
+		XSError( std::string &msg )
+		: msg( msg )
+		{
+		}
+
+		XSError( const char *msg )
+		: msg( msg )
+		{
+		}
+
+		virtual const char *what() const throw () {
 			return msg.c_str();
 		}
 

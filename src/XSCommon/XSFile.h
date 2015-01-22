@@ -46,32 +46,82 @@ namespace XS {
 
 	class File {
 	private:
-		void Clear( void );
+		// after closing the file, reset all values to defaults in-case someone tries to use a dangling file handle
+		void Clear(
+			void
+		);
 
-		FILE *file;
-		FileMode mode;
+		FILE		*file;
+		FileMode	 mode;
 
 	public:
-		long length;
-		bool open;
-		char path[FILENAME_MAX];
+		long	length;
+		bool	open;
+		char	path[FILENAME_MAX]; //TODO: XS_MAX_FILENAME
 
-		static void Init( void );
-		static void SetBasePath( void );
-		static bool GetFullPath( const char *gamePath, char *outPath, size_t outLen );
-		static bool GetExtension( const char *gamePath, char *outExtension, size_t outLen );
-		static void ReplaceSeparators( char *path );
+		// initialise the filesystem
+		// any file operations requested before this is called will fail
+		static void Init(
+			void
+		);
+
+		// set the virtual root directory for the game to read/write files
+		static void SetBasePath(
+			void
+		);
+
+		// resolve a relative game path into a full OS path
+		static bool GetFullPath(
+			const char *gamePath,
+			char *outPath,
+			size_t outLen
+		);
+
+		// retrieve the file extension for the given filename
+		// upon failure, an empty string is written and the return value is false
+		static bool GetExtension(
+			const char *gamePath,
+			char *outExtension,
+			size_t outLen
+		);
+
+		// replace path separators with the native separators for your OS/FS
+		static void ReplaceSeparators(
+			char *path
+		);
 
 		// don't allow default instantiation
 		File() = delete;
 		File( const File& ) = delete;
 		File& operator=( const File& ) = delete;
 
-		File( const char *gamePath, FileMode mode = FileMode::READ );
+		// open a file for reading/writing
+		File(
+			const char *gamePath,
+			FileMode mode = FileMode::READ
+		);
+
 		~File();
-		void Read( uint8_t *buf, size_t len = 0U ) const;
-		void AppendString( const char *str ) const;
-		void Write( const void *buf, size_t len ) const;
+
+		// read len bytes into buf
+		// if len is 0 or not specified, read the entirety of the file
+		void Read(
+			uint8_t *buf,
+			size_t len = 0U
+		) const;
+
+		// append a string to the end of the file
+		// must be used on a file opened with APPEND mode
+		void AppendString(
+			const char *str
+		) const;
+
+		// write len bytes from buf into file
+		// does not concatenate file, will truncate.
+		void Write(
+			const void *buf,
+			size_t len
+		) const;
 	};
 
 } // namespace XS

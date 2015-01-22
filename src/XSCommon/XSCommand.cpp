@@ -110,6 +110,9 @@ namespace XS {
 					func( &context );
 					continue;
 				}
+				else {
+					console.Print( "Unknown command \"%s\"\n", it.c_str()  );
+				}
 			}
 			buffer.clear();
 		}

@@ -10,11 +10,11 @@
 
 namespace XS {
 
-	static std::unordered_map<std::string, Cvar*> cvars;
+	static std::unordered_map<std::string, Cvar *> cvars;
 	bool Cvar::initialised = false;
 
 	void Cvar::WriteCvars( std::string &str ) {
-		std::map<std::string, Cvar*> sorted( cvars.begin(), cvars.end() );
+		std::map<std::string, Cvar *> sorted( cvars.begin(), cvars.end() );
 
 		for ( const auto &it : sorted ) {
 			const char *name = it.first.c_str();
@@ -48,7 +48,7 @@ namespace XS {
 		modified = false;
 	}
 
-	// public
+	// private
 	Cvar::Cvar( const std::string &name, const std::string &value, const std::string &description, uint32_t flags )
 	: name( name ), defaultStr( value ), description( description ), modified( false )
 	{
@@ -57,6 +57,7 @@ namespace XS {
 		Set( value, true );
 	}
 
+	// public
 	Cvar *Cvar::Create( std::string name, std::string value, std::string description, uint32_t flags ) {
 		Cvar *cvar = cvars[name];
 		if ( initialised ) {
@@ -104,7 +105,7 @@ namespace XS {
 	void Cvar::List( void ) {
 		console.Print( "Listing cvars...\n" );
 
-		std::map<std::string, Cvar*> sorted( cvars.begin(), cvars.end() );
+		std::map<std::string, Cvar *> sorted( cvars.begin(), cvars.end() );
 		std::vector<std::string> keyValues;
 
 		Indent indent( 1 );
@@ -116,7 +117,7 @@ namespace XS {
 				maxLen = len;
 			}
 		}
-		int i = 0;
+		uint32_t i = 0;
 		for ( const auto &cvar : sorted ) {
 			console.Print( "%-*s: %s\n", maxLen + 1, keyValues[i++].c_str(), cvar.second->description.c_str() );
 		}
@@ -142,14 +143,14 @@ namespace XS {
 		const char delim = ' ';
 		std::vector<std::string> tokens = String::Split( value, delim );
 		for ( const auto &it : tokens ) {
-			CvarValue newValue;
+			CvarValue newValue = {};
 
 			newValue.str = it;
 			const char *cstr = newValue.str.c_str();
 			newValue.real = atof( cstr );
-			newValue.number = (float)newValue.real;
+			newValue.number = static_cast<float>( newValue.real );
 			newValue.integer = atoi( cstr );
-			newValue.boolean = !!newValue.integer;
+			newValue.boolean = !!newValue.integer; // coerce to boolean
 
 			values.push_back( newValue );
 		}
@@ -165,7 +166,7 @@ namespace XS {
 		return Set( value.c_str(), initial );
 	}
 
-	bool Cvar::Set( const int value, bool initial ) {
+	bool Cvar::Set( const int32_t value, bool initial ) {
 		return Set( String::Format( "%i", value ), initial );
 	}
 

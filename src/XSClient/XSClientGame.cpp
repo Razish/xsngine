@@ -34,13 +34,13 @@ namespace XS {
 				f.Read( terrainBuf );
 			delete[] terrainBuf;
 
-			const int textureSize = static_cast<int>( sqrtf( static_cast<float>( f.length ) ) );
+			const uint32_t textureSize = static_cast<uint32_t>( sqrtf( static_cast<float>( f.length ) ) );
 
 			// create shader program
 			static const Renderer::VertexAttribute attributes[] = {
 				{ 0, "in_Position" },
 				{ 1, "in_TexCoord" },
-				{ 2, "in_Color" }
+				{ 2, "in_Colour" }
 			};
 
 			terrainProgram = new Renderer::ShaderProgram( "terrain", "terrain", attributes, ARRAY_LEN( attributes ) );
@@ -91,8 +91,7 @@ namespace XS {
 		void Init( void ) {
 			const uint32_t width = Cvar::Get( "vid_width" )->GetInt();
 			const uint32_t height = Cvar::Get( "vid_height" )->GetInt();
-			sceneView = new Renderer::View( width, height, false );
-			sceneView->SetPreRenderCallback( RenderScene );
+			sceneView = new Renderer::View( width, height, false, RenderScene );
 
 #if 0
 			LoadTerrain();

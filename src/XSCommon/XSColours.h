@@ -39,9 +39,22 @@ namespace XS {
 	#define S_COLOUR_PURPLE		"^d"
 	#define S_COLOUR_PINK		"^e"
 
-	bool IsColourString( const char *p );
-	size_t ColourStringLength( const char *text );
-	unsigned int ColourIndex( char c );
-	extern const vector4 g_colour_table[COLOUR_BITS+1];
+	// returns true if the substring pointed at by p is the beginning of a colour sequence
+	bool IsColourString(
+		const char *p
+	);
+
+	// string length of text skipping colour sequences
+	size_t ColourStringLength(
+		const char *text
+	);
+
+	// return the index to the colour table (colourTable) for the given character
+	// e.g. return 6 for the '6' in "^6", or 15 for the 'E' in "^E"
+	uint32_t ColourIndex(
+		char c
+	);
+
+	extern const vector4 colourTable[COLOUR_BITS + 1];
 
 } // namespace XS

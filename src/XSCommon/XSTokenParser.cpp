@@ -138,7 +138,7 @@ namespace XS {
 		return false;
 	}
 
-	bool TokenParser::ParseInt( int *i ) {
+	bool TokenParser::ParseInt( int32_t *i ) {
 		const char *tok = ParseToken( false );
 
 		if ( *tok == '\0' ) {

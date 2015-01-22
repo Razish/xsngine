@@ -8,14 +8,19 @@ namespace XS {
 
 		namespace Backend {
 
-			void	Init		( void );
-			void	Shutdown	( void );
-
 			extern Cvar *r_fov;
 			extern Cvar *r_zRange;
 
 			extern GLuint defaultVao;
 			extern GLuint defaultPbo;
+
+			void Init(
+				void
+			);
+
+			void Shutdown(
+				void
+			);
 
 		} // namespace Backend
 

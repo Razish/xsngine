@@ -17,18 +17,20 @@ namespace XS {
 
 		struct Mesh {
 
-			std::vector<vector3> vertices;
-			std::vector<vector3> normals;
-			std::vector<vector2> UVs;
-			std::vector<uint16_t> indices;
+			std::vector<vector3>	 vertices;
+			std::vector<vector3>	 normals;
+			std::vector<vector2>	 UVs;
+			std::vector<uint16_t>	 indices;
+			ShaderProgram			*shader;
+			Material				*material;
+			Texture					*texture;
+			Backend::Buffer			*vertexBuffer;
+			Backend::Buffer			*indexBuffer;
 
-			ShaderProgram *shader;
-			Material *material;
-			Texture *texture;
-			Backend::Buffer *vertexBuffer;
-			Backend::Buffer *indexBuffer;
-
-			void Upload( void );
+			// upload mesh to GPU
+			void Upload(
+				void
+			);
 
 			Mesh()
 			: shader( nullptr ), material( nullptr ), texture( nullptr ), vertexBuffer( nullptr ),

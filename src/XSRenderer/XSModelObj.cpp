@@ -128,7 +128,7 @@ namespace XS {
 
 						vector3 vertex;
 						for ( int i = 0; i < 3; i++ ) {
-							parser->ParseFloat( &vertex._raw[i] );
+							parser->ParseFloat( &vertex.raw[i] );
 						}
 						vertex.x += 4.0f;
 						vertex.y += 4.0f;
@@ -147,7 +147,7 @@ namespace XS {
 
 						vector3 normal;
 						for ( int i = 0; i < 3; i++ ) {
-							parser->ParseFloat( &normal._raw[i] );
+							parser->ParseFloat( &normal.raw[i] );
 						}
 						mesh->normals.push_back( normal );
 						parser->SkipLine();

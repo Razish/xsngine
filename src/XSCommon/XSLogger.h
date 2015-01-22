@@ -14,10 +14,23 @@ namespace XS {
 		std::string					filename;
 		bool						timestamp;
 
-		void	PrintQueued	( void );
-		void	Queue		( std::string &str );
+		// write queued messages out to file once we have one open
+		void PrintQueued(
+			void
+		);
+
+		// add a message to the print queue
+		// when the filesystem becomes available, it will be written to disk
+		void Queue(
+			std::string &str
+		);
 
 	public:
+		// don't allow default instantiation
+		Logger() = delete;
+		Logger( const Logger& ) = delete;
+		Logger& operator=( const Logger& ) = delete;
+
 		Logger( const char *filename, bool timestamp = true )
 		: f( nullptr ), filename( filename ), timestamp( timestamp )
 		{
@@ -25,12 +38,10 @@ namespace XS {
 
 		~Logger();
 
-		// don't allow default instantiation
-		Logger() = delete;
-		Logger( const Logger& ) = delete;
-		Logger& operator=( const Logger& ) = delete;
-
-		void	Print	( const char *message );
+		// write a message to the log file, or queue it if filesystem is not available
+		void Print(
+			const char *message
+		);
 	};
 
 } // namespace XS

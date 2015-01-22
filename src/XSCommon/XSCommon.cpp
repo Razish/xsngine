@@ -10,6 +10,7 @@
 #include "XSCommon/XSFile.h"
 #include "XSCommon/XSTimer.h"
 #include "XSCommon/XSString.h"
+#include "XSCommon/XSGlobals.h"
 #include "XSClient/XSClient.h"
 #include "XSInput/XSInput.h"
 #include "XSInput/XSKeys.h"
@@ -39,11 +40,11 @@ namespace XS {
 			r_framerate = Cvar::Create( "r_framerate", "120", "Render framerate", CVAR_NONE );
 		}
 
-		static void ParseCommandLine( int argc, char **argv ) {
+		static void ParseCommandLine( int32_t argc, char **argv ) {
 			std::string commandLine;
 
 			// concatenate argv[] to commandLine
-			for ( int i = 1; i < argc; i++ ) {
+			for ( int32_t i = 1; i < argc; i++ ) {
 				const bool containsSpaces = strchr( argv[i], ' ' ) != nullptr;
 
 				if ( containsSpaces ) {
@@ -130,11 +131,13 @@ namespace XS {
 			WriteConfig( cfg );
 		}
 
+		Timer *gameTimer = nullptr;
+
 	} // namespace Common
 
 } // namespace XS
 
-static XS::Timer timer;
+static XS::Timer globalTimer;
 
 int main( int argc, char **argv ) {
 	try {
@@ -164,7 +167,7 @@ int main( int argc, char **argv ) {
 	//	XS::Network::Init();
 
 		if ( XS::Common::com_developer->GetBool() ) {
-			double t = timer.GetTiming( true, XS::Timer::Resolution::MILLISECONDS );
+			double t = globalTimer.GetTiming( true, XS::Timer::Resolution::MILLISECONDS );
 			XS::console.DebugPrint( "Init time: %.0f milliseconds\n", t );
 		}
 
@@ -176,13 +179,13 @@ int main( int argc, char **argv ) {
 		XS::Cvar::initialised = true;
 
 		// frame
-		XS::Timer gameTimer;
+		XS::Common::gameTimer = new XS::Timer();
 		while ( 1 ) {
-			static double currentTime = gameTimer.GetTiming( false, XS::Timer::Resolution::MILLISECONDS );
+			static double currentTime = XS::Common::gameTimer->GetTiming( false, XS::Timer::Resolution::MILLISECONDS );
 			static double accumulator = 0.0;
 
 			// calculate delta time for integrating this frame
-			const double newTime = gameTimer.GetTiming( false, XS::Timer::Resolution::MILLISECONDS );
+			const double newTime = XS::Common::gameTimer->GetTiming( false, XS::Timer::Resolution::MILLISECONDS );
 			const double dt = 1000.0 / XS::Common::com_framerate->GetDouble();
 			const double frameTime = newTime - currentTime;
 			currentTime = newTime;
@@ -237,7 +240,7 @@ int main( int argc, char **argv ) {
 		XS::console.Print( "\n*** xsngine is shutting down\nReason: %s\n\n", e.what() );
 
 		if ( developer ) {
-			const double runtime = timer.GetTiming( true, XS::Timer::Resolution::SECONDS );
+			const double runtime = globalTimer.GetTiming( true, XS::Timer::Resolution::SECONDS );
 			XS::console.DebugPrint( "Run time: %.3f seconds\n", runtime );
 		}
 
@@ -252,7 +255,7 @@ int main( int argc, char **argv ) {
 		}
 
 		if ( developer ) {
-			const double shutdownTIme = timer.GetTiming( false, XS::Timer::Resolution::SECONDS );
+			const double shutdownTIme = globalTimer.GetTiming( false, XS::Timer::Resolution::SECONDS );
 			XS::console.DebugPrint( "Shutdown time: %.3f seconds\n\n\n", shutdownTIme );
 		}
 

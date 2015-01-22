@@ -125,6 +125,9 @@ namespace XS {
 			case ShaderType::FRAGMENT: {
 				String::FormatBuffer( path, sizeof(path), "shaders/f_%s.glsl", name );
 			} break;
+			default: {
+				throw( XSError( String::Format( "Shader(): Unknown shader type for \"%s\"", name ).c_str() ) );
+			} break;
 			}
 
 			const File f( path, FileMode::READ );

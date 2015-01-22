@@ -1,0 +1,15 @@
+language: cpp
+compiler: gcc
+env: MORE_WARNINGS=1
+
+install:
+  - git clone https://github.com/dimensio/libpng16-deb.git && cd libpng16-deb
+  - sudo apt-get install bundler curl
+  - sudo apt-get install libfreetype6-dev
+  - bundle install
+  - make
+  - dpkg -i ./*.deb
+
+script:
+  - cd ../src
+  - scons -Q -j1 debug=0 force32=0

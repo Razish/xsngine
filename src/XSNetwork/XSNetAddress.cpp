@@ -1,5 +1,5 @@
 #include "XSCommon/XSCommon.h"
-#include "XSCommon/XSNetAddress.h"
+#include "XSNetwork/XSNetAddress.h"
 
 namespace XS {
 

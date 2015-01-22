@@ -45,7 +45,7 @@ namespace XS {
 			}
 
 			void *Buffer::Map( void ) {
-				glBindBuffer( type, id );
+				Bind();
 				return glMapBufferRange( type, 0, size, GL_MAP_WRITE_BIT );
 			}
 

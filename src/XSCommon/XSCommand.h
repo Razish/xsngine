@@ -11,12 +11,27 @@ namespace XS {
 
 		typedef void (*commandFunc_t)( const commandContext_t * const context );
 
-		void Init( void );
+		// initialise the command system
+		void Init(
+			void
+		);
 
-		bool AddCommand( const char *name, commandFunc_t cmd );
+		// associate a console command with a function
+		bool AddCommand(
+			const char *name,
+			commandFunc_t cmd
+		);
 
-		void Append( const char *str, char delimiter = ';' );
-		void ExecuteBuffer( void );
+		// append text to the command buffer to be executed in a batch
+		void Append(
+			const char *str,
+			char delimiter = ';'
+		);
+
+		// execute queued commands in the buffer
+		void ExecuteBuffer(
+			void
+		);
 
 	} // namespace Command
 

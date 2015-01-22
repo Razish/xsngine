@@ -11,8 +11,9 @@ namespace XS {
 
 	namespace Renderer {
 
-		View::View( uint32_t width, uint32_t height, bool is2D )
-		: width( width ), height( height ), callbackPreRender( nullptr ), is2D( is2D )
+		View::View( uint32_t width, uint32_t height, bool is2D, renderCallback_t preRender,
+			renderCallback_t postRender )
+		: width( width ), height( height ), callbackPreRender( preRender ), callbackPostRender( postRender ), is2D( is2D )
 		{
 			if ( !width || !height ) {
 				throw( XSError( "Registered View with 0 width or 0 height" ) );
@@ -23,15 +24,11 @@ namespace XS {
 			RegisterView( this );
 		}
 
-		View::~View() {
-			delete perFrameData;
-		}
-
 		void View::PreRender( void ) {
 			// set up 2d/3d perspective
 			if ( is2D ) {
 				projectionMatrix = ortho( 0.0f, static_cast<float>( width ), 0.0f, static_cast<float>( height ),
-					0.0f, 1.0f);
+					0.0f, 1.0f );
 			}
 			else {
 				const float fov = Backend::r_fov->GetFloat();
@@ -62,15 +59,13 @@ namespace XS {
 		}
 
 		void View::PostRender( void ) const {
-			// ...
+			if ( callbackPostRender ) {
+				callbackPostRender();
+			}
 		}
 
 		void View::Bind( void ) {
-			SetView( this );
-		}
-
-		void View::SetPreRenderCallback( void (*callback)( void ) ) {
-			callbackPreRender = callback;
+			BindView( this );
 		}
 
 		void View::AddObject( const Renderable *renderObject ) {

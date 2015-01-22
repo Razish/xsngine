@@ -8,7 +8,10 @@ namespace XS {
 
 		namespace Backend {
 
-			void	Cmd_Screenshot	( const commandContext_t * const context );
+			// take a screenshot of the current display
+			void Cmd_Screenshot(
+				const commandContext_t * const context
+			);
 
 		} // namespace Backend
 

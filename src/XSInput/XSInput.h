@@ -7,7 +7,11 @@ namespace XS {
 		// exists in XSClient/XSInput.cpp for now
 		extern struct Input {
 			Input();
-			void Poll( void ) const;
+
+			// check for new input events
+			void Poll(
+				void
+			) const;
 		} input;
 
 	} // namespace Client

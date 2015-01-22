@@ -28,13 +28,13 @@ namespace XS {
 			} keyEvent;
 
 			struct {
-				uint8_t button;
-				bool pressed;
+				uint8_t	button;
+				bool	pressed;
 			} mouseButton;
 
 			struct {
-				bool up;
-				uint32_t amount;
+				bool		up;
+				uint32_t	amount;
 			} mouseWheel;
 		};
 
@@ -49,9 +49,20 @@ namespace XS {
 
 	namespace Event {
 
-		void	Init	( void );
-		void	Queue	( const XSEvent *ev );
-		void	Pump	( void );
+		// initialise the event subsystem
+		void Init(
+			void
+		);
+
+		// add an event to the event queue
+		void Queue(
+			const XSEvent *ev
+		);
+
+		// pump all queued events, executing the necessary functions
+		void Pump(
+			void
+		);
 
 	} // namespace Event
 

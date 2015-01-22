@@ -7,6 +7,10 @@
 namespace XS {
 
 	Timer::Timer() {
+		Start();
+	}
+
+	void Timer::Start( void ) {
 	#if defined(XS_OS_WINDOWS)
 		QueryPerformanceCounter( &start );
 	#elif defined(XS_OS_LINUX)
@@ -26,7 +30,7 @@ namespace XS {
 		Stop();
 
 	#if defined(XS_OS_WINDOWS)
-		TimeVal frequency;
+		timeVal_t frequency;
 		QueryPerformanceFrequency( &frequency );
 
 		double startTime = start.QuadPart * (1000000.0 / frequency.QuadPart);
@@ -37,11 +41,7 @@ namespace XS {
 	#endif
 
 		if ( restart ) {
-		#if defined(XS_OS_WINDOWS)
-			QueryPerformanceCounter( &start );
-		#elif defined(XS_OS_LINUX)
-			gettimeofday( &start, nullptr );
-		#endif
+			Start();
 		}
 
 		switch ( resolution ) {

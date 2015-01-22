@@ -6,6 +6,7 @@
 
 namespace XS {
 
+	// forward declaration
 	struct Console;
 	class Cvar;
 	class InputField;
@@ -20,26 +21,45 @@ namespace XS {
 		extern class ClientConsole {
 		private:
 			Console			*console;
-
 			bool			 visible;
-			int				 scrollAmount;
-			unsigned int	 lineCount;// = 24u;
+			int32_t			 scrollAmount;
+			uint32_t		 lineCount;
 			Cvar 			*con_fontSize;
 			InputField		*input;
 			Renderer::View	*view;
 			Renderer::Font	*font;
 
 		public:
-			ClientConsole( Console *console );
+			// instantiate the ClientConsole for a specified Console object
+			ClientConsole(
+				Console *console
+			);
 
 			// don't allow default instantiation
 			ClientConsole() = delete;
 			ClientConsole( const ClientConsole& ) = delete;
 			ClientConsole& operator=( const ClientConsole& ) = delete;
 
-			void	Draw	( void );
-			bool	KeyEvent( SDL_Keycode key, bool down );
-			void	Toggle	( void );
+			// draw the console background, text and input field
+			void Draw(
+				void
+			);
+
+			// calculate the correct number of lines for the window height and font line height
+			void Resize(
+				void
+			);
+
+			// handle a key event for the input field
+			bool KeyEvent(
+				SDL_Keycode key,
+				bool down
+			);
+
+			// toggle visibility of the console
+			void Toggle(
+				void
+			);
 		} *clientConsole;
 
 	} // namespace Client

@@ -20,22 +20,38 @@ namespace XS {
 				size_t	size;
 
 			public:
-				Buffer( Type type, const void *data, size_t dataSize );
-
 				// don't allow default instantiation
 				Buffer() = delete;
 				Buffer( const Buffer& ) = delete;
 				Buffer& operator=( const Buffer& ) = delete;
 
+				Buffer(
+					Type type,
+					const void *data,
+					size_t dataSize
+				);
+
 				~Buffer();
 
-				void	*Map		( void );
-				void	 Unmap		( void );
+				void *Map(
+					void
+				);
 
-				GLuint	 GetID		( void ) const;
+				void Unmap(
+					void
+				);
 
-				void	 Bind		( void ) const;
-				void	 BindRange	( int index ) const;
+				GLuint GetID(
+					void
+				) const;
+
+				void Bind(
+					void
+				) const;
+
+				void BindRange(
+					int index
+				) const;
 
 			};
 

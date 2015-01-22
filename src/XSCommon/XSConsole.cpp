@@ -16,15 +16,12 @@
 
 namespace XS {
 
-	Console console;
+	Console console = {};
 
 	Console::Console()
 	: indentation( 0u )
 	{
 		buffer = new MessageBuffer( "console.log" );
-	}
-	Console::~Console() {
-		delete buffer;
 	}
 
 	void Console::Print( const char *fmt, ... ) {
@@ -53,7 +50,7 @@ namespace XS {
 
 		//FIXME: care about printing twice on same line
 		std::string finalOut = "";
-		for ( unsigned int i = 0; i < indentation; i++ ) {
+		for ( uint32_t i = 0; i < indentation; i++ ) {
 			finalOut += "  ";
 		}
 		finalOut += str;
@@ -96,7 +93,7 @@ namespace XS {
 
 		//FIXME: care about printing twice on same line
 		std::string finalOut = "";
-		for ( unsigned int i = 0; i < indentation; i++ ) {
+		for ( uint32_t i = 0; i < indentation; i++ ) {
 			finalOut += "  ";
 		}
 		finalOut += str;

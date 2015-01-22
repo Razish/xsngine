@@ -11,27 +11,31 @@ namespace XS {
 
 	struct vector2 {
 		union {
-			struct { float x, y; };
-			struct { float w, h; };
-			float _raw[2];
+			struct {
+				float x;
+				float y;
+			};
+			struct {
+				float w;
+				float h;
+			};
+			float raw[2];
 		};
 
 		// xtors
-		vector2()
-		: x( 0.0f ), y( 0.0f )
-		{
-		}
-
-		vector2( float x, float y )
+		vector2( float x = 0.0f, float y = 0.0f )
 		: x( x ), y( y )
 		{
 		}
 
-		std::string tostring( void ) const;
+		// string representation of the vector
+		std::string tostring(
+			void
+		) const;
 
 		// access operators
-		inline float& operator[]( const int idx ) {
-			return _raw[idx];
+		inline float& operator[]( const size_t idx ) {
+			return raw[idx];
 		}
 
 		// clear
@@ -121,27 +125,33 @@ namespace XS {
 
 	struct vector3 {
 		union {
-			struct { float x, y, z; };
-			struct { float r, g, b; }; // red, green, blue?
-			float _raw[3];
+			struct {
+				float x;
+				float y;
+				float z;
+			};
+			struct {
+				float r;
+				float g;
+				float b;
+			};
+			float raw[3];
 		};
 
 		// xtors
-		vector3()
-		: x( 0.0f ), y( 0.0f ), z( 0.0f )
-		{
-		}
-
-		vector3( float x, float y, float z )
+		vector3( float x = 0.0f, float y = 0.0f, float z = 0.0f )
 		: x( x ), y( y ), z( z )
 		{
 		}
 
-		std::string tostring( void ) const;
+		// string representation of the vector
+		std::string tostring(
+			void
+		) const;
 
 		// access operators
-		inline float& operator[]( const int idx ) {
-			return _raw[idx];
+		inline float& operator[]( const size_t idx ) {
+			return raw[idx];
 		}
 
 		// clear
@@ -309,27 +319,35 @@ namespace XS {
 
 	struct vector4 {
 		union {
-			struct { float x, y, z, w; };
-			struct { float r, g, b, a; }; // red, green, blue?
-			float _raw[4];
+			struct {
+				float x;
+				float y;
+				float z;
+				float w;
+			};
+			struct {
+				float r;
+				float g;
+				float b;
+				float a;
+			};
+			float raw[4];
 		};
 
 		// xtors
-		vector4()
-		: x( 0.0f ), y( 0.0f ), z( 0.0f ), w( 0.0f )
-		{
-		}
-
-		vector4( float x, float y, float z, float w )
+		vector4( float x = 0.0f, float y = 0.0f, float z = 0.0f, float w = 0.0f )
 		: x( x ), y( y ), z( z ), w( w )
 		{
 		}
 
-		std::string tostring( void ) const;
+		// string representation of the vector
+		std::string tostring(
+			void
+		) const;
 
 		// access operators
-		inline float& operator[]( const int idx ) {
-			return _raw[idx];
+		inline float& operator[]( const size_t idx ) {
+			return raw[idx];
 		}
 
 		// clear

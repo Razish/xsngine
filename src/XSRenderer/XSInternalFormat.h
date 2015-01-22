@@ -16,9 +16,20 @@ namespace XS {
 			DEPTH24_STENCIL8
 		};
 
-		unsigned int GetGLInternalFormat( InternalFormat internalFormat );
-		unsigned int GetGLFormat( InternalFormat internalFormat );
-		unsigned int GetDataTypeForFormat( InternalFormat internalFormat );
+		// ???
+		unsigned int GetGLInternalFormat(
+			InternalFormat internalFormat
+		);
+
+		// ???
+		unsigned int GetGLFormat(
+			InternalFormat internalFormat
+		);
+
+		// retrieve the data type used to store texture colours
+		unsigned int GetDataTypeForFormat(
+			InternalFormat internalFormat
+		);
 
 	} // namespace Renderer
 

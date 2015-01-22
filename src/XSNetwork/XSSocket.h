@@ -25,13 +25,14 @@
 
 #endif
 
-#include "XSCommon/XSNetAddress.h"
+#include "XSNetwork/XSNetAddress.h"
 
 namespace XS {
 
 	// helper class
 	// creates a socket and connects to the specified host
 	//TODO: supports socksv5
+
 	class Socket {
 	private:
 		enum class Type {
@@ -41,18 +42,25 @@ namespace XS {
 			SOCKS_UDP
 		};
 
-		Socket::Type type;
-		NetAddress *address;
-		short port; // stored in network byte order
+		Socket::Type	type;
+		NetAddress		*address;
+		int16_t			port; // stored in network byte order
 
 	public:
-		Socket( const NetAddress *address, short port );
-
+		// don't allow default instantiation
 		Socket() = delete;
 		Socket( const Socket& ) = delete;
 		Socket& operator=( const Socket& ) = delete;
 
-		void	Send	( const uint8_t *buf, size_t bufSize ) const;
+		Socket(
+			const NetAddress *address,
+			int16_t port
+		);
+
+		void Send(
+			const uint8_t *buf,
+			size_t bufSize
+		) const;
 	};
 
 } // namespace XS

@@ -159,29 +159,69 @@ namespace XS {
 			delete[] atlas;
 		}
 
-		uint32_t Font::Draw( const vector2 &pos, const std::string &text ) {
-			uint32_t numLines = 0u;
+		void Font::Draw( const vector2 &pos, const std::string &text ) {
 			if ( text.empty() ) {
-				return numLines;
+				return;
 			}
 
+			const uint32_t screenWidth = vid_width->GetInt();
 			vector2 currentPos = pos;
-			for ( size_t i = 0; i < text.length(); i++ ) {
+			size_t len = text.length();
+
+			for ( size_t i = 0; i < len; i++ ) {
 				const char c = text[i];
 				const FontData &fd = data[c];
 
 				// check for overflow
-				if ( currentPos.x + fd.advance >= vid_width->GetInt() ) {
+				if ( currentPos.x + fd.advance >= screenWidth ) {
 					currentPos.x = pos.x;
 					currentPos.y += lineHeight;
-					numLines++;
 				}
 
 				DrawQuad( currentPos.x + fd.offset.x, currentPos.y + fd.offset.y, // x, y
 					fd.size.x, fd.size.y, // width, height
 					fd.s.x, fd.t.x, fd.s.y, fd.t.y, // st coords
 					nullptr, material );
+
+				// increase by glyph width
 				currentPos.x += fd.advance;
+
+				// check for line-feeds
+				if ( c == '\n' ) {
+					currentPos.x = pos.x;
+					currentPos.y += lineHeight;
+				}
+				//TODO: handle \r? do we just write on top of the previous characters?
+			}
+
+			return;
+		}
+
+		uint32_t Font::GetTextLineCount( const vector2 &pos, const std::string &text ) {
+			uint32_t numLines = 0u;
+
+			if ( text.empty() ) {
+				return numLines;
+			}
+
+			vector2 currentPos = pos;
+			size_t len = text.length();
+			const uint32_t screenWidth = vid_width->GetInt();
+
+			for ( size_t i = 0; i < len; i++ ) {
+				const char c = text[i];
+				const FontData &fd = data[c];
+
+				// check for overflow
+				if ( currentPos.x + fd.advance >= screenWidth ) {
+					currentPos.x = pos.x;
+					currentPos.y += lineHeight;
+					numLines++;
+				}
+
+				currentPos.x += fd.advance;
+
+				// check for line-feeds
 				if ( c == '\n' ) {
 					currentPos.x = pos.x;
 					currentPos.y += lineHeight;
@@ -190,6 +230,11 @@ namespace XS {
 			}
 
 			return numLines;
+		}
+
+		float Font::GetGlyphWidth( char c ) const {
+			const FontData &fd = data[c];
+			return fd.advance;
 		}
 
 		void Font::Init( void ) {
@@ -203,7 +248,7 @@ namespace XS {
 			static const VertexAttribute attributes[] = {
 				{ 0, "in_Position" },
 				{ 1, "in_TexCoord" },
-				{ 2, "in_Color" }
+				{ 2, "in_Colour" }
 			};
 
 			fontProgram = new ShaderProgram( "text", "text", attributes, ARRAY_LEN( attributes ) );

@@ -77,7 +77,7 @@ namespace XS {
 		return len;
 	}
 
-	unsigned int ColourIndex( char c ) {
+	uint32_t ColourIndex( char c ) {
 		int lowc = tolower( c );
 
 		if ( c >= '0' && c <= '9' ) {

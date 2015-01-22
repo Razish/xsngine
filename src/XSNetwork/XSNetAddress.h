@@ -4,10 +4,10 @@ namespace XS {
 
 	class NetAddress {
 	private:
-		bool resolved;
-		bool valid;
+		bool	resolved;
+		bool	valid;
+		char	hostname[256];
 
-		char hostname[256];
 		union {
 			byteAlias32_t ipv4;
 			struct {
@@ -25,7 +25,9 @@ namespace XS {
 
 		NetAddress() = delete;
 
-		NetAddress( const char *hostname );
+		NetAddress(
+			const char *hostname
+		);
 		~NetAddress() {}
 
 		NetAddress ToNetworkOrder( void ) const; // copy

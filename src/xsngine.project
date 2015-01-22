@@ -184,12 +184,9 @@
     <File Name="XSCommon/XSLogger.cpp"/>
     <File Name="XSCommon/XSConsole.h"/>
     <File Name="XSCommon/XSCommon.h"/>
-    <File Name="XSCommon/XSNetAddress.h"/>
     <File Name="XSCommon/XSConsole.cpp"/>
     <File Name="XSCommon/XSCommand.cpp"/>
     <File Name="XSCommon/XSGlobals.h"/>
-    <File Name="XSCommon/XSSocket.h"/>
-    <File Name="XSCommon/XSSocket.cpp"/>
     <File Name="XSCommon/XSColours.cpp"/>
     <File Name="XSCommon/XSMessageBuffer.cpp"/>
     <File Name="XSCommon/XSModule.cpp"/>
@@ -204,7 +201,6 @@
     <File Name="XSCommon/XSColours.h"/>
     <File Name="XSCommon/XSCvar.h"/>
     <File Name="XSCommon/XSMatrix.h"/>
-    <File Name="XSCommon/XSNetAddress.cpp"/>
     <File Name="XSCommon/XSMessageBuffer.h"/>
     <File Name="XSCommon/XSModule.h"/>
     <File Name="XSCommon/XSCvar.cpp"/>
@@ -214,6 +210,12 @@
   <VirtualDirectory Name="XSCrypto">
     <File Name="XSCrypto/XSMD5.cpp"/>
     <File Name="XSCrypto/XSMD5.h"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="XSNetwork">
+    <File Name="XSNetwork/XSNetAddress.cpp"/>
+    <File Name="XSNetwork/XSNetAddress.h"/>
+    <File Name="XSNetwork/XSSocket.cpp"/>
+    <File Name="XSNetwork/XSSocket.h"/>
   </VirtualDirectory>
   <VirtualDirectory Name="XSRenderer">
     <File Name="XSRenderer/XSTexture.cpp"/>

@@ -1,31 +1,48 @@
 #pragma once
 
+#include "XSCommon/XSMessageBuffer.h"
 namespace XS {
 
-	class MessageBuffer;
-
 	extern struct Console {
-		unsigned int indentation;
-		MessageBuffer *buffer;
+		int32_t			indentation;
+		MessageBuffer	*buffer;
 
 		Console();
-		~Console();
+		inline ~Console() {
+			delete buffer;
+		}
 
-		inline void Indent( int level ) {
+		// modify the indentation level for future prints
+		// called by an Indent object
+		inline void Indent( int32_t level ) {
 			indentation += level;
 		}
 
-		void Print( const char *fmt, ... );
-		void DebugPrint( const char *fmt, ... );
+		// print a line to the console buffer
+		void Print(
+			const char *fmt,
+			...
+		);
+
+		// print a line to the console buffer if running a debug build
+		void DebugPrint(
+			const char *fmt,
+			...
+		);
 
 	private:
-		void Append( const char *text, bool multiLine );
+		// used internally
+		// append a line to the list, accounting for split lines
+		void Append(
+			const char *text,
+			bool multiLine
+		);
 	} console;
 
 	// Instantiate a local (stack-level) Indent object to indent subsequent console prints
 	class Indent {
 	private:
-		unsigned int level;
+		int32_t		level;
 
 	public:
 		// don't allow default instantiation
@@ -33,14 +50,16 @@ namespace XS {
 		Indent( const Indent& ) = delete;
 		Indent& operator=( const Indent& ) = delete;
 
-		Indent( int level )
-		: level( (unsigned)level )
+		// set the indent level
+		inline Indent( int32_t level )
+		: level( level )
 		{
 			console.Indent( level );
 		}
 
-		~Indent() {
-			console.Indent( -(signed)level );
+		// revert the indent level
+		inline ~Indent() {
+			console.Indent( -level );
 		}
 	};
 

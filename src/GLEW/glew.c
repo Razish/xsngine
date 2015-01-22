@@ -13472,7 +13472,7 @@ GLboolean glewExperimental = GL_FALSE;
 #if defined(_WIN32)
 extern GLenum GLEWAPIENTRY wglewContextInit (void);
 #elif !defined(__ANDROID__) && !defined(__native_client__) && (!defined(__APPLE__) || defined(GLEW_APPLE_GLX))
-extern GLenum GLEWAPIENTRY glxewContextInit (void);
+//extern GLenum GLEWAPIENTRY glxewContextInit (void);
 #endif /* _WIN32 */
 
 GLenum GLEWAPIENTRY glewInit (void)

@@ -21,6 +21,20 @@ namespace XS {
 			cwd[FILENAME_MAX - 1] = '\0';
 		}
 
+		bool GetFileTime( const char *path, int32_t *outTime ) {
+			struct stat buf;
+
+			if ( stat( path, &buf ) ) {
+				*outTime = 0;
+				return false;
+			}
+
+			long int modifiedTime = buf.st_mtime;
+			*outTime = static_cast<int32_t>( modifiedTime );
+
+			return true;
+		}
+
 		bool MkDir( const char *path ) {
 			if ( mkdir( path, S_IRWXU | S_IXGRP | S_IRGRP ) ) {
 				if ( errno != EEXIST ) {

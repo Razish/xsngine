@@ -9,7 +9,11 @@ namespace XS {
 
 		public:
 			virtual ~Renderable() = 0;
-			virtual void Draw( void ) const = 0;
+
+			// issue draw command to renderer
+			virtual void Draw(
+				void
+			) const = 0;
 
 		};
 

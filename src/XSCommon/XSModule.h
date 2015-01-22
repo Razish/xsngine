@@ -4,14 +4,20 @@ namespace XS {
 
 	class Module {
 	private:
-		void *handle;
+		void *handle; // handle to the dynamic library
 
 	public:
+		// don't allow default instantiation
 		Module() = delete;
 		Module( const Module& ) = delete;
 		Module& operator=( const Module& ) = delete;
 
-		Module( const char *name, uint32_t version );
+		// dynamically load a module
+		Module(
+			const char *name,
+			uint32_t version
+		);
+
 		~Module();
 	};
 

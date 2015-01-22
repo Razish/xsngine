@@ -30,9 +30,16 @@ namespace XS {
 		return buffer.empty(); 
 	}
 
-	std::vector<std::string> MessageBuffer::GetLines( unsigned int lineCount ) const {
-		return std::vector<std::string>( buffer.end() - std::min( buffer.size(), static_cast<size_t>(lineCount) ),
-			buffer.end() );
+	std::vector<std::string> MessageBuffer::FetchLines( uint32_t start, uint32_t count ) const {
+		const uint32_t size = GetNumLines();
+		const uint32_t begin = std::min( size, start );
+		const uint32_t end = std::min( begin + count, size );
+
+		return std::vector<std::string>( buffer.begin() + begin, buffer.begin() + end );
+	}
+
+	uint32_t MessageBuffer::GetNumLines( void ) const {
+		return static_cast<uint32_t>( buffer.size() );
 	}
 
 } // namespace XS

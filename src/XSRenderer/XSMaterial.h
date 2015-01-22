@@ -15,20 +15,23 @@ namespace XS {
 
 		struct Material {
 			struct SamplerBinding {
-				int		unit;
+				int		 unit;
 				Texture	*texture;
 			};
 
 			struct BufferBinding {
-				int				index;
+				int				 index;
 				Backend::Buffer	*buffer;
 			};
 
-			ShaderProgram *shaderProgram;
-			std::vector<SamplerBinding> samplerBindings;
-			std::vector<BufferBinding> bufferBindings;
+			ShaderProgram				*shaderProgram;
+			std::vector<SamplerBinding>	 samplerBindings;
+			std::vector<BufferBinding>	 bufferBindings;
 
-			void Bind( void ) const;
+			// use this material for subsequent rendering
+			void Bind(
+				void
+			) const;
 		};
 
 	} // namespace Renderer

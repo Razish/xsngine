@@ -30,25 +30,26 @@ namespace XS {
 		static Texture *quadTexture = nullptr;
 
 		void RenderCommand::Init( void ) {
-			static const unsigned short quadIndices[6] = { 0, 2, 1, 1, 2, 3 };
+			static const uint16_t quadIndices[6] = { 0, 2, 1, 1, 2, 3 };
 
-			quadsVertexBuffer = new Buffer( Buffer::Type::VERTEX, nullptr, 144 * sizeof(float) );
+			// v1(2), v2(2), v3(2), v4(2), st1(2), st2(2), st3(2), st4(2), c1(4) == 20 bytes
+			quadsVertexBuffer = new Buffer( Buffer::Type::VERTEX, nullptr, 20 * sizeof(float) );
 			quadsIndexBuffer = new Buffer( Buffer::Type::INDEX, quadIndices, sizeof(quadIndices) );
 
 			// create null quad material
 			static const VertexAttribute attributes[] = {
 				{ 0, "in_Position" },
 				{ 1, "in_TexCoord" },
-				{ 2, "in_Color" }
+				{ 2, "in_Colour" }
 			};
 
 			quadProgram = new ShaderProgram( "quad", "quad", attributes, ARRAY_LEN( attributes ) );
 
 			// create texture
 			static const size_t numChannels = 4;
-			static const size_t textureSize = 1;
+			static const size_t textureSize = 8;
 			uint8_t textureBuffer[textureSize * textureSize * numChannels] = {};
-			std::memset( textureBuffer, 0xFF, sizeof( textureBuffer ) );
+			std::memset( textureBuffer, 0xFF, sizeof(textureBuffer) );
 			quadTexture = new Texture( textureSize, textureSize, InternalFormat::RGBA8, textureBuffer );
 
 			// create material
@@ -113,7 +114,7 @@ namespace XS {
 				vertexBuffer += 8;
 
 				for ( int i = 0; i < 4; i++ ) {
-					*vertexBuffer++ = colour._raw[i];
+					*vertexBuffer++ = colour.raw[i];
 				}
 			}
 			quadsVertexBuffer->Unmap();

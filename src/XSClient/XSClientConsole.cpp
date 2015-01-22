@@ -4,7 +4,9 @@
 #include "XSCommon/XSConsole.h"
 #include "XSCommon/XSCvar.h"
 #include "XSCommon/XSMessageBuffer.h"
+#include "XSCommon/XSString.h"
 #include "XSInput/XSInputField.h"
+#include "XSClient/XSClient.h"
 #include "XSClient/XSClientConsole.h"
 #include "XSRenderer/XSFont.h"
 #include "XSRenderer/XSView.h"
@@ -39,6 +41,19 @@ namespace XS {
 					Toggle();
 					return true;
 				}
+				else if ( key == SDLK_PAGEUP ) {
+					if ( scrollAmount + 1 < console->buffer->GetNumLines() - lineCount ) {
+						scrollAmount++;
+					}
+					return true;
+				}
+				else if ( key == SDLK_PAGEDOWN ) {
+					scrollAmount--;
+					if ( scrollAmount < 0 ) {
+						scrollAmount = 0;
+					}
+					return true;
+				}
 				else if ( input->KeyEvent( key, down ) ) {
 					return true;
 				}
@@ -58,6 +73,13 @@ namespace XS {
 			view = new Renderer::View( width, height, true );
 		}
 
+		void ClientConsole::Resize( void ) {
+			if ( font ) {
+				const uint32_t height = Cvar::Get( "vid_height" )->GetInt();
+				lineCount = ((height / 2) / std::floor( font->lineHeight )) - 1;
+			}
+		}
+
 		void ClientConsole::Draw( void ) {
 			if ( !visible ) {
 				return;
@@ -70,15 +92,54 @@ namespace XS {
 
 			const uint32_t width = Cvar::Get( "vid_width" )->GetInt();
 			const uint32_t height = Cvar::Get( "vid_height" )->GetInt();
-			static const vector4 colour( 1.0f, 0.0f, 0.0f, 0.25f );
+			static const vector4 colour( 1.0f, 0.0f, 0.0f, 1.0f );
 			Renderer::DrawQuad( 0, 0, width, height / 2, 0.0f, 0.0f, 1.0f, 1.0f, &colour, nullptr );
 
-			std::vector<std::string> lines = console->buffer->GetLines( lineCount );
-			vector2 pos( 0.0f, 0.0f );
+			Resize();
+
+			// draw the console text
+			const uint32_t numLines = console->buffer->GetNumLines();
+			const uint32_t start = std::max(
+				0,
+				static_cast<int32_t>( numLines ) - scrollAmount - static_cast<int32_t>( lineCount )
+			);
+			std::vector<std::string> lines = console->buffer->FetchLines( start, lineCount );
+
+			// TODO: might have to draw lines in reverse to compensate for one buffer element spanning multiple lines
+			const float x = 0.0f;
+			vector2 pos( x, 0.0f );
+			uint32_t drawn = 0u;
 			for ( const auto &it : lines ) {
-				const int linesDrawn = font->Draw( pos, it );
-				pos.y += linesDrawn * font->lineHeight;
+				const uint32_t linesToDraw = font->GetTextLineCount( pos, it );
+				drawn += linesToDraw;
+				if ( drawn > lineCount ) {
+					break;
+				}
+				font->Draw( pos, it );
+				pos.y += linesToDraw * font->lineHeight;
 			}
+
+			// draw the input line
+			font->Draw( pos, String::Format( ">%s", input->GetLine() ) );
+
+			// and now the cursor
+			const char *line = input->GetLine();
+			pos.x = font->GetGlyphWidth( '>' );
+			for ( const char *p = line; *p; p++ ) {
+				if ( p - line >= input->GetCursorPos() ) {
+					break;
+				}
+				pos.x += font->GetGlyphWidth( *p );
+			}
+			//TODO: overstrike mode
+			if ( static_cast<uint32_t>( GetElapsedTime() ) & 256 ) {
+				// flash every 500ms
+				font->Draw( pos, "_" );
+			}
+
+			// adjust for next line
+			pos.x = x;
+			pos.y += font->lineHeight;
 		}
 
 	} // namespace Client

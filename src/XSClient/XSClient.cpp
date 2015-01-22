@@ -4,6 +4,8 @@
 #include "XSCommon/XSCvar.h"
 #include "XSCommon/XSConsole.h"
 #include "XSCommon/XSVector.h"
+#include "XSCommon/XSTimer.h"
+#include "XSCommon/XSGlobals.h"
 #include "XSClient/XSClient.h"
 #include "XSClient/XSClientGame.h"
 #include "XSClient/XSClientConsole.h"
@@ -14,7 +16,7 @@ namespace XS {
 
 	namespace Client {
 
-		static uint64_t frameNum = 0u;
+		uint64_t frameNum = 0u;
 
 		static Renderer::View *hudView = nullptr;
 
@@ -62,6 +64,38 @@ namespace XS {
 			ClientGame::RunFrame();
 		}
 
+		double GetElapsedTime( Timer::Resolution resolution ) {
+			static uint64_t lastFrame = 0u;
+			static double timeSec = 0.0;
+			static double timeMsec = 0.0;
+			static double timeUsec = 0.0;
+			if ( lastFrame != frameNum ) {
+				lastFrame = frameNum;
+				timeUsec = Common::gameTimer->GetTiming();
+				timeMsec = timeUsec * 0.001;
+				timeSec = timeUsec * 0.000001;
+			}
+
+			switch( resolution ) {
+
+				case Timer::Resolution::SECONDS: {
+					return timeSec;
+				} break;
+
+				case Timer::Resolution::MILLISECONDS: {
+					return timeMsec;
+				} break;
+
+				case Timer::Resolution::MICROSECONDS: {
+					return timeUsec;
+				} break;
+
+				default: {
+					return 0.0;
+				} break;
+			}
+		}
+
 		static void DrawHUD( double frametime ) {
 			hudView->Bind();
 
@@ -71,17 +105,18 @@ namespace XS {
 				font = Renderer::Font::Register( "menu", 16 );
 			}
 
-			static double samples[16];
-			static unsigned int index = 0;
+			static const uint32_t numSamples = 128u;
+			static double samples[numSamples];
+			static uint32_t index = 0;
 			samples[index++] = frametime;
-			if ( index >= 16 ) {
+			if ( index >= numSamples ) {
 				index = 0u;
 			}
 			double avg = 0.0;
-			for ( int i = 0; i < 16; i++ ) {
+			for ( uint32_t i = 0; i < numSamples; i++ ) {
 				avg += samples[i];
 			}
-			avg /= 16.0;
+			avg /= (double)numSamples;
 			font->Draw( pos, String::Format( "FPS:%.3f\nTesting second line.", 1000.0 / avg ) );
 		}
 

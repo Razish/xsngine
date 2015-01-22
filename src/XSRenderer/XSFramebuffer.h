@@ -10,35 +10,87 @@ namespace XS {
 
 		class Framebuffer {
 		private:
-			uint32_t		id;
-			const Texture	*colorTextures[MAX_FBO_COLOR_TEXTURES];
+			uint32_t		 id;
+			const Texture	*colourTextures[MAX_FBO_COLOR_TEXTURES];
 			const Texture	*depthTexture;
-			unsigned int	stencilTexture;
+			unsigned int	 stencilTexture;
 
 		public:
-			static const Framebuffer *currentReadFramebuffer;
-			static const Framebuffer *currentWriteFramebuffer;
+			static const Framebuffer	*currentReadFramebuffer;
+			static const Framebuffer	*currentWriteFramebuffer;
 
-			static void Init( void );
-			static void Cleanup( void );
-			static void BindDefault( void );
-			static const Framebuffer *GetCurrent( void );
-			static void Blit( const Framebuffer *source, const Framebuffer *destination, int sourceWidth,
-				int sourceHeight, int destWidth, int destHeight, unsigned int bufferBits );
-			static void BlitColor( const Framebuffer *source, const Framebuffer *destination, int sourceWidth,
-				int sourceHeight, int destWidth, int destHeight );
-			static void BlitColorAndDepth( const Framebuffer *source, const Framebuffer *destination, int sourceWidth,
-				int sourceHeight, int destWidth, int destHeight );
+			// bind the default framebuffer
+			static void BindDefault(
+				void
+			);
 
+			// retrieve the currently bound framebuffer
+			static const Framebuffer *GetCurrent(
+				void
+			);
+
+			// blit from source framebuffer to destination framebuffer
+			static void Blit(
+				const Framebuffer *source,
+				const Framebuffer *destination,
+				int sourceWidth,
+				int sourceHeight,
+				int destWidth,
+				int destHeight,
+				uint32_t bufferBits
+			);
+
+			// blit colour from source framebuffer to destination framebuffer
+			static void BlitColour(
+				const Framebuffer *source,
+				const Framebuffer *destination,
+				int sourceWidth,
+				int sourceHeight,
+				int destWidth,
+				int destHeight
+			);
+
+			// blit colour and depth from source framebuffer to destination framebuffer
+			static void BlitColourAndDepth(
+				const Framebuffer *source,
+				const Framebuffer *destination,
+				int sourceWidth,
+				int sourceHeight,
+				int destWidth,
+				int destHeight
+			);
+
+			// create a framebuffer
 			Framebuffer();
+
+			// clean up a framebuffer
 			~Framebuffer();
-			void AttachColorTexture( const Texture *texture, unsigned int slot );
-			void AttachDepthTexture( const Texture *texture );
-			void AttachDepthStencilTexture( const Texture *texture );
-			void AttachDepthRenderbuffer( unsigned int renderbufferId );
-			void AttachStencilRenderbuffer( unsigned int renderbufferId );
-			void Bind( void ) const;
-			void Check( void ) const;
+
+			// attach a colour texture to the framebuffer object
+			void AttachColourTexture(
+				const Texture *texture,
+				unsigned int slot
+			);
+
+			// attach a depth texture to the framebuffer object
+			void AttachDepthTexture(
+				const Texture *texture
+			);
+
+			// attach a stencil texture to the framebuffer object
+			void AttachDepthStencilTexture(
+				const Texture *texture
+			);
+
+			// bind the framebuffer for subsequent rendering
+			void Bind(
+				void
+			) const;
+
+			// check if framebuffer usage is valid
+			void Check(
+				void
+			) const;
 		};
 
 	} // namespace Renderer
