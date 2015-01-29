@@ -21,6 +21,7 @@ namespace XS {
 
 		// for debugging
 		static const char *eventNames[EventType::NUM_EVENTS] = {
+			"EventType::Unknown",
 			"EventType::KEY",
 			"EventType::MOUSEBUTTON",
 			"EventType::MOUSEWHEEL",

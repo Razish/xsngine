@@ -41,10 +41,14 @@ if bits == 32:
 			arch = 'arm'
 		else:
 			arch = 'i386'
+	elif plat == 'Darwin':
+		arch = 'i386'
 elif bits == 64:
 	if plat == 'Windows':
 		arch = 'x64'
 	elif plat == 'Linux':
+		arch = 'x86_64'
+	elif plat == 'Darwin':
 		arch = 'x86_64'
 
 # fatal error if the cpu architecture can't be detected
@@ -64,12 +68,16 @@ if 'TERM' in os.environ:
 
 # prettify the compiler output
 import sys
-def cc_output( s, target, src, env ):
-	if len( src ) > 1:
-		sys.stdout.write( '  --> %s\n' % (''.join([str(x) for x in target])) )
-	else:
-		sys.stdout.write( '  compiling %s\n' % (''.join([str(x) for x in src])) )
-env['PRINT_CMD_LINE_FUNC'] = cc_output
+colours = {}
+colours['white'] = '\033[1;97m'
+colours['cyan'] = '\033[96m'
+colours['end']  = '\033[0m'
+
+# if the output is not a terminal, remove the colours
+if not sys.stdout.isatty():
+	for key, value in colors.iteritems():
+		colors[key] = ''
+env['CCCOMSTR'] = env['CXXCOMSTR'] = '%scompiling %s$SOURCE%s...' % (colours['cyan'], colours['white'], colours['end'])
 
 # obtain the compiler version
 import commands
@@ -152,14 +160,23 @@ if plat == 'Linux':
 	files += [ 'XSSystem/XSLinux.cpp' ]
 elif plat == 'Windows':
 	files += [ 'XSSystem/XSWindows.cpp' ]
+elif plat == 'Darwin':
+	files += [ 'XSSystem/XSMac.cpp' ]
 else:
-	error( 'Missing xsngine backend for your platform!')
+	raise Exception( 'Missing xsngine backend for your platform!')
 
 # set up libraries to link with
 if plat == 'Linux':
 	libs = [
 		'freetype',
 		'GL',
+		'm',
+		'png16',
+		'SDL2'
+	]
+elif plat == 'Darwin':
+	libs = [
+		'freetype',
 		'm',
 		'png16',
 		'SDL2'
@@ -178,7 +195,7 @@ elif plat == 'Windows':
 	]
 
 # compiler switches
-if plat == 'Linux':
+if plat == 'Linux' or plat == 'Darwin':
 	env['CPPDEFINES'] = []
 	env['CFLAGS'] = []
 	env['CCFLAGS'] = []
@@ -236,6 +253,9 @@ if plat == 'Linux':
 
 	# c++ flags
 	env['CXXFLAGS'] += [ '-fvisibility-inlines-hidden', '-std=c++11' ]
+	
+	if plat == 'Darwin':
+		env['FRAMEWORKS'] = [ 'OpenGL' ]
 
 elif plat == 'Windows':
 	# assume msvc
@@ -316,7 +336,7 @@ elif plat == 'Windows':
 
 # debug / release
 if debug == 0 or debug == 2:
-	if plat == 'Linux':
+	if plat == 'Linux' or plat == 'Darwin':
 		env['CCFLAGS'] += [ '-O3' ]
 		if debug == 0:
 			env['LINKFLAGS'] += [ '-s' ]
@@ -339,7 +359,7 @@ if debug == 0 or debug == 2:
 		env['CPPDEFINES'] += [ 'NDEBUG' ]
 
 if debug:
-	if plat == 'Linux':
+	if plat == 'Linux' or plat == 'Darwin':
 		env['CCFLAGS'] += [ '-g3' ]
 	elif plat == 'Windows':
 		env['CCFLAGS'] += [
@@ -392,4 +412,8 @@ env['LIBS'] += libs
 env['LIBPREFIX'] = ''
 
 # targets
-env.Program( 'xsn' + '.' + arch + env['PROGSUFFIX'], files )
+binaryName = 'xsn' + '.' + arch + env['PROGSUFFIX']
+env.Program( binaryName, files )
+
+if not os.path.exists( './xsngine' ):
+	print( 'Suggest creating a symlink: "ln -s ' + binaryName + ' xsngine"' )

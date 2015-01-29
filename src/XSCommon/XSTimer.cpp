@@ -15,6 +15,8 @@ namespace XS {
 		QueryPerformanceCounter( &start );
 	#elif defined(XS_OS_LINUX)
 		gettimeofday( &start, nullptr );
+	#elif defined(XS_OS_MAC)
+		gettimeofday( &start, nullptr );
 	#endif
 	}
 
@@ -22,6 +24,8 @@ namespace XS {
 	#if defined(XS_OS_WINDOWS)
 		QueryPerformanceCounter( &stop );
 	#elif defined(XS_OS_LINUX)
+		gettimeofday( &stop, nullptr );
+	#elif defined(XS_OS_MAC)
 		gettimeofday( &stop, nullptr );
 	#endif
 	}
@@ -36,6 +40,9 @@ namespace XS {
 		double startTime = start.QuadPart * (1000000.0 / frequency.QuadPart);
 		double stopTime = stop.QuadPart * (1000000.0 / frequency.QuadPart);
 	#elif defined(XS_OS_LINUX)
+		double startTime = (start.tv_sec * 1000000.0) + start.tv_usec;
+		double stopTime = (stop.tv_sec * 1000000.0) + stop.tv_usec;
+	#elif defined(XS_OS_MAC)
 		double startTime = (start.tv_sec * 1000000.0) + start.tv_usec;
 		double stopTime = (stop.tv_sec * 1000000.0) + stop.tv_usec;
 	#endif

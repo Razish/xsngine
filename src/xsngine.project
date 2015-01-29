@@ -259,6 +259,7 @@
     <File Name="XSSystem/XSPlatform.h"/>
     <File Name="XSSystem/XSLinux.cpp"/>
     <File Name="XSSystem/XSWindows.cpp"/>
+    <File Name="XSSystem/XSMac.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="libpng">
     <File Name="libpng/png.h"/>
@@ -369,4 +370,7 @@
       </Completion>
     </Configuration>
   </Settings>
+  <VirtualDirectory Name="src">
+    <File Name="SConstruct"/>
+  </VirtualDirectory>
 </CodeLite_Project>

@@ -70,6 +70,12 @@ Thumbs.db
 # Folder config file
 Desktop.ini
 
+############
+## Mac
+############
+
+.DS_STORE
+
 # Code::Blocks
 *.depend
 *.layout

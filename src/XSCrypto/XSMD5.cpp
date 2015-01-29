@@ -250,7 +250,7 @@ namespace XS {
 
 			out[0] = '\0';
 			for ( uint32_t i = 0; i < 16u; i++ ) {
-				String::Concatenate( out, sizeof(out), String::Format( "%02X", digest[i] ).c_str() );
+				String::Concatenate( out, sizeof(*out), String::Format( "%02X", digest[i] ).c_str() );
 			}
 		}
 

@@ -42,7 +42,7 @@ namespace XS {
 			SOCKS_UDP
 		};
 
-		Socket::Type	type;
+		//Socket::Type	type;
 		NetAddress		*address;
 		int16_t			port; // stored in network byte order
 

@@ -4,6 +4,8 @@
 	#include <Windows.h>
 #elif defined(XS_OS_LINUX)
 	#include <sys/time.h>
+#elif defined(XS_OS_MAC)
+	#include <sys/time.h>
 #endif
 
 namespace XS {
@@ -11,6 +13,8 @@ namespace XS {
 	#if defined(XS_OS_WINDOWS)
 		typedef LARGE_INTEGER timeVal_t;
 	#elif defined(XS_OS_LINUX)
+		typedef struct timeval timeVal_t;
+	#elif defined(XS_OS_MAC)
 		typedef struct timeval timeVal_t;
 	#endif
 

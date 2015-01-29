@@ -246,8 +246,8 @@ namespace XS {
 
 			png_bytepp rows = static_cast<png_bytepp>( png_malloc( png, h * sizeof(png_bytep) ) );
 			std::memset( rows, 0, h * sizeof(png_bytep) );
-			for ( int i = 0; i < h; ++i ) {
-				rows[i] = (png_bytep)(pixels + (h - i) * w * numChannels);
+			for ( int i = 0; i < h; i++ ) {
+				rows[i] = (png_bytep)(pixels + (h - i - 1) * w * numChannels);
 			}
 
 			png_write_image( png, rows );
