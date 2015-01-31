@@ -12,18 +12,18 @@ namespace XS {
 	struct vector2 {
 		union {
 			struct {
-				float x;
-				float y;
+				real32_t x;
+				real32_t y;
 			};
 			struct {
-				float w;
-				float h;
+				real32_t w;
+				real32_t h;
 			};
-			float raw[2];
+			real32_t raw[2];
 		};
 
 		// xtors
-		vector2( float x = 0.0f, float y = 0.0f )
+		vector2( real32_t x = 0.0f, real32_t y = 0.0f )
 		: x( x ), y( y )
 		{
 		}
@@ -34,7 +34,7 @@ namespace XS {
 		) const;
 
 		// access operators
-		inline float& operator[]( const size_t idx ) {
+		inline real32_t& operator[]( const size_t idx ) {
 			return raw[idx];
 		}
 
@@ -93,10 +93,10 @@ namespace XS {
 		}
 
 		// scalar multiplication
-		inline vector2 operator*( const float scalar ) const {
+		inline vector2 operator*( const real32_t scalar ) const {
 			return vector2( x * scalar, y * scalar );
 		}
-		inline vector2& operator*=( const float scalar ) {
+		inline vector2& operator*=( const real32_t scalar ) {
 			x *= scalar;
 			y *= scalar;
 			return *this;
@@ -113,12 +113,12 @@ namespace XS {
 		}
 
 		// ???
-		static inline vector2 ma( const vector2 &a, float scale, const vector2 &b ) {
+		static inline vector2 ma( const vector2 &a, real32_t scale, const vector2 &b ) {
 			return a + b*scale;
 		}
 
 		// linear interpolation
-		static inline vector2 lerp( const vector2 &a, float scale, const vector2 &b ) {
+		static inline vector2 lerp( const vector2 &a, real32_t scale, const vector2 &b ) {
 			return a + (b-a)*scale;
 		}
 	};
@@ -126,20 +126,20 @@ namespace XS {
 	struct vector3 {
 		union {
 			struct {
-				float x;
-				float y;
-				float z;
+				real32_t x;
+				real32_t y;
+				real32_t z;
 			};
 			struct {
-				float r;
-				float g;
-				float b;
+				real32_t r;
+				real32_t g;
+				real32_t b;
 			};
-			float raw[3];
+			real32_t raw[3];
 		};
 
 		// xtors
-		vector3( float x = 0.0f, float y = 0.0f, float z = 0.0f )
+		vector3( real32_t x = 0.0f, real32_t y = 0.0f, real32_t z = 0.0f )
 		: x( x ), y( y ), z( z )
 		{
 		}
@@ -150,7 +150,7 @@ namespace XS {
 		) const;
 
 		// access operators
-		inline float& operator[]( const size_t idx ) {
+		inline real32_t& operator[]( const size_t idx ) {
 			return raw[idx];
 		}
 
@@ -214,10 +214,10 @@ namespace XS {
 		}
 
 		// scalar multiplication
-		inline vector3 operator*( const float scalar ) const {
+		inline vector3 operator*( const real32_t scalar ) const {
 			return vector3( x * scalar, y * scalar, z * scalar );
 		}
-		inline vector3& operator*=( const float scalar ) {
+		inline vector3& operator*=( const real32_t scalar ) {
 			x *= scalar;
 			y *= scalar;
 			z *= scalar;
@@ -236,34 +236,34 @@ namespace XS {
 		}
 
 		// ???
-		static inline vector3 ma( const vector3 &a, float scale, const vector3 &b ) {
+		static inline vector3 ma( const vector3 &a, real32_t scale, const vector3 &b ) {
 			return a + b*scale;
 		}
 
 		// linear interpolation
-		static inline vector3 lerp( const vector3 &a, float scale, const vector3 &b ) {
+		static inline vector3 lerp( const vector3 &a, real32_t scale, const vector3 &b ) {
 			return a + (b-a)*scale;
 		}
 
 		// length
-		inline float length( void ) const {
+		inline real32_t length( void ) const {
 			return sqrtf( x*x + y*y + z*z );
 		}
-		static inline float length( const vector3 &vec ) {
+		static inline real32_t length( const vector3 &vec ) {
 			return vec.length();
 		}
-		inline float lengthSquared( void ) const {
+		inline real32_t lengthSquared( void ) const {
 			return x*x + y*y + z*z;
 		}
-		static inline float lengthSquared( const vector3 &vec ) {
+		static inline real32_t lengthSquared( const vector3 &vec ) {
 			return vec.lengthSquared();
 		}
 
 		// distance
-		static inline float distance( const vector3 &a, const vector3 &b ) {
+		static inline real32_t distance( const vector3 &a, const vector3 &b ) {
 			return length( a - b );
 		}
-		static inline float distanceSquared( const vector3 &a, const vector3 &b ) {
+		static inline real32_t distanceSquared( const vector3 &a, const vector3 &b ) {
 			return lengthSquared( a - b );
 		}
 
@@ -273,11 +273,11 @@ namespace XS {
 		inline void normaliseFast( void ) {
 			*this *= 1.0f / length();
 		}
-		inline float normalise( void ) {
-			float length = this->length();
+		inline real32_t normalise( void ) {
+			real32_t length = this->length();
 
 			if ( length ) {
-				float iLength = 1.0f / length;
+				real32_t iLength = 1.0f / length;
 				*this *= iLength;
 			}
 
@@ -286,9 +286,9 @@ namespace XS {
 		static inline vector3 normalise( const vector3 &vec ) {
 			vector3 result = vec;
 
-			float length = result.length();
+			real32_t length = result.length();
 			if ( length ) {
-				float iLength = 1.0f / length;
+				real32_t iLength = 1.0f / length;
 				result *= iLength;
 			}
 
@@ -296,7 +296,7 @@ namespace XS {
 		}
 
 		// dot
-		inline float dot( const vector3 &vec ) const {
+		inline real32_t dot( const vector3 &vec ) const {
 			return x*vec.x + y*vec.y + z*vec.z;
 		}
 
@@ -320,22 +320,22 @@ namespace XS {
 	struct vector4 {
 		union {
 			struct {
-				float x;
-				float y;
-				float z;
-				float w;
+				real32_t x;
+				real32_t y;
+				real32_t z;
+				real32_t w;
 			};
 			struct {
-				float r;
-				float g;
-				float b;
-				float a;
+				real32_t r;
+				real32_t g;
+				real32_t b;
+				real32_t a;
 			};
-			float raw[4];
+			real32_t raw[4];
 		};
 
 		// xtors
-		vector4( float x = 0.0f, float y = 0.0f, float z = 0.0f, float w = 0.0f )
+		vector4( real32_t x = 0.0f, real32_t y = 0.0f, real32_t z = 0.0f, real32_t w = 0.0f )
 		: x( x ), y( y ), z( z ), w( w )
 		{
 		}
@@ -346,7 +346,7 @@ namespace XS {
 		) const;
 
 		// access operators
-		inline float& operator[]( const size_t idx ) {
+		inline real32_t& operator[]( const size_t idx ) {
 			return raw[idx];
 		}
 
@@ -415,10 +415,10 @@ namespace XS {
 		}
 
 		// scalar multiplication
-		inline vector4 operator*( const float scalar ) const {
+		inline vector4 operator*( const real32_t scalar ) const {
 			return vector4( x * scalar, y * scalar, z * scalar, w * scalar );
 		}
-		inline vector4& operator*=( const float scalar ) {
+		inline vector4& operator*=( const real32_t scalar ) {
 			x *= scalar;
 			y *= scalar;
 			z *= scalar;
@@ -439,12 +439,12 @@ namespace XS {
 		}
 
 		// ???
-		static inline vector4 ma( const vector4 &a, float scale, const vector4 &b ) {
+		static inline vector4 ma( const vector4 &a, real32_t scale, const vector4 &b ) {
 			return a + b*scale;
 		}
 
 		// linear interpolation
-		static inline vector4 lerp( const vector4 &a, float scale, const vector4 &b ) {
+		static inline vector4 lerp( const vector4 &a, real32_t scale, const vector4 &b ) {
 			return a + (b-a)*scale;
 		}
 	};

@@ -19,7 +19,7 @@ namespace XS {
 			vector2		size;
 			vector2		s, t;
 			vector2		offset;
-			float		advance;
+			real32_t	advance;
 		};
 
 		class Font {
@@ -32,7 +32,7 @@ namespace XS {
 			std::string	name;
 			uint16_t	size;
 			FontData	data[256];
-			float		lineHeight;
+			real32_t	lineHeight;
 
 			// don't allow default instantiation
 			Font() = delete;
@@ -63,7 +63,7 @@ namespace XS {
 			);
 
 			// return the pixel width of the specified character
-			float GetGlyphWidth(
+			real32_t GetGlyphWidth(
 				char c
 			) const;
 

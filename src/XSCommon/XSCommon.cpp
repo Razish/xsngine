@@ -36,8 +36,8 @@ namespace XS {
 		#else
 			com_developer = Cvar::Create( "com_developer", "0", "Developer mode", CVAR_NONE );
 		#endif // _DEBUG
-			com_framerate = Cvar::Create( "com_framerate", "50", "Game tick rate", CVAR_NONE );
-			r_framerate = Cvar::Create( "r_framerate", "120", "Render framerate", CVAR_NONE );
+			com_framerate = Cvar::Create( "com_framerate", "50", "Game tick rate", CVAR_ARCHIVE );
+			r_framerate = Cvar::Create( "r_framerate", "120", "Render framerate", CVAR_ARCHIVE );
 		}
 
 		static void ParseCommandLine( int32_t argc, char **argv ) {
@@ -157,7 +157,7 @@ int main( int argc, char **argv ) {
 		// DO NOT LOAD MEDIA BEFORE THIS POINT
 		//
 
-		XS::console.Print( WINDOW_TITLE " (" XSTR( ARCH_WIDTH ) " bits) built on " __DATE__ " [git " REVISION "]\n" );
+		XS::console.Print( WINDOW_TITLE " (" XSTR( ARCH_WIDTH ) " bits) built on " __DATE__ "\n" );
 
 		if ( !XS::Common::com_dedicated->GetBool() ) {
 			XS::Renderer::Init();
@@ -167,7 +167,7 @@ int main( int argc, char **argv ) {
 	//	XS::Network::Init();
 
 		if ( XS::Common::com_developer->GetBool() ) {
-			double t = globalTimer.GetTiming( true, XS::Timer::Resolution::MILLISECONDS );
+			real64_t t = globalTimer.GetTiming( true, XS::Timer::Resolution::MILLISECONDS );
 			XS::console.DebugPrint( "Init time: %.0f milliseconds\n", t );
 		}
 
@@ -176,21 +176,23 @@ int main( int argc, char **argv ) {
 		}
 
 		// post-init stuff
+		// can no longer modify cvars flagged with CVAR_INIT
 		XS::Cvar::initialised = true;
 
 		// frame
-		XS::Common::gameTimer = new XS::Timer();
+		XS::Common::gameTimer = new XS::Timer(); // TODO: free
 		while ( 1 ) {
-			static double currentTime = XS::Common::gameTimer->GetTiming( false, XS::Timer::Resolution::MILLISECONDS );
-			static double accumulator = 0.0;
+			static real64_t currentTime = XS::Common::gameTimer->GetTiming( false,
+				XS::Timer::Resolution::MILLISECONDS );
+			static real64_t accumulator = 0.0;
 
 			// calculate delta time for integrating this frame
-			const double newTime = XS::Common::gameTimer->GetTiming( false, XS::Timer::Resolution::MILLISECONDS );
-			const double dt = 1000.0 / XS::Common::com_framerate->GetDouble();
-			const double frameTime = newTime - currentTime;
+			const real64_t newTime = XS::Common::gameTimer->GetTiming( false, XS::Timer::Resolution::MILLISECONDS );
+			const real64_t dt = 1000.0 / XS::Common::com_framerate->GetDouble();
+			const real64_t frameTime = newTime - currentTime;
 			currentTime = newTime;
 
-			double sliceMsec = frameTime;
+			real64_t sliceMsec = frameTime;
 			if ( sliceMsec > 250.0 ) {
 				sliceMsec = 250.0; // avoid spiral of death, maximum 250mspf
 			}
@@ -225,8 +227,8 @@ int main( int argc, char **argv ) {
 			XS::Client::DrawFrame( frameTime );
 			XS::Renderer::Update( /*state*/ );
 
-			const double frameRate = XS::Common::r_framerate->GetDouble();
-			const double renderMsec = 1000.0 / frameRate;
+			const real64_t frameRate = XS::Common::r_framerate->GetDouble();
+			const real64_t renderMsec = 1000.0 / frameRate;
 			if ( frameTime < renderMsec ) {
 				XS::console.DebugPrint( "frameTime %.5f < %.5f, delaying for %0i\n", frameTime, renderMsec,
 					(uint32_t)(renderMsec - frameTime) );
@@ -240,7 +242,7 @@ int main( int argc, char **argv ) {
 		XS::console.Print( "\n*** xsngine is shutting down\nReason: %s\n\n", e.what() );
 
 		if ( developer ) {
-			const double runtime = globalTimer.GetTiming( true, XS::Timer::Resolution::SECONDS );
+			const real64_t runtime = globalTimer.GetTiming( true, XS::Timer::Resolution::SECONDS );
 			XS::console.DebugPrint( "Run time: %.3f seconds\n", runtime );
 		}
 
@@ -250,12 +252,16 @@ int main( int argc, char **argv ) {
 			XS::Client::Shutdown();
 			XS::Renderer::Shutdown();
 
-			XS::Common::WriteConfig();
-			XS::Cvar::Clean();
+			if ( XS::Cvar::initialised ) {
+				// only write out the configuration if xsngine was able to fully initialise, else we'll be writing
+				//	default values
+				XS::Common::WriteConfig();
+				XS::Cvar::Clean();
+			}
 		}
 
 		if ( developer ) {
-			const double shutdownTIme = globalTimer.GetTiming( false, XS::Timer::Resolution::SECONDS );
+			const real64_t shutdownTIme = globalTimer.GetTiming( false, XS::Timer::Resolution::SECONDS );
 			XS::console.DebugPrint( "Shutdown time: %.3f seconds\n\n\n", shutdownTIme );
 		}
 

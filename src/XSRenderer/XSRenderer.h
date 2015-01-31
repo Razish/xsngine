@@ -79,14 +79,14 @@ namespace XS {
 		// when called with a null material, will use default quad material
 		// when called with a null colour, will use white
 		void DrawQuad(
-			float x,
-			float y,
-			float w,
-			float h,
-			float s1,
-			float t1,
-			float s2,
-			float t2,
+			real32_t x,
+			real32_t y,
+			real32_t w,
+			real32_t h,
+			real32_t s1,
+			real32_t t1,
+			real32_t s2,
+			real32_t t2,
 			const vector4 *colour,
 			const Material *material
 		);

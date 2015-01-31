@@ -14,8 +14,8 @@ namespace XS {
 	struct CvarValue {
 		std::string 	str;
 		int32_t			integer;
-		float			number;
-		double			real;
+		real32_t		real32;
+		real64_t		real64;
 		bool			boolean;
 	};
 
@@ -97,7 +97,7 @@ namespace XS {
 			bool initial = false
 		);
 		bool Set(
-			const float value,
+			const real32_t value,
 			bool initial = false
 		);
 		bool Set(
@@ -121,11 +121,11 @@ namespace XS {
 		inline int32_t GetInt( size_t index = 0u ) const {
 			return this->values[index].integer;
 		}
-		inline float GetFloat( size_t index = 0u ) const {
-			return this->values[index].number;
+		inline real32_t GetFloat( size_t index = 0u ) const {
+			return this->values[index].real32;
 		}
-		inline double GetDouble( size_t index = 0u ) const {
-			return this->values[index].real;
+		inline real64_t GetDouble( size_t index = 0u ) const {
+			return this->values[index].real64;
 		}
 		inline bool GetBool( size_t index = 0u ) const {
 			return this->values[index].boolean;

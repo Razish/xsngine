@@ -1,4 +1,4 @@
-#ifdef _WIN32
+#ifdef XS_OS_WINDOWS
 
 #include <Windows.h> // curse you, monolithic headers!
 #include <sys/stat.h>

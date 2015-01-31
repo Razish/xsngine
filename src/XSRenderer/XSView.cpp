@@ -19,7 +19,7 @@ namespace XS {
 				throw( XSError( "Registered View with 0 width or 0 height" ) );
 			}
 
-			perFrameData = new Backend::Buffer( Backend::Buffer::Type::UNIFORM, nullptr, sizeof(float) * 16 * 2 );
+			perFrameData = new Backend::Buffer( Backend::Buffer::Type::UNIFORM, nullptr, sizeof(real32_t) * 16 * 2 );
 
 			RegisterView( this );
 		}
@@ -27,14 +27,15 @@ namespace XS {
 		void View::PreRender( void ) {
 			// set up 2d/3d perspective
 			if ( is2D ) {
-				projectionMatrix = ortho( 0.0f, static_cast<float>( width ), 0.0f, static_cast<float>( height ),
+				projectionMatrix = ortho( 0.0f, static_cast<real32_t>( width ), 0.0f, static_cast<real32_t>( height ),
 					0.0f, 1.0f );
 			}
 			else {
-				const float fov = Backend::r_fov->GetFloat();
-				const float zNear = Backend::r_zRange->GetFloat( 0 );
-				const float zFar = Backend::r_zRange->GetFloat( 1 );
-				projectionMatrix = perspectiveFov( fov, static_cast<float>( width ) / static_cast<float>( height ),
+				const real32_t fov = Backend::r_fov->GetFloat();
+				const real32_t zNear = Backend::r_zRange->GetFloat( 0 );
+				const real32_t zFar = Backend::r_zRange->GetFloat( 1 );
+				projectionMatrix = perspectiveFov( fov,
+					static_cast<real32_t>( width ) / static_cast<real32_t>( height ),
 					zNear, zFar );
 			}
 

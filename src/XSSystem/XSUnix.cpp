@@ -1,7 +1,8 @@
-#ifdef __linux__
+#if defined(XS_OS_LINUX) || defined(XS_OS_MAC)
 
 #include <sys/stat.h>
 #include <unistd.h>
+#include <limits.h>
 
 #include "XSCommon/XSCommon.h"
 #include "XSCommon/XSConsole.h"
@@ -33,6 +34,14 @@ namespace XS {
 			*outTime = static_cast<int32_t>( modifiedTime );
 
 			return true;
+		}
+
+		uint32_t GetPathMax( void ) {
+			long result = pathconf( "/", _PC_PATH_MAX );
+			if ( result < 0 ) {
+				result = std::min( _POSIX_PATH_MAX, PATH_MAX );
+			}
+			return result;
 		}
 
 		bool MkDir( const char *path ) {

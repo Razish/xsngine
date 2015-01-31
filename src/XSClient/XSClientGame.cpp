@@ -17,7 +17,7 @@ namespace XS {
 	namespace ClientGame {
 
 		static Renderer::View *sceneView = nullptr;
-#if 0
+#ifdef CLIENT_TERRAIN
 		static Renderer::ShaderProgram *terrainProgram = nullptr;
 		static Renderer::Material *terrainMaterial = nullptr;
 		static Renderer::Texture *terrainTexture = nullptr;
@@ -34,7 +34,11 @@ namespace XS {
 				f.Read( terrainBuf );
 			delete[] terrainBuf;
 
-			const uint32_t textureSize = static_cast<uint32_t>( sqrtf( static_cast<float>( f.length ) ) );
+			const uint32_t textureSize = static_cast<uint32_t>( sqrtf( static_cast<real32_t>( f.length ) ) );
+
+			// create texture
+			terrainTexture = new Renderer::Texture( textureSize, textureSize, Renderer::InternalFormat::R8,
+				terrainBuf );
 
 			// create shader program
 			static const Renderer::VertexAttribute attributes[] = {
@@ -42,12 +46,7 @@ namespace XS {
 				{ 1, "in_TexCoord" },
 				{ 2, "in_Colour" }
 			};
-
 			terrainProgram = new Renderer::ShaderProgram( "terrain", "terrain", attributes, ARRAY_LEN( attributes ) );
-
-			// create texture
-			terrainTexture = new Renderer::Texture( textureSize, textureSize, Renderer::InternalFormat::R8,
-				terrainBuf );
 
 			// create material
 			terrainMaterial = new Renderer::Material();
@@ -79,7 +78,8 @@ namespace XS {
 			};
 		};
 
-		static std::vector<GameObject*> objects;
+		// always allocate with `new`
+		static std::vector<GameObject *> objects;
 
 		static void RenderScene( void ) {
 			// the view is already bound
@@ -93,13 +93,25 @@ namespace XS {
 			const uint32_t height = Cvar::Get( "vid_height" )->GetInt();
 			sceneView = new Renderer::View( width, height, false, RenderScene );
 
-#if 0
+#ifdef CLIENT_TERRAIN
 			LoadTerrain();
 #else
 			GameObject *monkey = new GameObject();
 			objects.push_back( monkey );
 			//monkey->renderObject = Renderer::Model::Register( "models/monkey.obj" );
 #endif
+		}
+
+		void Shutdown( void ) {
+#ifdef CLIENT_TERRAIN
+			delete terrainMaterial;
+			delete terrainProgram;
+			delete terrainTexture;
+#endif
+			delete sceneView;
+			for ( auto object : objects ) {
+				delete object;
+			}
 		}
 
 		void RunFrame( void ) {

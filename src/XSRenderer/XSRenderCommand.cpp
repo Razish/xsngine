@@ -33,24 +33,25 @@ namespace XS {
 			static const uint16_t quadIndices[6] = { 0, 2, 1, 1, 2, 3 };
 
 			// v1(2), v2(2), v3(2), v4(2), st1(2), st2(2), st3(2), st4(2), c1(4) == 20 bytes
-			quadsVertexBuffer = new Buffer( Buffer::Type::VERTEX, nullptr, 20 * sizeof(float) );
+			quadsVertexBuffer = new Buffer( Buffer::Type::VERTEX, nullptr, 20 * sizeof(real32_t) );
 			quadsIndexBuffer = new Buffer( Buffer::Type::INDEX, quadIndices, sizeof(quadIndices) );
 
 			// create null quad material
-			static const VertexAttribute attributes[] = {
-				{ 0, "in_Position" },
-				{ 1, "in_TexCoord" },
-				{ 2, "in_Colour" }
-			};
-
-			quadProgram = new ShaderProgram( "quad", "quad", attributes, ARRAY_LEN( attributes ) );
 
 			// create texture
 			static const size_t numChannels = 4;
 			static const size_t textureSize = 8;
 			uint8_t textureBuffer[textureSize * textureSize * numChannels] = {};
-			std::memset( textureBuffer, 0xFF, sizeof(textureBuffer) );
+			std::memset( textureBuffer, 0xFFu, sizeof(textureBuffer) );
 			quadTexture = new Texture( textureSize, textureSize, InternalFormat::RGBA8, textureBuffer );
+
+			// create program
+			static const VertexAttribute attributes[] = {
+				{ 0, "in_Position" },
+				{ 1, "in_TexCoord" },
+				{ 2, "in_Colour" }
+			};
+			quadProgram = new ShaderProgram( "quad", "quad", attributes, ARRAY_LEN( attributes ) );
 
 			// create material
 			quadMaterial = new Material();
@@ -64,6 +65,9 @@ namespace XS {
 		void RenderCommand::Shutdown( void ) {
 			delete quadsVertexBuffer;
 			delete quadsIndexBuffer;
+			delete quadMaterial;
+			delete quadTexture;
+			delete quadProgram;
 		}
 
 		static void DrawQuad( const rcDrawQuad_t *quad ) {
@@ -104,8 +108,9 @@ namespace XS {
 			vertices[3].y = quad->y + quad->h;
 			texcoords[3].x = quad->s2;
 			texcoords[3].y = quad->t2;
-
-			float *vertexBuffer = static_cast<float *>( quadsVertexBuffer->Map() );
+			real32_t *vertexBuffer = static_cast<real32_t *>( quadsVertexBuffer->Map() );
+//#define QUAD_STRIDE
+#ifdef QUAD_STRIDE
 			{
 				std::memcpy( vertexBuffer, vertices, sizeof(vertices) );
 				vertexBuffer += 8;
@@ -117,6 +122,18 @@ namespace XS {
 					*vertexBuffer++ = colour.raw[i];
 				}
 			}
+#else
+			for ( size_t i = 0u; i < 4; i++ ) {
+				*vertexBuffer++ = vertices[i].x;
+				*vertexBuffer++ = vertices[i].y;
+				*vertexBuffer++ = texcoords[i].x;
+				*vertexBuffer++ = texcoords[i].y;
+				*vertexBuffer++ = colour.r;
+				*vertexBuffer++ = colour.g;
+				*vertexBuffer++ = colour.b;
+				*vertexBuffer++ = colour.a;
+			}
+#endif
 			quadsVertexBuffer->Unmap();
 
 			quadsIndexBuffer->Bind();
@@ -125,15 +142,20 @@ namespace XS {
 			glEnableVertexAttribArray( 1 );
 			glEnableVertexAttribArray( 2 );
 				intptr_t offset = 0;
+#ifdef QUAD_STRIDE
+				const GLsizei stride = 8;
+#else
+				const GLsizei stride = 0;
+#endif
 
-				glVertexAttribPointer( 0, 2, GL_FLOAT, GL_FALSE, 0, 0 );
-				offset += sizeof(vertices);
+				glVertexAttribPointer( 0, 2, GL_FLOAT, GL_FALSE, stride, 0 );
+				offset += sizeof(vector2);
 
-				glVertexAttribPointer( 1, 2, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<const GLvoid *>( offset ) );
-				offset += sizeof(texcoords);
+				glVertexAttribPointer( 1, 2, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<const GLvoid *>( offset ) );
+				offset += sizeof(vector2);
 
-				glVertexAttribPointer( 2, 4, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<const GLvoid *>( offset ) );
-				offset += sizeof(colour);
+				glVertexAttribPointer( 2, 4, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<const GLvoid *>( offset ) );
+				offset += sizeof(vector4);
 
 				glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0 );
 			glDisableVertexAttribArray( 2 );

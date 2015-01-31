@@ -160,14 +160,14 @@ namespace XS {
 		return false;
 	}
 
-	bool TokenParser::ParseFloat( float *f ) {
+	bool TokenParser::ParseFloat( real32_t *f ) {
 		const char *tok = ParseToken( false );
 
 		if ( *tok == '\0' ) {
 			return true;
 		}
 
-		*f = static_cast<float>( atof( tok ) );
+		*f = static_cast<real32_t>( atof( tok ) );
 		return false;
 	}
 

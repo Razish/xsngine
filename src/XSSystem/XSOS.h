@@ -17,6 +17,11 @@ namespace XS {
 			int32_t *outTime
 		);
 
+		// returns the maximum length of a full system path
+		uint32_t GetPathMax(
+			void
+		);
+
 		// returns true if file exists
 		bool MkDir(
 			const char *path

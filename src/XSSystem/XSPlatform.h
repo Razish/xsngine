@@ -1,17 +1,22 @@
 #pragma once
 
 #define PRODUCT_NAME			"xsngine"
+
+#ifndef REVISION
+	#define REVISION "unavailable"
+#endif
+
 #ifdef _DEBUG
-	#define PRODUCT_VERSION		"development debug"
+	#define PRODUCT_VERSION		"development debug - rev " REVISION
 #else
-	#define PRODUCT_VERSION		"development"
+	#define PRODUCT_VERSION		"development - rev " REVISION
 #endif
 
 #ifndef ARCH_STRING
 	#error "Unknown architecture"
 #endif // ARCH_STRING
 
-#define WINDOW_TITLE			"xsngine [" PRODUCT_VERSION "] " ARCH_STRING
+#define WINDOW_TITLE			PRODUCT_NAME " [" PRODUCT_VERSION "] " ARCH_STRING
 
 // Win64
 #if defined(_WIN64) || defined(__WIN64__)
@@ -39,7 +44,6 @@
 	#define DLL_EXT ".dll"
 
 	#define XS_LITTLE_ENDIAN
-	#define XS_OS_WINDOWS
 
 // MAC OS X
 #elif defined(MACOS_X) || defined(__APPLE_CC__)
@@ -49,8 +53,6 @@
 	#define DLL_EXT ".dylib"
 
 	//TODO: endianness?
-
-	#define XS_OS_MAC
 
 // Linux
 #elif defined(__linux__)
@@ -64,8 +66,6 @@
 	//FIXME: String::Compare?
 	#define stricmp strcasecmp
 	#define strnicmp strncasecmp
-
-	#define XS_OS_LINUX
 
 #endif
 

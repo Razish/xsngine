@@ -257,9 +257,9 @@
   <VirtualDirectory Name="XSSystem">
     <File Name="XSSystem/XSOS.h"/>
     <File Name="XSSystem/XSPlatform.h"/>
-    <File Name="XSSystem/XSLinux.cpp"/>
     <File Name="XSSystem/XSWindows.cpp"/>
     <File Name="XSSystem/XSMac.cpp"/>
+    <File Name="XSSystem/XSUnix.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="libpng">
     <File Name="libpng/png.h"/>
@@ -283,6 +283,9 @@
     <File Name="zlib/deflate.h"/>
     <File Name="zlib/zlib.h"/>
   </VirtualDirectory>
+  <VirtualDirectory Name="src">
+    <File Name="SConstruct"/>
+  </VirtualDirectory>
   <Settings Type="Dynamic Library">
     <GlobalSettings>
       <Compiler Options="" C_Options="" Assembler="">
@@ -293,7 +296,7 @@
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>
-    <Configuration Name="Debug" CompilerType="GCC" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+    <Configuration Name="Debug" CompilerType="GCC" DebuggerType="LLDB Debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-g" C_Options="-g" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
         <IncludePath Value="."/>
       </Compiler>
@@ -312,7 +315,7 @@
       <PostBuild/>
       <CustomBuild Enabled="yes">
         <RebuildCommand/>
-        <CleanCommand>scons -Q -c debug=1</CleanCommand>
+        <CleanCommand>scons -Qc debug=1</CleanCommand>
         <BuildCommand>scons -Q debug=1</BuildCommand>
         <PreprocessFileCommand/>
         <SingleFileCommand/>
@@ -350,7 +353,7 @@
       <PostBuild/>
       <CustomBuild Enabled="yes">
         <RebuildCommand/>
-        <CleanCommand>scons -Q -c</CleanCommand>
+        <CleanCommand>scons -Qc</CleanCommand>
         <BuildCommand>scons -Q</BuildCommand>
         <PreprocessFileCommand/>
         <SingleFileCommand/>
@@ -370,7 +373,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <VirtualDirectory Name="src">
-    <File Name="SConstruct"/>
-  </VirtualDirectory>
 </CodeLite_Project>

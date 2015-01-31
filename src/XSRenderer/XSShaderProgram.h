@@ -103,25 +103,25 @@ namespace XS {
 			);
 			void SetUniform1(
 				const char *name,
-				float f
+				real32_t f
 			);
 			void SetUniform2(
 				const char *name,
-				float f1,
-				float f2
+				real32_t f1,
+				real32_t f2
 			);
 			void SetUniform3(
 				const char *name,
-				float f1,
-				float f2,
-				float f3
+				real32_t f1,
+				real32_t f2,
+				real32_t f3
 			);
 			void SetUniform4(
 				const char *name,
-				float f1,
-				float f2,
-				float f3,
-				float f4
+				real32_t f1,
+				real32_t f2,
+				real32_t f3,
+				real32_t f4
 			);
 		};
 

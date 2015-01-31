@@ -62,7 +62,7 @@ namespace XS {
 
 		// parse the current token as a floating point number
 		bool ParseFloat(
-			float *f
+			real32_t *f
 		);
 
 		// parse the current token as an unsigned 8 bit integer

@@ -65,7 +65,8 @@ namespace XS {
 		}
 	};
 
-	inline matrix4 ortho( float left, float right, float top, float bottom, float znear, float zfar ) {
+	inline matrix4 ortho( real32_t left, real32_t right, real32_t top, real32_t bottom, real32_t znear, real32_t zfar )
+	{
 		matrix4 m;
 
 		m[0][0] = 2.0f / (right - left);
@@ -78,9 +79,9 @@ namespace XS {
 		return m;
 	}
 
-	inline matrix4 perspectiveFov( float fovy, float aspectRatio, float znear, float zfar ) {
+	inline matrix4 perspectiveFov( real32_t fovy, real32_t aspectRatio, real32_t znear, real32_t zfar ) {
 		// convert degrees to radians and divide by 2
-		const float f = 1.0f / tanf( fovy * static_cast<float>( M_PI ) / 360.0f );
+		const real32_t f = 1.0f / tanf( fovy * static_cast<real32_t>( M_PI ) / 360.0f );
 
 		matrix4 m;
 		m[0][0] = f / aspectRatio;

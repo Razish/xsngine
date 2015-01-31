@@ -42,7 +42,7 @@ namespace XS {
 		);
 
 		// get the current elapsed time, optionally resetting the timer to the current time
-		double GetTiming(
+		real64_t GetTiming(
 			bool restart = false,
 			Resolution resolution = Resolution::MICROSECONDS
 		);

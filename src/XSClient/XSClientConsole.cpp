@@ -20,6 +20,10 @@ namespace XS {
 			Command::Append( text );
 		}
 
+		static const char *InputAutoComplete( const char *match ) {
+			return match;
+		}
+
 		void ClientConsole::Toggle( void ) {
 			if ( visible ) {
 				input->Clear();
@@ -69,8 +73,13 @@ namespace XS {
 			const uint32_t height = Cvar::Get( "vid_height" )->GetInt();
 
 			con_fontSize = Cvar::Create( "con_fontSize", "12", "Size of the console font", CVAR_ARCHIVE );
-			input = new InputField( InputCallback );
+			input = new InputField( InputCallback, InputAutoComplete );
 			view = new Renderer::View( width, height, true );
+		}
+
+		ClientConsole::~ClientConsole() {
+			delete view;
+			delete input;
 		}
 
 		void ClientConsole::Resize( void ) {
@@ -106,7 +115,7 @@ namespace XS {
 			std::vector<std::string> lines = console->buffer->FetchLines( start, lineCount );
 
 			// TODO: might have to draw lines in reverse to compensate for one buffer element spanning multiple lines
-			const float x = 0.0f;
+			const real32_t x = 0.0f;
 			vector2 pos( x, 0.0f );
 			uint32_t drawn = 0u;
 			for ( const auto &it : lines ) {

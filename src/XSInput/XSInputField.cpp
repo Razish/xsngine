@@ -68,8 +68,8 @@ namespace XS {
 				}
 
 				// pass to command buffer
-				if ( callback ) {
-					callback( current.c_str() );
+				if ( execute ) {
+					execute( current.c_str() );
 				}
 
 				// commit to history
@@ -155,6 +155,12 @@ namespace XS {
 				}
 				else {
 					Clear();
+				}
+				return true;
+			}
+			else if ( key == SDLK_TAB ) {
+				if ( autoComplete ) {
+					current = autoComplete( current.c_str() );
 				}
 				return true;
 			}

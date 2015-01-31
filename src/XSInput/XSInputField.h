@@ -11,16 +11,17 @@ namespace XS {
 
 		class InputField {
 		private:
-			std::vector<std::string>	history;
+			std::vector<std::string>	 history;
 
 			// reverse indexed
-			size_t						historyIndex;
-			bool						historySeeking;
+			size_t						 historyIndex;
+			bool						 historySeeking;
 
-			std::string					current;
-			void						(*callback)( const char *text );
-			uint32_t					cursorPos;
-			uint32_t					numChars;
+			std::string					 current;
+			void						 (*execute)( const char *text );
+			const char					*(*autoComplete)( const char *match );
+			uint32_t					 cursorPos;
+			uint32_t					 numChars;
 
 			// retrieve the string at the given history index (reverse 1-indexed)
 			std::string GetHistory(
@@ -38,9 +39,9 @@ namespace XS {
 			InputField( const InputField& ) = delete;
 			InputField& operator=( const InputField& ) = delete;
 
-			InputField( void (*callback)( const char *text ) )
-			: historyIndex( 0u ), historySeeking( false ), current( "" ), callback( callback ), cursorPos( 0u ),
-				numChars( 0u )
+			InputField( void (*execute)( const char *text ), const char *(*autoComplete)( const char *match ) )
+			: historyIndex( 0u ), historySeeking( false ), current( "" ), execute( execute ),
+				autoComplete( autoComplete ), cursorPos( 0u ), numChars( 0u )
 			{
 			}
 

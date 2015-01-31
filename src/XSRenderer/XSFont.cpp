@@ -19,15 +19,15 @@ namespace XS {
 
 	namespace Renderer {
 
-		static FT_Library ft;
-		static std::unordered_map<std::string, Font *> fonts;
-		static ShaderProgram *fontProgram = nullptr;
+		static FT_Library								 ft;
+		static std::unordered_map<std::string, Font *>	 fonts;
+		static ShaderProgram							*fontProgram = nullptr;
 
 		Font::Font( const char *name, uint16_t size )
 		: name( name ), size( size )
 		{
 			file = String::Format( "fonts/%s.ttf", name );
-			std::memset( data, 0, sizeof(data) );
+			std::memset( data, 0u, sizeof(data) );
 		}
 
 		static Material *CreateFontMaterial( Texture& fontTexture ) {
@@ -62,7 +62,7 @@ namespace XS {
 				return;
 			}
 
-			const unsigned int dpi = 96;
+			const uint32_t dpi = 96;
 			if ( FT_Set_Char_Size( face, size << 6, size << 6, dpi, dpi ) ) {
 				//TODO: appropriate warning message
 				delete[] contents;
@@ -73,13 +73,13 @@ namespace XS {
 			const size_t skip = 0x20u;
 			const size_t atlasSize = numChars * size * size;
 			uint8_t *atlas = new uint8_t[atlasSize];
-			std::memset( atlas, 0, atlasSize );
+			std::memset( atlas, 0u, atlasSize );
 
 			if ( Common::com_developer->GetBool() ) {
 				console.Print( "Generating font atlas for '%s' (%ix%i)\n", name.c_str(), size * 16, size * 16 );
 			}
 
-			lineHeight = (float)face->size->metrics.height / 64.0f;
+			lineHeight = static_cast<real32_t>( face->size->metrics.height ) / 64.0f;
 
 			// load the printable characters
 			for ( char c = skip; c < numChars; c++ ) {
@@ -98,11 +98,14 @@ namespace XS {
 
 				FT_GlyphSlot slot = face->glyph;
 				FT_Bitmap& bitmap = slot->bitmap;
-				const int width = bitmap.width ? bitmap.width : static_cast<float>( slot->advance.x ) / 64.0f;
-				const int height = bitmap.rows;
+				const int32_t width = bitmap.width ? bitmap.width : static_cast<real32_t>( slot->advance.x ) / 64.0f;
+				const int32_t height = bitmap.rows;
 
 				// atlas will be 16 chars by 16 chars, where chars are WxH but spaced by size*size
-				const int col = c % 16, row = c / 16;
+				const uint32_t col = c % 16;
+				const uint32_t row = c / 16;
+				const real32_t colPos = static_cast<real32_t>( col ) / 16.0f;
+				const real32_t rowPos = static_cast<real32_t>( row ) / 16.0f;
 				const size_t rowSize = size * 16;
 				const size_t x = col * size; // horizontal position
 				const size_t y = row * size * rowSize; // vertical position
@@ -110,14 +113,13 @@ namespace XS {
 				// calculate glyph metrics
 				FontData &fd = data[c];
 				fd.size = vector2( width, height );
-				const float colPos = static_cast<float>( col ) / 16.0f, rowPos = static_cast<float>( row ) / 16.0f;
-				fd.s = vector2( colPos, colPos + (static_cast<float>( width ) / 256.0f) );
-				fd.t = vector2( rowPos, rowPos + (static_cast<float>( height ) / 256.0f) );
-				fd.advance = static_cast<float>( slot->advance.x ) / 64.0f;
-				fd.offset.x = static_cast<float>( slot->metrics.horiBearingX ) / 64.0f;
-				fd.offset.y = lineHeight + -(static_cast<float>( slot->metrics.horiBearingY ) / 64.0f);
+				fd.s = vector2( colPos, colPos + (static_cast<real32_t>( width ) / 256.0f) );
+				fd.t = vector2( rowPos, rowPos + (static_cast<real32_t>( height ) / 256.0f) );
+				fd.advance = static_cast<real32_t>( slot->advance.x ) / 64.0f;
+				fd.offset.x = static_cast<real32_t>( slot->metrics.horiBearingX ) / 64.0f;
+				fd.offset.y = lineHeight + -(static_cast<real32_t>( slot->metrics.horiBearingY ) / 64.0f);
 
-				if ( !bitmap.buffer /*|| !width || !height*/ ) {
+				if ( !bitmap.buffer ) {
 					FT_Done_Glyph( glyph );
 					continue;
 				}
@@ -134,8 +136,6 @@ namespace XS {
 					}
 				}
 
-			//	WritePNG( String::Format( "cache/fonts/%s_%i_%c.png", name.c_str(), size, c ).c_str(), bitmap.buffer,
-			//		width, height, 1 );
 				FT_Done_Glyph( glyph );
 			}
 
@@ -192,6 +192,8 @@ namespace XS {
 					currentPos.y += lineHeight;
 				}
 				//TODO: handle \r? do we just write on top of the previous characters?
+				//TODO: handle tabs correctly with tab-stops aligned to 4 spaces - from the window's position, or the
+				//	current line's position? use space for alignment? what is the correct behaviour?
 			}
 
 			return;
@@ -232,7 +234,7 @@ namespace XS {
 			return numLines;
 		}
 
-		float Font::GetGlyphWidth( char c ) const {
+		real32_t Font::GetGlyphWidth( char c ) const {
 			const FontData &fd = data[c];
 			return fd.advance;
 		}
@@ -260,6 +262,8 @@ namespace XS {
 
 		void Font::Shutdown( void ) {
 			for ( const auto &it : fonts ) {
+				delete it.second->material;
+				delete it.second->texture;
 				delete it.second;
 			}
 

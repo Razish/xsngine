@@ -71,13 +71,25 @@ import sys
 colours = {}
 colours['white'] = '\033[1;97m'
 colours['cyan'] = '\033[96m'
+colours['orange'] = '\033[33m'
+colours['green'] = '\033[92m'
 colours['end']  = '\033[0m'
 
 # if the output is not a terminal, remove the colours
 if not sys.stdout.isatty():
 	for key, value in colors.iteritems():
 		colors[key] = ''
-env['CCCOMSTR'] = env['CXXCOMSTR'] = '%scompiling %s$SOURCE%s...' % (colours['cyan'], colours['white'], colours['end'])
+
+env['SHCCCOMSTR'] = env['SHCXXCOMSTR'] = env['CCCOMSTR'] = env['CXXCOMSTR'] = \
+	'%s compiling: %s$SOURCE%s' % (colours['cyan'], colours['white'], colours['end'])
+env['ARCOMSTR'] = \
+	'%s archiving: %s$TARGET%s' % (colours['orange'], colours['white'], colours['end'])
+env['RANLIBCOMSTR'] = \
+	'%s  indexing: %s$TARGET%s' % (colours['orange'], colours['white'], colours['end'])
+env['ASCOMSTR'] = \
+	'%sassembling: %s$TARGET%s' % (colours['orange'], colours['white'], colours['end'])
+env['SHLINKCOMSTR'] = env['LINKCOMSTR'] = \
+	'%s   linking: %s$TARGET%s' % (colours['green'], colours['white'], colours['end'])
 
 # obtain the compiler version
 import commands
@@ -88,16 +100,20 @@ else:
 	ccversion = None if status else ccrawversion
 
 # git revision
-status, rawrevision = commands.getstatusoutput( 'git rev-parse HEAD' )
+status, rawrevision = commands.getstatusoutput( 'git rev-parse --short HEAD' )
 revision = None if status else rawrevision
 
 # set job/thread count
-if plat == 'Linux':
-	status, num_cores = commands.getstatusoutput( 'cat /proc/cpuinfo | grep processor | wc -l' )
-	env.SetOption( 'num_jobs', int(num_cores) * 3 if status == 0 else 1 )
+if plat == 'Linux' or plat == 'Darwin':
+	# works on recent mac/linux
+	status, num_cores = commands.getstatusoutput( 'getconf _NPROCESSORS_ONLN' )
+	if status != 0:
+		# only works on linux
+		status, num_cores = commands.getstatusoutput( 'cat /proc/cpuinfo | grep processor | wc -l' )
+	env.SetOption( 'num_jobs', int(num_cores) * 2 if status == 0 else 1 )
 elif plat == 'Windows':
 	num_cores = int( os.environ['NUMBER_OF_PROCESSORS'] )
-	env.SetOption( 'num_jobs', num_cores * 3 )
+	env.SetOption( 'num_jobs', num_cores * 2 )
 
 # notify the user of the build configuration
 if not env.GetOption( 'clean' ):
@@ -156,12 +172,10 @@ files = [
 	'XSRenderer/XSView.cpp',
 	'GLEW/glew.c',
 ]
-if plat == 'Linux':
-	files += [ 'XSSystem/XSLinux.cpp' ]
-elif plat == 'Windows':
+if plat == 'Windows':
 	files += [ 'XSSystem/XSWindows.cpp' ]
-elif plat == 'Darwin':
-	files += [ 'XSSystem/XSMac.cpp' ]
+elif plat == 'Linux' or plat == 'Darwin':
+	files += [ 'XSSystem/XSUnix.cpp' ]
 else:
 	raise Exception( 'Missing xsngine backend for your platform!')
 
@@ -253,7 +267,7 @@ if plat == 'Linux' or plat == 'Darwin':
 
 	# c++ flags
 	env['CXXFLAGS'] += [ '-fvisibility-inlines-hidden', '-std=c++11' ]
-	
+
 	if plat == 'Darwin':
 		env['FRAMEWORKS'] = [ 'OpenGL' ]
 
@@ -382,6 +396,12 @@ if revision:
 	env['CPPDEFINES'] += [ 'REVISION=\\"' + revision + '\\"' ]
 
 env['CPPDEFINES'] += [ 'GLEW_STATIC', 'SCONS_BUILD' ]
+env['CPPDEFINES'] += [ {
+		'Windows': lambda x: 'XS_OS_WINDOWS',
+		'Linux': lambda x: 'XS_OS_LINUX',
+		'Darwin': lambda x: 'XS_OS_MAC'
+	}[plat](plat)
+]
 env['CPPPATH'] = [ '#', '#/freetype', '#/GLEW', '#/libpng', '#/zlib' ]
 
 # arch width

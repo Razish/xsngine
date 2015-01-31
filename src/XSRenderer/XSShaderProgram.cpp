@@ -187,11 +187,13 @@ namespace XS {
 			if ( vertexShader ) {
 				glDetachShader( id, vertexShader->id );
 				delete vertexShader;
+				vertexShader = nullptr;
 			}
 
 			if ( fragmentShader ) {
 				glDetachShader( id, fragmentShader->id );
 				delete fragmentShader;
+				fragmentShader = nullptr;
 			}
 		}
 
@@ -246,19 +248,19 @@ namespace XS {
 			glUniform1i( GetUniform( name ).location, i );
 		}
 
-		void ShaderProgram::SetUniform1( const char *name, float f ) {
+		void ShaderProgram::SetUniform1( const char *name, real32_t f ) {
 			glUniform1f( GetUniform( name ).location, f );
 		}
 
-		void ShaderProgram::SetUniform2( const char *name, float f1, float f2 ) {
+		void ShaderProgram::SetUniform2( const char *name, real32_t f1, real32_t f2 ) {
 			glUniform2f( GetUniform( name ).location, f1, f2 );
 		}
 
-		void ShaderProgram::SetUniform3( const char *name, float f1, float f2, float f3 ) {
+		void ShaderProgram::SetUniform3( const char *name, real32_t f1, real32_t f2, real32_t f3 ) {
 			glUniform3f( GetUniform( name ).location, f1, f2, f3 );
 		}
 
-		void ShaderProgram::SetUniform4( const char *name, float f1, float f2, float f3, float f4 ) {
+		void ShaderProgram::SetUniform4( const char *name, real32_t f1, real32_t f2, real32_t f3, real32_t f4 ) {
 			glUniform4f( GetUniform( name ).location, f1, f2, f3, f4 );
 		}
 

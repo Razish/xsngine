@@ -34,6 +34,7 @@ namespace XS {
 			ClientConsole(
 				Console *console
 			);
+			~ClientConsole();
 
 			// don't allow default instantiation
 			ClientConsole() = delete;

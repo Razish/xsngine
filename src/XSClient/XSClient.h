@@ -29,12 +29,12 @@ namespace XS {
 
 		// run a frame and pass control to the ClientGame
 		void RunFrame(
-			double dt
+			real64_t dt
 		);
 
 		// get the current elapsed time
 		// lazily initialised on each unique frame
-		double GetElapsedTime(
+		real64_t GetElapsedTime(
 			Timer::Resolution resolution = Timer::Resolution::MILLISECONDS
 		);
 
@@ -51,7 +51,7 @@ namespace XS {
 
 		// draw a client frame and pass control to the ClientGame
 		void DrawFrame(
-			double frametime
+			real64_t frametime
 		);
 
 	} // namespace Client

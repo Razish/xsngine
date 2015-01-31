@@ -14,7 +14,7 @@ namespace XS {
 		static Cvar *r_textureFilter = nullptr;
 
 		static bool anisotropy = false;
-		static float maxAnisotropy = 0.0f;
+		static real32_t maxAnisotropy = 0.0f;
 
 		static const struct {
 			const char *name;

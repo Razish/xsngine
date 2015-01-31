@@ -42,14 +42,16 @@ namespace XS {
 		}
 
 		void Shutdown( void ) {
+			delete clientConsole;
+			delete hudView;
 		}
 
 		void NetworkPump( void ) {
 			// create game context from any server updates we receieved since the last frame
 		}
 
-		void RunFrame( double dt ) {
-			static double stepTime = 0.0;
+		void RunFrame( real64_t dt ) {
+			static real64_t stepTime = 0.0;
 			frameNum++;
 
 			// previousState = currentState;
@@ -64,11 +66,11 @@ namespace XS {
 			ClientGame::RunFrame();
 		}
 
-		double GetElapsedTime( Timer::Resolution resolution ) {
+		real64_t GetElapsedTime( Timer::Resolution resolution ) {
 			static uint64_t lastFrame = 0u;
-			static double timeSec = 0.0;
-			static double timeMsec = 0.0;
-			static double timeUsec = 0.0;
+			static real64_t timeSec = 0.0;
+			static real64_t timeMsec = 0.0;
+			static real64_t timeUsec = 0.0;
 			if ( lastFrame != frameNum ) {
 				lastFrame = frameNum;
 				timeUsec = Common::gameTimer->GetTiming();
@@ -96,7 +98,7 @@ namespace XS {
 			}
 		}
 
-		static void DrawHUD( double frametime ) {
+		static void DrawHUD( real64_t frametime ) {
 			hudView->Bind();
 
 			static const vector2 pos = vector2( 0.0f, 0.0f );
@@ -106,21 +108,21 @@ namespace XS {
 			}
 
 			static const uint32_t numSamples = 128u;
-			static double samples[numSamples];
+			static real64_t samples[numSamples];
 			static uint32_t index = 0;
 			samples[index++] = frametime;
 			if ( index >= numSamples ) {
 				index = 0u;
 			}
-			double avg = 0.0;
+			real64_t avg = 0.0;
 			for ( uint32_t i = 0; i < numSamples; i++ ) {
 				avg += samples[i];
 			}
-			avg /= (double)numSamples;
+			avg /= static_cast<real64_t>( numSamples );
 			font->Draw( pos, String::Format( "FPS:%.3f\nTesting second line.", 1000.0 / avg ) );
 		}
 
-		void DrawFrame( double frametime ) {
+		void DrawFrame( real64_t frametime ) {
 			// draw game view
 			ClientGame::DrawFrame();
 

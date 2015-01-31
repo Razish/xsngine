@@ -105,7 +105,7 @@ namespace XS {
 					}
 				}
 
-				commandFunc_t &func = commands[name];
+				const commandFunc_t &func = commands[name];
 				if ( func ) {
 					func( &context );
 					continue;

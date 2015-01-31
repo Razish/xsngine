@@ -147,8 +147,8 @@ namespace XS {
 
 			newValue.str = it;
 			const char *cstr = newValue.str.c_str();
-			newValue.real = atof( cstr );
-			newValue.number = static_cast<float>( newValue.real );
+			newValue.real64 = atof( cstr );
+			newValue.real32 = static_cast<real32_t>( newValue.real64 );
 			newValue.integer = atoi( cstr );
 			newValue.boolean = !!newValue.integer; // coerce to boolean
 
@@ -170,7 +170,7 @@ namespace XS {
 		return Set( String::Format( "%i", value ), initial );
 	}
 
-	bool Cvar::Set( const float value, bool initial ) {
+	bool Cvar::Set( const real32_t value, bool initial ) {
 		return Set( String::Format( "%f", value ), initial );
 	}
 

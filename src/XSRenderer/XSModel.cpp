@@ -7,6 +7,7 @@
 #include "XSRenderer/XSModel.h"
 #include "XSRenderer/XSModelObj.h"
 #include "XSRenderer/XSRenderer.h"
+#include "XSRenderer/XSMesh.h"
 
 namespace XS {
 
@@ -82,6 +83,9 @@ namespace XS {
 			else {
 				SDL_assert( !"could not find model" );
 				console.Print( "%s could not find model for '%s'\n", XS_FUNCTION, modelPath.c_str() );
+			}
+			for ( auto mesh : meshes ) {
+				delete mesh;
 			}
 		}
 

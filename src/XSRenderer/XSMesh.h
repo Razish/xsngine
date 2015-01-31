@@ -37,6 +37,7 @@ namespace XS {
 				indexBuffer( nullptr )
 			{
 			}
+			~Mesh();
 
 		};
 

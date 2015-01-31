@@ -30,21 +30,21 @@ namespace XS {
 	#endif
 	}
 
-	double Timer::GetTiming( bool restart, Resolution resolution ) {
+	real64_t Timer::GetTiming( bool restart, Resolution resolution ) {
 		Stop();
 
 	#if defined(XS_OS_WINDOWS)
 		timeVal_t frequency;
 		QueryPerformanceFrequency( &frequency );
 
-		double startTime = start.QuadPart * (1000000.0 / frequency.QuadPart);
-		double stopTime = stop.QuadPart * (1000000.0 / frequency.QuadPart);
+		real64_t startTime = start.QuadPart * (1000000.0 / frequency.QuadPart);
+		real64_t stopTime = stop.QuadPart * (1000000.0 / frequency.QuadPart);
 	#elif defined(XS_OS_LINUX)
-		double startTime = (start.tv_sec * 1000000.0) + start.tv_usec;
-		double stopTime = (stop.tv_sec * 1000000.0) + stop.tv_usec;
+		real64_t startTime = (start.tv_sec * 1000000.0) + start.tv_usec;
+		real64_t stopTime = (stop.tv_sec * 1000000.0) + stop.tv_usec;
 	#elif defined(XS_OS_MAC)
-		double startTime = (start.tv_sec * 1000000.0) + start.tv_usec;
-		double stopTime = (stop.tv_sec * 1000000.0) + stop.tv_usec;
+		real64_t startTime = (start.tv_sec * 1000000.0) + start.tv_usec;
+		real64_t stopTime = (stop.tv_sec * 1000000.0) + stop.tv_usec;
 	#endif
 
 		if ( restart ) {

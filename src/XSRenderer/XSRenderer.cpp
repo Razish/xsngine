@@ -232,8 +232,8 @@ namespace XS {
 		}
 
 		void Update( void ) {
-			const vector4 clear = { r_clear->GetFloat( 0 ), r_clear->GetFloat( 1 ), r_clear->GetFloat( 2 ),
-				r_clear->GetFloat( 3 ) };
+			const vector4 clear( r_clear->GetFloat( 0 ), r_clear->GetFloat( 1 ), r_clear->GetFloat( 2 ),
+				r_clear->GetFloat( 3 ) );
 			glClearColor( clear.r, clear.g, clear.b, clear.a );
 			glClear( GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT );
 
@@ -267,8 +267,8 @@ namespace XS {
 			}
 		}
 
-		void DrawQuad( float x, float y, float w, float h, float s1, float t1, float s2, float t2,
-			const vector4 *colour, const Material *material )
+		void DrawQuad( real32_t x, real32_t y, real32_t w, real32_t h, real32_t s1, real32_t t1, real32_t s2,
+			real32_t t2, const vector4 *colour, const Material *material )
 		{
 			AssertView();
 
