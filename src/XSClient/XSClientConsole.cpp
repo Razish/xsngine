@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include <SDL2/SDL.h>
 
 #include "XSCommon/XSCommon.h"
@@ -5,6 +7,7 @@
 #include "XSCommon/XSCvar.h"
 #include "XSCommon/XSMessageBuffer.h"
 #include "XSCommon/XSString.h"
+#include "XSCommon/XSColours.h"
 #include "XSInput/XSInputField.h"
 #include "XSClient/XSClient.h"
 #include "XSClient/XSClientConsole.h"
@@ -101,8 +104,8 @@ namespace XS {
 
 			const uint32_t width = Cvar::Get( "vid_width" )->GetInt();
 			const uint32_t height = Cvar::Get( "vid_height" )->GetInt();
-			static const vector4 colour( 1.0f, 0.0f, 0.0f, 1.0f );
-			Renderer::DrawQuad( 0, 0, width, height / 2, 0.0f, 0.0f, 1.0f, 1.0f, &colour, nullptr );
+			Renderer::DrawQuad( 0, 0, width, height / 2, 0.0f, 0.0f, 1.0f, 1.0f,
+				&colourTable[ColourIndex( COLOUR_BLACK )], nullptr );
 
 			Resize();
 
@@ -114,7 +117,8 @@ namespace XS {
 			);
 			std::vector<std::string> lines = console->buffer->FetchLines( start, lineCount );
 
-			// TODO: might have to draw lines in reverse to compensate for one buffer element spanning multiple lines
+			// TODO: might have to draw lines in reverse to compensate for one buffer element spanning multiple
+			//	lines
 			const real32_t x = 0.0f;
 			vector2 pos( x, 0.0f );
 			uint32_t drawn = 0u;
@@ -124,7 +128,7 @@ namespace XS {
 				if ( drawn > lineCount ) {
 					break;
 				}
-				font->Draw( pos, it );
+				font->Draw( pos, it, &colourTable[ColourIndex( COLOUR_WHITE )] );
 				pos.y += linesToDraw * font->lineHeight;
 			}
 
@@ -142,7 +146,7 @@ namespace XS {
 			}
 			//TODO: overstrike mode
 			if ( static_cast<uint32_t>( GetElapsedTime() ) & 256 ) {
-				// flash every 500ms
+				// flash every 250ms
 				font->Draw( pos, "_" );
 			}
 

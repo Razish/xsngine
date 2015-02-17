@@ -3,6 +3,12 @@
 #include "XSCommon/XSMessageBuffer.h"
 namespace XS {
 
+	enum class PrintLevel {
+		Normal,
+		Debug,
+		Developer
+	};
+
 	extern struct Console {
 		int32_t			indentation;
 		MessageBuffer	*buffer;
@@ -20,12 +26,7 @@ namespace XS {
 
 		// print a line to the console buffer
 		void Print(
-			const char *fmt,
-			...
-		);
-
-		// print a line to the console buffer if running a debug build
-		void DebugPrint(
+			PrintLevel level,
 			const char *fmt,
 			...
 		);

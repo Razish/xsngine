@@ -35,8 +35,13 @@ namespace XS {
 			if ( debug_events->GetBool() ) {
 				switch( ev->type ) {
 				case EventType::KEY: {
-					console.DebugPrint( "%s %s (%i) key: %i, down: %i\n", XS_FUNCTION, eventNames[ev->type], ev->type,
-						ev->keyEvent.key, ev->keyEvent.down );
+					console.Print( PrintLevel::Debug, "%s %s (%i) key: %i, down: %i\n",
+						XS_FUNCTION,
+						eventNames[ev->type],
+						ev->type,
+						ev->keyEvent.key,
+						ev->keyEvent.down
+					);
 				} break;
 
 				case EventType::MOUSEBUTTON: {

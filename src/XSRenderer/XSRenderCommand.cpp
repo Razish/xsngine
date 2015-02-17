@@ -3,6 +3,7 @@
 #include "XSCommon/XSCommon.h"
 #include "XSCommon/XSVector.h"
 #include "XSCommon/XSConsole.h"
+#include "XSCommon/XSColours.h"
 #include "XSRenderer/XSRenderer.h"
 #include "XSRenderer/XSBuffer.h"
 #include "XSRenderer/XSRenderCommand.h"
@@ -80,7 +81,7 @@ namespace XS {
 
 			vector2 vertices[4];
 			vector2 texcoords[4];
-			vector4 colour( 1.0f, 1.0f, 1.0f, 1.0f );
+			vector4 colour = colourTable[ColourIndex( COLOUR_WHITE )];
 			if ( quad->colour ) {
 				colour = *quad->colour;
 			}
@@ -109,20 +110,6 @@ namespace XS {
 			texcoords[3].x = quad->s2;
 			texcoords[3].y = quad->t2;
 			real32_t *vertexBuffer = static_cast<real32_t *>( quadsVertexBuffer->Map() );
-//#define QUAD_STRIDE
-#ifdef QUAD_STRIDE
-			{
-				std::memcpy( vertexBuffer, vertices, sizeof(vertices) );
-				vertexBuffer += 8;
-
-				std::memcpy( vertexBuffer, texcoords, sizeof(texcoords) );
-				vertexBuffer += 8;
-
-				for ( int i = 0; i < 4; i++ ) {
-					*vertexBuffer++ = colour.raw[i];
-				}
-			}
-#else
 			for ( size_t i = 0u; i < 4; i++ ) {
 				*vertexBuffer++ = vertices[i].x;
 				*vertexBuffer++ = vertices[i].y;
@@ -133,7 +120,6 @@ namespace XS {
 				*vertexBuffer++ = colour.b;
 				*vertexBuffer++ = colour.a;
 			}
-#endif
 			quadsVertexBuffer->Unmap();
 
 			quadsIndexBuffer->Bind();
@@ -142,11 +128,7 @@ namespace XS {
 			glEnableVertexAttribArray( 1 );
 			glEnableVertexAttribArray( 2 );
 				intptr_t offset = 0;
-#ifdef QUAD_STRIDE
-				const GLsizei stride = 8;
-#else
-				const GLsizei stride = 0;
-#endif
+				const GLsizei stride = sizeof(vector2) + sizeof(vector2) + sizeof(vector4);
 
 				glVertexAttribPointer( 0, 2, GL_FLOAT, GL_FALSE, stride, 0 );
 				offset += sizeof(vector2);
@@ -172,19 +154,20 @@ namespace XS {
 			if ( mesh->vertexBuffer ) {
 				mesh->vertexBuffer->Bind();
 				glEnableVertexAttribArray( 0 );
-				glEnableVertexAttribArray( 1 );
-				glEnableVertexAttribArray( 2 );
+			//	glEnableVertexAttribArray( 1 );
+			//	glEnableVertexAttribArray( 2 );
 
 				size_t offset = 0u;
+				const GLsizei stride = sizeof(vector3);
 
-				glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<const GLvoid *>( offset ) );
-				offset += mesh->vertices.size() * sizeof(vector3);
+				glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<const GLvoid *>( offset ) );
+				offset += sizeof(vector3);
 
-				glVertexAttribPointer( 1, 3, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<const GLvoid *>( offset ) );
-				offset += mesh->normals.size() * sizeof(vector3);
+			//	glVertexAttribPointer( 1, 3, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<const GLvoid *>( offset ) );
+			//	offset += sizeof(vector3);
 
-				glVertexAttribPointer( 2, 2, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<const GLvoid *>( offset ) );
-				offset += mesh->UVs.size() * sizeof(vector2);
+			//	glVertexAttribPointer( 2, 2, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<const GLvoid *>( offset ) );
+			//	offset += sizeof(vector2);
 			}
 
 			// issue the draw command
@@ -201,8 +184,8 @@ namespace XS {
 			// clean up state
 			if ( mesh->vertexBuffer ) {
 				glDisableVertexAttribArray( 2 );
-				glDisableVertexAttribArray( 1 );
-				glDisableVertexAttribArray( 0 );
+			//	glDisableVertexAttribArray( 1 );
+			//	glDisableVertexAttribArray( 0 );
 			}
 		}
 
@@ -226,7 +209,12 @@ namespace XS {
 				glDeleteSync( ss->sync );
 				glBindBuffer( GL_PIXEL_PACK_BUFFER, ss->pbo );
 				void *data = glMapBuffer( GL_PIXEL_PACK_BUFFER, GL_READ_ONLY );
-					console.Print( "Writing screenshot %s (%ix%i)...\n", ss->name, ss->width, ss->height );
+					console.Print( PrintLevel::Normal,
+						"Writing screenshot %s (%ix%i)...\n",
+						ss->name,
+						ss->width,
+						ss->height
+					);
 					WritePNG( ss->name, (uint8_t*)data, ss->width, ss->height, 4 );
 				glUnmapBuffer( GL_PIXEL_PACK_BUFFER );
 			}
@@ -234,17 +222,22 @@ namespace XS {
 
 		void RenderCommand::Execute( void ) const {
 			switch( type ) {
+
 			case Type::DRAWQUAD: {
 				DrawQuad( &drawQuad );
 			} break;
+
 			case Type::DRAWMODEL: {
 				DrawModel( &drawModel );
 			} break;
+
 			case Type::SCREENSHOT: {
 				Screenshot( &screenshot );
 			} break;
+
 			default: {
 			} break;
+
 			}
 		}
 

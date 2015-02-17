@@ -82,7 +82,7 @@ namespace XS {
 				historySeeking = false;
 
 				// print to console
-				console.Print( ">%s\n", current.c_str() );
+				console.Print( PrintLevel::Normal, ">%s\n", current.c_str() );
 
 				// clear the state
 				Clear();

@@ -28,16 +28,16 @@ namespace XS {
 			Material	*material;
 
 		public:
+			// don't allow default instantiation
+			Font() = delete;
+			Font( const Font& ) = delete;
+			Font& operator=( const Font& ) = delete;
+
 			std::string	file;
 			std::string	name;
 			uint16_t	size;
 			FontData	data[256];
 			real32_t	lineHeight;
-
-			// don't allow default instantiation
-			Font() = delete;
-			Font( const Font& ) = delete;
-			Font& operator=( const Font& ) = delete;
 
 			// register a new font
 			Font(
@@ -53,7 +53,8 @@ namespace XS {
 			// draw a string at the given position
 			void Draw(
 				const vector2 &pos,
-				const std::string &text
+				const std::string &text,
+				const vector4 *colour = nullptr
 			);
 
 			// return the number of lines it would take to draw (for linefeeds and wrapping)

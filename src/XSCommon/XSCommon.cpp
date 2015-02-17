@@ -74,10 +74,10 @@ namespace XS {
 			Command::Append( &commandLine[start + 1], delimiter );
 
 		#ifdef _DEBUG
-			console.Print( "Startup parameters:\n" );
+			console.Print( PrintLevel::Normal, "Startup parameters:\n" );
 			Indent indent( 1 );
 			for ( const auto &arg : String::Split( &commandLine[start + 1], delimiter ) ) {
-				console.Print( "%s\n", arg.c_str() );
+				console.Print( PrintLevel::Normal, "%s\n", arg.c_str() );
 			}
 		#endif
 		}
@@ -115,7 +115,7 @@ namespace XS {
 
 			const File f( cfg, FileMode::WRITE );
 			if ( !f.open ) {
-				console.Print( "Failed to write config! (%s)\n", cfg );
+				console.Print( PrintLevel::Normal, "Failed to write config! (%s)\n", cfg );
 				return;
 			}
 
@@ -157,7 +157,9 @@ int main( int argc, char **argv ) {
 		// DO NOT LOAD MEDIA BEFORE THIS POINT
 		//
 
-		XS::console.Print( WINDOW_TITLE " (" XSTR( ARCH_WIDTH ) " bits) built on " __DATE__ "\n" );
+		XS::console.Print( XS::PrintLevel::Normal,
+			WINDOW_TITLE " (" XSTR( ARCH_WIDTH ) " bits) built on " __DATE__ "\n"
+		);
 
 		if ( !XS::Common::com_dedicated->GetBool() ) {
 			XS::Renderer::Init();
@@ -168,7 +170,7 @@ int main( int argc, char **argv ) {
 
 		if ( XS::Common::com_developer->GetBool() ) {
 			real64_t t = globalTimer.GetTiming( true, XS::Timer::Resolution::MILLISECONDS );
-			XS::console.DebugPrint( "Init time: %.0f milliseconds\n", t );
+			XS::console.Print( XS::PrintLevel::Developer, "Init time: %.0f milliseconds\n", t );
 		}
 
 		if ( !XS::Common::com_dedicated->GetBool() ) {
@@ -230,8 +232,11 @@ int main( int argc, char **argv ) {
 			const real64_t frameRate = XS::Common::r_framerate->GetDouble();
 			const real64_t renderMsec = 1000.0 / frameRate;
 			if ( frameTime < renderMsec ) {
-				XS::console.DebugPrint( "frameTime %.5f < %.5f, delaying for %0i\n", frameTime, renderMsec,
-					(uint32_t)(renderMsec - frameTime) );
+				XS::console.Print( XS::PrintLevel::Debug, "frameTime %.5f < %.5f, delaying for %0i\n",
+					frameTime,
+					renderMsec,
+					(uint32_t)(renderMsec - frameTime)
+				);
 				SDL_Delay( (uint32_t)(renderMsec - frameTime) );
 			}
 		}
@@ -239,11 +244,11 @@ int main( int argc, char **argv ) {
 	catch( const XS::XSError &e ) {
 		const bool developer = XS::Common::com_developer->GetBool();
 
-		XS::console.Print( "\n*** xsngine is shutting down\nReason: %s\n\n", e.what() );
+		XS::console.Print( XS::PrintLevel::Normal, "\n*** xsngine is shutting down\nReason: %s\n\n", e.what() );
 
 		if ( developer ) {
 			const real64_t runtime = globalTimer.GetTiming( true, XS::Timer::Resolution::SECONDS );
-			XS::console.DebugPrint( "Run time: %.3f seconds\n", runtime );
+			XS::console.Print( XS::PrintLevel::Developer, "Run time: %.3f seconds\n", runtime );
 		}
 
 		// indent the console for this scope
@@ -262,7 +267,7 @@ int main( int argc, char **argv ) {
 
 		if ( developer ) {
 			const real64_t shutdownTIme = globalTimer.GetTiming( false, XS::Timer::Resolution::SECONDS );
-			XS::console.DebugPrint( "Shutdown time: %.3f seconds\n\n\n", shutdownTIme );
+			XS::console.Print( XS::PrintLevel::Developer, "Shutdown time: %.3f seconds\n\n\n", shutdownTIme );
 		}
 
 		return EXIT_SUCCESS;

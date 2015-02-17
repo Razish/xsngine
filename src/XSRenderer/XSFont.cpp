@@ -48,7 +48,7 @@ namespace XS {
 
 			const File ttf( file.c_str(), FileMode::READ_BINARY );
 			if ( !ttf.open ) {
-				console.Print( "WARNING: Could not load font file \"%s\"\n", ttf.path );
+				console.Print( PrintLevel::Normal, "WARNING: Could not load font file \"%s\"\n", ttf.path );
 				return;
 			}
 
@@ -57,7 +57,7 @@ namespace XS {
 			ttf.Read( contents );
 
 			if ( FT_New_Memory_Face( ft, contents, ttf.length, 0, &face ) ) {
-				console.Print( "WARNING: Could not register font \"%s\"\n", file.c_str() );
+				console.Print( PrintLevel::Normal, "WARNING: Could not register font \"%s\"\n", file.c_str() );
 				delete[] contents;
 				return;
 			}
@@ -75,9 +75,11 @@ namespace XS {
 			uint8_t *atlas = new uint8_t[atlasSize];
 			std::memset( atlas, 0u, atlasSize );
 
-			if ( Common::com_developer->GetBool() ) {
-				console.Print( "Generating font atlas for '%s' (%ix%i)\n", name.c_str(), size * 16, size * 16 );
-			}
+			console.Print( PrintLevel::Developer, "Generating font atlas for '%s' (%ix%i)\n",
+				name.c_str(),
+				size * 16,
+				size * 16
+			);
 
 			lineHeight = static_cast<real32_t>( face->size->metrics.height ) / 64.0f;
 
@@ -159,7 +161,7 @@ namespace XS {
 			delete[] atlas;
 		}
 
-		void Font::Draw( const vector2 &pos, const std::string &text ) {
+		void Font::Draw( const vector2 &pos, const std::string &text, const vector4 *colour ) {
 			if ( text.empty() ) {
 				return;
 			}
@@ -181,7 +183,7 @@ namespace XS {
 				DrawQuad( currentPos.x + fd.offset.x, currentPos.y + fd.offset.y, // x, y
 					fd.size.x, fd.size.y, // width, height
 					fd.s.x, fd.t.x, fd.s.y, fd.t.y, // st coords
-					nullptr, material );
+					colour, material );
 
 				// increase by glyph width
 				currentPos.x += fd.advance;
@@ -282,9 +284,7 @@ namespace XS {
 				}
 			}
 
-			if ( Common::com_developer->GetBool() ) {
-				console.Print( "Generating new font '%s' at size %i\n", name, size );
-			}
+			console.Print( PrintLevel::Developer, "Generating new font '%s' at size %i\n", name, size );
 			font = fonts[name] = new Font( name, size );
 			font->RenderGlyphs();
 			return font;

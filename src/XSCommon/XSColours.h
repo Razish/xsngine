@@ -51,6 +51,7 @@ namespace XS {
 
 	// return the index to the colour table (colourTable) for the given character
 	// e.g. return 6 for the '6' in "^6", or 15 for the 'E' in "^E"
+	// if c is not in range, the return value will be pink for debugging
 	uint32_t ColourIndex(
 		char c
 	);

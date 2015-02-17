@@ -59,15 +59,13 @@ namespace XS {
 			return 0;
 		}
 
-		for ( const char *p=text; *p; p++ ) {
+		for ( const char *p = text; *p; p++ ) {
 			if ( IsColourString( p ) ) {
 				p++;
 				continue;
 			}
 
-			if ( p[0] == COLOUR_ESCAPE &&
-				 p[1] == COLOUR_ESCAPE )
-			{
+			if ( p[0] == COLOUR_ESCAPE && p[1] == COLOUR_ESCAPE ) {
 				p++;
 			}
 
@@ -81,13 +79,14 @@ namespace XS {
 		int lowc = tolower( c );
 
 		if ( c >= '0' && c <= '9' ) {
-			return (c-'0') & COLOUR_BITS;
+			return (c - '0') & COLOUR_BITS;
 		}
 		else if ( lowc >= 'a' && lowc <= 'e' ) {
-			return (lowc-'a'+'9') & COLOUR_BITS;
+			return (lowc - 'a' + '9') & COLOUR_BITS;
 		}
 
-		return ColourIndex( COLOUR_WHITE );
+		// default to pink, it's not worth throwing an error
+		return ColourIndex( COLOUR_PINK );
 	}
 
 } // namespace XS

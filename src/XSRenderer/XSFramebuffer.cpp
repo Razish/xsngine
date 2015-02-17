@@ -69,7 +69,10 @@ namespace XS {
 
 		void Framebuffer::AttachColourTexture( const Texture *texture, unsigned int slot ) {
 			if ( slot >= MAX_FBO_COLOR_TEXTURES ) {
-				console.Print( "Invalid slot number given (%d), valid range is 0 - %d", slot, MAX_FBO_COLOR_TEXTURES-1 );
+				console.Print( PrintLevel::Normal, "Invalid slot number given (%d), valid range is 0 - %d",
+					slot,
+					MAX_FBO_COLOR_TEXTURES - 1
+				);
 				return;
 			}
 
@@ -92,7 +95,7 @@ namespace XS {
 			if ( currentReadFramebuffer != this || currentWriteFramebuffer != this ) {
 				glBindFramebuffer( GL_FRAMEBUFFER, id );
 				currentReadFramebuffer	= this;
-				currentWriteFramebuffer	= this;
+				currentWriteFramebuffer = this;
 			}
 		}
 
@@ -101,39 +104,44 @@ namespace XS {
 
 			switch ( status ) {
 			case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT: {
-				console.Print( "One or more framebuffer attachment points are not complete.\n" );
+				console.Print( PrintLevel::Normal, "One or more framebuffer attachment points are not complete.\n" );
 			} break;
 
 			case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER: {
-				console.Print( "Invalid framebuffer attachment object type used.\n" );
+				console.Print( PrintLevel::Normal, "Invalid framebuffer attachment object type used.\n" );
 			} break;
 
 			case GL_FRAMEBUFFER_UNSUPPORTED: {
-				console.Print( "More than one internal format was used in the colour attachments.\n" );
+				console.Print( PrintLevel::Normal,
+					"More than one internal format was used in the colour attachments.\n"
+				);
 			} break;
 
 			case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER: {
-				console.Print( "Missing a read buffer.\n" );
+				console.Print( PrintLevel::Normal, "Missing a read buffer.\n" );
 			} break;
 
 			case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT: {
-				console.Print( "No images were attached to the framebuffer.\n" );
+				console.Print( PrintLevel::Normal, "No images were attached to the framebuffer.\n" );
 			} break;
 
 			case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE: {
-				console.Print( "Number of samples is not the same for all rendertargets and colour attachments.\n" );
+				console.Print( PrintLevel::Normal,
+					"Number of samples is not the same for all rendertargets and colour attachments.\n"
+				);
 			} break;
 
 			case GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS: {
-				console.Print( "Not all layered attachments are valid.\n" );
+				console.Print( PrintLevel::Normal, "Not all layered attachments are valid.\n" );
 			} break;
 
 			case GL_FRAMEBUFFER_COMPLETE: {
+				console.Print( PrintLevel::Developer, "Creation of framebuffer %d completed successfully\n", id );
 			} break;
 			}
 
 			if ( status != GL_FRAMEBUFFER_COMPLETE ) {
-				console.Print( "Creation of framebuffer %d could not be completed.\n", id );
+				console.Print( PrintLevel::Normal, "Creation of framebuffer %d could not be completed.\n", id );
 			}
 		}
 

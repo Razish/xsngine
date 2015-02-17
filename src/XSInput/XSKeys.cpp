@@ -160,7 +160,7 @@ namespace XS {
 		}
 
 		void Cmd_ListBinds( const commandContext_t * const context ) {
-			console.Print( "Listing binds...\n" );
+			console.Print( PrintLevel::Normal, "Listing binds...\n" );
 
 			std::map<SDL_Keycode, std::string> sorted( binds.begin(), binds.end() );
 
@@ -170,20 +170,20 @@ namespace XS {
 					continue;
 				}
 
-				console.Print( "%-8s: %s\n", GetNameForKeycode( bind.first ), bind.second.c_str() );
+				console.Print( PrintLevel::Normal, "%-8s: %s\n", GetNameForKeycode( bind.first ), bind.second.c_str() );
 			}
 		}
 
 		void Cmd_SetBind( const commandContext_t * const context ) {
 			if ( context->size() < 2 ) {
-				console.Print( "\"bind\" failed. Must specify a key and command\n" );
+				console.Print( PrintLevel::Normal, "\"bind\" failed. Must specify a key and command\n" );
 				return;
 			}
 
 			SDL_Keycode keycode = GetKeycodeForName( (*context)[0].c_str() );
 
 			if ( keycode == SDLK_UNKNOWN ) {
-				console.Print( "\"bind\" failed. Unknown key \"%s\"\n", (*context)[0].c_str() );
+				console.Print( PrintLevel::Normal, "\"bind\" failed. Unknown key \"%s\"\n", (*context)[0].c_str() );
 				return;
 			}
 

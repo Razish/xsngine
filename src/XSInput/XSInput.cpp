@@ -32,48 +32,93 @@ namespace XS {
 					static const char *funcName = XS_FUNCTION_VERBOSE;
 					switch ( e.window.event ) {
 					case SDL_WINDOWEVENT_SHOWN: {
-						console.DebugPrint( "%s: Window %d shown\n", funcName, e.window.windowID );
+						console.Print( PrintLevel::Debug, "%s: Window %d shown\n",
+							funcName,
+							e.window.windowID
+						);
 					} break;
 					case SDL_WINDOWEVENT_HIDDEN: {
-						console.DebugPrint( "%s: Window %d hidden\n", funcName, e.window.windowID );
+						console.Print( PrintLevel::Debug, "%s: Window %d hidden\n",
+							funcName,
+							e.window.windowID
+						);
 					} break;
 					case SDL_WINDOWEVENT_EXPOSED: {
-						console.DebugPrint( "%s: Window %d exposed\n", funcName, e.window.windowID );
+						console.Print( PrintLevel::Debug, "%s: Window %d exposed\n",
+							funcName,
+							e.window.windowID
+						);
 					} break;
 					case SDL_WINDOWEVENT_MOVED: {
-						console.DebugPrint( "%s: Window %d moved to %d,%d\n", funcName, e.window.windowID,
-							e.window.data1, e.window.data2 );
+						console.Print( PrintLevel::Debug, "%s: Window %d moved to %d,%d\n",
+							funcName,
+							e.window.windowID,
+							e.window.data1,
+							e.window.data2
+						);
 					} break;
 					case SDL_WINDOWEVENT_RESIZED: {
-						console.DebugPrint( "%s: Window %d resized to %dx%d\n", funcName, e.window.windowID,
-							e.window.data1, e.window.data2 );
+						console.Print( PrintLevel::Debug, "%s: Window %d resized to %dx%d\n",
+							funcName,
+							e.window.windowID,
+							e.window.data1,
+							e.window.data2
+						);
 					} break;
 					case SDL_WINDOWEVENT_MINIMIZED: {
-						console.DebugPrint( "%s: Window %d minimized\n", funcName, e.window.windowID );
+						console.Print( PrintLevel::Debug, "%s: Window %d minimized\n",
+							funcName,
+							e.window.windowID
+						);
 					} break;
 					case SDL_WINDOWEVENT_MAXIMIZED: {
-						console.DebugPrint( "%s: Window %d maximized\n", funcName, e.window.windowID );
+						console.Print( PrintLevel::Debug, "%s: Window %d maximized\n",
+							funcName,
+							e.window.windowID
+						);
 					} break;
 					case SDL_WINDOWEVENT_RESTORED: {
-						console.DebugPrint( "%s: Window %d restored\n", funcName, e.window.windowID );
+						console.Print( PrintLevel::Debug, "%s: Window %d restored\n",
+							funcName,
+							e.window.windowID
+						);
 					} break;
 					case SDL_WINDOWEVENT_ENTER: {
-						console.DebugPrint( "%s: Mouse entered window %d\n", funcName, e.window.windowID );
+						console.Print( PrintLevel::Debug, "%s: Mouse entered window %d\n",
+							funcName,
+							e.window.windowID
+						);
 					} break;
 					case SDL_WINDOWEVENT_LEAVE: {
-						console.DebugPrint( "%s: Mouse left window %d\n", funcName, e.window.windowID );
+						console.Print( PrintLevel::Debug, "%s: Mouse left window %d\n",
+							funcName,
+							e.window.windowID
+						);
 					} break;
 					case SDL_WINDOWEVENT_FOCUS_GAINED: {
-						console.DebugPrint( "%s: Window %d gained keyboard focus\n", funcName, e.window.windowID );
+						console.Print( PrintLevel::Debug, "%s: Window %d gained keyboard focus\n",
+							funcName,
+							e.window.windowID
+						);
 					} break;
 					case SDL_WINDOWEVENT_FOCUS_LOST: {
-						console.DebugPrint( "%s: Window %d lost keyboard focus\n", funcName, e.window.windowID );
+						console.Print( PrintLevel::Debug, "%s: Window %d lost keyboard focus\n",
+							funcName,
+							e.window.windowID
+						);
 					} break;
 					case SDL_WINDOWEVENT_CLOSE: {
-						console.DebugPrint( "%s: Window %d closed\n", funcName, e.window.windowID );
+						console.Print( PrintLevel::Debug, "%s: Window %d closed\n",
+							funcName,
+							e.window.windowID
+						);
 					} break;
 					default: {
-						console.DebugPrint( "%s: Window %d got unknown event %d\n", funcName, e.window.windowID, e.window.event );
+						console.Print( PrintLevel::Debug, "%s: Window %d got unknown event %d\n",
+							funcName,
+							e.window.windowID,
+							e.window.event
+						);
 					} break;
 					}
 				} break;
@@ -121,7 +166,9 @@ namespace XS {
 				} break;
 
 				default: {
-					console.DebugPrint( "Unhandled SDL event %d\n", e.type );
+					console.Print( PrintLevel::Normal, "Unhandled SDL event %d\n",
+						e.type
+					);
 				} break;
 				}
 			}

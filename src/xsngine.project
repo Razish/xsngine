@@ -253,12 +253,13 @@
     <File Name="XSRenderer/XSBuffer.h"/>
     <File Name="XSRenderer/XSModelObj.cpp"/>
     <File Name="XSRenderer/XSModelObj.h"/>
+    <File Name="XSRenderer/XSModelXMF.cpp"/>
+    <File Name="XSRenderer/XSModelXMF.h"/>
   </VirtualDirectory>
   <VirtualDirectory Name="XSSystem">
     <File Name="XSSystem/XSOS.h"/>
     <File Name="XSSystem/XSPlatform.h"/>
     <File Name="XSSystem/XSWindows.cpp"/>
-    <File Name="XSSystem/XSMac.cpp"/>
     <File Name="XSSystem/XSUnix.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="libpng">
@@ -285,6 +286,16 @@
   </VirtualDirectory>
   <VirtualDirectory Name="src">
     <File Name="SConstruct"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="shaders">
+    <File Name="../bin/shaders/f_model.glsl"/>
+    <File Name="../bin/shaders/f_quad.glsl"/>
+    <File Name="../bin/shaders/f_terrain.glsl"/>
+    <File Name="../bin/shaders/f_text.glsl"/>
+    <File Name="../bin/shaders/v_model.glsl"/>
+    <File Name="../bin/shaders/v_quad.glsl"/>
+    <File Name="../bin/shaders/v_terrain.glsl"/>
+    <File Name="../bin/shaders/v_text.glsl"/>
   </VirtualDirectory>
   <Settings Type="Dynamic Library">
     <GlobalSettings>

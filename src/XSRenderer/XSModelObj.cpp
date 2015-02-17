@@ -62,15 +62,18 @@ namespace XS {
 		bool Obj::LoadMeshes( void ) {
 			const File f( modelPath.c_str() );
 			if ( !f.open ) {
-				console.Print( "%s failed to open file '%s'\n", XS_FUNCTION, modelPath.c_str() );
+				console.Print( PrintLevel::Normal, "%s failed to open file '%s'\n", XS_FUNCTION, modelPath.c_str() );
 				return false;
 			}
 			char *buffer = new char[f.length];
 			f.Read( reinterpret_cast<uint8_t *>( buffer ) );
 			TokenParser *parser = new TokenParser( buffer );
 			Mesh *mesh = new Mesh();
-			console.DebugPrint( "%s loading new mesh for '%s' at 0x%" PRIXPTR "\n", XS_FUNCTION, modelPath.c_str(),
-				mesh );
+			console.Print( PrintLevel::Debug, "%s loading new mesh for '%s' at 0x%" PRIXPTR "\n",
+				XS_FUNCTION,
+				modelPath.c_str(),
+				mesh
+			);
 
 			while ( true ) {
 				const char *token = parser->ParseToken();
@@ -92,8 +95,11 @@ namespace XS {
 						Process( mesh );
 					}
 					mesh = new Mesh();
-					console.DebugPrint( "%s loading new mesh for '%s' at 0x%" PRIXPTR "\n", XS_FUNCTION,
-						modelPath.c_str(), mesh );
+					console.Print( PrintLevel::Debug, "%s loading new mesh for '%s' at 0x%" PRIXPTR "\n",
+						XS_FUNCTION,
+						modelPath.c_str(),
+						mesh
+					);
 					parser->SkipLine();
 				}
 				else if ( !String::CompareCase( token, "s" ) ) {
@@ -118,8 +124,11 @@ namespace XS {
 					if ( !mesh ) {
 						// something went wrong, we can't parse vertices out if we don't know what mesh they're related
 						//	to
-						console.Print( "%s tried to parse vertices for '%s' without specifying a mesh!\n", XS_FUNCTION,
-							modelPath.c_str() );
+						console.Print( PrintLevel::Normal,
+							"%s tried to parse vertices for '%s' without specifying a mesh!\n",
+							XS_FUNCTION,
+							modelPath.c_str()
+						);
 						break;
 					}
 
@@ -127,8 +136,6 @@ namespace XS {
 					for ( int i = 0; i < 3; i++ ) {
 						parser->ParseFloat( &vertex.raw[i] );
 					}
-					vertex.x += 4.0f;
-					vertex.y += 4.0f;
 					mesh->vertices.push_back( vertex );
 					parser->SkipLine();
 				}
@@ -137,8 +144,11 @@ namespace XS {
 					if ( !mesh ) {
 						// something went wrong, we can't parse normals out if we don't know what mesh they're related
 						//	to
-						console.Print( "%s tried to parse normals for '%s' without specifying a mesh!\n", XS_FUNCTION,
-							modelPath.c_str() );
+						console.Print( PrintLevel::Normal,
+							"%s tried to parse normals for '%s' without specifying a mesh!\n",
+							XS_FUNCTION,
+							modelPath.c_str()
+						);
 						break;
 					}
 
@@ -152,8 +162,11 @@ namespace XS {
 				else if ( !String::CompareCase( token, "f" ) ) {
 					if ( !mesh ) {
 						// something went wrong, we can't parse faces out if we don't know what mesh they're related to
-						console.Print( "%s tried to parse face for '%s' without specifying a mesh!\n", XS_FUNCTION,
-							modelPath.c_str() );
+						console.Print( PrintLevel::Normal,
+							"%s tried to parse face for '%s' without specifying a mesh!\n",
+							XS_FUNCTION,
+							modelPath.c_str()
+						);
 						break;
 					}
 					uint16_t a = 0, b = 0, c = 0;

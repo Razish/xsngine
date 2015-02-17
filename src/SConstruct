@@ -20,7 +20,11 @@ def cmp_version( v1, v2 ):
 	def normalise( v ):
 		import re
 		return [int(x) for x in re.sub( r'(\.0+)*$', '', v ).split( '.' )]
-	return cmp( normalise( v1 ), normalise( v2 ) )
+
+	return cmp(
+		normalise( v1 ),
+		normalise( v2 )
+	)
 
 import platform
 plat = platform.system() # Windows or Linux
@@ -77,8 +81,8 @@ colours['end']  = '\033[0m'
 
 # if the output is not a terminal, remove the colours
 if not sys.stdout.isatty():
-	for key, value in colors.iteritems():
-		colors[key] = ''
+	for key in colours.keys():
+		colours[key] = ''
 
 env['SHCCCOMSTR'] = env['SHCXXCOMSTR'] = env['CCCOMSTR'] = env['CXXCOMSTR'] = \
 	'%s compiling: %s$SOURCE%s' % (colours['cyan'], colours['white'], colours['end'])
@@ -163,6 +167,7 @@ files = [
 	'XSRenderer/XSMesh.cpp',
 	'XSRenderer/XSModel.cpp',
 	'XSRenderer/XSModelObj.cpp',
+	'XSRenderer/XSModelXMF.cpp',
 	'XSRenderer/XSRenderable.cpp',
 	'XSRenderer/XSRenderCommand.cpp',
 	'XSRenderer/XSRenderer.cpp',
@@ -234,7 +239,7 @@ if plat == 'Linux' or plat == 'Darwin':
 		]
 
 	# gcc-specific warnings
-	if env['CC'] == 'gcc' and arch != 'arm':
+	if env['CC'] == 'gcc' and arch != 'arm' and plat != 'Darwin':
 		env['CCFLAGS'] += [ '-Wlogical-op' ]
 
 		# requires gcc 4.7 or above
@@ -352,7 +357,7 @@ elif plat == 'Windows':
 if debug == 0 or debug == 2:
 	if plat == 'Linux' or plat == 'Darwin':
 		env['CCFLAGS'] += [ '-O3' ]
-		if debug == 0:
+		if debug == 0 and env['CC'] == 'gcc':
 			env['LINKFLAGS'] += [ '-s' ]
 	elif plat == 'Windows':
 		env['CCFLAGS'] += [
@@ -435,5 +440,5 @@ env['LIBPREFIX'] = ''
 binaryName = 'xsn' + '.' + arch + env['PROGSUFFIX']
 env.Program( binaryName, files )
 
-if not os.path.exists( './xsngine' ):
+if not env.GetOption( 'clean' ) and not os.path.exists( './xsngine' ):
 	print( 'Suggest creating a symlink: "ln -s ' + binaryName + ' xsngine"' )

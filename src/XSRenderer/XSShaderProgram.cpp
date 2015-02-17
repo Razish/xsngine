@@ -31,7 +31,7 @@ namespace XS {
 
 				glGetProgramInfoLog( program, logLength - 1, nullptr, &logText[0] );
 
-				console.Print( "%s\n", logText.c_str() );
+				console.Print( PrintLevel::Normal, "%s\n", logText.c_str() );
 			}
 		}
 
@@ -47,7 +47,7 @@ namespace XS {
 
 				glGetShaderInfoLog( shader, logLength - 1, nullptr, &logText[0] );
 
-				console.Print( "%s\n", logText.c_str() );
+				console.Print( PrintLevel::Normal, "%s\n", logText.c_str() );
 			}
 		}
 
@@ -232,7 +232,7 @@ namespace XS {
 			glGetProgramiv( id, GL_LINK_STATUS, &statusCode );
 
 			if ( statusCode == GL_FALSE ) {
-				console.Print( "Failed to link program %d\n", id );
+				console.Print( PrintLevel::Normal, "Failed to link program %d\n", id );
 				OutputProgramInfoLog( id );
 			}
 		}

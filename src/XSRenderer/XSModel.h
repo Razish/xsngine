@@ -17,6 +17,7 @@ namespace XS {
 			enum class Type {
 				UNKNOWN = 0,
 				OBJ,
+				XMF,
 				NUM_MODEL_TYPES
 			};
 

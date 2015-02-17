@@ -22,7 +22,7 @@ namespace XS {
 			if ( !cv ) {
 				// shouldn't happen
 				if ( Common::com_developer->GetBool() ) {
-					console.Print( "%s NULL cvar \"%s\"\n", XS_FUNCTION, name );
+					console.Print( PrintLevel::Normal, "%s NULL cvar \"%s\"\n", XS_FUNCTION, name );
 				}
 				continue;
 			}
@@ -33,7 +33,7 @@ namespace XS {
 	}
 
 	void Cvar::Clean( void ) {
-		console.DebugPrint( "Cleaning up cvars\n" );
+		console.Print( PrintLevel::Debug, "Cleaning up cvars\n" );
 		for ( const auto &it : cvars ) {
 			delete it.second;
 		}
@@ -69,8 +69,12 @@ namespace XS {
 			if ( !value.empty() ) {
 				// INIT cvars should not be initialised with differing values
 				if ( cvar->flags & CVAR_INIT ) {
-					console.Print( "WARNING: CVAR_INIT Cvar \"%s\" was created twice with values \"%s\" and \"%s\"\n",
-						name.c_str(), cvar->fullString.c_str(), value.c_str() );
+					console.Print( PrintLevel::Normal,
+						"WARNING: CVAR_INIT Cvar \"%s\" was created twice with values \"%s\" and \"%s\"\n",
+						name.c_str(),
+						cvar->fullString.c_str(),
+						value.c_str()
+					);
 				}
 
 				// don't initialise a cvar if it already exists/has been set
@@ -103,10 +107,11 @@ namespace XS {
 	}
 
 	void Cvar::List( void ) {
-		console.Print( "Listing cvars...\n" );
+		console.Print( PrintLevel::Normal, "Listing cvars...\n" );
 
 		std::map<std::string, Cvar *> sorted( cvars.begin(), cvars.end() );
 		std::vector<std::string> keyValues;
+		keyValues.reserve( sorted.size() );
 
 		Indent indent( 1 );
 		size_t maxLen = 1u;
@@ -119,7 +124,11 @@ namespace XS {
 		}
 		uint32_t i = 0;
 		for ( const auto &cvar : sorted ) {
-			console.Print( "%-*s: %s\n", maxLen + 1, keyValues[i++].c_str(), cvar.second->description.c_str() );
+			console.Print( PrintLevel::Normal, "%-*s: %s\n",
+				maxLen + 1,
+				keyValues[i++].c_str(),
+				cvar.second->description.c_str()
+			);
 		}
 	}
 
@@ -133,7 +142,7 @@ namespace XS {
 
 	bool Cvar::Set( const char *value, bool initial ) {
 		if ( !initial && (flags & CVAR_READONLY) ) {
-			console.Print( "Attempt to set read-only cvar \"%s\"\n", name.c_str() );
+			console.Print( PrintLevel::Normal, "Attempt to set read-only cvar \"%s\"\n", name.c_str() );
 			return false;
 		}
 

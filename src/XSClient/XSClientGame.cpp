@@ -96,9 +96,9 @@ namespace XS {
 #ifdef CLIENT_TERRAIN
 			LoadTerrain();
 #else
-			GameObject *monkey = new GameObject();
-			objects.push_back( monkey );
-			//monkey->renderObject = Renderer::Model::Register( "models/monkey.obj" );
+			GameObject *box = new GameObject();
+			objects.push_back( box );
+			box->renderObject = Renderer::Model::Register( "models/box.xmf" );
 #endif
 		}
 

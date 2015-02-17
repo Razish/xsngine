@@ -23,24 +23,24 @@ namespace XS {
 
 		static void Cmd_PrintCvar( const commandContext_t * const context ) {
 			if ( context->size() < 1 ) {
-				console.Print( "\"print\" failed. Must specify at-least one cvar\n" );
+				console.Print( PrintLevel::Normal, "\"print\" failed. Must specify at-least one cvar\n" );
 				return;
 			}
 
 			for ( const auto &it : *context ) {
 				const Cvar *cv = Cvar::Get( it );
 				if ( cv ) {
-					console.Print( "%s: \"%s\"\n", it.c_str(), cv->GetFullCString() );
+					console.Print( PrintLevel::Normal, "%s: \"%s\"\n", it.c_str(), cv->GetFullCString() );
 				}
 				else {
-					console.Print( "%s: does not exist\n", it.c_str() );
+					console.Print( PrintLevel::Normal, "%s: does not exist\n", it.c_str() );
 				}
 			}
 		}
 
 		static void Cmd_SetCvar( const commandContext_t * const context ) {
 			if ( context->size() < 2 ) {
-				console.Print( "\"set\" failed. Must specify a cvar and value\n" );
+				console.Print( PrintLevel::Normal, "\"set\" failed. Must specify a cvar and value\n" );
 				return;
 			}
 
@@ -111,7 +111,7 @@ namespace XS {
 					continue;
 				}
 				else {
-					console.Print( "Unknown command \"%s\"\n", it.c_str()  );
+					console.Print( PrintLevel::Normal, "Unknown command \"%s\"\n", it.c_str()  );
 				}
 			}
 			buffer.clear();
@@ -122,7 +122,7 @@ namespace XS {
 		bool AddCommand( const char *name, commandFunc_t cmd ) {
 			commandFunc_t &func = commands[name];
 			if ( func ) {
-				console.Print( "Tried to register command \"%s\" twice\n", name );
+				console.Print( PrintLevel::Normal, "Tried to register command \"%s\" twice\n", name );
 				return false;
 			}
 

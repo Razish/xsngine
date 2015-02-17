@@ -30,7 +30,6 @@
 	#define DLL_EXT ".dll"
 
 	#define XS_LITTLE_ENDIAN
-	#define XS_OS_WINDOWS
 
 // Win32
 #elif defined(_WIN32) || defined(__WIN32__)

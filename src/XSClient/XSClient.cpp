@@ -101,7 +101,7 @@ namespace XS {
 		static void DrawHUD( real64_t frametime ) {
 			hudView->Bind();
 
-			static const vector2 pos = vector2( 0.0f, 0.0f );
+			static const vector2 pos( 0.0f, 0.0f );
 			static Renderer::Font *font = nullptr;
 			if ( !font ) {
 				font = Renderer::Font::Register( "menu", 16 );

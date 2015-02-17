@@ -19,7 +19,7 @@ namespace XS {
 
 		void user_read_data( png_structp png_ptr, png_bytep data, png_size_t length );
 		void png_print_error( png_structp png_ptr, png_const_charp msg ) {
-			console.Print( "%s\n", msg );
+			console.Print( PrintLevel::Normal, "%s\n", msg );
 		}
 
 		bool IsPowerOfTwo( int i ) {
@@ -64,13 +64,13 @@ namespace XS {
 				uint8_t ident[SIGNATURE_LEN];
 				memcpy( ident, buf, SIGNATURE_LEN );
 				if ( !png_check_sig( ident, SIGNATURE_LEN ) ) {
-					console.Print( "PNG signature not found in given image\n" );
+					console.Print( PrintLevel::Normal, "PNG signature not found in given image\n" );
 					return false;
 				}
 
 				png_ptr = png_create_read_struct( PNG_LIBPNG_VER_STRING, nullptr, png_print_error, png_print_error );
 				if ( !png_ptr ) {
-					console.Print( "Could not allocate enough memory to load the image\n" );
+					console.Print( PrintLevel::Normal, "Could not allocate enough memory to load the image\n" );
 					return false;
 				}
 
@@ -94,14 +94,14 @@ namespace XS {
 				// While modern OpenGL can handle non-PoT textures, it's faster to handle only PoT
 				//	so that the graphics driver doesn't have to fiddle about with the texture when uploading.
 				if ( !IsPowerOfTwo( width_ ) || !IsPowerOfTwo( height_ ) ) {
-					console.Print( "Width or height is not a power-of-two.\n" );
+					console.Print( PrintLevel::Normal, "Width or height is not a power-of-two.\n" );
 					return false;
 				}
 
 				// If we need to load a non-RGB(A)8 image, colortype should be PNG_COLOR_TYPE_PALETTE or
 				//	PNG_COLOR_TYPE_GRAY.
 				if ( colortype != PNG_COLOR_TYPE_RGB && colortype != PNG_COLOR_TYPE_RGBA ) {
-					console.Print( "Image is not 24-bit or 32-bit\n" );
+					console.Print( PrintLevel::Normal, "Image is not 24-bit or 32-bit\n" );
 					return false;
 				}
 
@@ -116,14 +116,14 @@ namespace XS {
 				// We always assume there are 4 channels. RGB channels are expanded to RGBA when read.
 				uint8_t *tempData = new uint8_t[width_ * height_ * 4];
 				if ( !tempData ) {
-					console.Print( "Could not allocate enough memory to load the image\n" );
+					console.Print( PrintLevel::Normal, "Could not allocate enough memory to load the image\n" );
 					return false;
 				}
 
 				// Dynamic array of row pointers, with 'height' elements, initialized to NULL.
 				uint8_t **row_pointers = new uint8_t*[sizeof(uint8_t *) * height_];
 				if ( !row_pointers ) {
-					console.Print( "Could not allocate enough memory to load the image\n" );
+					console.Print( PrintLevel::Normal, "Could not allocate enough memory to load the image\n" );
 					delete[] tempData;
 					return false;
 				}
@@ -174,12 +174,12 @@ namespace XS {
 
 			const File f( filename, FileMode::READ_BINARY );
 			if ( !f.open ) {
-				console.Print( "Could not open PNG file \"%s\"\n", filename );
+				console.Print( PrintLevel::Normal, "Could not open PNG file \"%s\"\n", filename );
 				return nullptr;
 			}
 
 			if ( Common::com_developer->GetBool() )
-				console.Print( "Loading \"%s\"...\n", filename );
+				console.Print( PrintLevel::Normal, "Loading \"%s\"...\n", filename );
 
 			uint8_t *buf = new uint8_t[f.length];
 			f.Read( buf );

@@ -14,6 +14,8 @@
 #include "XSRenderer/XSTexture.h"
 #include "XSRenderer/XSFont.h"
 
+#include <OpenCL/cl_gl_ext.h>
+
 namespace XS {
 
 	namespace Renderer {
@@ -125,8 +127,13 @@ namespace XS {
 				return;
 			}
 
-			console.Print( "[%s] [%s] %s: %s\n", GLErrSeverityToString( severity ), GLErrSourceToString( source ),
-				GLErrTypeToString( type ), message );
+			console.Print( PrintLevel::Normal,
+				"[%s] [%s] %s: %s\n",
+				GLErrSeverityToString( severity ),
+				GLErrSourceToString( source ),
+				GLErrTypeToString( type ),
+				message
+			);
 		}
 
 		void Init( void ) {
@@ -158,7 +165,7 @@ namespace XS {
 		}
 
 		void Shutdown( void ) {
-			console.Print( "Shutting down renderer...\n" );
+			console.Print( PrintLevel::Normal, "Shutting down renderer...\n" );
 
 			RenderCommand::Shutdown();
 			Font::Shutdown();
@@ -215,10 +222,26 @@ namespace XS {
 			SDL_GL_MakeCurrent( window, context );
 
 			SDL_GL_SetSwapInterval( r_swapInterval->GetInt() );
+		#if defined(XS_OS_MAC)
+			//TODO: force vsync flag
+			/*
+			CGLContextObj cglContext = CGLGetCurrentContext();
+			if ( cglContext ) {
+				// ...
+			}
+			*/
+		#endif
 
-			console.Print( "OpenGL device: %s %s\n", glGetString( GL_VENDOR ), glGetString( GL_RENDERER ) );
-			console.Print( "OpenGL version: %s with GLSL %s\n", glGetString( GL_VERSION ),
-				glGetString( GL_SHADING_LANGUAGE_VERSION ) );
+			console.Print( PrintLevel::Normal,
+				"OpenGL device: %s %s\n",
+				glGetString( GL_VENDOR ),
+				glGetString( GL_RENDERER )
+			);
+			console.Print( PrintLevel::Normal,
+				"OpenGL version: %s with GLSL %s\n",
+				glGetString( GL_VERSION ),
+				glGetString( GL_SHADING_LANGUAGE_VERSION )
+			);
 		}
 
 		void DestroyDisplay( void ) {

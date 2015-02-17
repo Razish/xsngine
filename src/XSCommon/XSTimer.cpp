@@ -13,9 +13,7 @@ namespace XS {
 	void Timer::Start( void ) {
 	#if defined(XS_OS_WINDOWS)
 		QueryPerformanceCounter( &start );
-	#elif defined(XS_OS_LINUX)
-		gettimeofday( &start, nullptr );
-	#elif defined(XS_OS_MAC)
+	#elif defined(XS_OS_LINUX) || defined(XS_OS_MAC)
 		gettimeofday( &start, nullptr );
 	#endif
 	}
@@ -23,9 +21,7 @@ namespace XS {
 	void Timer::Stop( void ) {
 	#if defined(XS_OS_WINDOWS)
 		QueryPerformanceCounter( &stop );
-	#elif defined(XS_OS_LINUX)
-		gettimeofday( &stop, nullptr );
-	#elif defined(XS_OS_MAC)
+	#elif defined(XS_OS_LINUX) || defined(XS_OS_MAC)
 		gettimeofday( &stop, nullptr );
 	#endif
 	}
@@ -39,10 +35,7 @@ namespace XS {
 
 		real64_t startTime = start.QuadPart * (1000000.0 / frequency.QuadPart);
 		real64_t stopTime = stop.QuadPart * (1000000.0 / frequency.QuadPart);
-	#elif defined(XS_OS_LINUX)
-		real64_t startTime = (start.tv_sec * 1000000.0) + start.tv_usec;
-		real64_t stopTime = (stop.tv_sec * 1000000.0) + stop.tv_usec;
-	#elif defined(XS_OS_MAC)
+	#elif defined(XS_OS_LINUX) || defined(XS_OS_MAC)
 		real64_t startTime = (start.tv_sec * 1000000.0) + start.tv_usec;
 		real64_t stopTime = (stop.tv_sec * 1000000.0) + stop.tv_usec;
 	#endif
