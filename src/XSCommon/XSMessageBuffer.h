@@ -34,6 +34,11 @@ namespace XS {
 			void
 		) const;
 
+		// clear the message buffer
+		inline void Clear( void ) {
+			buffer.clear();
+		}
+
 		// retrieve count lines from index start
 		std::vector<std::string> FetchLines(
 			uint32_t start,

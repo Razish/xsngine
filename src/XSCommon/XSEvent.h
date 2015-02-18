@@ -9,12 +9,31 @@
 
 namespace XS {
 
-	enum EventType {
-		UNKNOWN = 0,
-		KEY,
-		MOUSEBUTTON,
-		MOUSEWHEEL,
-		NUM_EVENTS
+	enum class EventType {
+		Keyboard,
+		MouseButton,
+		MouseWheel,
+		MouseMotion,
+	};
+
+	struct KeyboardEvent {
+		SDL_Keycode	key;
+		bool		down;
+	};
+
+	struct MouseButtonEvent {
+		uint8_t		button;
+		bool		pressed;
+	};
+
+	struct MouseWheelEvent {
+		bool		up;
+		uint32_t	amount;
+	};
+
+	struct MouseMotionEvent {
+		uint32_t	x;
+		uint32_t	y;
 	};
 
 	struct XSEvent {
@@ -26,20 +45,10 @@ namespace XS {
 		uint32_t	time;
 
 		union {
-			struct {
-				SDL_Keycode	key;
-				bool		down;
-			} keyEvent;
-
-			struct {
-				uint8_t	button;
-				bool	pressed;
-			} mouseButton;
-
-			struct {
-				bool		up;
-				uint32_t	amount;
-			} mouseWheel;
+			KeyboardEvent		keyboard;
+			MouseButtonEvent	mouseButton;
+			MouseWheelEvent		mouseWheel;
+			MouseMotionEvent	mouseMotion;
 		};
 
 		XSEvent( EventType eventType )

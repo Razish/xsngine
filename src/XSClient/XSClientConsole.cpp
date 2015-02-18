@@ -35,33 +35,33 @@ namespace XS {
 			SDL_SetRelativeMouseMode( visible ? SDL_FALSE : SDL_TRUE );
 		}
 
-		bool ClientConsole::KeyEvent( SDL_Keycode key, bool down ) {
+		bool ClientConsole::KeyboardEvent( const struct KeyboardEvent &ev ) {
 			if ( !visible ) {
 				return false;
 			}
 
-			if ( down ) {
+			if ( ev.down ) {
 				//TODO: scroll input cursor with SDL_SCANCODE_LEFT, SDL_SCANCODE_RIGHT
 				//TODO: scroll up/down through history with SDL_SCANCODE_UP, SDL_SCANCODE_DOWN
-				if ( key == SDLK_BACKQUOTE ) {
+				if ( ev.key == SDLK_BACKQUOTE ) {
 					// hardcoded console exit
 					Toggle();
 					return true;
 				}
-				else if ( key == SDLK_PAGEUP ) {
+				else if ( ev.key == SDLK_PAGEUP ) {
 					if ( scrollAmount + 1 < console->buffer->GetNumLines() - lineCount ) {
 						scrollAmount++;
 					}
 					return true;
 				}
-				else if ( key == SDLK_PAGEDOWN ) {
+				else if ( ev.key == SDLK_PAGEDOWN ) {
 					scrollAmount--;
 					if ( scrollAmount < 0 ) {
 						scrollAmount = 0;
 					}
 					return true;
 				}
-				else if ( input->KeyEvent( key, down ) ) {
+				else if ( input->KeyboardEvent( ev ) ) {
 					return true;
 				}
 			}
@@ -84,8 +84,7 @@ namespace XS {
 
 		void ClientConsole::Resize( void ) {
 			if ( font ) {
-				const uint32_t height = Cvar::Get( "vid_height" )->GetInt();
-				lineCount = ((height / 2) / std::floor( font->lineHeight )) - 1;
+				lineCount = ((Renderer::state.window.height / 2) / std::floor( font->lineHeight )) - 1;
 			}
 		}
 
@@ -99,10 +98,12 @@ namespace XS {
 			// have to register it each frame so we can change the font size at runtime
 			font = Renderer::Font::Register( "console", static_cast<uint16_t>( con_fontSize->GetInt() ) );
 
-			const uint32_t width = Cvar::Get( "vid_width" )->GetInt();
-			const uint32_t height = Cvar::Get( "vid_height" )->GetInt();
-			Renderer::DrawQuad( 0, 0, width, height / 2, 0.0f, 0.0f, 1.0f, 1.0f,
-				&colourTable[ColourIndex( COLOUR_BLACK )], nullptr );
+			Renderer::DrawQuad(
+				0, 0, Renderer::state.window.width, Renderer::state.window.height / 2,
+				0.0f, 0.0f, 1.0f, 1.0f,
+				&colourTable[ColourIndex( COLOUR_BLACK )],
+				nullptr
+			);
 
 			Resize();
 

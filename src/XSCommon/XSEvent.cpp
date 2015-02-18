@@ -1,4 +1,4 @@
-#include <list>
+#include <queue>
 
 #include "XSCommon/XSCommon.h"
 #include "XSCommon/XSEvent.h"
@@ -17,14 +17,14 @@ namespace XS {
 		// this is cleared each pump. we may just want to expand
 		//	as necessary and set the head to 0 at the end of each pump
 		//	to avoid the overhead of clear()
-		static std::list<XSEvent> events;
+		static std::queue<XSEvent> events;
 
 		// for debugging
-		static const char *eventNames[EventType::NUM_EVENTS] = {
-			"EventType::Unknown",
-			"EventType::KEY",
-			"EventType::MOUSEBUTTON",
-			"EventType::MOUSEWHEEL",
+		static const char *eventNames[] = {
+			"EventType::Keyboard",
+			"EventType::MouseButton",
+			"EventType::MouseWheel",
+			"EventType::MouseMotion"
 		};
 
 		void Init( void ) {
@@ -33,56 +33,38 @@ namespace XS {
 
 		void Queue( const XSEvent *ev ) {
 			if ( debug_events->GetBool() ) {
-				switch( ev->type ) {
-				case EventType::KEY: {
-					console.Print( PrintLevel::Debug, "%s %s (%i) key: %i, down: %i\n",
-						XS_FUNCTION,
-						eventNames[ev->type],
-						ev->type,
-						ev->keyEvent.key,
-						ev->keyEvent.down
-					);
-				} break;
-
-				case EventType::MOUSEBUTTON: {
-					// ...
-				} break;
-
-				case EventType::MOUSEWHEEL: {
-					// ...
-				} break;
-
-				default: {
-					//TODO: test if stack unwinding/object destruction breaks this message
-					throw( XSError( String::Format( "%s Unknown event %i", XS_FUNCTION, ev->type ).c_str() ) );
-				} break;
-				}
+				console.Print( PrintLevel::Normal, "%s %s (%i)\n", XS_FUNCTION, eventNames[(int)ev->type], ev->type );
 			}
 
-			events.push_back( *ev );
+			events.push( *ev );
 		}
 
 		void Pump( void ) {
-			for ( const auto &it : events ) {
-				switch( it.type ) {
-				case EventType::KEY: {
-					Client::KeyEvent( it.keyEvent.key, it.keyEvent.down );
+			while ( !events.empty() ) {
+				const XSEvent &ev = events.front();
+				switch( ev.type ) {
+				case EventType::Keyboard: {
+					Client::KeyboardEvent( ev.keyboard );
 				} break;
 
-				case EventType::MOUSEBUTTON: {
+				case EventType::MouseButton: {
 					// ...
 				} break;
 
-				case EventType::MOUSEWHEEL: {
+				case EventType::MouseWheel: {
+					// ...
+				} break;
+
+				case EventType::MouseMotion: {
 					// ...
 				} break;
 
 				default: {
-					throw( XSError( String::Format( "%s Unknown event %i", XS_FUNCTION, it.type ).c_str() ) );
+					throw( XSError( String::Format( "%s Unknown event %i", XS_FUNCTION, ev.type ).c_str() ) );
 				} break;
 				}
+				events.pop();
 			}
-			events.clear();
 		}
 
 	} // namespace Event

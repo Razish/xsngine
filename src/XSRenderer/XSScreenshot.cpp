@@ -26,16 +26,15 @@ namespace XS {
 				return p;
 			}
 
-			void Cmd_Screenshot( const commandContext_t * const context ) {
-				const int32_t w = vid_width->GetInt(), h = vid_height->GetInt();
+			void Cmd_Screenshot( const CommandContext * const context ) {
 				glBindBuffer( GL_PIXEL_PACK_BUFFER, defaultPbo );
-				glReadPixels( 0, 0, w, h, GL_RGBA, GL_UNSIGNED_BYTE, NULL );
+				glReadPixels( 0, 0, state.window.width, state.window.height, GL_RGBA, GL_UNSIGNED_BYTE, NULL );
 				GLsync sync = glFenceSync( GL_SYNC_GPU_COMMANDS_COMPLETE, 0 );
 
 				RenderCommand cmd( RenderCommand::Type::SCREENSHOT );
 				cmd.screenshot.name = GetScreenshotName();
-				cmd.screenshot.width = w;
-				cmd.screenshot.height = h;
+				cmd.screenshot.width = state.window.width;
+				cmd.screenshot.height = state.window.height;
 				cmd.screenshot.pbo = defaultPbo;
 				cmd.screenshot.sync = sync;
 

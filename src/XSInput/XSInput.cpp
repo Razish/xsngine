@@ -123,18 +123,40 @@ namespace XS {
 					}
 				} break;
 
+				case SDL_FINGERUP:
+				case SDL_FINGERDOWN:
 				case SDL_TEXTINPUT: {
 					// ...
 				} break;
 
+				case SDL_FINGERMOTION: {
+					/*
+					const real32_t relativeMotion[2] = { e.tfinger.dx, e.tfinger.dy };
+					const real32_t absolutePosition[2] = { e.tfinger.x, e.tfinger.y };
+					console.Print( PrintLevel::Normal,
+						"Touch motion: d( %.3f,%.3f ) - a( %.3f,%.3f )\n",
+						relativeMotion[0], relativeMotion[1],
+						absolutePosition[0], absolutePosition[1]
+					);
+					*/
+				} break;
 				case SDL_MOUSEMOTION: {
-					//const int32_t relativeMotion[2] = { e.motion.xrel, e.motion.yrel };
-					//const int32_t absolutePosition[2] = { e.motion.x, e.motion.y };
+				//	const int32_t relativeMotion[2] = { e.motion.xrel, e.motion.yrel };
+				//	const int32_t absolutePosition[2] = { e.motion.x, e.motion.y };
+					/*
+					console.Print( PrintLevel::Normal,
+						"Mouse motion: d( %i,%i ) - a( %i,%i )\n",
+						relativeMotion[0], relativeMotion[1],
+						absolutePosition[0], absolutePosition[1]
+					);
+					*/
+					XSEvent ev( EventType::MouseMotion );
+					Event::Queue( &ev );
 				} break;
 
 				case SDL_MOUSEBUTTONDOWN:
 				case SDL_MOUSEBUTTONUP: {
-					XSEvent ev( EventType::MOUSEBUTTON );
+					XSEvent ev( EventType::MouseButton );
 					ev.mouseButton.button = e.button.button;
 					ev.mouseButton.pressed = (e.button.state == SDL_PRESSED) ? true : false;
 					//ev.mouseButton.position[0] = e.button.x;
@@ -144,7 +166,7 @@ namespace XS {
 				} break;
 
 				case SDL_MOUSEWHEEL: {
-					XSEvent ev( EventType::MOUSEWHEEL );
+					XSEvent ev( EventType::MouseWheel );
 					ev.mouseWheel.up = (e.wheel.y > 0);
 					ev.mouseWheel.amount = std::abs( e.wheel.y );
 
@@ -158,10 +180,9 @@ namespace XS {
 
 					keystate[key] = pressed;
 
-					XSEvent ev( EventType::KEY );
-					ev.keyEvent.key = key;
-					ev.keyEvent.down = pressed;
-
+					XSEvent ev( EventType::Keyboard );
+					ev.keyboard.key = key;
+					ev.keyboard.down = pressed;
 					Event::Queue( &ev );
 				} break;
 

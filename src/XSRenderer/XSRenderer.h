@@ -20,10 +20,10 @@ namespace XS {
 			} window;
 
 			struct Driver {
-				const GLubyte *vendor;
-				const GLubyte *renderer;
-				const GLubyte *coreVersion;
-				const GLubyte *shaderVersion;
+				const char *vendor;
+				const char *renderer;
+				const char *coreVersion;
+				const char *shaderVersion;
 			} driver;
 
 			// ...

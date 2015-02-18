@@ -5,11 +5,10 @@
 
 namespace XS {
 
-	typedef std::vector<std::string> commandContext_t;
+	typedef std::vector<std::string> CommandContext;
+	typedef void (*CommandFunc)( const CommandContext * const context );
 
 	namespace Command {
-
-		typedef void (*commandFunc_t)( const commandContext_t * const context );
 
 		// initialise the command system
 		void Init(
@@ -19,7 +18,7 @@ namespace XS {
 		// associate a console command with a function
 		bool AddCommand(
 			const char *name,
-			commandFunc_t cmd
+			CommandFunc cmd
 		);
 
 		// append text to the command buffer to be executed in a batch

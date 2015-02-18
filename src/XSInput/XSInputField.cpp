@@ -35,15 +35,15 @@ namespace XS {
 			cursorPos = 0u;
 		}
 
-		bool InputField::KeyEvent( SDL_Keycode key, bool down ) {
-			if ( char c = GetPrintableCharForKeycode( key ) ) {
+		bool InputField::KeyboardEvent( const struct KeyboardEvent &ev ) {
+			if ( char c = GetPrintableCharForKeycode( ev.key ) ) {
 				// insert a character at the cursor and move the cursor along
 				current.insert( cursorPos, 1, c );
 				numChars++;
 				cursorPos++;
 				return true;
 			}
-			else if ( key == SDLK_BACKSPACE ) {
+			else if ( ev.key == SDLK_BACKSPACE ) {
 				// remove the character before the cursor
 				if ( cursorPos != 0 ) {
 					current.erase( cursorPos - 1, 1 );
@@ -52,14 +52,14 @@ namespace XS {
 				}
 				return true;
 			}
-			else if ( key == SDLK_DELETE ) {
+			else if ( ev.key == SDLK_DELETE ) {
 				// remove the character after the cursor
 				if ( cursorPos != current.length() ) {
 					current.erase( cursorPos, 1 );
 					numChars--;
 				}
 			}
-			else if ( key == SDLK_RETURN ) {
+			else if ( ev.key == SDLK_RETURN ) {
 				// commit the current line to history, pass it to the command buffer and print it to console
 
 				// no action to take if it's empty...
@@ -88,21 +88,21 @@ namespace XS {
 				Clear();
 				return true;
 			}
-			else if ( key == SDLK_LEFT ) {
+			else if ( ev.key == SDLK_LEFT ) {
 				// move cursor left
 				if ( cursorPos > 0 ) {
 					cursorPos--;
 				}
 				return true;
 			}
-			else if ( key == SDLK_RIGHT ) {
+			else if ( ev.key == SDLK_RIGHT ) {
 				// move cursor right
 				if ( cursorPos < numChars ) {
 					cursorPos++;
 				}
 				return true;
 			}
-			else if ( key == SDLK_UP ) {
+			else if ( ev.key == SDLK_UP ) {
 				if ( historySeeking ) {
 					// if we're already seeking, it means history is not empty
 					historyIndex++;
@@ -131,7 +131,7 @@ namespace XS {
 
 				return true;
 			}
-			else if ( key == SDLK_DOWN ) {
+			else if ( ev.key == SDLK_DOWN ) {
 				if ( historySeeking ) {
 					// if we're already seeking, it means history is not empty
 					historyIndex--;
@@ -158,7 +158,7 @@ namespace XS {
 				}
 				return true;
 			}
-			else if ( key == SDLK_TAB ) {
+			else if ( ev.key == SDLK_TAB ) {
 				if ( autoComplete ) {
 					current = autoComplete( current.c_str() );
 				}

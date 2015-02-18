@@ -22,7 +22,7 @@ namespace XS {
 
 		ClientConsole *clientConsole = nullptr;
 
-		void Cmd_ToggleConsole( const commandContext_t * const context ) {
+		void Cmd_ToggleConsole( const CommandContext * const context ) {
 			if ( !clientConsole ) {
 				throw XSError( "Tried to toggle client console without a valid instance" );
 			}

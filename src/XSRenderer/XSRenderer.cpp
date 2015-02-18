@@ -249,10 +249,10 @@ namespace XS {
 			*/
 		#endif
 
-			state.driver.vendor = glGetString( GL_VENDOR );
-			state.driver.renderer = glGetString( GL_RENDERER );
-			state.driver.coreVersion = glGetString( GL_VERSION );
-			state.driver.shaderVersion = glGetString( GL_SHADING_LANGUAGE_VERSION );
+			state.driver.vendor = reinterpret_cast<const char *>( glGetString( GL_VENDOR ) );
+			state.driver.renderer = reinterpret_cast<const char *>( glGetString( GL_RENDERER ) );
+			state.driver.coreVersion = reinterpret_cast<const char *>( glGetString( GL_VERSION ) );
+			state.driver.shaderVersion = reinterpret_cast<const char *>( glGetString( GL_SHADING_LANGUAGE_VERSION ) );
 
 			console.Print( PrintLevel::Normal,
 				"OpenGL device: %s %s\n",

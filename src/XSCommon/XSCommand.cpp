@@ -12,16 +12,20 @@ namespace XS {
 	namespace Command {
 
 		// commands
-		static std::unordered_map<std::string, commandFunc_t> commandTable;
+		static std::unordered_map<std::string, CommandFunc> commandTable;
 
 		// command buffer
 		static std::vector<std::string> buffer;
 
-		static void Cmd_ListCvars( const commandContext_t * const context ) {
+		static void Cmd_ClearConsole( const CommandContext * const context ) {
+			console.Clear();
+		}
+
+		static void Cmd_ListCvars( const CommandContext * const context ) {
 			Cvar::List();
 		}
 
-		static void Cmd_PrintCvar( const commandContext_t * const context ) {
+		static void Cmd_PrintCvar( const CommandContext * const context ) {
 			if ( context->size() < 1 ) {
 				console.Print( PrintLevel::Normal, "\"print\" failed. Must specify at-least one cvar\n" );
 				return;
@@ -38,7 +42,7 @@ namespace XS {
 			}
 		}
 
-		static void Cmd_SetCvar( const commandContext_t * const context ) {
+		static void Cmd_SetCvar( const CommandContext * const context ) {
 			if ( context->size() < 2 ) {
 				console.Print( PrintLevel::Normal, "\"set\" failed. Must specify a cvar and value\n" );
 				return;
@@ -57,19 +61,20 @@ namespace XS {
 			cv->Set( value );
 		}
 
-		static void Cmd_ToggleCvar( const commandContext_t * const context ) {
+		static void Cmd_ToggleCvar( const CommandContext * const context ) {
 			Cvar *cv = Cvar::Get( (*context)[0] );
 
 			cv->Set( !cv->GetBool() );
 		}
 
-		static void Cmd_Quit( const commandContext_t * const context ) {
+		static void Cmd_Quit( const CommandContext * const context ) {
 			throw( XSError( "Quit application" ) );
 		}
 
 		void Init( void ) {
 			AddCommand( "bind", Client::Cmd_SetBind );
 			AddCommand( "bindlist", Client::Cmd_ListBinds );
+			AddCommand( "clear", Cmd_ClearConsole );
 			AddCommand( "cvarlist", Cmd_ListCvars );
 			AddCommand( "print", Cmd_PrintCvar );
 			AddCommand( "set", Cmd_SetCvar );
@@ -89,7 +94,7 @@ namespace XS {
 
 		void ExecuteBuffer( void ) {
 			for ( const auto &it : buffer ) {
-				commandContext_t context;
+				CommandContext context;
 
 				// tokenise the arguments
 				const char delim = ' ';
@@ -105,7 +110,7 @@ namespace XS {
 					}
 				}
 
-				const commandFunc_t &func = commandTable[name];
+				const CommandFunc &func = commandTable[name];
 				if ( func ) {
 					func( &context );
 					continue;
@@ -119,8 +124,8 @@ namespace XS {
 
 		// commands
 
-		bool AddCommand( const char *name, commandFunc_t cmd ) {
-			commandFunc_t &func = commandTable[name];
+		bool AddCommand( const char *name, CommandFunc cmd ) {
+			CommandFunc &func = commandTable[name];
 			if ( func ) {
 				console.Print( PrintLevel::Normal, "Tried to register command \"%s\" twice\n", name );
 				return false;

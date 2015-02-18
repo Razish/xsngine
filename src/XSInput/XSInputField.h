@@ -5,6 +5,8 @@
 
 #include <SDL2/SDL_keycode.h>
 
+#include "XSCommon/XSEvent.h"
+
 namespace XS {
 
 	namespace Client {
@@ -54,9 +56,8 @@ namespace XS {
 			);
 
 			// pass a key event to the input field (insert, modify)
-			bool KeyEvent(
-				SDL_Keycode key,
-				bool down
+			bool KeyboardEvent(
+				const KeyboardEvent &ev
 			);
 
 			// get a pointer to the current input field string

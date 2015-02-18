@@ -24,6 +24,13 @@ namespace XS {
 			indentation += level;
 		}
 
+		// clear the contents of the console buffer
+		inline void Clear( void ) {
+			if ( buffer ) {
+				buffer->Clear();
+			}
+		}
+
 		// print a line to the console buffer
 		void Print(
 			PrintLevel level,

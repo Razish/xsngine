@@ -3,6 +3,7 @@
 #include <SDL2/SDL_keycode.h>
 
 #include "XSCommon/XSCommand.h"
+#include "XSCommon/XSEvent.h"
 
 namespace XS {
 
@@ -52,9 +53,8 @@ namespace XS {
 			);
 
 			// handle a key event for the input field
-			bool KeyEvent(
-				SDL_Keycode key,
-				bool down
+			bool KeyboardEvent(
+				const struct KeyboardEvent &ev
 			);
 
 			// toggle visibility of the console

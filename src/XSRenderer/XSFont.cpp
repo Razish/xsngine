@@ -184,7 +184,7 @@ namespace XS {
 				return;
 			}
 
-			vector2 currentPos = pos;
+			vector2 currentPos( pos );
 			size_t len = text.length();
 
 			for ( size_t i = 0; i < len; i++ ) {

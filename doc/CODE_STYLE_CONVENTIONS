@@ -51,7 +51,15 @@ The only exception to this rule is multi-line conditionals/definitions
 	void Function( void ) {
 	}
 
-	void Function( int some, float really, const char *big,
+	// explain Prototype here
+	void Prototype(
+		int some, // what does some do
+		float really,
+		const char *big, // ...
+		...
+	);
+
+	void Implementation( int some, float really, const char *big,
 		vector3 *argument, size_t list )
 	{
 	}
@@ -96,7 +104,7 @@ For multi-line if/else statements, the else keyword starts a new line
 
 Some projects wrap lines at 80 columns. This was due to UNIX terminals only supporting 80 columns.
 It is now common to see 24-27 inch monitors, but long statements/comments are easier to read if they are wrapped
-All lines shall be wrapped at less than 120 columns. Most editors support indent guides.
+All lines shall be wrapped at less than 120 columns. Most editors support right-margin indicators.
 
 
 
@@ -147,23 +155,13 @@ Variables start with lower case. All consecutive words start with upper case.
 	int someinteger; // BAD
 	int SomeInteger; // BAD
 
-Classes and object-structs* should start with upper case, with some exceptions for common types.
-An object-struct is a struct which is treated as an object, not a POD type
-Object-structs shall only be used for the case where data encapsulation is not a goal, as default exposure is public.
+Classes and structs should start with upper case, with some exceptions for common types.
+Do not use the reserved _t suffix.
 	class Font {}; // object, has font->Draw() method
-	struct RenderCommand {}; // object-struct, has cmd->Execute() method
-	struct commandContext_t {}; // POD type
-	struct vector3 {}; // object-struct, but is a common type. exception to the rule and treated as POD.
+	struct RenderCommand {}; // object, has cmd->Execute() method
+	struct vector3 {}; // essentially a POD type, implementing a primitive object. this is an exception
 
-Enums and structs that are not treated as objects (i.e. POD type) shall follow the next rule...
-
-All non-primitive-esque types start with lower case and use the _t suffix to indicate a type
-	typedef float real; // primitive-esque, so this is fine
-	struct gameEntity_t {};
-	enum team_t {};
-	typedef uint32_t fileHandle_t;
-
-Enumerated constants are all upper case. All consecutive words are separated by an underscore.
+Enumerated constants are all upper case*. All consecutive words are separated by an underscore.
 Constants should generally use a shorthand prefix to avoid name clashing, e.g. IF_RGBA16F for internal texture formats
 Only the first constant may be assigned a value, enumeration will handle the rest.
 The last constant may be used to know the maximum amount of legitimate values
@@ -174,6 +172,15 @@ The last constant may be used to know the maximum amount of legitimate values
 		ENUM_THREE,
 		ENUM_MAX
 	};
+
+An exception to this rule is for strongly-typed enums, e.g.:
+
+	enum class Colour {
+		Red,
+		Green,
+		Blue
+	};
+	// Colour::Red
 
 Preprocessor definitions are all upper case. All consecutive words are separated by an underscore.
 This includes literals, macros, conditional compiling
@@ -200,7 +207,7 @@ Macros containing multiple sequence points shall be wrapped in braces to avoid d
 		return;
 
 Variables and functions shall use en-GB spelling.
-	vector4 color; // BAD, should be colour
+	vector4 colour; // not color
 
 
 
@@ -243,7 +250,8 @@ Get/Set shall only be used when there are side-effects such as announcing Cvar c
 	};
 	X.x = 10;
 
-Iterators should be named 'it' except for when they would alias another iterator in that scope
+Iterators should be named the singular form of the object it is iterating over.
+If there is no suitable noun, consider changing the object you are iterating over. Avoid aliasing/name collisions.
 
 Always use prefix increment operator on iterators for performance reasons
 	for ( /* ... */; ++it ) {}
@@ -259,14 +267,15 @@ Even better would be to use C++11 foreach syntax
 
 Always consider 64 bit types when dealing with pointers, sizes, bit values, unsigned/signed comparisons
 	size_t bufferLen = sizeof( buffer );
-	ptrdiff_t d = p1-p2;
+	ptrdiff_t d = p1 - p2;
 	#define CONTENTS_LAVA (0x0040u)
 	uint32_t mask = CONTENTS_ENVIRONMENT & ~(CONTENTS_LAVA);
 	someInt = (int)"literal"; // can NOT store 64 bit pointers in 32 bit integers
 
 Do not typedef structs
 	typedef struct myStruct_s {} myStruct_t; // bad
-	struct myStruct_t {}; // good
+	struct myStruct_t {}; // better
+	struct MyStruct {}; // best
 
 Avoid using enums for bit-values *in general* in favour of preprocessor definitions
 	if ( bits & (1<<ENUM_ONE) ) { // BAD, in most cases.
@@ -327,8 +336,9 @@ File names should follow this convention...
 9.	MISCELLANIOUS
 
 Do not include intended side-effects in print statements, especially if they're conditionally compiled.
+Use PrintLevel::Debug and let the callee decide whether to print
 	// BAD - logic should remain the same if the print is removed, commented out or otherwise not compiled (debug print)
-	console.Print( "Loaded something %i times\n", loadCount++ );
+	console.Print( PrintLevel::Debug, "Loaded something %i times\n", loadCount++ );
 
 Avoid compiler-specific extensions or behaviour
 	void A( const char *msg );
