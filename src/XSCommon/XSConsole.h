@@ -52,8 +52,8 @@ namespace XS {
 		Indent& operator=( const Indent& ) = delete;
 
 		// set the indent level
-		inline Indent( int32_t level )
-		: level( level )
+		inline Indent( int32_t newLevel )
+		: level( newLevel )
 		{
 			console.Indent( level );
 		}

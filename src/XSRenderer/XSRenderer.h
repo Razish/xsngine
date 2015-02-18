@@ -11,6 +11,24 @@ namespace XS {
 
 	namespace Renderer {
 
+		extern struct State {
+			bool valid;
+
+			struct Window {
+				bool valid;
+				uint32_t width, height;
+			} window;
+
+			struct Driver {
+				const GLubyte *vendor;
+				const GLubyte *renderer;
+				const GLubyte *coreVersion;
+				const GLubyte *shaderVersion;
+			} driver;
+
+			// ...
+		} state;
+
 		struct Material;
 		struct View;
 		class Model;

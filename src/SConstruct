@@ -10,7 +10,7 @@
 #	scons -Q debug=1 force32=1
 #
 # envvars:
-#	MORE_WARNINGS	enable additional warnings (gcc/clang only)
+#	MORE_WARNINGS	enable additional warnings
 #
 
 debug = int( ARGUMENTS.get( 'debug', 0 ) )
@@ -54,6 +54,8 @@ elif bits == 64:
 		arch = 'x86_64'
 	elif plat == 'Darwin':
 		arch = 'x86_64'
+
+clangHack = plat == 'Darwin'
 
 # fatal error if the cpu architecture can't be detected
 if arch is None:
@@ -233,13 +235,26 @@ if plat == 'Linux' or plat == 'Darwin':
 
 	# strict c/cpp warnings
 	if 'MORE_WARNINGS' in os.environ:
-		env['CCFLAGS'] += [ '-Waggregate-return', '-Wbad-function-cast', '-Wcast-qual', '-Wdouble-promotion',
-			'-Wfloat-equal', '-Wlong-long', '-Wshadow', '-Wsign-conversion', '-Wsuggest-attribute=const',
-			'-Wswitch-default', '-Wunreachable-code', '-Wunsuffixed-float-constants'
+		env['CCFLAGS'] += [
+			'-Waggregate-return',
+			'-Wbad-function-cast',
+			'-Wcast-qual',
+			'-Wfloat-equal',
+			'-Wlong-long',
+			'-Wshadow',
+			'-Wsign-conversion',
+			'-Wswitch-default',
+			'-Wunreachable-code'
 		]
+		if not clangHack:
+			env['CCFLAGS'] += [
+				'-Wdouble-promotion',
+				'-Wsuggest-attribute=const',
+				'-Wunsuffixed-float-constants'
+			]
 
 	# gcc-specific warnings
-	if env['CC'] == 'gcc' and arch != 'arm' and plat != 'Darwin':
+	if env['CC'] == 'gcc' and arch != 'arm' and not clangHack:
 		env['CCFLAGS'] += [ '-Wlogical-op' ]
 
 		# requires gcc 4.7 or above
@@ -357,7 +372,7 @@ elif plat == 'Windows':
 if debug == 0 or debug == 2:
 	if plat == 'Linux' or plat == 'Darwin':
 		env['CCFLAGS'] += [ '-O3' ]
-		if debug == 0 and env['CC'] == 'gcc':
+		if debug == 0 and not clangHack:
 			env['LINKFLAGS'] += [ '-s' ]
 	elif plat == 'Windows':
 		env['CCFLAGS'] += [

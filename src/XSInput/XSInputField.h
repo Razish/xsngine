@@ -39,9 +39,12 @@ namespace XS {
 			InputField( const InputField& ) = delete;
 			InputField& operator=( const InputField& ) = delete;
 
-			InputField( void (*execute)( const char *text ), const char *(*autoComplete)( const char *match ) )
-			: historyIndex( 0u ), historySeeking( false ), current( "" ), execute( execute ),
-				autoComplete( autoComplete ), cursorPos( 0u ), numChars( 0u )
+			InputField(
+				void (*executeFunc)( const char *text ),
+				const char *(*autoCompleteFunc)( const char *match )
+			)
+			: historyIndex( 0u ), historySeeking( false ), current( "" ), execute( executeFunc ),
+				autoComplete( autoCompleteFunc ), cursorPos( 0u ), numChars( 0u )
 			{
 			}
 

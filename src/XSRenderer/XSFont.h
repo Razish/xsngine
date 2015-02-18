@@ -16,7 +16,7 @@ namespace XS {
 		struct Material;
 
 		struct FontData {
-			vector2		size;
+			vector2		pixelSize;
 			vector2		s, t;
 			vector2		offset;
 			real32_t	advance;
@@ -35,14 +35,14 @@ namespace XS {
 
 			std::string	file;
 			std::string	name;
-			uint16_t	size;
+			uint16_t	pointSize;
 			FontData	data[256];
 			real32_t	lineHeight;
 
 			// register a new font
 			Font(
 				const char *name,
-				uint16_t size
+				uint16_t pointSize
 			);
 
 			// generate a glyph atlas for the font at the current size.
@@ -81,7 +81,7 @@ namespace XS {
 			// register a new font, or be returned an existing one
 			static Font *Register(
 				const char *name,
-				uint16_t size
+				uint16_t pointSize
 			);
 		};
 

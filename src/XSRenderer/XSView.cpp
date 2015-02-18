@@ -11,12 +11,13 @@ namespace XS {
 
 	namespace Renderer {
 
-		View::View( uint32_t width, uint32_t height, bool is2D, renderCallback_t preRender,
+		View::View( uint32_t viewWidth, uint32_t viewHeight, bool is2D, renderCallback_t preRender,
 			renderCallback_t postRender )
-		: width( width ), height( height ), callbackPreRender( preRender ), callbackPostRender( postRender ), is2D( is2D )
+		: width( viewWidth ), height( viewHeight ), callbackPreRender( preRender ), callbackPostRender( postRender ), is2D( is2D )
 		{
-			if ( !width || !height ) {
-				throw( XSError( "Registered View with 0 width or 0 height" ) );
+			if ( !viewWidth || !viewHeight ) {
+				width = vid_width->GetInt();
+				height = vid_height->GetInt();
 			}
 
 			perFrameData = new Backend::Buffer( Backend::Buffer::Type::UNIFORM, nullptr, sizeof(real32_t) * 16 * 2 );

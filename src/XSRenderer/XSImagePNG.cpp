@@ -172,7 +172,7 @@ namespace XS {
 		uint8_t *LoadPNG( const char *filename, uint32_t *outWidth, uint32_t *outHeight ) {
 			uint8_t *out = nullptr;
 
-			const File f( filename, FileMode::READ_BINARY );
+			const File f( filename, FileMode::ReadBinary );
 			if ( !f.open ) {
 				console.Print( PrintLevel::Normal, "Could not open PNG file \"%s\"\n", filename );
 				return nullptr;

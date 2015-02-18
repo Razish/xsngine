@@ -67,7 +67,7 @@ namespace XS {
 			}
 			char *buffer = new char[f.length];
 			f.Read( reinterpret_cast<uint8_t *>( buffer ) );
-			TokenParser *parser = new TokenParser( buffer );
+			TokenParser parser( buffer );
 			Mesh *mesh = new Mesh();
 			console.Print( PrintLevel::Debug, "%s loading new mesh for '%s' at 0x%" PRIXPTR "\n",
 				XS_FUNCTION,
@@ -76,7 +76,7 @@ namespace XS {
 			);
 
 			while ( true ) {
-				const char *token = parser->ParseToken();
+				const char *token = parser.ParseToken();
 				if ( !token[0] ) {
 					// end of file
 					if ( mesh ) {
@@ -87,7 +87,7 @@ namespace XS {
 				}
 				else if ( !String::CompareCase( token, "#" ) ) {
 					// # is used as a comment
-					parser->SkipLine();
+					parser.SkipLine();
 				}
 				else if ( !String::CompareCase( token, "o" ) ) {
 					// new object/mesh
@@ -100,24 +100,24 @@ namespace XS {
 						modelPath.c_str(),
 						mesh
 					);
-					parser->SkipLine();
+					parser.SkipLine();
 				}
 				else if ( !String::CompareCase( token, "s" ) ) {
 					// check if smoothing is on/off
 					// we don't care about this
-					parser->SkipLine();
+					parser.SkipLine();
 				}
 				else if ( !String::CompareCase( token, "usemtl" ) ) {
 					// no support for materials just yet
-					parser->SkipLine();
+					parser.SkipLine();
 				}
 				else if ( !String::CompareCase( token, "mtllib" ) ) {
 					// no support for materials just yet
-					parser->SkipLine();
+					parser.SkipLine();
 				}
 				else if ( !String::CompareCase( token, "g" ) ) {
 					// no support for groups
-					parser->SkipLine();
+					parser.SkipLine();
 				}
 				else if ( !String::CompareCase( token, "v" ) ) {
 					// new vertex
@@ -134,10 +134,10 @@ namespace XS {
 
 					vector3 vertex;
 					for ( int i = 0; i < 3; i++ ) {
-						parser->ParseFloat( &vertex.raw[i] );
+						parser.ParseFloat( &vertex.raw[i] );
 					}
 					mesh->vertices.push_back( vertex );
-					parser->SkipLine();
+					parser.SkipLine();
 				}
 				else if ( !String::CompareCase( token, "vn" ) ) {
 					// new vertex normal
@@ -154,10 +154,10 @@ namespace XS {
 
 					vector3 normal;
 					for ( int i = 0; i < 3; i++ ) {
-						parser->ParseFloat( &normal.raw[i] );
+						parser.ParseFloat( &normal.raw[i] );
 					}
 					mesh->normals.push_back( normal );
-					parser->SkipLine();
+					parser.SkipLine();
 				}
 				else if ( !String::CompareCase( token, "f" ) ) {
 					if ( !mesh ) {
@@ -172,7 +172,7 @@ namespace XS {
 					uint16_t a = 0, b = 0, c = 0;
 					for ( int i = 0; i < 3; i++ ) {
 						const char *str = nullptr;
-						parser->ParseString( &str );
+						parser.ParseString( &str );
 						if ( str ) {
 							sscanf( str, "%hd/%hd/%hd", &a, &b, &c );
 							if ( a != 0 ) {
@@ -189,14 +189,13 @@ namespace XS {
 							mesh->indices.push_back( c );
 						}
 					}
-					parser->SkipLine();
+					parser.SkipLine();
 				}
 				else {
-					parser->SkipLine();
+					parser.SkipLine();
 				}
 			}
 
-			delete parser;
 			delete[] buffer;
 
 			return true;

@@ -62,8 +62,8 @@ namespace XS {
 				void
 			);
 
-			RenderCommand( Type type )
-			: type( type )
+			RenderCommand( Type commandType )
+			: type( commandType )
 			{
 			}
 

@@ -19,7 +19,6 @@ namespace XS {
 	namespace Renderer {
 
 		void XMF::Process( Mesh *mesh ) {
-
 			// create texture
 			uint8_t texture[128 * 128 * 4] = {};
 			std::memset( texture, 255, sizeof(texture) );

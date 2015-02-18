@@ -49,8 +49,11 @@ namespace XS {
 
 				glGenBuffers( 1, &defaultPbo );
 				glBindBuffer( GL_PIXEL_PACK_BUFFER, defaultPbo );
-				const int32_t w = vid_width->GetInt(), h = vid_height->GetInt();
-				glBufferData( GL_PIXEL_PACK_BUFFER, 4 * w * h, NULL, GL_STREAM_COPY );
+				glBufferData( GL_PIXEL_PACK_BUFFER,
+					4 * state.window.width * state.window.height,
+					NULL,
+					GL_STREAM_COPY
+				);
 			}
 
 			void Shutdown( void ) {

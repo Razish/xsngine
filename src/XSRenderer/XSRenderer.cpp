@@ -20,6 +20,8 @@ namespace XS {
 
 	namespace Renderer {
 
+		State state = {};
+
 		static SDL_Window *window = nullptr;
 		static SDL_GLContext context;
 
@@ -137,6 +139,8 @@ namespace XS {
 		}
 
 		void Init( void ) {
+			state.valid = true;
+
 			RegisterCvars();
 
 			CreateDisplay();
@@ -177,9 +181,10 @@ namespace XS {
 		void RegisterCvars( void ) {
 			r_clear = Cvar::Create( "r_clear", "0.5 0.0 0.0 1.0", "Colour of the backbuffer", CVAR_ARCHIVE );
 			r_debug = Cvar::Create( "r_debug", "0", "Enable debugging information", CVAR_ARCHIVE );
-			r_multisample = Cvar::Create( "r_multisample", "2", "Multisample Anti-Aliasing (MSAA) level", CVAR_ARCHIVE );
-			r_skipRender = Cvar::Create( "r_skipRender", "0", "1 - skip 3D views, 2 - skip 2D views, 3 - skip all views",
+			r_multisample = Cvar::Create( "r_multisample", "2", "Multisample Anti-Aliasing (MSAA) level",
 				CVAR_ARCHIVE );
+			r_skipRender = Cvar::Create( "r_skipRender", "0", "1 - skip 3D views, 2 - skip 2D views, 3 - skip all "
+				"views", CVAR_ARCHIVE );
 			r_swapInterval = Cvar::Create( "r_swapInterval", "0", "Enable vertical sync", CVAR_ARCHIVE );
 			vid_height = Cvar::Create( "vid_height", "720", "Window height", CVAR_ARCHIVE );
 			vid_noBorder = Cvar::Create( "vid_noBorder", "0", "Disable window border", CVAR_ARCHIVE );
@@ -215,11 +220,23 @@ namespace XS {
 			SDL_GL_SetAttribute( SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG );
 		#endif
 
-			window = SDL_CreateWindow( WINDOW_TITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-				vid_width->GetInt(), vid_height->GetInt(), windowFlags );
+			const int32_t width = vid_width->GetInt();
+			const int32_t height = vid_height->GetInt();
+			window = SDL_CreateWindow(
+				WINDOW_TITLE,
+				SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+				width, height,
+				windowFlags
+			);
+			SDL_assert( window && "Failed to create window" );
+
 			context = SDL_GL_CreateContext( window );
+			SDL_assert( context && "Failed to create OpenGL context on window" );
 
 			SDL_GL_MakeCurrent( window, context );
+			state.window.valid = true;
+			state.window.width = static_cast<uint32_t>( width );
+			state.window.height = static_cast<uint32_t>( height );
 
 			SDL_GL_SetSwapInterval( r_swapInterval->GetInt() );
 		#if defined(XS_OS_MAC)
@@ -232,15 +249,20 @@ namespace XS {
 			*/
 		#endif
 
+			state.driver.vendor = glGetString( GL_VENDOR );
+			state.driver.renderer = glGetString( GL_RENDERER );
+			state.driver.coreVersion = glGetString( GL_VERSION );
+			state.driver.shaderVersion = glGetString( GL_SHADING_LANGUAGE_VERSION );
+
 			console.Print( PrintLevel::Normal,
 				"OpenGL device: %s %s\n",
-				glGetString( GL_VENDOR ),
-				glGetString( GL_RENDERER )
+				state.driver.vendor,
+				state.driver.renderer
 			);
 			console.Print( PrintLevel::Normal,
 				"OpenGL version: %s with GLSL %s\n",
-				glGetString( GL_VERSION ),
-				glGetString( GL_SHADING_LANGUAGE_VERSION )
+				state.driver.coreVersion,
+				state.driver.shaderVersion
 			);
 		}
 
@@ -250,6 +272,7 @@ namespace XS {
 
 			SDL_DestroyWindow( window );
 			window = nullptr;
+			state.window = {};
 
 			SDL_Quit();
 		}
@@ -258,7 +281,7 @@ namespace XS {
 			const vector4 clear( r_clear->GetFloat( 0 ), r_clear->GetFloat( 1 ), r_clear->GetFloat( 2 ),
 				r_clear->GetFloat( 3 ) );
 			glClearColor( clear.r, clear.g, clear.b, clear.a );
-			glClear( GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT );
+			glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
 			for ( const auto &view : views ) {
 				if ( r_skipRender->GetInt() & (1 << static_cast<uint32_t>( view->is2D )) ) {

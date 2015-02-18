@@ -36,17 +36,17 @@ namespace XS {
 	//
 
 	enum FileMode {
-		READ = 0,
-		READ_BINARY,
-		WRITE,
-		WRITE_BINARY,
-		APPEND,
+		Read = 0,
+		ReadBinary,
+		Write,
+		WriteBinary,
+		Append,
 		NUM_MODES
 	};
 
 	class File {
 	private:
-		// after closing the file, reset all values to defaults in-case someone tries to use a dangling file handle
+		// upon failure, reset all values to defaults in-case someone tries to use a dangling or invalid file handle
 		void Clear(
 			void
 		);
@@ -98,7 +98,7 @@ namespace XS {
 		// open a file for reading/writing
 		File(
 			const char *gamePath,
-			FileMode mode = FileMode::READ
+			FileMode mode = FileMode::Read
 		);
 
 		~File();

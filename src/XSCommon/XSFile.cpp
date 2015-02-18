@@ -8,29 +8,29 @@
 
 namespace XS {
 
-	static char basePath[XS_MAX_FILENAME];
-	static Cvar *com_path;
+	static char basePath[XS_MAX_FILENAME] = {};
+	static Cvar *com_path = nullptr;
 	static bool initialised = false;
 
 	static const char *modes[FileMode::NUM_MODES] = {
-		"rb", // FM_READ
-		"rb", // FM_READ_BINARY
-		"wb", // FM_WRITE
-		"wb", // FM_WRITE_BINARY
-		"a" // FM_APPEND
+		"rb", // Read
+		"rb", // ReadBinary
+		"wb", // Write
+		"wb", // WriteBinary
+		"a" // Append
 	};
 
 	// returns true if mode is for writing
-	static inline bool IsWriteMode( FileMode mode ) {
+	static bool IsWriteMode( FileMode mode ) {
 		switch ( mode ) {
 		default:
-		case FileMode::READ:
-		case FileMode::READ_BINARY: {
+		case FileMode::Read:
+		case FileMode::ReadBinary: {
 			return false;
 		} break;
-		case FileMode::WRITE:
-		case FileMode::WRITE_BINARY:
-		case FileMode::APPEND: {
+		case FileMode::Write:
+		case FileMode::WriteBinary:
+		case FileMode::Append: {
 			return true;
 		} break;
 		}
@@ -38,7 +38,7 @@ namespace XS {
 
 	void File::Init( void ) {
 		// set com_path to current working directory, can be overridden later
-		char cwd[FILENAME_MAX];
+		char cwd[FILENAME_MAX] = {};
 		OS::GetCurrentWorkingDirectory( cwd, sizeof(cwd) );
 		com_path = Cvar::Create( "com_path", cwd, "Base directory to load assets from", CVAR_INIT );
 	}
@@ -105,7 +105,7 @@ namespace XS {
 
 	// create the folders necessary to store the specified file
 	static bool CreatePath( const char *fullPath ) {
-		char path[XS_MAX_FILENAME];
+		char path[XS_MAX_FILENAME] = {};
 		String::Copy( path, fullPath, sizeof(path) );
 		for ( char *s = strchr( path, PATH_SEP ) + 1; s && *s; s++ ) {
 			if ( *s == PATH_SEP ) {
@@ -160,7 +160,7 @@ namespace XS {
 			fseek( file, 0L, SEEK_SET );
 
 			// account for null terminator
-			if ( mode == READ ) {
+			if ( mode == FileMode::Read ) {
 				length++;
 			}
 		}
@@ -169,6 +169,11 @@ namespace XS {
 	// read len bytes into buf
 	// if len is 0, read as much as possible
 	void File::Read( uint8_t *buf, size_t len ) const {
+		if ( IsWriteMode( mode ) ) {
+			buf[0] = '\0';
+			return;
+		}
+
 		if ( len == 0u ) {
 			len = length;
 		}
@@ -180,16 +185,22 @@ namespace XS {
 		//TODO: determine cause of failure via feof, ferror
 
 		// account for null terminator
-		if ( mode == READ ) {
-			buf[len-1] = '\0';
+		if ( mode == FileMode::Read ) {
+			buf[len - 1] = '\0';
 		}
 	}
 
 	void File::AppendString( const char *str ) const {
+		if ( !IsWriteMode( mode ) ) {
+			return;
+		}
 		fputs( str, file );
 	}
 
 	void File::Write( const void *buf, size_t len ) const {
+		if ( !IsWriteMode( mode ) ) {
+			return;
+		}
 		fwrite( buf, 1, len, file );
 	}
 

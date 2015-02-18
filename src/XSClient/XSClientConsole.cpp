@@ -72,12 +72,9 @@ namespace XS {
 		ClientConsole::ClientConsole( Console *consoleInstance )
 		: console( consoleInstance ), visible( false ), scrollAmount( 0 ), lineCount( 24u ), font( nullptr )
 		{
-			const uint32_t width = Cvar::Get( "vid_width" )->GetInt();
-			const uint32_t height = Cvar::Get( "vid_height" )->GetInt();
-
-			con_fontSize = Cvar::Create( "con_fontSize", "12", "Size of the console font", CVAR_ARCHIVE );
+			con_fontSize = Cvar::Create( "con_fontSize", "16", "Size of the console font", CVAR_ARCHIVE );
 			input = new InputField( InputCallback, InputAutoComplete );
-			view = new Renderer::View( width, height, true );
+			view = new Renderer::View( 0u, 0u, true );
 		}
 
 		ClientConsole::~ClientConsole() {

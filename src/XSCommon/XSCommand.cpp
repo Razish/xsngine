@@ -12,7 +12,7 @@ namespace XS {
 	namespace Command {
 
 		// commands
-		static std::unordered_map<std::string, commandFunc_t> commands;
+		static std::unordered_map<std::string, commandFunc_t> commandTable;
 
 		// command buffer
 		static std::vector<std::string> buffer;
@@ -105,7 +105,7 @@ namespace XS {
 					}
 				}
 
-				const commandFunc_t &func = commands[name];
+				const commandFunc_t &func = commandTable[name];
 				if ( func ) {
 					func( &context );
 					continue;
@@ -120,7 +120,7 @@ namespace XS {
 		// commands
 
 		bool AddCommand( const char *name, commandFunc_t cmd ) {
-			commandFunc_t &func = commands[name];
+			commandFunc_t &func = commandTable[name];
 			if ( func ) {
 				console.Print( PrintLevel::Normal, "Tried to register command \"%s\" twice\n", name );
 				return false;

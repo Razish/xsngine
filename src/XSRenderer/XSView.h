@@ -30,9 +30,10 @@ namespace XS {
 			bool						is2D;
 
 			// construct a view, specifying additional callbacks if necessary
+			// if width or height are 0, they are both inherited from the current resolution
 			View(
-				uint32_t width,
-				uint32_t height,
+				uint32_t viewWidth,
+				uint32_t viewHeight,
 				bool is2D,
 				renderCallback_t preRender = nullptr,
 				renderCallback_t postRender = nullptr

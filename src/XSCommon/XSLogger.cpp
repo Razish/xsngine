@@ -36,7 +36,7 @@ namespace XS {
 		if ( !f ) {
 			// haven't opened the file yet, see if filesystem is available
 
-			f = new File( filename.c_str(), FileMode::APPEND );
+			f = new File( filename.c_str(), FileMode::Append );
 			if ( f->open ) {
 				// success, print what we've missed so far
 				Queue( out );

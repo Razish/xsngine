@@ -89,9 +89,7 @@ namespace XS {
 		}
 
 		void Init( void ) {
-			const uint32_t width = Cvar::Get( "vid_width" )->GetInt();
-			const uint32_t height = Cvar::Get( "vid_height" )->GetInt();
-			sceneView = new Renderer::View( width, height, false, RenderScene );
+			sceneView = new Renderer::View( 0u, 0u, false, RenderScene );
 
 #ifdef CLIENT_TERRAIN
 			LoadTerrain();

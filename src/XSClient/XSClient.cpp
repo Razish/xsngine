@@ -32,12 +32,12 @@ namespace XS {
 
 		void Init( void ) {
 			// hud
-			const uint32_t width = Cvar::Get( "vid_width" )->GetInt();
-			const uint32_t height = Cvar::Get( "vid_height" )->GetInt();
-			hudView = new Renderer::View( width, height, true );
+			hudView = new Renderer::View( 0u, 0u, true );
 
+			// console
 			clientConsole = new ClientConsole( &console );
 
+			// client game module
 			ClientGame::Init();
 		}
 

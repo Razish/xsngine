@@ -9,6 +9,14 @@
 
 namespace XS {
 
+	//TODO: unit test precision at different ranges (and double conversion/promotion?)
+	static bool flcmp( const real32_t &f1, const real32_t &f2 ) {
+		static const real32_t epsilon = 0.00001f;
+		const real32_t delta = std::abs( f2 - f1 );
+
+		return delta < epsilon;
+	}
+
 	struct vector2 {
 		union {
 			struct {
@@ -45,10 +53,10 @@ namespace XS {
 
 		// compare
 		static inline bool compare( const vector2 &lhs, const vector2 &rhs ) {
-			return ( lhs.x == rhs.x && lhs.y == rhs.y );
+			return (flcmp( lhs.x, rhs.x ) && flcmp( lhs.y, rhs.y ));
 		}
 		inline bool compare( const vector2 &rhs ) const {
-			return ( x == rhs.x && y == rhs.y );
+			return (flcmp( x, rhs.x ) && flcmp( y, rhs.y ));
 		}
 
 		// addition
@@ -161,10 +169,10 @@ namespace XS {
 
 		// compare
 		static inline bool compare( const vector3 &lhs, const vector3 &rhs ) {
-			return ( lhs.x == rhs.x && lhs.y == rhs.y && lhs.z == rhs.z );
+			return (flcmp( lhs.x, rhs.x ) && flcmp( lhs.y, rhs.y ) && flcmp( lhs.z, rhs.z ));
 		}
 		inline bool compare( const vector3 &rhs ) const {
-			return ( x == rhs.x && y == rhs.y && z == rhs.z );
+			return (flcmp( x, rhs.x ) && flcmp( y, rhs.y ) && flcmp( z, rhs.z ));
 		}
 
 		// addition
@@ -357,10 +365,10 @@ namespace XS {
 
 		// compare
 		static inline bool compare( const vector4 &lhs, const vector4 &rhs ) {
-			return ( lhs.x == rhs.x && lhs.y == rhs.y && lhs.z == rhs.z && lhs.w == rhs.w );
+			return (flcmp( lhs.x, rhs.x ) && flcmp( lhs.y, rhs.y ) && flcmp( lhs.z, rhs.z ) && flcmp( lhs.w, rhs.w ));
 		}
 		inline bool compare( const vector4 &rhs ) const {
-			return ( x == rhs.x && y == rhs.y && z == rhs.z && w == rhs.w );
+			return (flcmp( x, rhs.x ) && flcmp( y, rhs.y ) && flcmp( z, rhs.z ) && flcmp( w, rhs.w ));
 		}
 
 		// addition

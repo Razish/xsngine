@@ -18,6 +18,10 @@ namespace XS {
 	};
 
 	struct XSEvent {
+		// don't allow default instantiation
+		XSEvent() = delete;
+		XSEvent& operator=( const XSEvent& ) = delete;
+
 		EventType	type;
 		uint32_t	time;
 
@@ -38,13 +42,10 @@ namespace XS {
 			} mouseWheel;
 		};
 
-		XSEvent( EventType type )
-		: type( type ), time( 0u )
+		XSEvent( EventType eventType )
+		: type( eventType ), time( 0u )
 		{
 		}
-
-		XSEvent() = delete;
-		XSEvent& operator=( const XSEvent& ) = delete;
 	};
 
 	namespace Event {
