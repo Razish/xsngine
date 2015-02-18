@@ -455,5 +455,5 @@ env['LIBPREFIX'] = ''
 binaryName = 'xsn' + '.' + arch + env['PROGSUFFIX']
 env.Program( binaryName, files )
 
-if not env.GetOption( 'clean' ) and not os.path.exists( './xsngine' ):
+if not env.GetOption( 'clean' ) and not os.path.lexists( './xsngine' ):
 	print( 'Suggest creating a symlink: "ln -s ' + binaryName + ' xsngine"' )
