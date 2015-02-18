@@ -14,7 +14,9 @@
 #include "XSRenderer/XSTexture.h"
 #include "XSRenderer/XSFont.h"
 
+#if defined(XS_OS_MAC)
 #include <OpenCL/cl_gl_ext.h>
+#endif
 
 namespace XS {
 

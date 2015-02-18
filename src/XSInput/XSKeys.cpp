@@ -18,7 +18,7 @@ namespace XS {
 		std::unordered_map<SDL_Keycode, bool> keystate;
 		static std::unordered_map<SDL_Keycode, std::string> binds;
 
-		struct keyMap_t {
+		struct KeyMap {
 			const char *name;
 			char printable;
 			char shifted;
@@ -27,7 +27,7 @@ namespace XS {
 
 		// map xsn keynames to SDL keycodes
 		//TODO: unordered map?
-		static const keyMap_t keymap[] = {
+		static const KeyMap keymap[] = {
 			{ "RETURN",			'\0',	'\0',	SDLK_RETURN },
 			{ "ESCAPE",			'\0',	'\0',	SDLK_ESCAPE },
 			{ "BACKSPACE",		'\0',	'\0',	SDLK_BACKSPACE },
@@ -126,10 +126,9 @@ namespace XS {
 			{ "LSHIFT",			'\0',	'\0',	SDLK_LSHIFT },
 			{ "RSHIFT",			'\0',	'\0',	SDLK_RSHIFT },
 		};
-		static const size_t keymapSize = ARRAY_LEN( keymap );
 
 		static SDL_Keycode GetKeycodeForName( const char *name ) {
-			for ( const keyMap_t &km : keymap ) {
+			for ( const KeyMap &km : keymap ) {
 				if ( !String::Compare( name, km.name ) ) {
 					return km.keycode;
 				}
@@ -138,19 +137,16 @@ namespace XS {
 		}
 
 		static const char *GetNameForKeycode( SDL_Keycode keycode ) {
-			const keyMap_t *km = nullptr;
-			size_t i = 0;
-
-			for ( i = 0, km = keymap; i < keymapSize; i++, km++ ) {
-				if ( keycode == km->keycode ) {
-					return km->name;
+			for ( const KeyMap &km : keymap ) {
+				if ( keycode == km.keycode ) {
+					return km.name;
 				}
 			}
 			return nullptr;
 		}
 
 		char GetPrintableCharForKeycode( SDL_Keycode keycode ) {
-			for ( const keyMap_t &km : keymap ) {
+			for ( const KeyMap &km : keymap ) {
 				if ( km.keycode == keycode ) {
 					// return the actual printable character, taking into account shift + capslock
 					bool shift = false;
