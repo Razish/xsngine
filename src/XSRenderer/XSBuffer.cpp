@@ -8,17 +8,17 @@ namespace XS {
 
 		namespace Backend {
 
-			static GLenum GetGLBufferType( Buffer::Type type ) {
-				switch ( type ) {
-				case Buffer::Type::VERTEX: {
+			static GLenum GetGLBufferType( BufferType bufferType ) {
+				switch ( bufferType ) {
+				case BufferType::Vertex: {
 					return GL_ARRAY_BUFFER;
 				} break;
 
-				case Buffer::Type::INDEX: {
+				case BufferType::Index: {
 					return GL_ELEMENT_ARRAY_BUFFER;
 				} break;
 
-				case Buffer::Type::UNIFORM: {
+				case BufferType::Uniform: {
 					return GL_UNIFORM_BUFFER;
 				} break;
 
@@ -32,12 +32,12 @@ namespace XS {
 				return id;
 			}
 
-			Buffer::Buffer( Type type, const void *data, size_t size )
-			: type( GetGLBufferType( type ) ), size( size )
+			Buffer::Buffer( BufferType bufferType, const void *data, size_t size )
+			: type( GetGLBufferType( bufferType ) ), size( size )
 			{
 				glGenBuffers( 1, &id );
-				glBindBuffer( this->type, id );
-				glBufferData( this->type, size, data, GL_STREAM_DRAW );
+				glBindBuffer( type, id );
+				glBufferData( type, size, data, GL_STREAM_DRAW );
 			}
 
 			Buffer::~Buffer() {

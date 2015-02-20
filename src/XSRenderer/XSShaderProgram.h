@@ -10,10 +10,9 @@ namespace XS {
 		struct VertexAttribute;
 
 		enum class ShaderType {
-			UNKNOWN,
-			VERTEX,
-			GEOMETRY,
-			FRAGMENT,
+			Vertex,
+			Geometry,
+			Fragment,
 		};
 
 		class Shader {
@@ -37,7 +36,7 @@ namespace XS {
 			Shader& operator=( const Shader& ) = delete;
 
 			Shader(
-				ShaderType type,
+				ShaderType shaderType,
 				const char *name
 			);
 

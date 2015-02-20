@@ -12,7 +12,7 @@ namespace XS {
 	static Cvar *com_path = nullptr;
 	static bool initialised = false;
 
-	static const char *modes[FileMode::NUM_MODES] = {
+	static const char *modes[static_cast<size_t>( FileMode::NUM_MODES )] = {
 		"rb", // Read
 		"rb", // ReadBinary
 		"wb", // Write
@@ -121,7 +121,8 @@ namespace XS {
 
 	// opens a file ready for read/write
 	// upon failure, file.open will be false and file.length will be 0
-	File::File( const char *gamePath, FileMode mode ) {
+	File::File( const char *gamePath, FileMode fileMode )
+	: mode( fileMode ) {
 		path[0] = '\0';
 
 		if ( !GetFullPath( gamePath, path, sizeof( path ) ) ) {
@@ -143,8 +144,7 @@ namespace XS {
 			}
 		}
 
-		this->mode = mode;
-		file = fopen( path, modes[mode] );
+		file = fopen( path, modes[static_cast<size_t>( mode )] );
 
 		if ( !file ) {
 			Clear();

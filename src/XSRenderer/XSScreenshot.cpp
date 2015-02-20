@@ -20,6 +20,7 @@ namespace XS {
 				time( &rawtime );
 				static uint32_t index = 0u;
 				char *p = timestamp[index];
+				//TODO: stop name clash?
 				strftime( p, sizeof(timestamp[index]), "%Y-%m-%d_%H-%M-%S.png", localtime( &rawtime ) );
 				index++;
 				index &= numScreenshotsPerFrame;
@@ -31,7 +32,7 @@ namespace XS {
 				glReadPixels( 0, 0, state.window.width, state.window.height, GL_RGBA, GL_UNSIGNED_BYTE, NULL );
 				GLsync sync = glFenceSync( GL_SYNC_GPU_COMMANDS_COMPLETE, 0 );
 
-				RenderCommand cmd( RenderCommand::Type::SCREENSHOT );
+				RenderCommand cmd( CommandType::Screenshot );
 				cmd.screenshot.name = GetScreenshotName();
 				cmd.screenshot.width = state.window.width;
 				cmd.screenshot.height = state.window.height;

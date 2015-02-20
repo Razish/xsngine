@@ -11,24 +11,25 @@
 namespace XS {
 
 	#if defined(XS_OS_WINDOWS)
-		typedef LARGE_INTEGER timeVal_t;
+		typedef LARGE_INTEGER TimeValue;
 	#elif defined(XS_OS_LINUX)
-		typedef struct timeval timeVal_t;
+		typedef struct timeval TimeValue;
 	#elif defined(XS_OS_MAC)
-		typedef struct timeval timeVal_t;
+		typedef struct timeval TimeValue;
 	#endif
+
+	enum class TimerResolution {
+		Seconds,
+		Milliseconds,
+		Microseconds,
+	};
 
 	class Timer {
 	private:
-		timeVal_t start, stop;
+		TimeValue	start;
+		TimeValue	stop;
 
 	public:
-		enum class Resolution {
-			SECONDS,
-			MILLISECONDS,
-			MICROSECONDS,
-		};
-
 		Timer();
 
 		// start timing
@@ -44,7 +45,7 @@ namespace XS {
 		// get the current elapsed time, optionally resetting the timer to the current time
 		real64_t GetTiming(
 			bool restart = false,
-			Resolution resolution = Resolution::MICROSECONDS
+			TimerResolution resolution = TimerResolution::Microseconds
 		);
 	};
 

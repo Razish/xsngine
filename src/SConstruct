@@ -157,6 +157,7 @@ files = [
 	'XSInput/XSInput.cpp',
 	'XSInput/XSInputField.cpp',
 	'XSInput/XSKeys.cpp',
+	'XSInput/XSMouse.cpp',
 	'XSNetwork/XSNetAddress.cpp',
 	'XSNetwork/XSSocket.cpp',
 	'XSRenderer/XSBackend.cpp',

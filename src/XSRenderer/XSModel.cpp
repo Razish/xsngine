@@ -19,22 +19,22 @@ namespace XS {
 
 		// map file extensions to internal model formats
 		static const struct {
-			const char *name;
-			Model::Type type;
+			const char	*name;
+			ModelType	 type;
 		} extensionTable[] = {
-			{ "obj",	Model::Type::OBJ },
-			{ "xmf",	Model::Type::XMF },
+			{ "obj", ModelType::OBJ },
+			{ "xmf", ModelType::XMF },
 		};
-		static const size_t numExtensions = ARRAY_LEN( extensionTable );
-		static Model::Type GetTypeForExtension( const char *string ) {
-			for ( size_t extension = 0; extension < numExtensions; extension++ ) {
-				if ( !String::Compare( string, extensionTable[extension].name ) ) {
-					return extensionTable[extension].type;
+		static ModelType GetTypeForExtension( const char *string ) {
+			for ( auto &extension : extensionTable ) {
+				if ( !String::Compare( string, extension.name ) ) {
+					return extension.type;
 				}
 			}
-			return Model::Type::UNKNOWN;
+			return ModelType::Invalid;
 		}
 
+		// public, static
 		Model *Model::Register( const char *path ) {
 			//TODO: check for duplicates? or only for mesh info etc?
 			// for now, just add a new entry
@@ -61,11 +61,12 @@ namespace XS {
 				return NULL;
 			}
 
-			Model::Type type = GetTypeForExtension( extension );
-			if ( type == Model::Type::OBJ ) {
+			//TODO: factory?
+			ModelType type = GetTypeForExtension( extension );
+			if ( type == ModelType::OBJ ) {
 				model = models[path] = new Obj();
 			}
-			else if ( type == Model::Type::XMF ) {
+			else if ( type == ModelType::XMF ) {
 				model = models[path] = new XMF();
 			}
 			else {

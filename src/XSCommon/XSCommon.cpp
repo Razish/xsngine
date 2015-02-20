@@ -169,7 +169,7 @@ int main( int argc, char **argv ) {
 	//	XS::Network::Init();
 
 		if ( XS::Common::com_developer->GetBool() ) {
-			real64_t t = globalTimer.GetTiming( true, XS::Timer::Resolution::MILLISECONDS );
+			real64_t t = globalTimer.GetTiming( true, XS::TimerResolution::Milliseconds );
 			XS::console.Print( XS::PrintLevel::Developer, "Init time: %.0f milliseconds\n", t );
 		}
 
@@ -185,12 +185,12 @@ int main( int argc, char **argv ) {
 		XS::Common::gameTimer = new XS::Timer(); // TODO: free
 		while ( 1 ) {
 			static real64_t currentTime = XS::Common::gameTimer->GetTiming( false,
-				XS::Timer::Resolution::MILLISECONDS );
+				XS::TimerResolution::Milliseconds );
 			static real64_t accumulator = 0.0;
 
 			// calculate delta time for integrating this frame
-			const real64_t newTime = XS::Common::gameTimer->GetTiming( false, XS::Timer::Resolution::MILLISECONDS );
-			const real64_t dt = 1000.0 / XS::Common::com_framerate->GetDouble();
+			const real64_t newTime = XS::Common::gameTimer->GetTiming( false, XS::TimerResolution::Milliseconds );
+			const real64_t dt = 1000.0 / XS::Common::com_framerate->GetReal64();
 			const real64_t frameTime = newTime - currentTime;
 			currentTime = newTime;
 
@@ -229,7 +229,7 @@ int main( int argc, char **argv ) {
 			XS::Client::DrawFrame( frameTime );
 			XS::Renderer::Update( /*state*/ );
 
-			const real64_t frameRate = XS::Common::r_framerate->GetDouble();
+			const real64_t frameRate = XS::Common::r_framerate->GetReal64();
 			const real64_t renderMsec = 1000.0 / frameRate;
 			if ( frameTime < renderMsec ) {
 				XS::console.Print( XS::PrintLevel::Debug, "frameTime %.5f < %.5f, delaying for %0i\n",
@@ -244,10 +244,14 @@ int main( int argc, char **argv ) {
 	catch( const XS::XSError &e ) {
 		const bool developer = XS::Common::com_developer->GetBool();
 
-		XS::console.Print( XS::PrintLevel::Normal, "\n*** xsngine is shutting down\nReason: %s\n\n", e.what() );
+		XS::console.Print( XS::PrintLevel::Normal, "\n*** xsngine is shutting down\n" );
+		if ( e.what() ) {
+			XS::console.Print( XS::PrintLevel::Normal, "Reason: %s\n", e.what() );
+		}
+		XS::console.Print( XS::PrintLevel::Normal, "\n" );
 
 		if ( developer ) {
-			const real64_t runtime = globalTimer.GetTiming( true, XS::Timer::Resolution::SECONDS );
+			const real64_t runtime = globalTimer.GetTiming( true, XS::TimerResolution::Seconds );
 			XS::console.Print( XS::PrintLevel::Developer, "Run time: %.3f seconds\n", runtime );
 		}
 
@@ -266,8 +270,8 @@ int main( int argc, char **argv ) {
 		}
 
 		if ( developer ) {
-			const real64_t shutdownTIme = globalTimer.GetTiming( false, XS::Timer::Resolution::SECONDS );
-			XS::console.Print( XS::PrintLevel::Developer, "Shutdown time: %.3f seconds\n\n\n", shutdownTIme );
+			const real64_t shutdownTIme = globalTimer.GetTiming( false, XS::TimerResolution::Milliseconds );
+			XS::console.Print( XS::PrintLevel::Developer, "Shutdown time: %.3f msec\n\n\n", shutdownTIme );
 		}
 
 		return EXIT_SUCCESS;

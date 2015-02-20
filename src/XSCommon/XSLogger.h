@@ -31,8 +31,8 @@ namespace XS {
 		Logger( const Logger& ) = delete;
 		Logger& operator=( const Logger& ) = delete;
 
-		Logger( const char *filename, bool timestamp = true )
-		: f( nullptr ), filename( filename ), timestamp( timestamp )
+		Logger( const char *logFilename, bool addTimestamp = true )
+		: f( nullptr ), filename( logFilename ), timestamp( addTimestamp )
 		{
 		}
 

@@ -34,8 +34,8 @@ namespace XS {
 			static const uint16_t quadIndices[6] = { 0, 2, 1, 1, 2, 3 };
 
 			// v1(2), v2(2), v3(2), v4(2), st1(2), st2(2), st3(2), st4(2), c1(4) == 20 bytes
-			quadsVertexBuffer = new Buffer( Buffer::Type::VERTEX, nullptr, 20 * sizeof(real32_t) );
-			quadsIndexBuffer = new Buffer( Buffer::Type::INDEX, quadIndices, sizeof(quadIndices) );
+			quadsVertexBuffer = new Buffer( BufferType::Vertex, nullptr, 20 * sizeof(real32_t) );
+			quadsIndexBuffer = new Buffer( BufferType::Index, quadIndices, sizeof(quadIndices) );
 
 			// create null quad material
 
@@ -71,9 +71,9 @@ namespace XS {
 			delete quadProgram;
 		}
 
-		static void DrawQuad( const rcDrawQuad_t *quad ) {
-			if ( quad->material ) {
-				quad->material->Bind();
+		static void DrawQuad( const DrawQuadCommand &cmd ) {
+			if ( cmd.material ) {
+				cmd.material->Bind();
 			}
 			else {
 				quadMaterial->Bind();
@@ -82,33 +82,34 @@ namespace XS {
 			vector2 vertices[4];
 			vector2 texcoords[4];
 			vector4 colour = colourTable[ColourIndex( COLOUR_WHITE )];
-			if ( quad->colour ) {
-				colour = *quad->colour;
+			if ( cmd.colour ) {
+				colour = *cmd.colour;
 			}
 
 			// Top-left
-			vertices[0].x = quad->x;
-			vertices[0].y = quad->y;
-			texcoords[0].x = quad->s1;
-			texcoords[0].y = quad->t1;
+			vertices[0].x	= cmd.x;
+			vertices[0].y	= cmd.y;
+			texcoords[0].x	= cmd.s1;
+			texcoords[0].y	= cmd.t1;
 
 			// Top-right
-			vertices[1].x = quad->x + quad->w;
-			vertices[1].y = quad->y;
-			texcoords[1].x = quad->s2;
-			texcoords[1].y = quad->t1;
+			vertices[1].x	= cmd.x + cmd.w;
+			vertices[1].y	= cmd.y;
+			texcoords[1].x	= cmd.s2;
+			texcoords[1].y	= cmd.t1;
 
 			// Bottom-left
-			vertices[2].x = quad->x;
-			vertices[2].y = quad->y + quad->h;
-			texcoords[2].x = quad->s1;
-			texcoords[2].y = quad->t2;
+			vertices[2].x	= cmd.x;
+			vertices[2].y	= cmd.y + cmd.h;
+			texcoords[2].x	= cmd.s1;
+			texcoords[2].y	= cmd.t2;
 
 			// Bottom-right
-			vertices[3].x = quad->x + quad->w;
-			vertices[3].y = quad->y + quad->h;
-			texcoords[3].x = quad->s2;
-			texcoords[3].y = quad->t2;
+			vertices[3].x	= cmd.x + cmd.w;
+			vertices[3].y	= cmd.y + cmd.h;
+			texcoords[3].x	= cmd.s2;
+			texcoords[3].y	= cmd.t2;
+
 			real32_t *vertexBuffer = static_cast<real32_t *>( quadsVertexBuffer->Map() );
 			for ( size_t i = 0u; i < 4; i++ ) {
 				*vertexBuffer++ = vertices[i].x;
@@ -189,33 +190,41 @@ namespace XS {
 			}
 		}
 
-		static void DrawModel( const rcDrawModel_t *model ) {
-			for ( const auto &mesh : model->model->meshes ) {
+		static void DrawModel( const DrawModelCommand &cmd ) {
+			for ( const auto &mesh : cmd.model->meshes ) {
 				DrawMesh( mesh );
 			}
 		}
 
-		static void Screenshot( const rcScreenshot_t *ss ) {
+		static void Screenshot( const ScreenshotCommand &cmd ) {
 			GLint signalled;
 
-			glGetSynciv( ss->sync, GL_SYNC_STATUS, 1, NULL, &signalled );
+			glGetSynciv( cmd.sync, GL_SYNC_STATUS, 1, NULL, &signalled );
 			//TODO: remove this when we wait until next frame
 			while ( signalled != GL_SIGNALED ) {
-				SDL_Delay( 1 );
-				glGetSynciv( ss->sync, GL_SYNC_STATUS, 1, NULL, &signalled );
+				SDL_Delay( 100 );
+				glGetSynciv( cmd.sync, GL_SYNC_STATUS, 1, NULL, &signalled );
 			}
 
 			if ( signalled == GL_SIGNALED ) {
-				glDeleteSync( ss->sync );
-				glBindBuffer( GL_PIXEL_PACK_BUFFER, ss->pbo );
+				glDeleteSync( cmd.sync );
+				glBindBuffer( GL_PIXEL_PACK_BUFFER, cmd.pbo );
 				void *data = glMapBuffer( GL_PIXEL_PACK_BUFFER, GL_READ_ONLY );
 					console.Print( PrintLevel::Normal,
 						"Writing screenshot %s (%ix%i)...\n",
-						ss->name,
-						ss->width,
-						ss->height
+						cmd.name,
+						cmd.width,
+						cmd.height
 					);
-					WritePNG( ss->name, (uint8_t*)data, ss->width, ss->height, 4 );
+
+					//TODO: strip alpha?
+					WritePNG(
+						cmd.name,
+						reinterpret_cast<uint8_t *>( data ),
+						cmd.width,
+						cmd.height,
+						4
+					);
 				glUnmapBuffer( GL_PIXEL_PACK_BUFFER );
 			}
 		}
@@ -223,16 +232,16 @@ namespace XS {
 		void RenderCommand::Execute( void ) const {
 			switch( type ) {
 
-			case Type::DRAWQUAD: {
-				DrawQuad( &drawQuad );
+			case CommandType::DrawQuad: {
+				DrawQuad( drawQuad );
 			} break;
 
-			case Type::DRAWMODEL: {
-				DrawModel( &drawModel );
+			case CommandType::DrawModel: {
+				DrawModel( drawModel );
 			} break;
 
-			case Type::SCREENSHOT: {
-				Screenshot( &screenshot );
+			case CommandType::Screenshot: {
+				Screenshot( screenshot );
 			} break;
 
 			default: {

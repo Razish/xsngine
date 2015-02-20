@@ -26,13 +26,13 @@ namespace XS {
 		buffer = new MessageBuffer( "console.log" );
 	}
 
-	void Console::Print( PrintLevel level, const char *fmt, ... ) {
-		if ( level == PrintLevel::Debug ) {
+	void Console::Print( PrintLevel printLevel, const char *fmt, ... ) {
+		if ( printLevel == PrintLevel::Debug ) {
 			#if !defined(_DEBUG)
 				return;
 			#endif
 		}
-		else if ( level == PrintLevel::Developer ) {
+		else if ( printLevel == PrintLevel::Developer ) {
 			if ( Common::com_developer->GetBool() == false ) {
 				return;
 			}

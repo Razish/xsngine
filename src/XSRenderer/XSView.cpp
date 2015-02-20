@@ -16,11 +16,11 @@ namespace XS {
 		: width( viewWidth ), height( viewHeight ), callbackPreRender( preRender ), callbackPostRender( postRender ), is2D( is2D )
 		{
 			if ( !viewWidth || !viewHeight ) {
-				width = vid_width->GetInt();
-				height = vid_height->GetInt();
+				width = state.window.width;
+				height = state.window.height;
 			}
 
-			perFrameData = new Backend::Buffer( Backend::Buffer::Type::UNIFORM, nullptr, sizeof(real32_t) * 16 * 2 );
+			perFrameData = new Backend::Buffer( BufferType::Uniform, nullptr, sizeof(real32_t) * 16 * 2 );
 
 			RegisterView( this );
 		}
@@ -32,9 +32,9 @@ namespace XS {
 					0.0f, 1.0f );
 			}
 			else {
-				const real32_t fov = Backend::r_fov->GetFloat();
-				const real32_t zNear = Backend::r_zRange->GetFloat( 0 );
-				const real32_t zFar = Backend::r_zRange->GetFloat( 1 );
+				const real32_t fov = Backend::r_fov->GetReal32();
+				const real32_t zNear = Backend::r_zRange->GetReal32( 0 );
+				const real32_t zFar = Backend::r_zRange->GetReal32( 1 );
 				projectionMatrix = perspectiveFov( fov,
 					static_cast<real32_t>( width ) / static_cast<real32_t>( height ),
 					zNear, zFar );

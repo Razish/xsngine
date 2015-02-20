@@ -9,7 +9,14 @@ namespace XS {
 		struct Material;
 		class Model;
 
-		struct rcDrawQuad_t {
+		//FIXME: polymorphism?
+		enum class CommandType {
+			DrawQuad,
+			DrawModel,
+			Screenshot
+		};
+
+		struct DrawQuadCommand {
 			real32_t		 x;
 			real32_t		 y;
 			real32_t		 w;
@@ -22,30 +29,27 @@ namespace XS {
 			const Material	*material;
 		};
 
-		struct rcScreenshot_t {
-			int			 width;
-			int			 height;
+		struct DrawModelCommand {
+			const Model	*model;
+		};
+
+		struct ScreenshotCommand {
+			int32_t		 width;
+			int32_t		 height;
 			GLuint		 pbo;
 			GLsync		 sync;
 			const char	*name;
 		};
 
-		struct rcDrawModel_t {
-			const Model	*model;
-		};
-
 		struct RenderCommand {
+		private:
+			CommandType type;
+
 		public:
-			enum class Type {
-				DRAWQUAD = 0,
-				DRAWMODEL,
-				SCREENSHOT,
-				NUM_RENDER_CMDS
-			};
 			union {
-				rcDrawQuad_t	drawQuad;
-				rcScreenshot_t	screenshot;
-				rcDrawModel_t	drawModel;
+				DrawQuadCommand		drawQuad;
+				DrawModelCommand	drawModel;
+				ScreenshotCommand	screenshot;
 			};
 
 			// don't allow default instantiation
@@ -62,7 +66,7 @@ namespace XS {
 				void
 			);
 
-			RenderCommand( Type commandType )
+			RenderCommand( CommandType commandType )
 			: type( commandType )
 			{
 			}
@@ -71,9 +75,6 @@ namespace XS {
 			void Execute(
 				void
 			) const;
-
-		private:
-			Type type;
 		};
 
 	} // namespace Renderer

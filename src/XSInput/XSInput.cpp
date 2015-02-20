@@ -1,8 +1,9 @@
 #include <SDL2/SDL.h>
 
 #include "XSCommon/XSCommon.h"
-#include "XSCommon/XSError.h"
 #include "XSCommon/XSEvent.h"
+#include "XSCommon/XSCvar.h"
+#include "XSCommon/XSError.h"
 #include "XSCommon/XSConsole.h"
 #include "XSInput/XSInput.h"
 #include "XSInput/XSKeys.h"
@@ -13,8 +14,14 @@ namespace XS {
 
 		// Client input instance. Access via Client::input.Blah()
 		Input input;
+		Cvar *m_smooth = nullptr;
+		Cvar *m_sensitivity = nullptr;
 
 		Input::Input() {
+			m_smooth = Cvar::Create( "m_smoothMouse", "0", "Smooth the mouse input across multiple frames",
+				CVAR_ARCHIVE );
+			m_sensitivity = Cvar::Create( "m_sensitivity", "1", "Sensitivity of mouse input", CVAR_ARCHIVE );
+
 			// raw input
 			// this is also set in ClientConsole upon (de)activation
 			SDL_SetRelativeMouseMode( SDL_TRUE );

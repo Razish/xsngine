@@ -134,7 +134,7 @@ namespace XS {
 
 					vector3 vertex;
 					for ( int i = 0; i < 3; i++ ) {
-						parser.ParseFloat( &vertex.raw[i] );
+						parser.ParseReal32( &vertex.raw[i] );
 					}
 					mesh->vertices.push_back( vertex );
 					parser.SkipLine();
@@ -154,7 +154,7 @@ namespace XS {
 
 					vector3 normal;
 					for ( int i = 0; i < 3; i++ ) {
-						parser.ParseFloat( &normal.raw[i] );
+						parser.ParseReal32( &normal.raw[i] );
 					}
 					mesh->normals.push_back( normal );
 					parser.SkipLine();

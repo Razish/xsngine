@@ -37,7 +37,7 @@ namespace XS {
 			return 0u;
 		}
 
-		const Texture *Texture::lastUsedTexture[MAX_TEXTURE_UNITS] = {};
+		const Texture *Texture::lastUsedTexture[maxTextureUnits] = {};
 		int Texture::lastUsedTextureUnit = 0;
 
 		void Texture::Init( void ) {
@@ -76,7 +76,7 @@ namespace XS {
 
 			if ( anisotropy && r_textureAnisotropy->GetBool() ) {
 				glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT,
-					std::min( r_textureAnisotropyMax->GetFloat(), maxAnisotropy ) );
+					std::min( r_textureAnisotropyMax->GetReal32(), maxAnisotropy ) );
 			}
 
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filterTable[filterMode].min );

@@ -4,16 +4,15 @@ namespace XS {
 
 	namespace Renderer {
 
+		enum class BufferType {
+			Vertex,
+			Index,
+			Uniform
+		};
+
 		namespace Backend {
 
 			class Buffer {
-			public:
-				enum class Type {
-					VERTEX,
-					INDEX,
-					UNIFORM
-				};
-
 			private:
 				GLuint	id;
 				GLenum	type;
@@ -26,7 +25,7 @@ namespace XS {
 				Buffer& operator=( const Buffer& ) = delete;
 
 				Buffer(
-					Type type,
+					BufferType bufferType,
 					const void *data,
 					size_t dataSize
 				);

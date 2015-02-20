@@ -23,7 +23,7 @@ namespace XS {
 		void Mesh::Upload( void ) {
 			size_t size = (sizeof(vector3) * indices.size())/* + (sizeof(vector3) * normals.size())
 				+ (sizeof(vector2) * UVs.size())*/;
-			vertexBuffer = new Buffer( Buffer::Type::VERTEX, nullptr, size );
+			vertexBuffer = new Buffer( BufferType::Vertex, nullptr, size );
 
 			real32_t *buffer = static_cast<real32_t *>( vertexBuffer->Map() );
 			if ( indices.size() > 0 ) {
@@ -42,7 +42,7 @@ namespace XS {
 			vertexBuffer->Unmap();
 
 			if ( indices.size() > 0 ) {
-				indexBuffer = new Buffer( Buffer::Type::INDEX, nullptr, indices.size() * sizeof(uint16_t) );
+				indexBuffer = new Buffer( BufferType::Index, nullptr, indices.size() * sizeof(uint16_t) );
 				uint16_t *buffer = static_cast<uint16_t *>( indexBuffer->Map() );
 				for ( auto index : indices ) {
 					*buffer++ = index;

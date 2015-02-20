@@ -7,6 +7,7 @@
 #include "XSCommon/XSConsole.h"
 #include "XSCommon/XSError.h"
 #include "XSInput/XSKeys.h"
+#include "XSInput/XSMouse.h"
 
 namespace XS {
 
@@ -33,7 +34,12 @@ namespace XS {
 
 		void Queue( const XSEvent *ev ) {
 			if ( debug_events->GetBool() ) {
-				console.Print( PrintLevel::Normal, "%s %s (%i)\n", XS_FUNCTION, eventNames[(int)ev->type], ev->type );
+				console.Print( PrintLevel::Normal,
+					"%s %s (%i)\n",
+					XS_FUNCTION,
+					eventNames[static_cast<int32_t>( ev->type )],
+					ev->type
+				);
 			}
 
 			events.push( *ev );
@@ -42,27 +48,29 @@ namespace XS {
 		void Pump( void ) {
 			while ( !events.empty() ) {
 				const XSEvent &ev = events.front();
+
 				switch( ev.type ) {
 				case EventType::Keyboard: {
 					Client::KeyboardEvent( ev.keyboard );
 				} break;
 
 				case EventType::MouseButton: {
-					// ...
+					Client::MouseButtonEvent( ev.mouseButton );
 				} break;
 
 				case EventType::MouseWheel: {
-					// ...
+					Client::MouseWheelEvent( ev.mouseWheel );
 				} break;
 
 				case EventType::MouseMotion: {
-					// ...
+					Client::MouseMotionEvent( ev.mouseMotion );
 				} break;
 
 				default: {
 					throw( XSError( String::Format( "%s Unknown event %i", XS_FUNCTION, ev.type ).c_str() ) );
 				} break;
 				}
+
 				events.pop();
 			}
 		}

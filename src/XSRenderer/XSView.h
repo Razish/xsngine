@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <queue>
 
 #include "XSCommon/XSMatrix.h"
 #include "XSRenderer/XSRenderCommand.h"
@@ -23,11 +24,11 @@ namespace XS {
 			renderCallback_t				callbackPreRender, callbackPostRender;
 
 		public:
-			matrix4						projectionMatrix;
-			matrix4						viewMatrix;
+			matrix4						 projectionMatrix;
+			matrix4						 viewMatrix;
 			Backend::Buffer				*perFrameData;
-			std::vector<RenderCommand>	renderCommands;
-			bool						is2D;
+			std::queue<RenderCommand>	 renderCommands;
+			bool						 is2D;
 
 			// construct a view, specifying additional callbacks if necessary
 			// if width or height are 0, they are both inherited from the current resolution

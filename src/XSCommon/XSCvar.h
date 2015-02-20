@@ -13,7 +13,8 @@ namespace XS {
 
 	struct CvarValue {
 		std::string 	str;
-		int32_t			integer;
+		int32_t			int32;
+		uint32_t		uint32;
 		real32_t		real32;
 		real64_t		real64;
 		bool			boolean;
@@ -25,10 +26,10 @@ namespace XS {
 		// construct a new cvar object and add it to the global list
 		// called by Cvar::Create()
 		Cvar(
-			const std::string &name,
+			const std::string &cvarName,
 			const std::string &value = "",
-			const std::string &description = "none",
-			uint32_t flags = CVAR_NONE
+			const std::string &cvarDescription = "none",
+			uint32_t cvarFlags = CVAR_NONE
 		);
 		Cvar();
 
@@ -80,7 +81,7 @@ namespace XS {
 		// modify flags for a cvar
 		// can not unset INIT flag if game is already initialised
 		void SetFlags(
-			uint32_t flags
+			uint32_t newFlags
 		);
 
 		// set a new value for the cvar
@@ -97,6 +98,10 @@ namespace XS {
 			bool initial = false
 		);
 		bool Set(
+			const uint32_t value,
+			bool initial = false
+		);
+		bool Set(
 			const real32_t value,
 			bool initial = false
 		);
@@ -106,29 +111,32 @@ namespace XS {
 		);
 
 		// retrieve a value for the cvar at the given index (e.g. index 1 for "640 480" will be "480"
-		inline const std::string &GetString( size_t index = 0u ) const {
-			return this->values[index].str;
-		}
-		inline const char *GetCString( size_t index = 0u ) const {
-			return this->values[index].str.c_str();
-		}
 		inline const std::string &GetFullString( void ) const {
-			return this->fullString;
+			return fullString;
 		}
 		inline const char *GetFullCString( void ) const {
-			return this->fullString.c_str();
+			return fullString.c_str();
 		}
-		inline int32_t GetInt( size_t index = 0u ) const {
-			return this->values[index].integer;
+		inline const std::string &GetString( size_t index = 0u ) const {
+			return values[index].str;
 		}
-		inline real32_t GetFloat( size_t index = 0u ) const {
-			return this->values[index].real32;
+		inline const char *GetCString( size_t index = 0u ) const {
+			return values[index].str.c_str();
 		}
-		inline real64_t GetDouble( size_t index = 0u ) const {
-			return this->values[index].real64;
+		inline int32_t GetInt32( size_t index = 0u ) const {
+			return values[index].int32;
+		}
+		inline uint32_t GetUInt32( size_t index = 0u ) const {
+			return values[index].uint32;
+		}
+		inline real32_t GetReal32( size_t index = 0u ) const {
+			return values[index].real32;
+		}
+		inline real64_t GetReal64( size_t index = 0u ) const {
+			return values[index].real64;
 		}
 		inline bool GetBool( size_t index = 0u ) const {
-			return this->values[index].boolean;
+			return values[index].boolean;
 		}
 	};
 

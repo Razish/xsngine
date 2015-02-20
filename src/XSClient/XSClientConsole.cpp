@@ -24,7 +24,7 @@ namespace XS {
 		}
 
 		static const char *InputAutoComplete( const char *match ) {
-			return match;
+			return "Autocompleted";
 		}
 
 		void ClientConsole::Toggle( void ) {
@@ -41,32 +41,27 @@ namespace XS {
 			}
 
 			if ( ev.down ) {
-				//TODO: scroll input cursor with SDL_SCANCODE_LEFT, SDL_SCANCODE_RIGHT
-				//TODO: scroll up/down through history with SDL_SCANCODE_UP, SDL_SCANCODE_DOWN
 				if ( ev.key == SDLK_BACKQUOTE ) {
 					// hardcoded console exit
 					Toggle();
-					return true;
 				}
 				else if ( ev.key == SDLK_PAGEUP ) {
 					if ( scrollAmount + 1 < console->buffer->GetNumLines() - lineCount ) {
 						scrollAmount++;
 					}
-					return true;
 				}
 				else if ( ev.key == SDLK_PAGEDOWN ) {
 					scrollAmount--;
 					if ( scrollAmount < 0 ) {
 						scrollAmount = 0;
 					}
-					return true;
 				}
-				else if ( input->KeyboardEvent( ev ) ) {
-					return true;
+				else {
+					input->KeyboardEvent( ev );
 				}
 			}
 
-			return false;
+			return true;
 		}
 
 		ClientConsole::ClientConsole( Console *consoleInstance )
@@ -96,7 +91,7 @@ namespace XS {
 			view->Bind();
 
 			// have to register it each frame so we can change the font size at runtime
-			font = Renderer::Font::Register( "console", static_cast<uint16_t>( con_fontSize->GetInt() ) );
+			font = Renderer::Font::Register( "console", static_cast<uint16_t>( con_fontSize->GetInt32() ) );
 
 			Renderer::DrawQuad(
 				0, 0, Renderer::state.window.width, Renderer::state.window.height / 2,

@@ -123,8 +123,14 @@ namespace XS {
 			{ "KP_9",			'9',	'\0',	SDL_SCANCODE_TO_KEYCODE( SDL_SCANCODE_KP_9 ) },
 			{ "KP_0",			'0',	'\0',	SDL_SCANCODE_TO_KEYCODE( SDL_SCANCODE_KP_0 ) },
 			{ "KP_PERIOD",		'.',	'\0',	SDL_SCANCODE_TO_KEYCODE( SDL_SCANCODE_KP_PERIOD ) },
+			{ "LCTRL",			'\0',	'\0',	SDLK_LCTRL },
 			{ "LSHIFT",			'\0',	'\0',	SDLK_LSHIFT },
+			{ "LALT",			'\0',	'\0',	SDLK_LALT },
+			{ "LGUI",			'\0',	'\0',	SDLK_LGUI },
+			{ "RCTRL",			'\0',	'\0',	SDLK_RCTRL },
 			{ "RSHIFT",			'\0',	'\0',	SDLK_RSHIFT },
+			{ "RALT",			'\0',	'\0',	SDLK_RALT },
+			{ "RGUI",			'\0',	'\0',	SDLK_RGUI },
 		};
 
 		static SDL_Keycode GetKeycodeForName( const char *name ) {
@@ -249,15 +255,6 @@ namespace XS {
 			*/
 
 			ExecuteBind( ev );
-		}
-		void MouseWheelEvent( const struct MouseWheelEvent &ev ) {
-			// ...
-		}
-		void MouseButtonEvent( const struct MouseButtonEvent &ev ) {
-			// ...
-		}
-		void MouseMotionEvent( const struct MouseMotionEvent &ev ) {
-			// ...
 		}
 
 		void WriteBinds( std::string &str ) {

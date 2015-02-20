@@ -33,7 +33,7 @@ namespace XS {
 
 		// print a line to the console buffer
 		void Print(
-			PrintLevel level,
+			PrintLevel printLevel,
 			const char *fmt,
 			...
 		);
@@ -59,8 +59,8 @@ namespace XS {
 		Indent& operator=( const Indent& ) = delete;
 
 		// set the indent level
-		inline Indent( int32_t newLevel )
-		: level( newLevel )
+		inline Indent( int32_t indentLevel )
+		: level( indentLevel )
 		{
 			console.Indent( level );
 		}

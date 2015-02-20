@@ -131,14 +131,7 @@ namespace XS {
 		return (*s == nullptr) ? true : false;
 	}
 
-	bool TokenParser::ParseUInt( uint32_t *i ) {
-		const char *tok = ParseToken( false );
-
-		*i = strtoul( tok, NULL, 0 );
-		return false;
-	}
-
-	bool TokenParser::ParseInt( int32_t *i ) {
+	bool TokenParser::ParseInt32( int32_t *i ) {
 		const char *tok = ParseToken( false );
 
 		if ( *tok == '\0' ) {
@@ -149,7 +142,14 @@ namespace XS {
 		return false;
 	}
 
-	bool TokenParser::ParseShort( int16_t *i ) {
+	bool TokenParser::ParseUInt32( uint32_t *i ) {
+		const char *tok = ParseToken( false );
+
+		*i = strtoul( tok, NULL, 0 );
+		return false;
+	}
+
+	bool TokenParser::ParseInt16( int16_t *i ) {
 		const char *tok = ParseToken( false );
 
 		if ( *tok == '\0' ) {
@@ -160,18 +160,29 @@ namespace XS {
 		return false;
 	}
 
-	bool TokenParser::ParseFloat( real32_t *f ) {
+	bool TokenParser::ParseReal32( real32_t *f ) {
 		const char *tok = ParseToken( false );
 
 		if ( *tok == '\0' ) {
 			return true;
 		}
 
-		*f = static_cast<real32_t>( atof( tok ) );
+		*f = strtof( tok, nullptr );
 		return false;
 	}
 
-	bool TokenParser::ParseByte( uint8_t *i ) {
+	bool TokenParser::ParseReal64( real64_t *f ) {
+		const char *tok = ParseToken( false );
+
+		if ( *tok == '\0' ) {
+			return true;
+		}
+
+		*f = strtod( tok, nullptr );
+		return false;
+	}
+
+	bool TokenParser::ParseUInt8( uint8_t *i ) {
 		const char *tok = ParseToken( false );
 
 		if ( *tok == '\0' ) {

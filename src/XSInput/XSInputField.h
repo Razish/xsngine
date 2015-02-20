@@ -56,7 +56,7 @@ namespace XS {
 			);
 
 			// pass a key event to the input field (insert, modify)
-			bool KeyboardEvent(
+			void KeyboardEvent(
 				const KeyboardEvent &ev
 			);
 

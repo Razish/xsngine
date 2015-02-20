@@ -33,18 +33,18 @@ namespace XS {
 	// creates a socket and connects to the specified host
 	//TODO: supports socksv5
 
+	enum class SocketType {
+		TCP,
+		UDP,
+		SOCKS_TCP,
+		SOCKS_UDP
+	};
+
 	class Socket {
 	private:
-		enum class Type {
-			TCP,
-			UDP,
-			SOCKS_TCP,
-			SOCKS_UDP
-		};
-
-		//Socket::Type	type;
+		//SocketType	 type;
 		NetAddress		*address;
-		int16_t			port; // stored in network byte order
+		uint16_t		 port; // stored in network byte order
 
 	public:
 		// don't allow default instantiation
@@ -53,8 +53,8 @@ namespace XS {
 		Socket& operator=( const Socket& ) = delete;
 
 		Socket(
-			const NetAddress *address,
-			int16_t port
+			const NetAddress *socketAddress,
+			uint16_t socketPort
 		);
 
 		void Send(

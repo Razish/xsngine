@@ -26,7 +26,7 @@ namespace XS {
 	#endif
 	}
 
-	real64_t Timer::GetTiming( bool restart, Resolution resolution ) {
+	real64_t Timer::GetTiming( bool restart, TimerResolution resolution ) {
 		Stop();
 
 	#if defined(XS_OS_WINDOWS)
@@ -45,13 +45,13 @@ namespace XS {
 		}
 
 		switch ( resolution ) {
-		case Resolution::SECONDS: {
+		case TimerResolution::Seconds: {
 			return (stopTime - startTime) * 0.000001;
 		} break;
-		case Resolution::MILLISECONDS: {
+		case TimerResolution::Milliseconds: {
 			return (stopTime - startTime) * 0.001;
 		} break;
-		case Resolution::MICROSECONDS: {
+		case TimerResolution::Microseconds: {
 			return (stopTime - startTime);
 		} break;
 		default: {

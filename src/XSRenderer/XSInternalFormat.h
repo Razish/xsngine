@@ -9,11 +9,11 @@ namespace XS {
 			R8,
 			RGBA8,
 			RGBA16F,
-			DEPTH_COMPONENT16,
-			DEPTH_COMPONENT24,
-			STENCIL_INDEX4,
-			STENCIL_INDEX8,
-			DEPTH24_STENCIL8
+			Depth16,
+			Depth24,
+			Stencil4,
+			Stencil8,
+			Depth24Stencil8
 		};
 
 		// ???

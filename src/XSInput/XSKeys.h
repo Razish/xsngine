@@ -23,15 +23,6 @@ namespace XS {
 		void KeyboardEvent(
 			const KeyboardEvent &ev
 		);
-		void MouseWheelEvent(
-			const MouseWheelEvent &ev
-		);
-		void MouseButtonEvent(
-			const MouseButtonEvent &ev
-		);
-		void MouseMotionEvent(
-			const MouseMotionEvent &ev
-		);
 
 		// list all key bindings
 		void Cmd_ListBinds(

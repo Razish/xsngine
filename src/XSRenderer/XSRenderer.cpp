@@ -126,7 +126,7 @@ namespace XS {
 		static void OnGLError( GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length,
 			const GLchar *message, GLvoid *userParam )
 		{
-			const int level = r_debug->GetInt();
+			const int level = r_debug->GetInt32();
 			if ( !level || (level == 1 && type == GL_DEBUG_TYPE_PERFORMANCE_ARB) ) {
 				return;
 			}
@@ -167,7 +167,7 @@ namespace XS {
 
 			RenderCommand::Init();
 
-			glViewport( 0, 0, vid_width->GetInt(), vid_height->GetInt() );
+			glViewport( 0, 0, state.window.width, state.window.height );
 		}
 
 		void Shutdown( void ) {
@@ -194,7 +194,7 @@ namespace XS {
 		}
 
 		void CreateDisplay( void ) {
-			Uint32 windowFlags = SDL_WINDOW_OPENGL;
+			Uint32 windowFlags = SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI;
 
 			if ( SDL_Init( SDL_INIT_VIDEO ) != 0 ) {
 				return;
@@ -204,12 +204,13 @@ namespace XS {
 				windowFlags |= SDL_WINDOW_BORDERLESS;
 			}
 
+			// targeting OpenGL 3.1 core
 			SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 3 );
 			SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 1 );
 			SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE );
 			SDL_GL_SetAttribute( SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG );
 
-			int multisample = r_multisample->GetInt();
+			int multisample = r_multisample->GetInt32();
 			if ( multisample ) {
 				SDL_GL_SetAttribute( SDL_GL_MULTISAMPLEBUFFERS, 1 );
 				SDL_GL_SetAttribute( SDL_GL_MULTISAMPLESAMPLES, multisample );
@@ -219,11 +220,12 @@ namespace XS {
 			}
 
 		#ifdef _DEBUG
+			// request debug context
 			SDL_GL_SetAttribute( SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG );
 		#endif
 
-			const int32_t width = vid_width->GetInt();
-			const int32_t height = vid_height->GetInt();
+			const int32_t width = vid_width->GetInt32();
+			const int32_t height = vid_height->GetInt32();
 			window = SDL_CreateWindow(
 				WINDOW_TITLE,
 				SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
@@ -240,9 +242,9 @@ namespace XS {
 			state.window.width = static_cast<uint32_t>( width );
 			state.window.height = static_cast<uint32_t>( height );
 
-			SDL_GL_SetSwapInterval( r_swapInterval->GetInt() );
+			SDL_GL_SetSwapInterval( r_swapInterval->GetInt32() );
 		#if defined(XS_OS_MAC)
-			//TODO: force vsync flag
+			//TODO: force vsync flag in CGL, seems to only have an Obj-C API?
 			/*
 			CGLContextObj cglContext = CGLGetCurrentContext();
 			if ( cglContext ) {
@@ -280,22 +282,25 @@ namespace XS {
 		}
 
 		void Update( void ) {
-			const vector4 clear( r_clear->GetFloat( 0 ), r_clear->GetFloat( 1 ), r_clear->GetFloat( 2 ),
-				r_clear->GetFloat( 3 ) );
+			const vector4 clear( r_clear->GetReal32( 0 ), r_clear->GetReal32( 1 ), r_clear->GetReal32( 2 ),
+				r_clear->GetReal32( 3 ) );
 			glClearColor( clear.r, clear.g, clear.b, clear.a );
 			glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
 			for ( const auto &view : views ) {
-				if ( r_skipRender->GetInt() & (1 << static_cast<uint32_t>( view->is2D )) ) {
+				if ( r_skipRender->GetInt32() & (1 << static_cast<uint32_t>( view->is2D )) ) {
 					continue;
 				}
 
 				view->PreRender();
-				for ( const auto &cmd : view->renderCommands ) {
+				while ( !view->renderCommands.empty() ) {
+					const auto &cmd = view->renderCommands.front();
+
 					cmd.Execute();
+
+					view->renderCommands.pop();
 				}
 				view->PostRender();
-				view->renderCommands.clear();
 			}
 
 			SDL_GL_SwapWindow( window );
@@ -320,7 +325,7 @@ namespace XS {
 		{
 			AssertView();
 
-			RenderCommand cmd( RenderCommand::Type::DRAWQUAD );
+			RenderCommand cmd( CommandType::DrawQuad );
 			cmd.drawQuad.x = x;
 			cmd.drawQuad.y = y;
 			cmd.drawQuad.w = w;
@@ -332,15 +337,15 @@ namespace XS {
 			cmd.drawQuad.colour = colour;
 			cmd.drawQuad.material = material;
 
-			currentView->renderCommands.push_back( cmd );
+			currentView->renderCommands.push( cmd );
 		}
 
 		void DrawModel( const Model *model ) {
 			AssertView();
 
-			RenderCommand cmd( RenderCommand::Type::DRAWMODEL );
+			RenderCommand cmd( CommandType::DrawModel );
 			cmd.drawModel.model = model;
-			currentView->renderCommands.push_back( cmd );
+			currentView->renderCommands.push( cmd );
 		}
 
 	} // namespace Renderer

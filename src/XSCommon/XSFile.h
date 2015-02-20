@@ -35,7 +35,7 @@ namespace XS {
 	//		f.AppendString( "Herp derp\n" );
 	//
 
-	enum FileMode {
+	enum class FileMode {
 		Read = 0,
 		ReadBinary,
 		Write,
@@ -98,7 +98,7 @@ namespace XS {
 		// open a file for reading/writing
 		File(
 			const char *gamePath,
-			FileMode mode = FileMode::Read
+			FileMode fileMode = FileMode::Read
 		);
 
 		~File();

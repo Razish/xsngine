@@ -35,13 +35,13 @@ namespace XS {
 			cursorPos = 0u;
 		}
 
-		bool InputField::KeyboardEvent( const struct KeyboardEvent &ev ) {
-			if ( char c = GetPrintableCharForKeycode( ev.key ) ) {
+		void InputField::KeyboardEvent( const struct KeyboardEvent &ev ) {
+			char c = GetPrintableCharForKeycode( ev.key );
+			if ( c >= 0x20 ) {
 				// insert a character at the cursor and move the cursor along
 				current.insert( cursorPos, 1, c );
 				numChars++;
 				cursorPos++;
-				return true;
 			}
 			else if ( ev.key == SDLK_BACKSPACE ) {
 				// remove the character before the cursor
@@ -50,7 +50,6 @@ namespace XS {
 					numChars--;
 					cursorPos--;
 				}
-				return true;
 			}
 			else if ( ev.key == SDLK_DELETE ) {
 				// remove the character after the cursor
@@ -64,7 +63,7 @@ namespace XS {
 
 				// no action to take if it's empty...
 				if ( current.empty() ) {
-					return true;
+					return;
 				}
 
 				// pass to command buffer
@@ -86,21 +85,18 @@ namespace XS {
 
 				// clear the state
 				Clear();
-				return true;
 			}
 			else if ( ev.key == SDLK_LEFT ) {
 				// move cursor left
 				if ( cursorPos > 0 ) {
 					cursorPos--;
 				}
-				return true;
 			}
 			else if ( ev.key == SDLK_RIGHT ) {
 				// move cursor right
 				if ( cursorPos < numChars ) {
 					cursorPos++;
 				}
-				return true;
 			}
 			else if ( ev.key == SDLK_UP ) {
 				if ( historySeeking ) {
@@ -128,8 +124,6 @@ namespace XS {
 					// set the cursor pos to the end of the line
 					cursorPos = numChars = current.length();
 				}
-
-				return true;
 			}
 			else if ( ev.key == SDLK_DOWN ) {
 				if ( historySeeking ) {
@@ -156,16 +150,15 @@ namespace XS {
 				else {
 					Clear();
 				}
-				return true;
 			}
 			else if ( ev.key == SDLK_TAB ) {
 				if ( autoComplete ) {
-					current = autoComplete( current.c_str() );
+					if ( const char *result = autoComplete( current.c_str() ) ) {
+						current = result;
+						cursorPos = numChars = current.length();
+					}
 				}
-				return true;
 			}
-
-			return false;
 		}
 
 	} // namespace Client

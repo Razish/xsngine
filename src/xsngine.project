@@ -172,6 +172,8 @@
     <File Name="XSInput/XSInput.cpp"/>
     <File Name="XSInput/XSInput.h"/>
     <File Name="XSInput/XSKeys.cpp"/>
+    <File Name="XSInput/XSMouse.cpp"/>
+    <File Name="XSInput/XSMouse.h"/>
   </VirtualDirectory>
   <VirtualDirectory Name="XSCommon">
     <File Name="XSCommon/XSLogger.h"/>

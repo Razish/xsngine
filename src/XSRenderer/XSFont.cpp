@@ -24,14 +24,14 @@ namespace XS {
 		static ShaderProgram *fontProgram = nullptr;
 		static const uint32_t charsPerLine = 16u;
 
-		Font::Font( const char *name, uint16_t pointSize )
-		: name( name ), pointSize( pointSize )
+		Font::Font( const char *name, uint16_t size )
+		: name( name ), pointSize( size )
 		{
 			file = String::Format( "fonts/%s.ttf", name );
 			std::memset( data, 0u, sizeof(data) );
 		}
 
-		static Material *CreateFontMaterial( Texture& fontTexture ) {
+		static Material *CreateFontMaterial( Texture &fontTexture ) {
 			Material *fontMaterial = new Material();
 
 			Material::SamplerBinding samplerBinding;
@@ -235,15 +235,13 @@ namespace XS {
 			}
 
 			vector2 currentPos = pos;
-			size_t len = text.length();
-			const uint32_t screenWidth = vid_width->GetInt();
 
-			for ( size_t i = 0; i < len; i++ ) {
-				const char c = text[i];
+			for ( const char c : text ) {
+				SDL_assert( c != '\0' );
 				const FontData &fd = data[c];
 
 				// check for overflow
-				if ( currentPos.x + fd.advance >= screenWidth ) {
+				if ( currentPos.x + fd.advance >= state.window.width ) {
 					currentPos.x = pos.x;
 					currentPos.y += lineHeight;
 					numLines++;
@@ -298,7 +296,9 @@ namespace XS {
 			delete fontProgram;
 		}
 
+		// public, static
 		Font *Font::Register( const char *name, uint16_t pointSize ) {
+			//TODO: support fonts at multiple sizes
 			Font *font = fonts[name];
 			if ( font ) {
 				if ( font->pointSize == pointSize ) {
@@ -312,6 +312,7 @@ namespace XS {
 
 			console.Print( PrintLevel::Developer, "Generating new font '%s' at size %i\n", name, pointSize );
 			font = fonts[name] = new Font( name, pointSize );
+			//TODO: load cached font data
 			font->RenderGlyphs();
 			return font;
 		}

@@ -7,11 +7,11 @@ namespace XS {
 	namespace Renderer {
 
 		#define MAX_TEXTURES (256)
-		const uint32_t MAX_TEXTURE_UNITS = 16;
+		const uint32_t maxTextureUnits = 16u;
 
 		class Texture {
 		private:
-			static const Texture	*lastUsedTexture[MAX_TEXTURE_UNITS];
+			static const Texture	*lastUsedTexture[maxTextureUnits];
 			static int				 lastUsedTextureUnit;
 
 		public:

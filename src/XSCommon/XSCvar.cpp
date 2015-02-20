@@ -11,8 +11,9 @@
 namespace XS {
 
 	static std::unordered_map<std::string, Cvar *> cvars;
-	bool Cvar::initialised = false;
+	bool Cvar::initialised = false; // flag for init-only cvars
 
+	// public, static
 	void Cvar::WriteCvars( std::string &str ) {
 		std::map<std::string, Cvar *> sorted( cvars.begin(), cvars.end() );
 
@@ -32,6 +33,7 @@ namespace XS {
 		}
 	}
 
+	// public, static
 	void Cvar::Clean( void ) {
 		console.Print( PrintLevel::Debug, "Cleaning up cvars\n" );
 		for ( const auto &it : cvars ) {
@@ -49,15 +51,16 @@ namespace XS {
 	}
 
 	// private
-	Cvar::Cvar( const std::string &name, const std::string &value, const std::string &description, uint32_t flags )
-	: name( name ), defaultStr( value ), description( description ), modified( false )
+	Cvar::Cvar( const std::string &cvarName, const std::string &value, const std::string &cvarDescription,
+		uint32_t cvarFlags )
+	: name( cvarName ), defaultStr( value ), description( cvarDescription ), flags( 0u ), modified( false )
 	{
 		cvars[name] = this;
-		SetFlags( flags );
+		SetFlags( cvarFlags );
 		Set( value, true );
 	}
 
-	// public
+	// public, static
 	Cvar *Cvar::Create( std::string name, std::string value, std::string description, uint32_t flags ) {
 		Cvar *cvar = cvars[name];
 		if ( initialised ) {
@@ -77,7 +80,7 @@ namespace XS {
 					);
 				}
 
-				// don't initialise a cvar if it already exists/has been set
+				// not init-only, only (re)set if it hasn't been modified
 				else if ( !cvar->modified ) {
 					cvar->Set( value, true );
 				}
@@ -92,20 +95,24 @@ namespace XS {
 			return cvar;
 		}
 
-		// allocate and add to map
+		// new cvar, allocate and add to map
 		return new Cvar( name, value, description, flags );
 	}
 
+	// public, static
 	Cvar *Cvar::Get( const std::string &name ) {
 		Cvar *cv = cvars[name];
 
+		// already exists
 		if ( cv ) {
 			return cv;
 		}
 
+		// nothing
 		return nullptr;
 	}
 
+	// public, static
 	void Cvar::List( void ) {
 		console.Print( PrintLevel::Normal, "Listing cvars...\n" );
 
@@ -132,34 +139,41 @@ namespace XS {
 		}
 	}
 
-	void Cvar::SetFlags( uint32_t flags ) {
+	// public
+	void Cvar::SetFlags( uint32_t newFlags ) {
 		if ( initialised ) {
-			flags &= ~CVAR_INIT;
+			newFlags &= ~CVAR_INIT;
 		}
 
-		this->flags = flags;
+		flags = newFlags;
 	}
 
+	// public
 	bool Cvar::Set( const char *value, bool initial ) {
+		// if the cvar already has a value and is read-only, don't allow modifying it
 		if ( !initial && (flags & CVAR_READONLY) ) {
 			console.Print( PrintLevel::Normal, "Attempt to set read-only cvar \"%s\"\n", name.c_str() );
 			return false;
 		}
 
+		// first, store the desired value as a string
 		fullString = value;
 
+		// then tokenise it
 		values.clear();
 		const char delim = ' ';
 		std::vector<std::string> tokens = String::Split( value, delim );
 		for ( const auto &it : tokens ) {
+			// now store each token in multiple formats
 			CvarValue newValue = {};
 
 			newValue.str = it;
 			const char *cstr = newValue.str.c_str();
 			newValue.real64 = atof( cstr );
 			newValue.real32 = static_cast<real32_t>( newValue.real64 );
-			newValue.integer = atoi( cstr );
-			newValue.boolean = !!newValue.integer; // coerce to boolean
+			newValue.int32 = atoi( cstr );
+			newValue.uint32 = strtoul( cstr, nullptr, 0 );
+			newValue.boolean = !!newValue.uint32; // coerce to boolean
 
 			values.push_back( newValue );
 		}
@@ -177,6 +191,10 @@ namespace XS {
 
 	bool Cvar::Set( const int32_t value, bool initial ) {
 		return Set( String::Format( "%i", value ), initial );
+	}
+
+	bool Cvar::Set( const uint32_t value, bool initial ) {
+		return Set( String::Format( "%u", value ), initial );
 	}
 
 	bool Cvar::Set( const real32_t value, bool initial ) {

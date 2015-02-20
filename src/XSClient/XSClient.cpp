@@ -66,7 +66,7 @@ namespace XS {
 			ClientGame::RunFrame();
 		}
 
-		real64_t GetElapsedTime( Timer::Resolution resolution ) {
+		real64_t GetElapsedTime( TimerResolution resolution ) {
 			static uint64_t lastFrame = 0u;
 			static real64_t timeSec = 0.0;
 			static real64_t timeMsec = 0.0;
@@ -80,15 +80,15 @@ namespace XS {
 
 			switch( resolution ) {
 
-				case Timer::Resolution::SECONDS: {
+				case TimerResolution::Seconds: {
 					return timeSec;
 				} break;
 
-				case Timer::Resolution::MILLISECONDS: {
+				case TimerResolution::Milliseconds: {
 					return timeMsec;
 				} break;
 
-				case Timer::Resolution::MICROSECONDS: {
+				case TimerResolution::Microseconds: {
 					return timeUsec;
 				} break;
 

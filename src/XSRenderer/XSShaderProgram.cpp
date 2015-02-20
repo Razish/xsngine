@@ -57,15 +57,15 @@ namespace XS {
 
 		static GLenum GetGLShaderType( ShaderType type ) {
 			switch ( type ) {
-				case ShaderType::VERTEX: {
+				case ShaderType::Vertex: {
 					return GL_VERTEX_SHADER;
 				} break;
 
-				case ShaderType::GEOMETRY: {
+				case ShaderType::Geometry: {
 					return GL_GEOMETRY_SHADER;
 				} break;
 
-				case ShaderType::FRAGMENT: {
+				case ShaderType::Fragment: {
 					return GL_FRAGMENT_SHADER;
 				} break;
 
@@ -114,15 +114,15 @@ namespace XS {
 			char path[XS_MAX_FILENAME] = { '\0' };
 
 			switch ( type ) {
-			case ShaderType::VERTEX: {
+			case ShaderType::Vertex: {
 				String::FormatBuffer( path, sizeof(path), "shaders/v_%s.glsl", name );
 			} break;
 
-			case ShaderType::GEOMETRY: {
+			case ShaderType::Geometry: {
 				String::FormatBuffer( path, sizeof(path), "shaders/g_%s.glsl", name );
 			} break;
 
-			case ShaderType::FRAGMENT: {
+			case ShaderType::Fragment: {
 				String::FormatBuffer( path, sizeof(path), "shaders/f_%s.glsl", name );
 			} break;
 			default: {
@@ -161,13 +161,13 @@ namespace XS {
 
 			Shader *vertexShader = nullptr;
 			if ( vertexShaderName && !vertexShader ) {
-				vertexShader = new Shader( ShaderType::VERTEX, vertexShaderName );
+				vertexShader = new Shader( ShaderType::Vertex, vertexShaderName );
 				glAttachShader( id, vertexShader->id );
 			}
 
 			Shader *fragmentShader = nullptr;
 			if ( fragmentShaderName && !fragmentShader ) {
-				fragmentShader = new Shader( ShaderType::FRAGMENT, fragmentShaderName );
+				fragmentShader = new Shader( ShaderType::Fragment, fragmentShaderName );
 				glAttachShader( id, fragmentShader->id );
 			}
 

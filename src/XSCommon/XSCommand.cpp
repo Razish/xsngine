@@ -1,3 +1,6 @@
+#include <queue>
+#include <map>
+
 #include "XSCommon/XSCommon.h"
 #include "XSCommon/XSCommand.h"
 #include "XSCommon/XSCvar.h"
@@ -15,10 +18,20 @@ namespace XS {
 		static std::unordered_map<std::string, CommandFunc> commandTable;
 
 		// command buffer
-		static std::vector<std::string> buffer;
+		static std::queue<std::string> buffer;
 
 		static void Cmd_ClearConsole( const CommandContext * const context ) {
 			console.Clear();
+		}
+
+		static void Cmd_ListCommands( const CommandContext * const context ) {
+			console.Print( PrintLevel::Normal, "Listing commands...\n" );
+			Indent indent( 1 );
+
+			std::map<std::string, CommandFunc> sorted( commandTable.begin(), commandTable.end() );
+			for ( const auto &cmd : sorted ) {
+				console.Print( PrintLevel::Normal, "%s\n", cmd.first.c_str() );
+			}
 		}
 
 		static void Cmd_ListCvars( const CommandContext * const context ) {
@@ -75,6 +88,7 @@ namespace XS {
 			AddCommand( "bind", Client::Cmd_SetBind );
 			AddCommand( "bindlist", Client::Cmd_ListBinds );
 			AddCommand( "clear", Cmd_ClearConsole );
+			AddCommand( "cmdlist", Cmd_ListCommands );
 			AddCommand( "cvarlist", Cmd_ListCvars );
 			AddCommand( "print", Cmd_PrintCvar );
 			AddCommand( "set", Cmd_SetCvar );
@@ -87,22 +101,24 @@ namespace XS {
 
 		void Append( const char *str, char delimiter ) {
 			std::vector<std::string> commands = String::Split( str, delimiter );
+			//FIXME: strip whitespace? seems to work fine
 			for ( const auto &command : commands ) {
-				buffer.push_back( command );
+				buffer.push( command );
 			}
 		}
 
 		void ExecuteBuffer( void ) {
-			for ( const auto &it : buffer ) {
-				CommandContext context;
+			while ( !buffer.empty() ) {
+				const auto &cmd = buffer.front();
 
 				// tokenise the arguments
 				const char delim = ' ';
-				size_t start = it.find( delim );
-				std::string name = it.substr( 0, start );
+				size_t start = cmd.find( delim );
+				std::string name = cmd.substr( 0, start );
 
-				if ( start != std::string::npos && start != it.size() - 1 ) {
-					context = String::Split( &it[start + 1], ' ' );
+				CommandContext context;
+				if ( start != std::string::npos && start != cmd.size() - 1 ) {
+					context = String::Split( &cmd[start + 1], ' ' );
 
 					// strip any quotes around the arguments
 					for ( auto &tok : context ) {
@@ -113,13 +129,13 @@ namespace XS {
 				const CommandFunc &func = commandTable[name];
 				if ( func ) {
 					func( &context );
-					continue;
 				}
 				else {
-					console.Print( PrintLevel::Normal, "Unknown command \"%s\"\n", it.c_str()  );
+					console.Print( PrintLevel::Normal, "Unknown command \"%s\"\n", cmd.c_str()  );
 				}
+
+				buffer.pop();
 			}
-			buffer.clear();
 		}
 
 		// commands

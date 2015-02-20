@@ -11,18 +11,17 @@ namespace XS {
 
 		struct Mesh;
 
+		enum class ModelType {
+			Invalid,
+			OBJ,
+			XMF,
+			NUM_MODEL_TYPES
+		};
+
 		// shared between all instances of a "model" (i.e. mesh + skin combinations)
 		class Model : public Renderable {
-		public:
-			enum class Type {
-				UNKNOWN = 0,
-				OBJ,
-				XMF,
-				NUM_MODEL_TYPES
-			};
-
 		private:
-			Type		type;
+			ModelType	type;
 			uint32_t	refCount;
 
 		public:

@@ -42,7 +42,7 @@ namespace XS {
 			// register a new font
 			Font(
 				const char *name,
-				uint16_t pointSize
+				uint16_t size
 			);
 
 			// generate a glyph atlas for the font at the current size.

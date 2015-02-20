@@ -21,30 +21,30 @@ namespace XS {
 				return GL_RGBA16F_ARB;
 			} break;
 
-			case InternalFormat::DEPTH_COMPONENT16: {
+			case InternalFormat::Depth16: {
 				return GL_DEPTH_COMPONENT16;
 			} break;
 
-			case InternalFormat::DEPTH_COMPONENT24: {
+			case InternalFormat::Depth24: {
 				return GL_DEPTH_COMPONENT24;
 			} break;
 
-			case InternalFormat::STENCIL_INDEX4: {
+			case InternalFormat::Stencil4: {
 				return GL_STENCIL_INDEX4_EXT;
 			} break;
 
-			case InternalFormat::STENCIL_INDEX8: {
+			case InternalFormat::Stencil8: {
 				return GL_STENCIL_INDEX8_EXT;
 			} break;
 
-			case InternalFormat::DEPTH24_STENCIL8: {
+			case InternalFormat::Depth24Stencil8: {
 				return GL_DEPTH24_STENCIL8_EXT;
 			} break;
 			}
 		}
 
-		unsigned int GetGLFormat( InternalFormat format ) {
-			switch ( format ) {
+		unsigned int GetGLFormat( InternalFormat internalFormat ) {
+			switch ( internalFormat ) {
 			default:
 			case InternalFormat::RGBA8:
 			case InternalFormat::RGBA16F: {
@@ -55,24 +55,24 @@ namespace XS {
 				return GL_RED;
 			} break;
 
-			case InternalFormat::DEPTH_COMPONENT16:
-			case InternalFormat::DEPTH_COMPONENT24: {
+			case InternalFormat::Depth16:
+			case InternalFormat::Depth24: {
 				return GL_DEPTH_COMPONENT;
 			} break;
 
-			case InternalFormat::STENCIL_INDEX4:
-			case InternalFormat::STENCIL_INDEX8: {
+			case InternalFormat::Stencil4:
+			case InternalFormat::Stencil8: {
 				return GL_STENCIL_INDEX;
 			} break;
 
-			case InternalFormat::DEPTH24_STENCIL8: {
+			case InternalFormat::Depth24Stencil8: {
 				return GL_DEPTH_STENCIL_EXT;
 			} break;
 			}
 		}
 
-		unsigned int GetDataTypeForFormat( InternalFormat format ) {
-			switch ( format ) {
+		unsigned int GetDataTypeForFormat( InternalFormat internalFormat ) {
+			switch ( internalFormat ) {
 			default: {
 				return GL_UNSIGNED_BYTE;
 			} break;
@@ -81,7 +81,7 @@ namespace XS {
 				return GL_FLOAT;
 			} break;
 
-			case InternalFormat::DEPTH24_STENCIL8: {
+			case InternalFormat::Depth24Stencil8: {
 				return GL_UNSIGNED_INT_24_8_EXT;
 			} break;
 			}

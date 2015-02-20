@@ -35,7 +35,7 @@ namespace XS {
 		// get the current elapsed time
 		// lazily initialised on each unique frame
 		real64_t GetElapsedTime(
-			Timer::Resolution resolution = Timer::Resolution::MILLISECONDS
+			TimerResolution resolution = TimerResolution::Milliseconds
 		);
 
 		// handle a key event if console is visible
