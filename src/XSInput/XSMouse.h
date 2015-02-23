@@ -6,6 +6,7 @@
 namespace XS {
 
 	struct vector2;
+	struct MovementCommand;
 
 	namespace Client {
 
@@ -20,6 +21,11 @@ namespace XS {
 		);
 		void MouseMotionEvent(
 			const MouseMotionEvent &ev
+		);
+
+		void CalculateMouseMotion(
+			real64_t frameMsec,
+			MovementCommand &cmd
 		);
 
 	} // namespace Client

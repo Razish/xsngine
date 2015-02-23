@@ -9,12 +9,16 @@
 #include "XSClient/XSClient.h"
 #include "XSClient/XSClientGame.h"
 #include "XSClient/XSClientConsole.h"
+#include "XSInput/XSInput.h"
+#include "XSInput/XSMouse.h"
 #include "XSRenderer/XSFont.h"
 #include "XSRenderer/XSView.h"
 
 namespace XS {
 
 	namespace Client {
+
+		ClientState state = {};
 
 		uint64_t frameNum = 0u;
 
@@ -46,8 +50,8 @@ namespace XS {
 			delete hudView;
 		}
 
-		void NetworkPump( void ) {
-			// create game context from any server updates we receieved since the last frame
+		void NetworkPump( real64_t dt ) {
+			GenerateMovementCommand( dt );
 		}
 
 		void RunFrame( real64_t dt ) {

@@ -4,12 +4,18 @@
 
 #include "XSCommon/XSCommand.h"
 #include "XSCommon/XSTimer.h"
+#include "XSCommon/XSVector.h"
 
 namespace XS {
 
 	namespace Client {
 
 		extern uint64_t frameNum;
+
+		extern struct ClientState {
+
+			vector3 viewAngles;
+		} state;
 
 		// initialise the Client object, loading related subsystems
 		void Init(
@@ -24,7 +30,7 @@ namespace XS {
 
 		// pump any network events for the ClientGame
 		void NetworkPump(
-			void
+			real64_t dt
 		);
 
 		// run a frame and pass control to the ClientGame

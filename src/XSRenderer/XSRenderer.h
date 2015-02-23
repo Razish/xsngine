@@ -15,8 +15,11 @@ namespace XS {
 			bool valid;
 
 			struct Window {
-				bool valid;
-				uint32_t width, height;
+				bool		valid;
+
+				uint32_t	width;
+				uint32_t	height;
+				real32_t	aspectRatio;
 			} window;
 
 			struct Driver {

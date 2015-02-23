@@ -201,6 +201,7 @@ int main( int argc, char **argv ) {
 			accumulator += sliceMsec;
 
 			// input
+			//TODO: run on another thread at 1000hz
 			if ( !XS::Common::com_dedicated->GetBool() ) {
 				XS::Client::input.Poll();
 			}
@@ -213,13 +214,17 @@ int main( int argc, char **argv ) {
 		//	XS::Server::RunFrame( dt );
 		//	XS::Server::NetworkPump();
 
-			// event pump
-			XS::Event::Pump();
-			XS::Command::ExecuteBuffer();
-
-			// outgoing network (client command), then client frame
-			XS::Client::NetworkPump();
 			while ( accumulator >= dt ) {
+				// this is so we can still react to input events if we're hitching
+
+				// event pump
+				XS::Event::Pump();
+				XS::Command::ExecuteBuffer();
+
+				// create movement command and send it off
+				XS::Client::NetworkPump( dt );
+
+				// run local prediction
 				XS::Client::RunFrame( dt );
 				accumulator -= dt;
 			}

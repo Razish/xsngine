@@ -7,6 +7,7 @@
 #include "XSCommon/XSConsole.h"
 #include "XSInput/XSInput.h"
 #include "XSInput/XSKeys.h"
+#include "XSInput/XSMouse.h"
 
 namespace XS {
 
@@ -14,13 +15,18 @@ namespace XS {
 
 		// Client input instance. Access via Client::input.Blah()
 		Input input;
-		Cvar *m_smooth = nullptr;
+		Cvar *m_acceleration = nullptr;
 		Cvar *m_sensitivity = nullptr;
+		Cvar *m_smooth = nullptr;
+		Cvar *m_smoothFrames = nullptr;
 
 		Input::Input() {
+			m_acceleration = Cvar::Create( "m_acceleration", "0", "Enable mouse acceleration", CVAR_ARCHIVE );
+			m_sensitivity = Cvar::Create( "m_sensitivity", "1", "Sensitivity of mouse input", CVAR_ARCHIVE );
 			m_smooth = Cvar::Create( "m_smoothMouse", "0", "Smooth the mouse input across multiple frames",
 				CVAR_ARCHIVE );
-			m_sensitivity = Cvar::Create( "m_sensitivity", "1", "Sensitivity of mouse input", CVAR_ARCHIVE );
+			m_smoothFrames = Cvar::Create( "m_smoothFrames", "1", "How many frames to smooth the mouse input across",
+				CVAR_ARCHIVE );
 
 			// raw input
 			// this is also set in ClientConsole upon (de)activation
@@ -130,6 +136,7 @@ namespace XS {
 					}
 				} break;
 
+				// ignoring these for now...
 				case SDL_FINGERUP:
 				case SDL_FINGERDOWN:
 				case SDL_TEXTINPUT: {
@@ -180,6 +187,16 @@ namespace XS {
 					Event::Queue( &ev );
 				} break;
 
+				case SDL_MULTIGESTURE: {
+					XSEvent ev( EventType::MouseWheel );
+
+					//FIXME: translate gesture events into actual mouse wheel events
+					ev.mouseWheel.up = true;
+					ev.mouseWheel.amount = 1u;
+
+					Event::Queue( &ev );
+				} break;
+
 				case SDL_KEYDOWN:
 				case SDL_KEYUP: {
 					SDL_Keycode key = e.key.keysym.sym;
@@ -200,8 +217,16 @@ namespace XS {
 				} break;
 				}
 			}
+		}
 
-			//TODO: movement command generation?
+		MovementCommand GenerateMovementCommand( real64_t dt ) {
+			MovementCommand dummy;
+
+			//TODO: get button state etc
+
+			CalculateMouseMotion( dt, dummy );
+
+			return dummy;
 		}
 
 	} // namespace Client

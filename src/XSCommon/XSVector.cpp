@@ -12,6 +12,10 @@ namespace XS {
 		return String::Format( "%.2f, %.2f, %.2f", x, y, z );
 	}
 
+	std::string pvector3::tostring( void ) const {
+		return String::Format( "%.2f, %.2f, %.2f", x, y, z );
+	}
+
 	std::string vector4::tostring( void ) const {
 		return String::Format( "%.2f, %.2f, %.2f, %.2f", x, y, w );
 	}
