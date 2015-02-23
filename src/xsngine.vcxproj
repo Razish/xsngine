@@ -45,6 +45,7 @@
     <ClCompile Include="XSRenderer\XSMesh.cpp" />
     <ClCompile Include="XSRenderer\XSModel.cpp" />
     <ClCompile Include="XSRenderer\XSModelObj.cpp" />
+    <ClCompile Include="XSRenderer\XSModelXMF.cpp" />
     <ClCompile Include="XSRenderer\XSRenderable.cpp" />
     <ClCompile Include="XSRenderer\XSRenderCommand.cpp" />
     <ClCompile Include="XSRenderer\XSRenderer.cpp" />
@@ -53,10 +54,13 @@
     <ClCompile Include="XSRenderer\XSTexture.cpp" />
     <ClCompile Include="XSRenderer\XSView.cpp" />
     <ClCompile Include="XSSystem\XSLinux.cpp" />
+    <ClCompile Include="XSSystem\XSUnix.cpp" />
     <ClCompile Include="XSSystem\XSWindows.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="XSClient\XSClient.h" />
+    <ClInclude Include="XSClient\XSClientConsole.h" />
+    <ClInclude Include="XSClient\XSClientGame.h" />
     <ClInclude Include="XSCommon\XSColours.h" />
     <ClInclude Include="XSCommon\XSCommand.h" />
     <ClInclude Include="XSCommon\XSCommon.h" />
@@ -90,6 +94,7 @@
     <ClInclude Include="XSRenderer\XSMesh.h" />
     <ClInclude Include="XSRenderer\XSModel.h" />
     <ClInclude Include="XSRenderer\XSModelObj.h" />
+    <ClInclude Include="XSRenderer\XSModelXMF.h" />
     <ClInclude Include="XSRenderer\XSRenderable.h" />
     <ClInclude Include="XSRenderer\XSRenderCommand.h" />
     <ClInclude Include="XSRenderer\XSRenderer.h" />
@@ -100,6 +105,10 @@
     <ClInclude Include="XSRenderer\XSView.h" />
     <ClInclude Include="XSSystem\XSOS.h" />
     <ClInclude Include="XSSystem\XSPlatform.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="SConstruct" />
+    <None Include="XSClient\SConscript" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{AE0284A2-4DE8-4F87-AE0C-30B4B556660E}</ProjectGuid>
@@ -129,12 +138,18 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <NMakeBuildCommandLine>scons.bat -Q debug=1</NMakeBuildCommandLine>
     <NMakeCleanCommandLine>scons.bat -Q -c  debug=1</NMakeCleanCommandLine>
-    <NMakePreprocessorDefinitions>WIN32;_DEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+    <NMakePreprocessorDefinitions>WIN32;XS_OS_WINDOWS;_DEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+    <NMakeIncludeSearchPath>.</NMakeIncludeSearchPath>
+    <OutDir>.</OutDir>
+    <IntDir>.</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <NMakeBuildCommandLine>scons.bat -Q</NMakeBuildCommandLine>
     <NMakeCleanCommandLine>scons.bat -Q -c</NMakeCleanCommandLine>
-    <NMakePreprocessorDefinitions>WIN32;NDEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+    <NMakePreprocessorDefinitions>WIN32;XS_OS_WINDOWS;NDEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+    <NMakeIncludeSearchPath>.</NMakeIncludeSearchPath>
+    <OutDir>.</OutDir>
+    <IntDir>.</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup>
   </ItemDefinitionGroup>

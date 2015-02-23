@@ -63,12 +63,6 @@
     <ClCompile Include="XSCommon\XSModule.cpp">
       <Filter>XSCommon</Filter>
     </ClCompile>
-    <ClCompile Include="XSCommon\XSNetAddress.cpp">
-      <Filter>XSCommon</Filter>
-    </ClCompile>
-    <ClCompile Include="XSCommon\XSSocket.cpp">
-      <Filter>XSCommon</Filter>
-    </ClCompile>
     <ClCompile Include="XSCommon\XSString.cpp">
       <Filter>XSCommon</Filter>
     </ClCompile>
@@ -150,15 +144,13 @@
     <ClCompile Include="XSSystem\XSWindows.cpp">
       <Filter>XSSystem</Filter>
     </ClCompile>
+    <ClCompile Include="XSNetwork\XSNetAddress.cpp" />
+    <ClCompile Include="XSNetwork\XSSocket.cpp" />
+    <ClCompile Include="XSSystem\XSUnix.cpp" />
+    <ClCompile Include="XSRenderer\XSModelXMF.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="XSClient\XSClient.h">
-      <Filter>XSClient</Filter>
-    </ClInclude>
-    <ClInclude Include="XSClient\xsclientconsole.h">
-      <Filter>XSClient</Filter>
-    </ClInclude>
-    <ClInclude Include="XSClient\XSClientGame.h">
       <Filter>XSClient</Filter>
     </ClInclude>
     <ClInclude Include="XSCommon\XSColours.h">
@@ -198,12 +190,6 @@
       <Filter>XSCommon</Filter>
     </ClInclude>
     <ClInclude Include="XSCommon\XSModule.h">
-      <Filter>XSCommon</Filter>
-    </ClInclude>
-    <ClInclude Include="XSCommon\XSNetAddress.h">
-      <Filter>XSCommon</Filter>
-    </ClInclude>
-    <ClInclude Include="XSCommon\XSSocket.h">
       <Filter>XSCommon</Filter>
     </ClInclude>
     <ClInclude Include="XSCommon\XSString.h">
@@ -290,5 +276,14 @@
     <ClInclude Include="XSSystem\XSPlatform.h">
       <Filter>XSSystem</Filter>
     </ClInclude>
+    <ClInclude Include="XSNetwork\XSNetAddress.h" />
+    <ClInclude Include="XSNetwork\XSSocket.h" />
+    <ClInclude Include="XSRenderer\XSModelXMF.h" />
+    <ClInclude Include="XSClient\XSClientGame.h" />
+    <ClInclude Include="XSClient\XSClientConsole.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="XSClient\SConscript" />
+    <None Include="SConstruct" />
   </ItemGroup>
 </Project>

@@ -1,6 +1,11 @@
 #pragma once
 
 #if defined(XS_OS_WINDOWS)
+	#define WIN32_LEAN_AND_MEAN
+	#define VC_EXTRALEAN
+	#ifndef NOMINMAX
+		#define NOMINMAX /* Don't define min() and max() */
+	#endif
 	#include <Windows.h>
 #elif defined(XS_OS_LINUX)
 	#include <sys/time.h>

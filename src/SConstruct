@@ -208,13 +208,24 @@ elif plat == 'Windows':
 	env['LIBPATH'] = '#/../lib/' + arch + '/'
 	libs = [
 		'OpenGL32',
+		'Ws2_32',
+		'User32',
+		'Shell32',
+		'winmm',
+		'Ole32',
+		'Gdi32',
+		'Version',
+		'Imm32',
+		'OleAut32'
+	]
+	dlibs = [
 		'SDL2',
 		'SDL2main',
-		'freetype250d',
-		'zlibd',
-		'libpng16d',
-		'Ws2_32'
+		'freetype250',
+		'zlib',
+		'libpng16'
 	]
+	libs += [lib + 'd' for lib in dlibs]
 
 # compiler switches
 if plat == 'Linux' or plat == 'Darwin':

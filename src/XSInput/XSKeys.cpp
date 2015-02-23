@@ -161,7 +161,7 @@ namespace XS {
 						shift = !shift;
 					}
 
-					const bool capsLock = (SDL_GetModState() & KMOD_CAPS);
+					const bool capsLock = !!(SDL_GetModState() & KMOD_CAPS);
 					if ( capsLock && km.keycode >= 'a' && km.keycode <= 'z' ) {
 						shift = !shift;
 					}

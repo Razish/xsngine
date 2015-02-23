@@ -19,7 +19,7 @@ namespace XS {
 		MessageBuffer& operator=( const MessageBuffer& ) = delete;
 
 		MessageBuffer(
-			const char *logfile = nullptr
+			const char *logfile
 		);
 
 		~MessageBuffer();

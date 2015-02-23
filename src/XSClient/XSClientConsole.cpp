@@ -46,7 +46,7 @@ namespace XS {
 					Toggle();
 				}
 				else if ( ev.key == SDLK_PAGEUP ) {
-					if ( scrollAmount + 1 < console->buffer->GetNumLines() - lineCount ) {
+					if ( scrollAmount + 1 < static_cast<int32_t>( console->buffer->GetNumLines() - lineCount ) ) {
 						scrollAmount++;
 					}
 				}
@@ -107,7 +107,7 @@ namespace XS {
 			const uint32_t numLines = console->buffer->GetNumLines();
 			const uint32_t start = std::max(
 				0,
-				static_cast<int32_t>( numLines ) - scrollAmount - static_cast<int32_t>( lineCount )
+				static_cast<int32_t>( numLines ) - static_cast<int32_t>( scrollAmount ) - static_cast<int32_t>( lineCount )
 			);
 			std::vector<std::string> lines = console->buffer->FetchLines( start, lineCount );
 
@@ -133,7 +133,7 @@ namespace XS {
 			const char *line = input->GetLine();
 			pos.x = font->GetGlyphWidth( '>', fontSize );
 			for ( const char *p = line; *p; p++ ) {
-				if ( p - line >= input->GetCursorPos() ) {
+				if ( p - line >= static_cast<int32_t>( input->GetCursorPos() ) ) {
 					break;
 				}
 				pos.x += font->GetGlyphWidth( *p, fontSize );

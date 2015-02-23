@@ -63,7 +63,7 @@ namespace XS {
 
 		//FIXME: care about printing twice on same line
 		std::string finalOut = "";
-		for ( uint32_t i = 0; i < indentation; i++ ) {
+		for ( int32_t i = 0; i < indentation; i++ ) {
 			finalOut += "  ";
 		}
 		finalOut += str;
