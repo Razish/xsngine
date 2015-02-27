@@ -55,15 +55,15 @@ namespace XS {
 				} break;
 
 				case EventType::MouseButton: {
-					Client::MouseButtonEvent( ev.mouseButton );
+					Client::Input::MouseButtonEvent( ev.mouseButton );
 				} break;
 
 				case EventType::MouseWheel: {
-					Client::MouseWheelEvent( ev.mouseWheel );
+					Client::Input::MouseWheelEvent( ev.mouseWheel );
 				} break;
 
 				case EventType::MouseMotion: {
-					Client::MouseMotionEvent( ev.mouseMotion );
+					Client::Input::MouseMotionEvent( ev.mouseMotion );
 				} break;
 
 				default: {

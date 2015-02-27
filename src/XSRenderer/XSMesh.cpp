@@ -27,8 +27,7 @@ namespace XS {
 
 			real32_t *buffer = static_cast<real32_t *>( vertexBuffer->Map() );
 			if ( indices.size() > 0 ) {
-				for ( size_t index = 0u; index < indices.size(); index++ ) {
-				//for ( auto index : indices ) {
+				for ( const auto &index : indices ) {
 					*buffer++ = vertices[index].x;
 					*buffer++ = vertices[index].y;
 					*buffer++ = vertices[index].z;

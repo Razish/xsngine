@@ -20,7 +20,7 @@ namespace XS {
 				height = state.window.height;
 			}
 
-			perFrameData = new Backend::Buffer( BufferType::Uniform, nullptr, sizeof(real32_t) * 16 * 2 );
+			perFrameData = new Backend::Buffer( BufferType::Uniform, nullptr, sizeof(real32_t) * 16 );
 
 			RegisterView( this );
 		}
@@ -40,16 +40,16 @@ namespace XS {
 					zNear, zFar );
 			}
 
+			if ( callbackPreRender ) {
+				callbackPreRender();
+			}
+
 			matrix4 *m = static_cast<matrix4 *>( perFrameData->Map() );
 
 			*m = projectionMatrix;
 
 			perFrameData->Unmap();
 			perFrameData->BindRange( 6 );
-
-			if ( callbackPreRender ) {
-				callbackPreRender();
-			}
 
 			// sort surfaces etc?
 

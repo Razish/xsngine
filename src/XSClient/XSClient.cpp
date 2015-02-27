@@ -51,7 +51,7 @@ namespace XS {
 		}
 
 		void NetworkPump( real64_t dt ) {
-			GenerateMovementCommand( dt );
+			Input::GenerateMovementCommand( dt );
 		}
 
 		void RunFrame( real64_t dt ) {
@@ -105,13 +105,12 @@ namespace XS {
 		static void DrawHUD( real64_t frametime ) {
 			hudView->Bind();
 
-			static const vector2 pos( 0.0f, 0.0f );
 			static Renderer::Font *font = nullptr;
 			if ( !font ) {
 				font = Renderer::Font::Register( "menu", 16 );
 			}
 
-			static const uint32_t numSamples = 128u;
+			static const uint32_t numSamples = 64u;
 			static real64_t samples[numSamples];
 			static uint32_t index = 0;
 			samples[index++] = frametime;
@@ -123,7 +122,18 @@ namespace XS {
 				avg += samples[i];
 			}
 			avg /= static_cast<real64_t>( numSamples );
-			font->Draw( pos, String::Format( "FPS:%.3f\nTesting second line.", 1000.0 / avg ) );
+
+			const char *fpsText = String::Format( "FPS:%.0f", 1000.0 / avg ).c_str();
+			real32_t textWidth = 2.0f;
+			for ( const char *p = fpsText; *p; p++ ) {
+				textWidth += font->GetGlyphWidth( *p );
+			}
+
+			vector2 pos(
+				Renderer::state.window.width - textWidth,
+				0.0f
+			);
+			font->Draw( pos, fpsText );
 		}
 
 		void DrawFrame( real64_t frametime ) {

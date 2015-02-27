@@ -6,27 +6,32 @@
 namespace XS {
 
 	struct vector2;
-	struct MovementCommand;
 
 	namespace Client {
 
-		extern vector2 mouseDelta;
+		namespace Input {
 
-		// pass input events to the client system (console -> menus -> binds/ingame)
-		void MouseWheelEvent(
-			const MouseWheelEvent &ev
-		);
-		void MouseButtonEvent(
-			const MouseButtonEvent &ev
-		);
-		void MouseMotionEvent(
-			const MouseMotionEvent &ev
-		);
+			struct MovementCommand;
 
-		void CalculateMouseMotion(
-			real64_t frameMsec,
-			MovementCommand &cmd
-		);
+			extern vector2 mouseDelta;
+
+			// pass input events to the client system (console -> menus -> binds/ingame)
+			void MouseWheelEvent(
+				const MouseWheelEvent &ev
+			);
+			void MouseButtonEvent(
+				const MouseButtonEvent &ev
+			);
+			void MouseMotionEvent(
+				const MouseMotionEvent &ev
+			);
+
+			void CalculateMouseMotion(
+				real64_t frameMsec,
+				MovementCommand &cmd
+			);
+
+		} // namespace Input
 
 	} // namespace Client
 

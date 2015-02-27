@@ -31,17 +31,17 @@ namespace XS {
 				glClearDepth( 1.0f );
 
 				// state changes
-				glEnable( GL_DEPTH_TEST );
-				glDepthFunc( GL_LEQUAL );
+				ToggleDepthTest( true );
+				SetDepthFunction( DepthFunc::LessOrEqual );
 
 				// back-face culling
-				glEnable( GL_CULL_FACE );
+				glDisable( GL_CULL_FACE );
 				glCullFace( GL_BACK );
 				glFrontFace( GL_CCW );
 
 				// alpha blending
-				glEnable( GL_BLEND );
-				glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+				ToggleAlphaBlending( true );
+				SetBlendFunction( BlendFunc::SourceAlpha, BlendFunc::OneMinusSourceAlpha );
 
 				// activate the default vertex array object
 				glGenVertexArrays( 1, &defaultVao );
@@ -59,6 +59,123 @@ namespace XS {
 			void Shutdown( void ) {
 				glDeleteVertexArrays( 1, &defaultVao );
 				glDeleteBuffers( 1, &defaultPbo );
+			}
+
+			void ToggleDepthTest( bool enabled ) {
+				if ( enabled ) {
+					glEnable( GL_DEPTH_TEST );
+				}
+				else {
+					glDisable( GL_DEPTH_TEST );
+				}
+			}
+
+			void SetDepthFunction( DepthFunc func ) {
+				GLenum glFunc = GL_LEQUAL;
+
+				switch( func ) {
+
+				case DepthFunc::LessOrEqual: {
+					glFunc = GL_LEQUAL;
+				} break;
+
+				default: {
+					// ...
+				} break;
+
+				}
+
+				glDepthFunc( glFunc );
+			}
+
+			void ToggleAlphaBlending( bool enabled ) {
+				if ( enabled ) {
+					glEnable( GL_BLEND );
+				}
+				else {
+					glDisable( GL_BLEND );
+				}
+			}
+
+			static GLenum GetGLBlendFunction( BlendFunc func ) {
+				GLenum result = GL_ONE;
+
+				switch( func ) {
+
+				case BlendFunc::Zero: {
+					result = GL_ZERO;
+				} break;
+
+				case BlendFunc::One: {
+					result = GL_ONE;
+				} break;
+
+				case BlendFunc::SourceColour: {
+					result = GL_SRC_COLOR;
+				} break;
+
+				case BlendFunc::OneMinusSourceColour: {
+					result = GL_ONE_MINUS_SRC_COLOR;
+				} break;
+
+				case BlendFunc::DestColour: {
+					result = GL_DST_COLOR;
+				} break;
+
+				case BlendFunc::OneMinusDestColour: {
+					result = GL_ONE_MINUS_DST_COLOR;
+				} break;
+
+				case BlendFunc::SourceAlpha: {
+					result = GL_SRC_ALPHA;
+				} break;
+
+				case BlendFunc::OneMinusSourceAlpha: {
+					result = GL_ONE_MINUS_SRC_ALPHA;
+				} break;
+
+				case BlendFunc::DestAlpha: {
+					result = GL_DST_ALPHA;
+				} break;
+
+				case BlendFunc::OneMinusDestAlpha: {
+					result = GL_ONE_MINUS_DST_ALPHA;
+				} break;
+
+				case BlendFunc::ConstantColour: {
+					result = GL_CONSTANT_COLOR;
+				} break;
+
+				case BlendFunc::OneMinusConstantColour: {
+					result = GL_ONE_MINUS_CONSTANT_COLOR;
+				} break;
+
+				case BlendFunc::ConstantAlpha: {
+					result = GL_CONSTANT_ALPHA;
+				} break;
+
+				case BlendFunc::OneMinusConstantAlpha: {
+					result = GL_ONE_MINUS_CONSTANT_ALPHA;
+				} break;
+
+				case BlendFunc::SourceAlphaSaturate: {
+					result = GL_SRC_ALPHA_SATURATE;
+				} break;
+
+				default: {
+					result = GL_ONE;
+				} break;
+
+				}
+
+				return result;
+			}
+
+			void SetBlendFunction( BlendFunc sourceFunc, BlendFunc destFunc ) {
+				GLenum glSourceFunc = GetGLBlendFunction( sourceFunc );
+				GLenum glDestFunc = GetGLBlendFunction( destFunc );
+
+				glBlendFunc( glSourceFunc, glDestFunc );
 			}
 
 		} // namespace Backend

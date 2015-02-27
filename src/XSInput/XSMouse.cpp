@@ -5,9 +5,12 @@
 #include "XSCommon/XSEvent.h"
 #include "XSCommon/XSVector.h"
 #include "XSCommon/XSCvar.h"
+#include "XSCommon/XSConsole.h"
 #include "XSClient/XSClient.h"
 #include "XSInput/XSInput.h"
 #include "XSRenderer/XSRenderer.h"
+
+//#define MOUSE_SMOOTHING
 
 namespace XS {
 
@@ -17,69 +20,104 @@ namespace XS {
 		//	will be calculated when a movement command is generated (taking into account smoothing, acceleration,
 		//	sensitivity)
 
-		// per frame, accumulates until a movement command is generated
-		static struct PerFrameState {
-			std::queue<pvector2> mouseDelta;
-		} perFrameState = {};
+		namespace Input {
 
-		void MouseWheelEvent( const struct MouseWheelEvent &ev ) {
-			// ...
-		}
-		void MouseButtonEvent( const struct MouseButtonEvent &ev ) {
-			// ...
-		}
-		void MouseMotionEvent( const struct MouseMotionEvent &ev ) {
-			if ( perFrameState.mouseDelta.size() >= m_smoothFrames->GetUInt32() ) {
-				perFrameState.mouseDelta.pop();
+			// per frame, accumulates until a movement command is generated
+			// store a small number of previous samples for interpolation (and extrapolation?)
+			typedef pvector2 PerFrameState;
+			static PerFrameState perFrameState = {};
+			std::queue<PerFrameState> previousStates;
+
+			void MouseWheelEvent( const struct MouseWheelEvent &ev ) {
+				// ...
 			}
-			perFrameState.mouseDelta.push( pvector2( ev.x, ev.y ) );
-		}
-
-		void CalculateMouseMotion( real64_t frameMsec, MovementCommand &cmd ) {
-			pvector2 totalDelta;
-			real64_t smoothFactor = 1.0;
-
-			uint32_t numFrames = 0u;
-			while ( !perFrameState.mouseDelta.empty() ) {
-				pvector2 &frameDelta = perFrameState.mouseDelta.front();
-
-				// scale per smoothing frame
-				frameDelta *= 1.0 / (++numFrames * smoothFactor);
-				smoothFactor /= 1.5;
-
-				if ( m_acceleration->GetBool() ) {
-					//TODO: handle mouse acceleration
+			void MouseButtonEvent( const struct MouseButtonEvent &ev ) {
+				// ...
+			}
+			void MouseMotionEvent( const struct MouseMotionEvent &ev ) {
+				// accumulate the movement for this frame
+				perFrameState.x += static_cast<real64_t>( ev.x );
+				perFrameState.y += static_cast<real64_t>( ev.y );
+				if ( m_debug->GetBool() ) {
+					console.Print( PrintLevel::Normal,
+						"MouseMotionEvent( %i, %i )\n",
+						ev.x,
+						ev.y
+					);
 				}
-				else {
-					// ???
+			}
+
+			void CalculateMouseMotion( real64_t frameMsec, MovementCommand &cmd ) {
+				pvector2 totalDelta = perFrameState;
+
+#if defined(MOUSE_SMOOTHING)
+				uint32_t numFrames = 0u;
+				real64_t smoothFactor = 1.0;
+				const real64_t smoothDecimator = 1.5; // 1.0 / 1.5 = 0.66666
+				while ( !previousStates.empty() ) {
+					pvector2 &frameDelta = previousStates.front();
+
+					// scale per smoothing frame
+					numFrames++;
+					frameDelta *= 1.0 / (numFrames * smoothFactor);
+					smoothFactor /= smoothDecimator;
+
+					if ( m_acceleration->GetBool() ) {
+						//TODO: handle mouse acceleration (linear, logarithmic, quadratic/ql style)
+					}
+
+					// scale by sensitivity factor
+					frameDelta *= m_sensitivity->GetReal64();
+
+					//TODO: scale by aspect ratio?
+					/*
+					const Cvar *r_fov = Cvar::Get( "r_fov" );
+					const real64_t fov = r_fov ? r_fov->GetReal64() : 75.0;
+					frameDelta *= fov / Renderer::state.window.aspectRatio;
+					*/
+
+					totalDelta += frameDelta;
+				}
+				while ( previousStates.size() >= m_smoothFrames->GetUInt32() ) {
+					previousStates.pop();
+				}
+				previousStates.push( perFrameState );
+#endif
+				perFrameState.clear();
+
+				const vector3 oldAngles = Client::state.viewAngles;
+
+#if defined(MOUSE_SMOOTHING)
+				if ( !dblcmp( totalDelta.x, 0.0 ) ) {
+					totalDelta.x /= static_cast<real64_t>( numFrames );
+				}
+				if ( !dblcmp( totalDelta.y, 0.0 ) ) {
+					totalDelta.y /= static_cast<real64_t>( numFrames );
+				}
+#endif
+
+				if ( m_debug->GetBool() && (!dblcmp( totalDelta.x, 0.0 ) || !dblcmp( totalDelta.y, 0.0 )) ) {
+					console.Print( PrintLevel::Normal,
+						"CalculateMouseMotion( %.3f, %.3f )\n",
+						static_cast<real32_t>( totalDelta.x ),
+						static_cast<real32_t>( totalDelta.y )
+					);
 				}
 
-				// scale by sensitivity factor
-				frameDelta *= m_sensitivity->GetReal64();
+				//TODO: convert/wrap to euler rotation?
+				Client::state.viewAngles.yaw = totalDelta.x;
+				Client::state.viewAngles.pitch = totalDelta.y;
 
-				// scale by aspect ratio
-				const Cvar *r_fov = Cvar::Get( "r_fov" );
-				const real64_t fov = r_fov ? r_fov->GetReal64() : 75.0;
-				frameDelta *= fov / Renderer::state.window.aspectRatio;
-
-				totalDelta += frameDelta;
-
-				perFrameState.mouseDelta.pop();
+				// check to make sure the angles haven't wrapped
+				if ( Client::state.viewAngles.pitch - oldAngles.pitch > 90.0f ) {
+					Client::state.viewAngles.pitch = oldAngles.pitch + 90.0f;
+				}
+				else if ( oldAngles.pitch - Client::state.viewAngles.pitch > 90.0f ) {
+					Client::state.viewAngles.pitch = oldAngles.pitch - 90.0f;
+				}
 			}
 
-			const vector3 oldAngles = Client::state.viewAngles;
-			totalDelta /= static_cast<real64_t>( numFrames );
-			Client::state.viewAngles.yaw = totalDelta.x;
-			Client::state.viewAngles.pitch = totalDelta.y;
-
-			// check to make sure the angles haven't wrapped
-			if ( Client::state.viewAngles.pitch - oldAngles.pitch > 90.0f ) {
-				Client::state.viewAngles.pitch = oldAngles.pitch + 90.0f;
-			}
-			else if ( oldAngles.pitch - Client::state.viewAngles.pitch > 90.0f ) {
-				Client::state.viewAngles.pitch = oldAngles.pitch - 90.0f;
-			}
-		}
+		} // namespace Input
 
 	} // namespace Client
 

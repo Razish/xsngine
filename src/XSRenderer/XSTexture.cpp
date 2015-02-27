@@ -16,25 +16,25 @@ namespace XS {
 		static bool anisotropy = false;
 		static real32_t maxAnisotropy = 0.0f;
 
-		static const struct {
+		static const struct TextureFilter {
 			const char *name;
 			GLint min, mag;
+			bool generateMipMaps;
 		} filterTable[] = {
-			{ "GL_NEAREST",					GL_NEAREST,					GL_NEAREST },
-			{ "GL_LINEAR",					GL_LINEAR,					GL_LINEAR },
-			{ "GL_NEAREST_MIPMAP_NEAREST",	GL_NEAREST_MIPMAP_NEAREST,	GL_NEAREST },
-			{ "GL_LINEAR_MIPMAP_NEAREST",	GL_LINEAR_MIPMAP_NEAREST,	GL_LINEAR },
-			{ "GL_NEAREST_MIPMAP_LINEAR",	GL_NEAREST_MIPMAP_LINEAR,	GL_NEAREST },
-			{ "GL_LINEAR_MIPMAP_LINEAR",	GL_LINEAR_MIPMAP_LINEAR,	GL_LINEAR }
+			{ "GL_NEAREST",					GL_NEAREST,					GL_NEAREST,	false },
+			{ "GL_LINEAR",					GL_LINEAR,					GL_LINEAR,	false },
+			{ "GL_NEAREST_MIPMAP_NEAREST",	GL_NEAREST_MIPMAP_NEAREST,	GL_NEAREST,	true },
+			{ "GL_LINEAR_MIPMAP_NEAREST",	GL_LINEAR_MIPMAP_NEAREST,	GL_LINEAR,	true },
+			{ "GL_NEAREST_MIPMAP_LINEAR",	GL_NEAREST_MIPMAP_LINEAR,	GL_NEAREST,	true },
+			{ "GL_LINEAR_MIPMAP_LINEAR",	GL_LINEAR_MIPMAP_LINEAR,	GL_LINEAR,	true }
 		};
-		static const size_t numFilters = ARRAY_LEN( filterTable );
-		static size_t GetTextureFilter( const char *string ) {
-			for ( size_t filter=0; filter<numFilters; filter++ ) {
-				if ( !String::Compare( string, filterTable[filter].name ) ) {
+		static const TextureFilter &GetTextureFilter( const char *string ) {
+			for ( const TextureFilter &filter : filterTable ) {
+				if ( !String::Compare( string, filter.name ) ) {
 					return filter;
 				}
 			}
-			return 0u;
+			return GetTextureFilter( r_textureFilter->GetDefaultString().c_str() );
 		}
 
 		const Texture *Texture::lastUsedTexture[maxTextureUnits] = {};
@@ -54,9 +54,7 @@ namespace XS {
 			}
 		}
 
-		Texture::Texture( unsigned int width, unsigned int height, InternalFormat internalFormat, const uint8_t *data ) {
-			size_t filterMode = GetTextureFilter( r_textureFilter->GetCString() );
-
+		Texture::Texture( uint32_t width, uint32_t height, InternalFormat internalFormat, const uint8_t *data ) {
 			glGenTextures( 1, &id );
 			if ( !id ) {
 				throw( XSError( "Failed to create blank texture" ) );
@@ -79,18 +77,19 @@ namespace XS {
 					std::min( r_textureAnisotropyMax->GetReal32(), maxAnisotropy ) );
 			}
 
-			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filterTable[filterMode].min );
-			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filterTable[filterMode].mag );
+			const TextureFilter &filterMode = GetTextureFilter( r_textureFilter->GetCString() );
+			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filterMode.min );
+			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filterMode.mag );
 
 			glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
 
 			glTexImage2D( GL_TEXTURE_2D, 0, GetGLInternalFormat( internalFormat ), width, height, 0,
 				GetGLFormat( internalFormat ), GetDataTypeForFormat( internalFormat ), data );
 
-			if ( filterTable[filterMode].min == GL_NEAREST_MIPMAP_LINEAR ||
-				filterTable[filterMode].min == GL_NEAREST_MIPMAP_NEAREST ||
-				filterTable[filterMode].min == GL_LINEAR_MIPMAP_LINEAR ||
-				filterTable[filterMode].min == GL_LINEAR_MIPMAP_NEAREST )
+			if ( filterMode.min == GL_NEAREST_MIPMAP_LINEAR ||
+				filterMode.min == GL_NEAREST_MIPMAP_NEAREST ||
+				filterMode.min == GL_LINEAR_MIPMAP_LINEAR ||
+				filterMode.min == GL_LINEAR_MIPMAP_NEAREST )
 			{
 				glGenerateMipmap( GL_TEXTURE_2D );
 			}

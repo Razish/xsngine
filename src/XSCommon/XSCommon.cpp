@@ -167,6 +167,7 @@ int main( int argc, char **argv ) {
 
 		XS::Event::Init();
 	//	XS::Network::Init();
+		XS::Client::Input::Init();
 
 		if ( XS::Common::com_developer->GetBool() ) {
 			real64_t t = globalTimer.GetTiming( true, XS::TimerResolution::Milliseconds );
@@ -184,8 +185,7 @@ int main( int argc, char **argv ) {
 		// frame
 		XS::Common::gameTimer = new XS::Timer(); // TODO: free
 		while ( 1 ) {
-			static real64_t currentTime = XS::Common::gameTimer->GetTiming( false,
-				XS::TimerResolution::Milliseconds );
+			static real64_t currentTime = XS::Common::gameTimer->GetTiming( false, XS::TimerResolution::Milliseconds );
 			static real64_t accumulator = 0.0;
 
 			// calculate delta time for integrating this frame
@@ -203,7 +203,7 @@ int main( int argc, char **argv ) {
 			// input
 			//TODO: run on another thread at 1000hz
 			if ( !XS::Common::com_dedicated->GetBool() ) {
-				XS::Client::input.Poll();
+				XS::Client::Input::Poll();
 			}
 
 			// event pump
@@ -237,19 +237,24 @@ int main( int argc, char **argv ) {
 			const real64_t frameRate = XS::Common::r_framerate->GetReal64();
 			const real64_t renderMsec = 1000.0 / frameRate;
 			if ( frameTime < renderMsec ) {
-				XS::console.Print( XS::PrintLevel::Debug, "frameTime %.5f < %.5f, delaying for %0i\n",
+				/*
+				XS::console.Print( XS::PrintLevel::Debug,
+					"frameTime %.5f < %.5f, delaying for %0i\n",
 					frameTime,
 					renderMsec,
-					(uint32_t)(renderMsec - frameTime)
+					static_cast<uint32_t>( renderMsec - frameTime )
 				);
-				SDL_Delay( (uint32_t)(renderMsec - frameTime) );
+				*/
+				//TODO: busy-wait?
+				//FIXME: retrieve scheduler granularity
+				SDL_Delay( static_cast<uint32_t>( renderMsec - frameTime ) );
 			}
 		}
 	}
 	catch( const XS::XSError &e ) {
 		const bool developer = XS::Common::com_developer->GetBool();
 
-		XS::console.Print( XS::PrintLevel::Normal, "\n*** xsngine is shutting down\n" );
+		XS::console.Print( XS::PrintLevel::Normal, "\n*** " PRODUCT_NAME " is shutting down\n" );
 		if ( e.what() ) {
 			XS::console.Print( XS::PrintLevel::Normal, "Reason: %s\n", e.what() );
 		}

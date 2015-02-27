@@ -111,6 +111,9 @@ namespace XS {
 		);
 
 		// retrieve a value for the cvar at the given index (e.g. index 1 for "640 480" will be "480"
+		inline const std::string &GetDefaultString( void ) const {
+			return defaultStr;
+		}
 		inline const std::string &GetFullString( void ) const {
 			return fullString;
 		}

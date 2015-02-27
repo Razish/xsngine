@@ -8,29 +8,36 @@ namespace XS {
 
 	namespace Client {
 
-		extern Cvar *m_smooth;
-		extern Cvar *m_smoothFrames;
-		extern Cvar *m_sensitivity;
-		extern Cvar *m_acceleration;
+		namespace Input {
 
-		// exists in XSClient/XSInput.cpp for now
-		extern struct Input {
-			Input();
+			extern Cvar *m_acceleration;
+			extern Cvar *m_debug;
+			extern Cvar *m_sensitivity;
+			extern Cvar *m_smooth;
+			extern Cvar *m_smoothFrames;
 
-			// check for new input events
+			//TODO: move movement command generation to gamecode?
+			struct MovementCommand {
+				vector3 viewAngles;
+				uint8_t buttonState;
+			};
+
+			// initialise input state, register cvars, etc
+			void Init(
+				void
+			);
+
+			// poll for queued input events
 			void Poll(
 				void
-			) const;
+			);
 
-		} input;
+			// generate a movement command for this frame's accumulated input
+			MovementCommand GenerateMovementCommand(
+				real64_t dt
+			);
 
-		struct MovementCommand {
-			vector3 viewAngles;
-		};
-
-		MovementCommand GenerateMovementCommand(
-			real64_t dt
-		);
+		} // namespace Input
 
 	} // namespace Client
 

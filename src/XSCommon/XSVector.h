@@ -499,6 +499,9 @@ namespace XS {
 		}
 
 		// dot
+		static inline real32_t dot( const vector3 &a, const vector3 &b ) {
+			return a.x*b.x + a.y*b.y + a.z*b.z;
+		}
 		inline real32_t dot( const vector3 &vec ) const {
 			return x*vec.x + y*vec.y + z*vec.z;
 		}

@@ -5,6 +5,7 @@
 #include "XSCommon/XSString.h"
 #include "XSCommon/XSError.h"
 #include "XSCommon/XSCvar.h"
+#include "XSCommon/XSGlobals.h"
 #include "XSRenderer/XSRenderer.h"
 #include "XSRenderer/XSView.h"
 #include "XSRenderer/XSRenderCommand.h"
@@ -22,7 +23,7 @@ namespace XS {
 
 	namespace Renderer {
 
-		State state = {};
+		RendererState state = {};
 
 		static SDL_Window *window = nullptr;
 		static SDL_GLContext context;
@@ -181,7 +182,7 @@ namespace XS {
 		}
 
 		void RegisterCvars( void ) {
-			r_clear = Cvar::Create( "r_clear", "0.5 0.0 0.0 1.0", "Colour of the backbuffer", CVAR_ARCHIVE );
+			r_clear = Cvar::Create( "r_clear", "0.1607 0.1921 0.2039 1.0", "Colour of the backbuffer", CVAR_ARCHIVE );
 			r_debug = Cvar::Create( "r_debug", "0", "Enable debugging information", CVAR_ARCHIVE );
 			r_multisample = Cvar::Create( "r_multisample", "2", "Multisample Anti-Aliasing (MSAA) level",
 				CVAR_ARCHIVE );
@@ -208,11 +209,16 @@ namespace XS {
 			SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 3 );
 			SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 1 );
 			SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE );
-			SDL_GL_SetAttribute( SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG );
+			uint32_t contextFlags = SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG;
+			if ( Common::com_developer->GetBool() ) {
+				contextFlags |= SDL_GL_CONTEXT_DEBUG_FLAG;
+			}
+			SDL_GL_SetAttribute( SDL_GL_CONTEXT_FLAGS, contextFlags );
 
 			int multisample = r_multisample->GetInt32();
-			if ( multisample ) {
+			if ( multisample > 0 ) {
 				SDL_GL_SetAttribute( SDL_GL_MULTISAMPLEBUFFERS, 1 );
+				//TODO: find the highest significant bit to ensure samples^2
 				SDL_GL_SetAttribute( SDL_GL_MULTISAMPLESAMPLES, multisample );
 			}
 			else {

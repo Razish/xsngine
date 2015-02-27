@@ -184,9 +184,9 @@ namespace XS {
 
 			// clean up state
 			if ( mesh->vertexBuffer ) {
-				glDisableVertexAttribArray( 2 );
+			//	glDisableVertexAttribArray( 2 );
 			//	glDisableVertexAttribArray( 1 );
-			//	glDisableVertexAttribArray( 0 );
+				glDisableVertexAttribArray( 0 );
 			}
 		}
 

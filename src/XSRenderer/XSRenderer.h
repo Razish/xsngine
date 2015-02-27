@@ -11,7 +11,7 @@ namespace XS {
 
 	namespace Renderer {
 
-		extern struct State {
+		extern struct RendererState {
 			bool valid;
 
 			struct Window {

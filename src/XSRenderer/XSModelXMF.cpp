@@ -106,6 +106,7 @@ namespace XS {
 					for ( int i = 0; i < 3; i++ ) {
 						parser.ParseReal32( &vertex.raw[i] );
 					}
+					console.Print( PrintLevel::Debug, "x: %.1f, y: %.1f, z: %.1f\n", vertex.x, vertex.y, vertex.z );
 					mesh->vertices.push_back( vertex );
 					parser.SkipLine();
 				}
@@ -122,15 +123,14 @@ namespace XS {
 					}
 
 					uint16_t a = 0, b = 0, c = 0;
-					for ( uint32_t i = 0; i < 3; i++ ) {
-						const char *str = nullptr;
-						parser.ParseString( &str );
-						if ( str ) {
-							sscanf( str, "%hd/%hd/%hd", &a, &b, &c );
-							mesh->indices.push_back( a );
-							mesh->indices.push_back( b );
-							mesh->indices.push_back( c );
-						}
+					const char *str = nullptr;
+					parser.ParseString( &str );
+					if ( str ) {
+						sscanf( str, "%hd/%hd/%hd", &a, &b, &c );
+						console.Print( PrintLevel::Debug, "a: %hd, b: %hd, c: %hd\n", a, b, c );
+						mesh->indices.push_back( a );
+						mesh->indices.push_back( b );
+						mesh->indices.push_back( c );
 					}
 					parser.SkipLine();
 				}

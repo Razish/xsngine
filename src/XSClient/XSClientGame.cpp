@@ -3,10 +3,13 @@
 #include "XSCommon/XSCvar.h"
 #include "XSCommon/XSFile.h"
 #include "XSCommon/XSString.h"
+#include "XSCommon/XSMatrix.h"
+#include "XSClient/XSCamera.h"
 #include "XSRenderer/XSInternalFormat.h"
 #include "XSRenderer/XSMaterial.h"
 #include "XSRenderer/XSModel.h"
 #include "XSRenderer/XSRenderable.h"
+#include "XSRenderer/XSRenderer.h"
 #include "XSRenderer/XSShaderProgram.h"
 #include "XSRenderer/XSTexture.h"
 #include "XSRenderer/XSVertexAttributes.h"
@@ -17,6 +20,7 @@ namespace XS {
 	namespace ClientGame {
 
 		static Renderer::View *sceneView = nullptr;
+		static Camera *camera = nullptr;
 #ifdef CLIENT_TERRAIN
 		static Renderer::ShaderProgram *terrainProgram = nullptr;
 		static Renderer::Material *terrainMaterial = nullptr;
@@ -82,6 +86,20 @@ namespace XS {
 		static std::vector<GameObject *> objects;
 
 		static void RenderScene( void ) {
+			camera->SetupPerspective(
+				90.0f,
+				Renderer::state.window.aspectRatio,
+				0.1f,
+				4000.0f
+			);
+
+			const vector3 cameraPos( -128.0f, -128.0f, -128.0f );
+			const vector3 lookAt( 0.0f, 0.0f, 0.0f );
+			const vector3 up( 0.0f, 0.0f, 1.0f );
+			camera->LookAt( cameraPos, lookAt, up );
+
+			sceneView->projectionMatrix = camera->GetProjectionView();
+
 			// the view is already bound
 			for ( const auto &object : objects ) {
 				sceneView->AddObject( object->renderObject );
@@ -90,6 +108,7 @@ namespace XS {
 
 		void Init( void ) {
 			sceneView = new Renderer::View( 0u, 0u, false, RenderScene );
+			camera = new Camera();
 
 #ifdef CLIENT_TERRAIN
 			LoadTerrain();

@@ -31,3 +31,9 @@ world / 3D view
 		mesh
 		[skeleton]
 			animation
+
+particles
+	pass particle point to GPU and expand to quad with geometry shader
+	GPU-based particles - geometry shaders and transform feedback
+	different billboard types - lock to Z axis (create transform)
+	disable depth write, enable depth test, enable alpha blend, no alpha test
