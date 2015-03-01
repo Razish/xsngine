@@ -2,12 +2,11 @@
 
 namespace XS {
 
-	struct vector3;
-	struct matrix4;
-
 	namespace ClientGame {
 
 		class Camera {
+		private:
+			static bool doTranspose;
 		public:
 			Camera();
 			Camera( vector3 pos );
@@ -30,7 +29,11 @@ namespace XS {
 			);
 
 			inline const vector3 GetPosition( void ) const {
-				return vector3( worldTransform[10], worldTransform[11], worldTransform[12] );
+				return vector3(
+					worldTransform.at( 2, 2, doTranspose ),
+					worldTransform.at( 2, 3, doTranspose ),
+					worldTransform.at( 3, 0, doTranspose )
+				);
 			}
 
 			void LookAt(

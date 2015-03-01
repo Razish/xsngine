@@ -8,6 +8,8 @@ namespace XS {
 
 	namespace ClientGame {
 
+		bool Camera::doTranspose = false;
+
 		Camera::Camera()
 		: Camera( matrix4() )
 		{
@@ -17,10 +19,10 @@ namespace XS {
 		Camera::Camera( vector3 pos )
 		: Camera()
 		{
-			worldTransform[ 3] = pos.x;
-			worldTransform[ 7] = pos.y;
-			worldTransform[11] = pos.z;
-			worldTransform[15] = 1.0f;
+			worldTransform.at( 0, 3, doTranspose ) = pos.x;
+			worldTransform.at( 1, 3, doTranspose ) = pos.y;
+			worldTransform.at( 2, 3, doTranspose ) = pos.z;
+			worldTransform.at( 3, 3, doTranspose ) = 1.0f;
 
 			isPerspectiveSet = false;
 		}
@@ -41,14 +43,18 @@ namespace XS {
 		}
 
 		void Camera::SetPosition( const vector3 &position ) {
-			worldTransform[ 3] = position.x;
-			worldTransform[ 7] = position.y;
-			worldTransform[11] = position.z;
-			worldTransform[15] = 1.0f;
+			worldTransform.at( 0, 3, doTranspose ) = position.x;
+			worldTransform.at( 1, 3, doTranspose ) = position.y;
+			worldTransform.at( 2, 3, doTranspose ) = position.z;
+			worldTransform.at( 3, 3, doTranspose ) = 1.0f;
 		}
 
 		void Camera::LookAt( const vector3 &lookAt, const vector3 &up ) {
-			vector3 eye = vector3( worldTransform[3], worldTransform[7], worldTransform[11] );
+			vector3 eye = vector3(
+				worldTransform.at( 0, 3, doTranspose ),
+				worldTransform.at( 1, 3, doTranspose ),
+				worldTransform.at( 2, 3, doTranspose )
+			);
 
 			worldTransform = matrix4::lookAt( eye, lookAt, up ).inverse();
 			UpdateProjectionViewTransform();
