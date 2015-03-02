@@ -20,8 +20,8 @@ namespace XS {
 
 		void XMF::Process( Mesh *mesh ) {
 			// create texture
-			uint8_t texture[128 * 128 * 4] = {};
-			std::memset( texture, 255, sizeof(texture) );
+			uint8_t *texture = new uint8_t[128 * 128 * 4];
+			std::memset( texture, 255, sizeof(*texture) );
 			mesh->texture = new Texture( 128, 128, InternalFormat::RGBA8, texture );
 
 			// create shader program
@@ -42,6 +42,8 @@ namespace XS {
 
 			mesh->Upload();
 			meshes.push_back( mesh );
+
+			delete[] texture;
 		}
 
 		bool XMF::LoadMeshes( void ) {
@@ -50,7 +52,7 @@ namespace XS {
 				console.Print( PrintLevel::Normal, "%s failed to open file '%s'\n", XS_FUNCTION, modelPath.c_str() );
 				return false;
 			}
-			char buffer[f.length];
+			char *buffer = new char[f.length];
 			f.Read( reinterpret_cast<uint8_t *>( buffer ) );
 			TokenParser parser( buffer );
 			Mesh *mesh = new Mesh();
@@ -139,6 +141,7 @@ namespace XS {
 				}
 			}
 
+			delete[] buffer;
 			return true;
 		}
 

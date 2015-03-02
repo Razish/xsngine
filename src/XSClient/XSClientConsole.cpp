@@ -152,7 +152,7 @@ namespace XS {
 			}
 			vector2 versionPos(
 				Renderer::state.window.width - versionWidth,
-				pos.y
+				(Renderer::state.window.height / 2) - font->lineHeight[12u] - 4u
 			);
 			font->Draw( versionPos, versionText, 12u );
 
