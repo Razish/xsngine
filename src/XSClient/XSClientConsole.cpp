@@ -70,6 +70,7 @@ namespace XS {
 			con_fontSize = Cvar::Create( "con_fontSize", "16", "Size of the console font", CVAR_ARCHIVE );
 			input = new InputField( InputCallback, InputAutoComplete );
 			view = new Renderer::View( 0u, 0u, true );
+			font = Renderer::Font::Register( "console" );
 		}
 
 		ClientConsole::~ClientConsole() {
@@ -79,7 +80,8 @@ namespace XS {
 
 		void ClientConsole::Resize( void ) {
 			if ( font ) {
-				lineCount = ((Renderer::state.window.height / 2) / std::floor( font->lineHeight )) - 1;
+				const uint16_t fontSize = static_cast<uint16_t>( con_fontSize->GetInt32() );
+				lineCount = ((Renderer::state.window.height / 2) / std::floor( font->lineHeight[fontSize] )) - 1;
 			}
 		}
 
@@ -88,10 +90,9 @@ namespace XS {
 				return;
 			}
 
-			view->Bind();
+			const uint16_t fontSize = static_cast<uint16_t>( con_fontSize->GetInt32() );
 
-			// have to register it each frame so we can change the font size at runtime
-			font = Renderer::Font::Register( "console", static_cast<uint16_t>( con_fontSize->GetInt32() ) );
+			view->Bind();
 
 			Renderer::DrawQuad(
 				0, 0, Renderer::state.window.width, Renderer::state.window.height / 2,
@@ -116,36 +117,48 @@ namespace XS {
 			vector2 pos( x, 0.0f );
 			uint32_t drawn = 0u;
 			for ( const auto &it : lines ) {
-				const uint32_t linesToDraw = font->GetTextLineCount( pos, it );
+				const uint32_t linesToDraw = font->GetTextLineCount( pos, it, fontSize );
 				drawn += linesToDraw;
 				if ( drawn > lineCount ) {
 					break;
 				}
-				font->Draw( pos, it, &colourTable[ColourIndex( COLOUR_WHITE )] );
-				pos.y += linesToDraw * font->lineHeight;
+				font->Draw( pos, it, fontSize, &colourTable[ColourIndex( COLOUR_WHITE )] );
+				pos.y += linesToDraw * font->lineHeight[fontSize];
 			}
 
 			// draw the input line
-			font->Draw( pos, String::Format( ">%s", input->GetLine() ) );
+			font->Draw( pos, String::Format( ">%s", input->GetLine() ), fontSize );
 
 			// and now the cursor
 			const char *line = input->GetLine();
-			pos.x = font->GetGlyphWidth( '>' );
+			pos.x = font->GetGlyphWidth( '>', fontSize );
 			for ( const char *p = line; *p; p++ ) {
 				if ( p - line >= input->GetCursorPos() ) {
 					break;
 				}
-				pos.x += font->GetGlyphWidth( *p );
+				pos.x += font->GetGlyphWidth( *p, fontSize );
 			}
 			//TODO: overstrike mode
 			if ( static_cast<uint32_t>( GetElapsedTime() ) & 256 ) {
 				// flash every 250ms
-				font->Draw( pos, "_" );
+				font->Draw( pos, "_", fontSize );
 			}
+
+			// draw version information
+			const char *versionText = WINDOW_TITLE;
+			real32_t versionWidth = 2.0f;
+			for ( const char *p = versionText; *p; p++ ) {
+				versionWidth += font->GetGlyphWidth( *p, 12u );
+			}
+			vector2 versionPos(
+				Renderer::state.window.width - versionWidth,
+				pos.y
+			);
+			font->Draw( versionPos, versionText, 12u );
 
 			// adjust for next line
 			pos.x = x;
-			pos.y += font->lineHeight;
+			pos.y += font->lineHeight[fontSize];
 		}
 
 	} // namespace Client

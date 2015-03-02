@@ -37,7 +37,7 @@ namespace XS {
 			{
 				glGenBuffers( 1, &id );
 				glBindBuffer( type, id );
-				glBufferData( type, size, data, GL_STREAM_DRAW );
+				glBufferData( type, size, data, GL_STATIC_DRAW );
 			}
 
 			Buffer::~Buffer() {

@@ -5,6 +5,7 @@
 #include "XSCommon/XSString.h"
 #include "XSCommon/XSMatrix.h"
 #include "XSClient/XSCamera.h"
+#include "XSClient/XSCamera2.h"
 #include "XSRenderer/XSInternalFormat.h"
 #include "XSRenderer/XSMaterial.h"
 #include "XSRenderer/XSModel.h"
@@ -19,8 +20,14 @@ namespace XS {
 
 	namespace ClientGame {
 
+//#define USE_CAMERA1
+
 		static Renderer::View *sceneView = nullptr;
+#ifdef USE_CAMERA1
 		static Camera *camera = nullptr;
+#else
+		static Camera2 *camera = nullptr;
+#endif
 #ifdef CLIENT_TERRAIN
 		static Renderer::ShaderProgram *terrainProgram = nullptr;
 		static Renderer::Material *terrainMaterial = nullptr;
@@ -86,19 +93,23 @@ namespace XS {
 		static std::vector<GameObject *> objects;
 
 		static void RenderScene( void ) {
-			camera->SetupPerspective(
-				90.0f,
-				Renderer::state.window.aspectRatio,
-				0.1f,
-				4000.0f
-			);
-
+#ifdef USE_CAMERA1
 			const vector3 cameraPos( -128.0f, -128.0f, -128.0f );
 			const vector3 lookAt( 0.0f, 0.0f, 0.0f );
 			const vector3 up( 0.0f, 0.0f, 1.0f );
+
+			camera->SetupPerspective( 90.0f, 1.77777f, 0.1f, 4000.0f );
 			camera->LookAt( cameraPos, lookAt, up );
 
 			sceneView->projectionMatrix = camera->GetProjectionView();
+#else
+			const vector3 cameraPos( -16.0f, -16.0f, 16.0f );
+			const vector3 lookAt( 0.0f, 1.0f, 0.0f );
+
+			camera->SetupPerspective( 90.0f, 1.77777f, 0.1f, 4000.0f );
+			camera->Set( cameraPos, lookAt );
+			sceneView->projectionMatrix = camera->GetProjectionView();
+#endif
 
 			// the view is already bound
 			for ( const auto &object : objects ) {
@@ -108,7 +119,11 @@ namespace XS {
 
 		void Init( void ) {
 			sceneView = new Renderer::View( 0u, 0u, false, RenderScene );
+#ifdef USE_CAMERA1
 			camera = new Camera();
+#else
+			camera = new Camera2();
+#endif
 
 #ifdef CLIENT_TERRAIN
 			LoadTerrain();

@@ -24,11 +24,10 @@ namespace XS {
 		static ShaderProgram *fontProgram = nullptr;
 		static const uint32_t charsPerLine = 16u;
 
-		Font::Font( const char *name, uint16_t size )
-		: name( name ), pointSize( size )
+		Font::Font( const char *name )
+		: name( name )
 		{
 			file = String::Format( "fonts/%s.ttf", name );
-			std::memset( data, 0u, sizeof(data) );
 		}
 
 		static Material *CreateFontMaterial( Texture &fontTexture ) {
@@ -44,7 +43,11 @@ namespace XS {
 			return fontMaterial;
 		}
 
-		void Font::RenderGlyphs( void ) {
+		void Font::RenderGlyphs( uint16_t pointSize ) {
+			if ( rendered[pointSize] ) {
+				return;
+			}
+
 			FT_Face face = nullptr;
 
 			const File ttf( file.c_str(), FileMode::ReadBinary );
@@ -70,19 +73,20 @@ namespace XS {
 				return;
 			}
 
-			lineHeight = static_cast<real32_t>( face->size->metrics.height ) / 64.0f;
+			lineHeight[pointSize] = static_cast<real32_t>( face->size->metrics.height ) / 64.0f;
 
 			const size_t numChars = 256u;
 			const size_t skip = 0x20u;
 			//FIXME: this is just wrong. cell WxH should not be directly related to point size, it does not even imply
 			//	an upper bound on the dimensions (also glyph positioning is weird stuff)
-			const uint32_t maxCellSize = std::max( pointSize, static_cast<uint16_t>( std::ceil( lineHeight ) ) );
+			const uint32_t maxCellSize = std::max( pointSize, static_cast<uint16_t>( std::ceil( lineHeight[pointSize] ) ) );
 			const size_t atlasSize = numChars * maxCellSize * maxCellSize;
 			uint8_t *atlas = new uint8_t[atlasSize];
 			std::memset( atlas, 0u, atlasSize );
 
-			console.Print( PrintLevel::Developer, "Generating font atlas for '%s' (%ix%i)\n",
+			console.Print( PrintLevel::Developer, "Generating font atlas for '%s' (%i %ix%i)\n",
 				name.c_str(),
+				pointSize,
 				maxCellSize * charsPerLine,
 				maxCellSize * charsPerLine
 			);
@@ -119,14 +123,14 @@ namespace XS {
 				const size_t y = row * maxCellSize; // vertical position
 
 				// calculate glyph metrics
-				FontData &fd = data[c];
+				FontData &fd = data[c][pointSize];
 				fd.pixelSize = vector2( glyphWidth, glyphHeight );
 				const real32_t stScale = 16.0f * maxCellSize;
 				fd.s = vector2( colPos, colPos + (static_cast<real32_t>( glyphWidth ) / stScale) );
 				fd.t = vector2( rowPos, rowPos + (static_cast<real32_t>( glyphHeight ) / stScale) );
 				fd.advance = static_cast<real32_t>( slot->advance.x ) / 64.0f;
 				fd.offset.x = static_cast<real32_t>( slot->metrics.horiBearingX ) / 64.0f;
-				fd.offset.y = lineHeight + -(static_cast<real32_t>( slot->metrics.horiBearingY ) / 64.0f);
+				fd.offset.y = lineHeight[pointSize] + -(static_cast<real32_t>( slot->metrics.horiBearingY ) / 64.0f);
 
 				if ( !bitmap.buffer ) {
 					FT_Done_Glyph( glyph );
@@ -161,40 +165,48 @@ namespace XS {
 			);
 
 			// and now the glyph metrics
+			/*
 			const File fontdat( String::Format( "cache/fonts/%s_%i.fontdat", name.c_str(), pointSize ).c_str(),
 				FileMode::WriteBinary );
-			fontdat.Write( &data[skip], sizeof(data) - (sizeof(*data) * skip) );
+			fontdat.Write( &data[pointSize][skip], sizeof(data[pointSize]) - (sizeof(*data[pointSize]) * skip) );
+			*/
 
-			texture = new Texture(
+			texture[pointSize] = new Texture(
 				maxCellSize * charsPerLine,
 				maxCellSize * charsPerLine,
 				InternalFormat::R8,
 				atlas
 			);
-			SDL_assert( texture );
+			SDL_assert( texture[pointSize] );
 
-			material = CreateFontMaterial( *texture );
-			SDL_assert( material );
+			material[pointSize] = CreateFontMaterial( *texture[pointSize] );
+			SDL_assert( material[pointSize] );
 
 			delete[] atlas;
+
+			rendered[pointSize] = true;
 		}
 
-		void Font::Draw( const vector2 &pos, const std::string &text, const vector4 *colour ) {
+		void Font::Draw( const vector2 &pos, const std::string &text, uint16_t pointSize,
+			const vector4 *colour )
+		{
 			if ( text.empty() ) {
 				return;
 			}
+
+			RenderGlyphs( pointSize );
 
 			vector2 currentPos( pos );
 			size_t len = text.length();
 
 			for ( size_t i = 0; i < len; i++ ) {
 				const char c = text[i];
-				const FontData &fd = data[c];
+				const FontData &fd = data[c][pointSize];
 
 				// check for overflow
 				if ( currentPos.x + fd.advance >= state.window.width ) {
 					currentPos.x = pos.x;
-					currentPos.y += lineHeight;
+					currentPos.y += lineHeight[pointSize];
 				}
 
 				// render the glyph
@@ -208,7 +220,7 @@ namespace XS {
 					fd.s.y, // s1
 					fd.t.y, // t1
 					colour,
-					material
+					material[pointSize]
 				);
 
 				// increase by glyph width
@@ -217,7 +229,7 @@ namespace XS {
 				// check for line-feeds
 				if ( c == '\n' ) {
 					currentPos.x = pos.x;
-					currentPos.y += lineHeight;
+					currentPos.y += lineHeight[pointSize];
 				}
 				//TODO: handle \r? do we just write on top of the previous characters?
 				//TODO: handle tabs correctly with tab-stops aligned to 4 spaces - from the window's position, or the
@@ -227,23 +239,25 @@ namespace XS {
 			return;
 		}
 
-		uint32_t Font::GetTextLineCount( const vector2 &pos, const std::string &text ) {
+		uint32_t Font::GetTextLineCount( const vector2 &pos, const std::string &text, uint16_t pointSize ) {
 			uint32_t numLines = 0u;
 
 			if ( text.empty() ) {
 				return numLines;
 			}
 
+			RenderGlyphs( pointSize );
+
 			vector2 currentPos = pos;
 
 			for ( const char c : text ) {
 				SDL_assert( c != '\0' );
-				const FontData &fd = data[c];
+				const FontData &fd = data[c][pointSize];
 
 				// check for overflow
 				if ( currentPos.x + fd.advance >= state.window.width ) {
 					currentPos.x = pos.x;
-					currentPos.y += lineHeight;
+					currentPos.y += lineHeight[pointSize];
 					numLines++;
 				}
 
@@ -252,7 +266,7 @@ namespace XS {
 				// check for line-feeds
 				if ( c == '\n' ) {
 					currentPos.x = pos.x;
-					currentPos.y += lineHeight;
+					currentPos.y += lineHeight[pointSize];
 					numLines++;
 				}
 			}
@@ -260,8 +274,9 @@ namespace XS {
 			return numLines;
 		}
 
-		real32_t Font::GetGlyphWidth( char c ) const {
-			const FontData &fd = data[c];
+		real32_t Font::GetGlyphWidth( char c, uint16_t pointSize ) {
+			RenderGlyphs( pointSize );
+			const FontData &fd = data[c][pointSize];
 			return fd.advance;
 		}
 
@@ -270,8 +285,8 @@ namespace XS {
 				throw( XSError( "Could not initialise freetype library" ) );
 			}
 
-			fonts["menu"] = new Font( "menu", 24 );
-			fonts["console"] = new Font( "console", 12 );
+			fonts["menu"] = new Font( "menu" );
+			fonts["console"] = new Font( "console" );
 
 			static const VertexAttribute attributes[] = {
 				{ 0, "in_Position" },
@@ -281,39 +296,36 @@ namespace XS {
 
 			fontProgram = new ShaderProgram( "text", "text", attributes, ARRAY_LEN( attributes ) );
 
+			// by default, assume 16pt
 			for ( const auto &it: fonts ) {
-				it.second->RenderGlyphs();
+				it.second->RenderGlyphs( 16u );
 			}
 		}
 
 		void Font::Shutdown( void ) {
-			for ( const auto &it : fonts ) {
-				delete it.second->material;
-				delete it.second->texture;
-				delete it.second;
+			for ( const auto &font : fonts ) {
+				for ( const auto &material : font.second->material ) {
+					delete material.second;
+				}
+				for ( const auto &texture : font.second->texture ) {
+					delete texture.second;
+				}
+				delete font.second;
 			}
 
 			delete fontProgram;
 		}
 
 		// public, static
-		Font *Font::Register( const char *name, uint16_t pointSize ) {
-			//TODO: support fonts at multiple sizes
+		Font *Font::Register( const char *name ) {
 			Font *font = fonts[name];
 			if ( font ) {
-				if ( font->pointSize == pointSize ) {
-					return font;
-				}
-				else {
-					// size mismatch, we need to regenerate it
-					delete font;
-				}
+				return font;
 			}
 
-			console.Print( PrintLevel::Developer, "Generating new font '%s' at size %i\n", name, pointSize );
-			font = fonts[name] = new Font( name, pointSize );
+			console.Print( PrintLevel::Developer, "Generating new font '%s'\n", name );
+			font = fonts[name] = new Font( name );
 			//TODO: load cached font data
-			font->RenderGlyphs();
 			return font;
 		}
 

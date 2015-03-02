@@ -28,16 +28,17 @@ namespace XS {
 		void View::PreRender( void ) {
 			// set up 2d/3d perspective
 			if ( is2D ) {
-				projectionMatrix = ortho( 0.0f, static_cast<real32_t>( width ), 0.0f, static_cast<real32_t>( height ),
-					0.0f, 1.0f );
+				projectionMatrix = ortho(
+					0.0f,
+					static_cast<real32_t>( width ),
+					0.0f,
+					static_cast<real32_t>( height ),
+					0.0f, // zNear
+					1.0f // zFar
+				);
 			}
 			else {
-				const real32_t fov = Backend::r_fov->GetReal32();
-				const real32_t zNear = Backend::r_zRange->GetReal32( 0 );
-				const real32_t zFar = Backend::r_zRange->GetReal32( 1 );
-				projectionMatrix = perspectiveFov( fov,
-					static_cast<real32_t>( width ) / static_cast<real32_t>( height ),
-					zNear, zFar );
+				projectionMatrix.identity();
 			}
 
 			if ( callbackPreRender ) {

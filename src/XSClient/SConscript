@@ -7,7 +7,8 @@ client_env = env.Clone()
 # sources
 files = [
 	'XSClient/XSClientGame.cpp',
-	'XSClient/XSCamera.cpp'
+	'XSClient/XSCamera.cpp',
+	'XSClient/XSCamera2.cpp'
 ]
 files = [build_dir + f for f in files]
 

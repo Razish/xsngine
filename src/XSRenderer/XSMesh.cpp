@@ -1,4 +1,5 @@
 #include "XSCommon/XSCommon.h"
+#include "XSCommon/XSConsole.h"
 #include "XSRenderer/XSRenderer.h"
 #include "XSRenderer/XSMesh.h"
 #include "XSRenderer/XSBuffer.h"
@@ -36,6 +37,13 @@ namespace XS {
 				//	*buffer++ = normals[index].z;
 				//	*buffer++ = UVs[index].x;
 				//	*buffer++ = UVs[index].y;
+
+					console.Print( PrintLevel::Debug,
+						"Pushing %.2f, %.2f, %.2f\n",
+						vertices[index].x,
+						vertices[index].y,
+						vertices[index].z
+					);
 				}
 			}
 			vertexBuffer->Unmap();

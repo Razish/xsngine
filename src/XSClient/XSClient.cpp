@@ -107,7 +107,7 @@ namespace XS {
 
 			static Renderer::Font *font = nullptr;
 			if ( !font ) {
-				font = Renderer::Font::Register( "menu", 16 );
+				font = Renderer::Font::Register( "menu" );
 			}
 
 			static const uint32_t numSamples = 64u;
@@ -124,16 +124,17 @@ namespace XS {
 			avg /= static_cast<real64_t>( numSamples );
 
 			const char *fpsText = String::Format( "FPS:%.0f", 1000.0 / avg ).c_str();
+			const uint16_t fpsTextSize = 16u;
 			real32_t textWidth = 2.0f;
 			for ( const char *p = fpsText; *p; p++ ) {
-				textWidth += font->GetGlyphWidth( *p );
+				textWidth += font->GetGlyphWidth( *p, fpsTextSize );
 			}
 
 			vector2 pos(
 				Renderer::state.window.width - textWidth,
 				0.0f
 			);
-			font->Draw( pos, fpsText );
+			font->Draw( pos, fpsText, fpsTextSize );
 		}
 
 		void DrawFrame( real64_t frametime ) {

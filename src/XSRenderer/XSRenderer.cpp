@@ -247,7 +247,7 @@ namespace XS {
 			state.window.valid = true;
 			state.window.width = static_cast<uint32_t>( width );
 			state.window.height = static_cast<uint32_t>( height );
-			state.window.aspectRatio = vid_height->GetReal64() / vid_width->GetReal64();
+			state.window.aspectRatio = vid_width->GetReal64() / vid_height->GetReal64();
 
 			SDL_GL_SetSwapInterval( r_swapInterval->GetInt32() );
 		#if defined(XS_OS_MAC)

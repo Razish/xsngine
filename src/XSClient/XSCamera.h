@@ -7,6 +7,7 @@ namespace XS {
 		class Camera {
 		private:
 			static bool doTranspose;
+
 		public:
 			Camera();
 			Camera( vector3 pos );

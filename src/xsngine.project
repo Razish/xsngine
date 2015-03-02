@@ -167,6 +167,8 @@
     <File Name="XSClient/SConscript"/>
     <File Name="XSClient/XSCamera.cpp"/>
     <File Name="XSClient/XSCamera.h"/>
+    <File Name="XSClient/XSCamera2.cpp"/>
+    <File Name="XSClient/XSCamera2.h"/>
   </VirtualDirectory>
   <VirtualDirectory Name="XSInput">
     <File Name="XSInput/XSInputField.cpp"/>

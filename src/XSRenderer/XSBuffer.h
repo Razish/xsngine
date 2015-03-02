@@ -26,8 +26,8 @@ namespace XS {
 
 				Buffer(
 					BufferType bufferType,
-					const void *data,
-					size_t dataSize
+					const void *data, // nullptr if you are not yet writing to the buffer
+					size_t dataSize // in bytes
 				);
 
 				~Buffer();
