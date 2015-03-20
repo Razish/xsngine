@@ -232,7 +232,7 @@ int main( int argc, char **argv ) {
 			// alpha = accumulator / dt;
 			// lerp( previousState, alpha, currentState )
 			XS::Client::DrawFrame( frameTime );
-			XS::Renderer::Update( /*state*/ );
+			XS::Renderer::Update( frameTime/*state*/ );
 
 			const real64_t frameRate = XS::Common::r_framerate->GetReal64();
 			const real64_t renderMsec = 1000.0 / frameRate;

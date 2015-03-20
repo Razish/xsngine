@@ -7,6 +7,11 @@
 #include "XSRenderer/XSRenderCommand.h"
 #include "XSRenderer/XSBuffer.h"
 
+#define GLM_SWIZZLE
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/ext.hpp>
+
 namespace XS {
 
 	namespace Renderer {
@@ -15,7 +20,7 @@ namespace XS {
 		class Renderable;
 
 		// used for pre/post render callbacks
-		typedef void (*renderCallback_t)( void );
+		typedef void (*renderCallback_t)( real64_t dt );
 
 		struct View {
 		private:
@@ -24,9 +29,11 @@ namespace XS {
 			renderCallback_t				callbackPreRender, callbackPostRender;
 
 		public:
-			matrix4						 projectionMatrix;
-			matrix4						 viewMatrix;
+			glm::mat4					 projectionMatrix;
+#ifdef CAMERA_TEST
+#else
 			Backend::Buffer				*perFrameData;
+#endif
 			std::queue<RenderCommand>	 renderCommands;
 			bool						 is2D;
 
@@ -42,7 +49,10 @@ namespace XS {
 
 			// do not call publicly
 			~View() {
+#ifdef CAMERA_TEST
+#else
 				delete perFrameData;
+#endif
 			}
 
 			// bind a view so that subsequent render calls are associated with it
@@ -53,13 +63,13 @@ namespace XS {
 			// prepare the view for rendering, i.e. adding objects to the scene
 			// do not call externally, set callbacks via constructor
 			void PreRender(
-				void
+				real64_t dt
 			);
 
 			// post-process step if necessary
 			// do not call externally, set callbacks via constructor
 			void PostRender(
-				void
+				real64_t dt
 			) const;
 
 			// add a renderable object to the view for this frame

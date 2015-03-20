@@ -6,6 +6,7 @@
 #include "XSRenderer/XSView.h"
 #include "XSRenderer/XSBackend.h"
 #include "XSRenderer/XSRenderable.h"
+#include "XSRenderer/XSShaderProgram.h"
 
 namespace XS {
 
@@ -20,15 +21,18 @@ namespace XS {
 				height = state.window.height;
 			}
 
+#ifdef CAMERA_TEST
+#else
 			perFrameData = new Backend::Buffer( BufferType::Uniform, nullptr, sizeof(real32_t) * 16 );
+#endif
 
 			RegisterView( this );
 		}
 
-		void View::PreRender( void ) {
+		void View::PreRender( real64_t dt ) {
 			// set up 2d/3d perspective
 			if ( is2D ) {
-				projectionMatrix = ortho(
+				matrix4 o = ortho(
 					0.0f,
 					static_cast<real32_t>( width ),
 					0.0f,
@@ -36,21 +40,22 @@ namespace XS {
 					0.0f, // zNear
 					1.0f // zFar
 				);
-			}
-			else {
-				projectionMatrix.identity();
+				projectionMatrix = glm::make_mat4( o.data );
 			}
 
 			if ( callbackPreRender ) {
-				callbackPreRender();
+				callbackPreRender( dt );
 			}
 
+#ifdef CAMERA_TEST
+#else
 			matrix4 *m = static_cast<matrix4 *>( perFrameData->Map() );
 
-			*m = projectionMatrix;
+			memcpy( m->data, glm::value_ptr( projectionMatrix ), sizeof(m->data) );
 
 			perFrameData->Unmap();
 			perFrameData->BindRange( 6 );
+#endif
 
 			// sort surfaces etc?
 
@@ -61,9 +66,9 @@ namespace XS {
 			}
 		}
 
-		void View::PostRender( void ) const {
+		void View::PostRender( real64_t dt ) const {
 			if ( callbackPostRender ) {
-				callbackPostRender();
+				callbackPostRender( dt );
 			}
 		}
 

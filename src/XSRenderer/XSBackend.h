@@ -3,6 +3,7 @@
 namespace XS {
 
 	class Cvar;
+	struct vector4;
 
 	namespace Renderer {
 
@@ -20,6 +21,12 @@ namespace XS {
 
 			void Shutdown(
 				void
+			);
+
+			void ClearBuffer(
+				bool clearColour,
+				bool clearDepth,
+				const vector4 &colour
 			);
 
 			void ToggleDepthTest(

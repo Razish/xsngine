@@ -34,15 +34,6 @@ namespace XS {
 		struct View;
 		class Model;
 
-		extern Cvar *r_clear;
-		extern Cvar *r_debug;
-		extern Cvar *r_multisample;
-		extern Cvar *r_skipRender;
-		extern Cvar *r_swapInterval;
-		extern Cvar *vid_height;
-		extern Cvar *vid_noBorder;
-		extern Cvar *vid_width;
-
 		// used internally
 		// register cvars owned by the renderer
 		void RegisterCvars(
@@ -74,7 +65,7 @@ namespace XS {
 
 		// render all views and flip the backbuffer
 		void Update(
-			void
+			real64_t dt
 		);
 
 		//
@@ -89,6 +80,11 @@ namespace XS {
 		// set the current view for subsequent rendering
 		void BindView(
 			View *view
+		);
+
+		// retrieve the currently bound view
+		const View *GetCurrentView(
+			void
 		);
 
 		//

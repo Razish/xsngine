@@ -1,6 +1,7 @@
 #include "XSCommon/XSCommon.h"
 #include "XSCommon/XSCvar.h"
 #include "XSCommon/XSCommand.h"
+#include "XSCommon/XSVector.h"
 #include "XSRenderer/XSRenderer.h"
 #include "XSRenderer/XSBackend.h"
 #include "XSRenderer/XSScreenshot.h"
@@ -19,16 +20,14 @@ namespace XS {
 
 			static void RegisterCvars( void ) {
 				r_fov = Cvar::Create( "r_fov", "110", "Field of view", CVAR_ARCHIVE );
-				r_zRange = Cvar::Create( "r_zRange", "4.0 1000.0", "Clipping plane range", CVAR_ARCHIVE );
+				r_zRange = Cvar::Create( "r_zRange", "0.1 4000.0", "Clipping plane range", CVAR_ARCHIVE );
 			}
 
 			void Init( void ) {
 				RegisterCvars();
 				Command::AddCommand( "screenshot", Cmd_Screenshot );
 
-				glClearColor( 0.0f, 0.0f, 0.0f, 1.0f );
-				glClear( GL_COLOR_BUFFER_BIT );
-				glClearDepth( 1.0f );
+				ClearBuffer( true, true, vector4( 0.0f, 0.0f, 0.0f, 1.0f ) );
 
 				// state changes
 				ToggleDepthTest( true );
@@ -36,8 +35,8 @@ namespace XS {
 
 				// back-face culling
 				glDisable( GL_CULL_FACE );
-				glCullFace( GL_BACK );
-				glFrontFace( GL_CCW );
+				//glCullFace( GL_BACK );
+				//glFrontFace( GL_CCW );
 
 				// alpha blending
 				ToggleAlphaBlending( true );
@@ -59,6 +58,28 @@ namespace XS {
 			void Shutdown( void ) {
 				glDeleteVertexArrays( 1, &defaultVao );
 				glDeleteBuffers( 1, &defaultPbo );
+			}
+
+			void ClearBuffer( bool clearColour, bool clearDepth, const vector4 &colour ) {
+				GLbitfield bits = 0u;
+
+				if ( clearColour ) {
+					bits |= GL_COLOR_BUFFER_BIT;
+				}
+
+				if ( clearDepth ) {
+					bits |= GL_DEPTH_BUFFER_BIT;
+				}
+
+				glClear( bits );
+
+				if ( clearColour ) {
+					glClearColor( colour.r, colour.g, colour.b, colour.a );
+				}
+
+				if ( clearDepth ) {
+					glClearDepth( 1.0f );
+				}
 			}
 
 			void ToggleDepthTest( bool enabled ) {

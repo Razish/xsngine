@@ -165,10 +165,10 @@
     <File Name="XSClient/XSClientGame.cpp"/>
     <File Name="XSClient/XSClientGame.h"/>
     <File Name="XSClient/SConscript"/>
-    <File Name="XSClient/XSCamera.cpp"/>
-    <File Name="XSClient/XSCamera.h"/>
-    <File Name="XSClient/XSCamera2.cpp"/>
-    <File Name="XSClient/XSCamera2.h"/>
+    <File Name="XSClient/XSBaseCamera.h"/>
+    <File Name="XSClient/XSBaseCamera.cpp"/>
+    <File Name="XSClient/XSFlyCamera.cpp"/>
+    <File Name="XSClient/XSFlyCamera.h"/>
   </VirtualDirectory>
   <VirtualDirectory Name="XSInput">
     <File Name="XSInput/XSInputField.cpp"/>

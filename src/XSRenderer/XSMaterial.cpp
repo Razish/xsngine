@@ -13,11 +13,11 @@ namespace XS {
 			SDL_assert( shaderProgram && "Material::Bind: invalid shader program" );
 			shaderProgram->Bind();
 
-			for ( const auto& binding : bufferBindings ) {
+			for ( const auto &binding : bufferBindings ) {
 				binding.buffer->BindRange( binding.index );
 			}
 
-			for ( const auto& binding : samplerBindings ) {
+			for ( const auto &binding : samplerBindings ) {
 				binding.texture->Bind( binding.unit );
 			}
 		}

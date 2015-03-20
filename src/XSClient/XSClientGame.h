@@ -11,7 +11,7 @@ namespace XS {
 
 		// run a frame, simulate entities
 		void RunFrame(
-			void
+			real64_t dt
 		);
 
 		// prepare the scene for rendering, adding renderable objects to the view

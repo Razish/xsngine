@@ -101,14 +101,11 @@ namespace XS {
 
 	// public, static
 	Cvar *Cvar::Get( const std::string &name ) {
-		Cvar *cv = cvars[name];
-
-		// already exists
-		if ( cv ) {
-			return cv;
+		for ( auto &cv : cvars ) {
+			if ( String::CompareCase( cv.first.c_str(), name.c_str() ) ) {
+				return cv.second;
+			}
 		}
-
-		// nothing
 		return nullptr;
 	}
 

@@ -16,7 +16,7 @@
 #include "XSRenderer/XSFont.h"
 
 #if defined(XS_OS_MAC)
-#include <OpenCL/cl_gl_ext.h>
+//#include <OpenCL/cl_gl_ext.h>
 #endif
 
 namespace XS {
@@ -28,14 +28,14 @@ namespace XS {
 		static SDL_Window *window = nullptr;
 		static SDL_GLContext context;
 
-		Cvar *r_clear = nullptr;
-		Cvar *r_debug = nullptr;
-		Cvar *r_multisample = nullptr;
-		Cvar *r_skipRender = nullptr;
-		Cvar *r_swapInterval = nullptr;
-		Cvar *vid_height = nullptr;
-		Cvar *vid_noBorder = nullptr;
-		Cvar *vid_width = nullptr;
+		static Cvar *r_clear = nullptr;
+		static Cvar *r_debug = nullptr;
+		static Cvar *r_multisample = nullptr;
+		static Cvar *r_skipRender = nullptr;
+		static Cvar *r_swapInterval = nullptr;
+		static Cvar *vid_height = nullptr;
+		static Cvar *vid_noBorder = nullptr;
+		static Cvar *vid_width = nullptr;
 
 		std::vector<View *> views;
 		static View *currentView = nullptr;
@@ -288,18 +288,23 @@ namespace XS {
 			SDL_Quit();
 		}
 
-		void Update( void ) {
-			const vector4 clear( r_clear->GetReal32( 0 ), r_clear->GetReal32( 1 ), r_clear->GetReal32( 2 ),
-				r_clear->GetReal32( 3 ) );
-			glClearColor( clear.r, clear.g, clear.b, clear.a );
-			glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+		void Update( real64_t dt ) {
+			const vector4 clear(
+				r_clear->GetReal32( 0 ),
+				r_clear->GetReal32( 1 ),
+				r_clear->GetReal32( 2 ),
+				r_clear->GetReal32( 3 )
+			);
+			Backend::ClearBuffer( true, false, clear );
 
 			for ( const auto &view : views ) {
 				if ( r_skipRender->GetInt32() & (1 << static_cast<uint32_t>( view->is2D )) ) {
 					continue;
 				}
 
-				view->PreRender();
+				currentView = view;
+
+				view->PreRender( dt );
 				while ( !view->renderCommands.empty() ) {
 					const auto &cmd = view->renderCommands.front();
 
@@ -307,7 +312,7 @@ namespace XS {
 
 					view->renderCommands.pop();
 				}
-				view->PostRender();
+				view->PostRender( dt );
 			}
 
 			SDL_GL_SwapWindow( window );
@@ -319,6 +324,10 @@ namespace XS {
 
 		void BindView( View *view ) {
 			currentView = view;
+		}
+
+		const View *GetCurrentView( void ) {
+			return currentView;
 		}
 
 		static void AssertView( void ) {

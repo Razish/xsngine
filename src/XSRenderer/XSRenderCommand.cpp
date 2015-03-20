@@ -15,6 +15,12 @@
 #include "XSRenderer/XSVertexAttributes.h"
 #include "XSRenderer/XSTexture.h"
 #include "XSRenderer/XSShaderProgram.h"
+#include "XSRenderer/XSView.h"
+
+#define GLM_SWIZZLE
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/ext.hpp>
 
 namespace XS {
 
@@ -172,14 +178,14 @@ namespace XS {
 			}
 
 			// issue the draw command
-			if ( mesh->indexBuffer ) {
+			if ( 0 ) {//mesh->indexBuffer ) {
 				mesh->indexBuffer->Bind();
 				int size;
 				glGetBufferParameteriv( GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &size );
 				glDrawElements( GL_TRIANGLES, size / sizeof(uint16_t), GL_UNSIGNED_SHORT, 0 );
 			}
 			else {
-				glDrawArrays( GL_TRIANGLES, 0, mesh->vertices.size() );
+				glDrawArrays( GL_TRIANGLES, 0, mesh->indices.size() );
 			}
 
 			// clean up state

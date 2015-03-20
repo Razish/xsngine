@@ -4,8 +4,8 @@
 #include "XSCommon/XSFile.h"
 #include "XSCommon/XSString.h"
 #include "XSCommon/XSMatrix.h"
-#include "XSClient/XSCamera.h"
-#include "XSClient/XSCamera2.h"
+#include "XSClient/XSBaseCamera.h"
+#include "XSClient/XSFlyCamera.h"
 #include "XSRenderer/XSInternalFormat.h"
 #include "XSRenderer/XSMaterial.h"
 #include "XSRenderer/XSModel.h"
@@ -20,14 +20,8 @@ namespace XS {
 
 	namespace ClientGame {
 
-//#define USE_CAMERA1
-
 		static Renderer::View *sceneView = nullptr;
-#ifdef USE_CAMERA1
-		static Camera *camera = nullptr;
-#else
-		static Camera2 *camera = nullptr;
-#endif
+		static FlyCamera *camera = nullptr;
 #ifdef CLIENT_TERRAIN
 		static Renderer::ShaderProgram *terrainProgram = nullptr;
 		static Renderer::Material *terrainMaterial = nullptr;
@@ -92,22 +86,11 @@ namespace XS {
 		// always allocate with `new`
 		static std::vector<GameObject *> objects;
 
-		static void RenderScene( void ) {
-#ifdef USE_CAMERA1
-			const vector3 cameraPos( -128.0f, -128.0f, -128.0f );
-			const vector3 lookAt( 0.0f, 0.0f, 0.0f );
-			const vector3 up( 0.0f, 0.0f, 1.0f );
-
-			camera->SetupPerspective( 90.0f, 1.77777f, 0.1f, 4000.0f );
-			camera->LookAt( cameraPos, lookAt, up );
-
-			sceneView->projectionMatrix = camera->GetProjectionView();
+		static void RenderScene( real64_t dt ) {
+#ifdef CAMERA_TEST
+			glm::mat4 m;
+			sceneView->projectionMatrix = m;
 #else
-			const vector3 cameraPos( -16.0f, -16.0f, 16.0f );
-			const vector3 lookAt( 0.0f, 1.0f, 0.0f );
-
-			camera->SetupPerspective( 90.0f, 1.77777f, 0.1f, 4000.0f );
-			camera->Set( cameraPos, lookAt );
 			sceneView->projectionMatrix = camera->GetProjectionView();
 #endif
 
@@ -119,11 +102,18 @@ namespace XS {
 
 		void Init( void ) {
 			sceneView = new Renderer::View( 0u, 0u, false, RenderScene );
-#ifdef USE_CAMERA1
-			camera = new Camera();
-#else
-			camera = new Camera2();
-#endif
+			camera = new FlyCamera();
+			camera->SetFlySpeed( 0.05f );
+
+			const glm::vec3 cameraPos( -2.0f, 0.0f, 0.0f );
+			const glm::vec3 lookAt( 0.0f, 0.0f, 0.0f );
+			const glm::vec3 up( 0.0f, 1.0f, 0.0f );
+
+			Cvar *r_zRange = Cvar::Get( "r_zRange" );
+			real32_t zNear = r_zRange->GetReal32( 0 );
+			real32_t zFar = r_zRange->GetReal32( 1 );
+			camera->SetupPerspective( glm::pi<double>() * 0.25, Renderer::state.window.aspectRatio, zNear, zFar );
+			camera->LookAt( cameraPos, lookAt, up );
 
 #ifdef CLIENT_TERRAIN
 			LoadTerrain();
@@ -146,8 +136,8 @@ namespace XS {
 			}
 		}
 
-		void RunFrame( void ) {
-			// ...
+		void RunFrame( real64_t dt ) {
+			camera->Update( dt );
 		}
 
 		void DrawFrame( void ) {

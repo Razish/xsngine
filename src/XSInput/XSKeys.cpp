@@ -254,6 +254,7 @@ namespace XS {
 			}
 			*/
 
+			keystate[ev.key] = ev.down;
 			ExecuteBind( ev );
 		}
 

@@ -122,6 +122,10 @@ namespace XS {
 				real32_t f3,
 				real32_t f4
 			);
+
+			static uint32_t GetCurrentProgram(
+				void
+			);
 		};
 
 	} // namespace Renderer
