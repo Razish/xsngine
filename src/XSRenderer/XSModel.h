@@ -15,6 +15,7 @@ namespace XS {
 			Invalid,
 			OBJ,
 			XMF,
+			RAW,
 			NUM_MODEL_TYPES
 		};
 
@@ -45,6 +46,14 @@ namespace XS {
 			void Draw(
 				void
 			) const;
+		};
+
+		class Raw : public Model {
+
+			inline bool LoadMeshes( void ) {
+				return true;
+			}
+
 		};
 
 	} // namespace Renderer

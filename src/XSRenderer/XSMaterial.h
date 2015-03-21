@@ -13,6 +13,9 @@ namespace XS {
 		class ShaderProgram;
 		class Texture;
 
+		const uint32_t MF_NONE		= 0x00000000u;
+		const uint32_t MF_WIREFRAME	= 0x00000001u;
+
 		struct Material {
 			struct SamplerBinding {
 				int		 unit;
@@ -27,6 +30,7 @@ namespace XS {
 			ShaderProgram				*shaderProgram;
 			std::vector<SamplerBinding>	 samplerBindings;
 			std::vector<BufferBinding>	 bufferBindings;
+			uint32_t					 flags;
 
 			// use this material for subsequent rendering
 			void Bind(

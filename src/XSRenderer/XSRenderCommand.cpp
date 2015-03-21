@@ -5,6 +5,7 @@
 #include "XSCommon/XSConsole.h"
 #include "XSCommon/XSColours.h"
 #include "XSRenderer/XSRenderer.h"
+#include "XSRenderer/XSBackend.h"
 #include "XSRenderer/XSBuffer.h"
 #include "XSRenderer/XSRenderCommand.h"
 #include "XSRenderer/XSMaterial.h"
@@ -157,6 +158,14 @@ namespace XS {
 
 			mesh->material->Bind();
 
+			bool setWireframe = false;
+			bool previousWireframe = false;
+			if ( mesh->material->flags & MF_WIREFRAME ) {
+				setWireframe = true;
+				previousWireframe = Backend::GetWireframe();
+				Backend::SetWireframe( true );
+			}
+
 			// bind the vertex/normal/uv buffers
 			if ( mesh->vertexBuffer ) {
 				mesh->vertexBuffer->Bind();
@@ -193,6 +202,10 @@ namespace XS {
 			//	glDisableVertexAttribArray( 2 );
 			//	glDisableVertexAttribArray( 1 );
 				glDisableVertexAttribArray( 0 );
+			}
+
+			if ( setWireframe ) {
+				Backend::SetWireframe( previousWireframe );
 			}
 		}
 

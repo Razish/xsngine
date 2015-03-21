@@ -6,11 +6,9 @@
 #include "XSCommon/XSMatrix.h"
 #include "XSClient/XSBaseCamera.h"
 #include "XSClient/XSFlyCamera.h"
-#include "XSClient/XSGameObject.h"
 #include "XSRenderer/XSInternalFormat.h"
 #include "XSRenderer/XSMaterial.h"
 #include "XSRenderer/XSModel.h"
-#include "XSRenderer/XSMesh.h"
 #include "XSRenderer/XSRenderable.h"
 #include "XSRenderer/XSRenderer.h"
 #include "XSRenderer/XSShaderProgram.h"
@@ -31,9 +29,6 @@ namespace XS {
 		static Renderer::Material *terrainMaterial = nullptr;
 		static Renderer::Texture *terrainTexture = nullptr;
 
-		// always allocate with `new`
-		static std::vector<GameObject *> objects;
-
 		static void LoadTerrain( void ) {
 			const File f( "textures/terrain.raw" );
 			if ( !f.open ) {
@@ -46,33 +41,6 @@ namespace XS {
 				f.Read( terrainBuf );
 
 			//TODO: create mesh
-			GameObject *terrainObj = new GameObject();
-			terrainObj->renderObject = Renderer::Model::Register( nullptr );
-			Renderer::Mesh *terrainMesh = new Renderer::Mesh();
-			const size_t dimensions = sqrt( f.length );
-			const real32_t scale = 64.0f;
-			for ( int column = 0; column < dimensions - 1; column++ ) {
-				for ( int row = 0; row < dimensions - 1; row++ ) {
-					uint8_t *sample = &terrainBuf[(row * dimensions) + column];
-					vector3 pos;
-					pos.z = static_cast<real32_t>( row ) / scale;
-					pos.y = static_cast<real32_t>( *sample ) / scale;
-					pos.x = static_cast<real32_t>( column ) / scale;
-					terrainMesh->vertices.push_back( pos );
-
-					const int16_t start = (row * dimensions) + column;
-					terrainMesh->indices.push_back( (GLshort)start );
-					terrainMesh->indices.push_back( (GLshort)(start + 1) );
-					terrainMesh->indices.push_back( (GLshort)(start + dimensions) );
-
-					terrainMesh->indices.push_back( (GLshort)(start + 1) );
-					terrainMesh->indices.push_back( (GLshort)(start + 1 + dimensions) );
-					terrainMesh->indices.push_back( (GLshort)(start + dimensions) );
-				}
-			}
-			terrainMesh->Upload();
-			dynamic_cast<Renderer::Model *>( terrainObj->renderObject )->meshes.push_back( terrainMesh );
-			objects.push_back( terrainObj );
 
 			delete[] terrainBuf;
 
@@ -85,10 +53,10 @@ namespace XS {
 			// create shader program
 			static const Renderer::VertexAttribute attributes[] = {
 				{ 0, "in_Position" },
-			//	{ 1, "in_TexCoord" },
-			//	{ 2, "in_Colour" }
+				{ 1, "in_TexCoord" },
+				{ 2, "in_Colour" }
 			};
-			terrainProgram = new Renderer::ShaderProgram( "model", "model", attributes, ARRAY_LEN( attributes ) );
+			terrainProgram = new Renderer::ShaderProgram( "terrain", "terrain", attributes, ARRAY_LEN( attributes ) );
 
 			// create material
 			terrainMaterial = new Renderer::Material();
@@ -97,11 +65,31 @@ namespace XS {
 			samplerBinding.texture = terrainTexture;
 			terrainMaterial->samplerBindings.push_back( samplerBinding );
 			terrainMaterial->shaderProgram = terrainProgram;
-			terrainMaterial->flags |= Renderer::MF_WIREFRAME;
-
-			terrainMesh->material = terrainMaterial;
 		}
 #endif
+
+		class GameObject {
+		private:
+			// ...
+
+		public:
+			Renderer::Renderable *renderObject;
+
+			GameObject()
+			: renderObject( nullptr )
+			{
+			};
+
+			~GameObject() {
+				if ( renderObject ) {
+					delete renderObject;
+					renderObject = nullptr;
+				}
+			};
+		};
+
+		// always allocate with `new`
+		static std::vector<GameObject *> objects;
 
 		static void RenderScene( real64_t dt ) {
 #ifdef CAMERA_TEST
@@ -135,13 +123,13 @@ namespace XS {
 #ifdef CLIENT_TERRAIN
 			LoadTerrain();
 #endif
-		//	GameObject *plane = new GameObject();
-		//	plane->renderObject = Renderer::Model::Register( "models/plane.xmf" );
-		//	objects.push_back( plane );
+			GameObject *plane = new GameObject();
+			plane->renderObject = Renderer::Model::Register( "models/plane.xmf" );
+			objects.push_back( plane );
 
-		//	GameObject *box = new GameObject();
-		//	box->renderObject = Renderer::Model::Register( "models/box.xmf" );
-		//	objects.push_back( box );
+			GameObject *box = new GameObject();
+			box->renderObject = Renderer::Model::Register( "models/box.xmf" );
+			objects.push_back( box );
 		}
 
 		void Shutdown( void ) {

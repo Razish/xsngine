@@ -36,6 +36,13 @@ namespace XS {
 
 		// public, static
 		Model *Model::Register( const char *path ) {
+			//HACK: assume null path means raw model data
+			if ( !path ) {
+				Model *model = new Raw();
+				model->type = ModelType::RAW;
+				return model;
+			}
+
 			//TODO: check for duplicates? or only for mesh info etc?
 			// for now, just add a new entry
 			Model *model = models[path];

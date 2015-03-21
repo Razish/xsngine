@@ -421,7 +421,10 @@ if debug:
 if revision:
 	env['CPPDEFINES'] += [ 'REVISION=\\"' + revision + '\\"' ]
 
-env['CPPDEFINES'] += [ 'GLEW_STATIC', 'SCONS_BUILD' ]
+env['CPPDEFINES'] += [
+	'GLEW_STATIC',
+	'SCONS_BUILD'
+]
 env['CPPDEFINES'] += [ {
 		'Windows': lambda x: 'XS_OS_WINDOWS',
 		'Linux': lambda x: 'XS_OS_LINUX',

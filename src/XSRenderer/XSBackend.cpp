@@ -18,6 +18,10 @@ namespace XS {
 			GLuint defaultVao = 0u;
 			GLuint defaultPbo = 0u;
 
+			static struct State {
+				bool wireFrame;
+			} state = {};
+
 			static void RegisterCvars( void ) {
 				r_fov = Cvar::Create( "r_fov", "110", "Field of view", CVAR_ARCHIVE );
 				r_zRange = Cvar::Create( "r_zRange", "0.1 4000.0", "Clipping plane range", CVAR_ARCHIVE );
@@ -49,7 +53,7 @@ namespace XS {
 				glGenBuffers( 1, &defaultPbo );
 				glBindBuffer( GL_PIXEL_PACK_BUFFER, defaultPbo );
 				glBufferData( GL_PIXEL_PACK_BUFFER,
-					4 * state.window.width * state.window.height,
+					4 * Renderer::state.window.width * Renderer::state.window.height,
 					NULL,
 					GL_STREAM_COPY
 				);
@@ -58,6 +62,15 @@ namespace XS {
 			void Shutdown( void ) {
 				glDeleteVertexArrays( 1, &defaultVao );
 				glDeleteBuffers( 1, &defaultPbo );
+			}
+
+			void SetWireframe( bool on ) {
+				state.wireFrame = on;
+				glPolygonMode( GL_FRONT_AND_BACK, on ? GL_LINE : GL_FILL );
+			}
+
+			bool GetWireframe( void ) {
+				return state.wireFrame;
 			}
 
 			void ClearBuffer( bool clearColour, bool clearDepth, const vector4 &colour ) {

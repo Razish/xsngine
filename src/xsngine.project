@@ -169,6 +169,8 @@
     <File Name="XSClient/XSBaseCamera.cpp"/>
     <File Name="XSClient/XSFlyCamera.cpp"/>
     <File Name="XSClient/XSFlyCamera.h"/>
+    <File Name="XSClient/XSGameObject.cpp"/>
+    <File Name="XSClient/XSGameObject.h"/>
   </VirtualDirectory>
   <VirtualDirectory Name="XSInput">
     <File Name="XSInput/XSInputField.cpp"/>

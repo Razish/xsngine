@@ -102,7 +102,7 @@ namespace XS {
 	// public, static
 	Cvar *Cvar::Get( const std::string &name ) {
 		for ( auto &cv : cvars ) {
-			if ( String::CompareCase( cv.first.c_str(), name.c_str() ) ) {
+			if ( !String::CompareCase( cv.first.c_str(), name.c_str() ) ) {
 				return cv.second;
 			}
 		}

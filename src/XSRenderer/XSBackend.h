@@ -23,6 +23,14 @@ namespace XS {
 				void
 			);
 
+			void SetWireframe(
+				bool on
+			);
+
+			bool GetWireframe(
+				void
+			);
+
 			void ClearBuffer(
 				bool clearColour,
 				bool clearDepth,
