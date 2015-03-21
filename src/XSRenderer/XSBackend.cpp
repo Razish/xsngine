@@ -47,8 +47,10 @@ namespace XS {
 				SetBlendFunction( BlendFunc::SourceAlpha, BlendFunc::OneMinusSourceAlpha );
 
 				// activate the default vertex array object
-				glGenVertexArrays( 1, &defaultVao );
-				glBindVertexArray( defaultVao );
+				SDL_assert( glGenVertexArrays && "glBindVertexArray unavailable" );
+				glGenVertexArrays(1, &defaultVao);
+				SDL_assert( glBindVertexArray && "glBindVertexArray unavailable" );
+				glBindVertexArray(defaultVao);
 
 				glGenBuffers( 1, &defaultPbo );
 				glBindBuffer( GL_PIXEL_PACK_BUFFER, defaultPbo );

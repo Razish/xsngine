@@ -30,7 +30,7 @@ namespace XS {
 		Stop();
 
 	#if defined(XS_OS_WINDOWS)
-		timeVal_t frequency;
+		TimeValue frequency;
 		QueryPerformanceFrequency( &frequency );
 
 		real64_t startTime = start.QuadPart * (1000000.0 / frequency.QuadPart);
