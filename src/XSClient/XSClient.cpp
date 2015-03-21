@@ -123,10 +123,10 @@ namespace XS {
 			}
 			avg /= static_cast<real64_t>( numSamples );
 
-			const char *fpsText = String::Format( "FPS:%.0f", 1000.0 / avg ).c_str();
+			std::string fpsText = String::Format( "FPS:%.0f", 1000.0 / avg ).c_str();
 			const uint16_t fpsTextSize = 16u;
 			real32_t textWidth = 2.0f;
-			for ( const char *p = fpsText; *p; p++ ) {
+			for ( const char *p = fpsText.c_str(); *p; p++ ) {
 				textWidth += font->GetGlyphWidth( *p, fpsTextSize );
 			}
 

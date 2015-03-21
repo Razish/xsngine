@@ -73,7 +73,8 @@ namespace XS {
 		}
 
 		void FlyCamera::CalculateRotation( real64_t dt, real64_t xOffset, real64_t yOffset ) {
-			glm::mat4 rot = glm::rotate( glm::radians( (float)-(xOffset * dt) ), glm::vec3( 0, 1, 0 ) );
+			glm::mat4 inversed = glm::inverse( worldTransform );
+			glm::mat4 rot = glm::rotate( glm::radians( (float)-(xOffset * dt) ), inversed[1].xyz() );
 			worldTransform = worldTransform * rot;
 
 			rot = glm::rotate( glm::radians( (float)-(yOffset * dt) ), glm::vec3( 1, 0, 0 ) );
