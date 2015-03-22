@@ -51,15 +51,22 @@ namespace XS {
 			Renderer::Mesh *terrainMesh = new Renderer::Mesh();
 			const size_t dimensions = sqrt( f.length );
 			const real32_t scale = 64.0f;
-			for ( int column = 0; column < dimensions - 1; column++ ) {
-				for ( int row = 0; row < dimensions - 1; row++ ) {
+
+			terrainMesh->vertices.reserve( dimensions * dimensions );
+			for ( int column = 0; column < dimensions; column++ ) {
+				for ( int row = 0; row < dimensions; row++ ) {
 					uint8_t *sample = &terrainBuf[(row * dimensions) + column];
 					vector3 pos;
-					pos.z = static_cast<real32_t>( row ) / scale;
+					pos.z = static_cast<real32_t>( row );
 					pos.y = static_cast<real32_t>( *sample ) / scale;
-					pos.x = static_cast<real32_t>( column ) / scale;
+					pos.x = static_cast<real32_t>( column );
 					terrainMesh->vertices.push_back( pos );
+				}
+			}
 
+			terrainMesh->indices.reserve( dimensions * dimensions );
+			for ( int column = 0; column < dimensions - 1; column++ ) {
+				for ( int row = 0; row < dimensions - 1; row++ ) {
 					const int16_t start = (row * dimensions) + column;
 					terrainMesh->indices.push_back( (GLshort)start );
 					terrainMesh->indices.push_back( (GLshort)(start + 1) );

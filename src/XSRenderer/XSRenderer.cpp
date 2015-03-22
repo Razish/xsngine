@@ -295,7 +295,7 @@ namespace XS {
 				r_clear->GetReal32( 2 ),
 				r_clear->GetReal32( 3 )
 			);
-			Backend::ClearBuffer( true, false, clear );
+			Backend::ClearBuffer( true, true, clear );
 
 			for ( const auto &view : views ) {
 				if ( r_skipRender->GetInt32() & (1 << static_cast<uint32_t>( view->is2D )) ) {
