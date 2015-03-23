@@ -22,28 +22,38 @@ namespace XS {
 		}
 
 		void Mesh::Upload( void ) {
-			size_t size = (sizeof(vector3) * indices.size())/* + (sizeof(vector3) * normals.size())
-				+ (sizeof(vector2) * UVs.size())*/;
+			size_t size = 0u;
+			if ( indices.size() ) {
+				size += sizeof(vector3) * indices.size();
+			}
+			if ( normals.size() ) {
+				size += sizeof(vector3) * indices.size();
+			}
+			if ( UVs.size() ) {
+				size += sizeof(vector2) * indices.size();
+			}
 			vertexBuffer = new Buffer( BufferType::Vertex, nullptr, size );
 
+			bool hasVertices = indices.size() > 0u;
+			bool hasNormals = normals.size() > 0u;
+			bool hasUVs = UVs.size() > 0u;
 			real32_t *buffer = static_cast<real32_t *>( vertexBuffer->Map() );
 			if ( indices.size() > 0 ) {
 				for ( const auto &index : indices ) {
-					*buffer++ = vertices[index].x;
-					*buffer++ = vertices[index].y;
-					*buffer++ = vertices[index].z;
-				//	*buffer++ = normals[index].x;
-				//	*buffer++ = normals[index].y;
-				//	*buffer++ = normals[index].z;
-				//	*buffer++ = UVs[index].x;
-				//	*buffer++ = UVs[index].y;
-
-					console.Print( PrintLevel::Debug,
-						"Pushing %.2f, %.2f, %.2f\n",
-						vertices[index].x,
-						vertices[index].y,
-						vertices[index].z
-					);
+					if ( hasVertices ) {
+						*buffer++ = vertices[index].x;
+						*buffer++ = vertices[index].y;
+						*buffer++ = vertices[index].z;
+					}
+					if ( hasNormals ) {
+						*buffer++ = normals[index].x;
+						*buffer++ = normals[index].y;
+						*buffer++ = normals[index].z;
+					}
+					if ( hasUVs ) {
+						*buffer++ = UVs[index].x;
+						*buffer++ = UVs[index].y;
+					}
 				}
 			}
 			vertexBuffer->Unmap();

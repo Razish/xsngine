@@ -53,21 +53,28 @@ namespace XS {
 			const real32_t scale = 64.0f;
 
 			terrainMesh->vertices.reserve( dimensions * dimensions );
-			for ( int column = 0; column < dimensions; column++ ) {
-				for ( int row = 0; row < dimensions; row++ ) {
-					uint8_t *sample = &terrainBuf[(row * dimensions) + column];
+			for ( int row = 0; row < dimensions; row++ ) {
+				const float fRow = static_cast<real32_t>( row );
+				for ( int col = 0; col < dimensions; col++ ) {
+					const float fCol = static_cast<real32_t>( col );
+					uint8_t *sample = &terrainBuf[(row * dimensions) + col];
 					vector3 pos;
-					pos.z = static_cast<real32_t>( row );
+					pos.z = fRow;
 					pos.y = static_cast<real32_t>( *sample ) / scale;
-					pos.x = static_cast<real32_t>( column );
+					pos.x = fCol;
 					terrainMesh->vertices.push_back( pos );
+
+					vector2 uv;
+					uv.x = fCol / dimensions;
+					uv.y = fRow / dimensions;
+					terrainMesh->UVs.push_back( uv );
 				}
 			}
 
 			terrainMesh->indices.reserve( dimensions * dimensions );
-			for ( int column = 0; column < dimensions - 1; column++ ) {
-				for ( int row = 0; row < dimensions - 1; row++ ) {
-					const int16_t start = (row * dimensions) + column;
+			for ( int row = 0; row < dimensions - 1; row++ ) {
+				for ( int col = 0; col < dimensions - 1; col++ ) {
+					const int16_t start = (row * dimensions) + col;
 					terrainMesh->indices.push_back( (GLshort)start );
 					terrainMesh->indices.push_back( (GLshort)(start + 1) );
 					terrainMesh->indices.push_back( (GLshort)(start + dimensions) );
@@ -81,19 +88,16 @@ namespace XS {
 			dynamic_cast<Renderer::Model *>( terrainObj->renderObject )->meshes.push_back( terrainMesh );
 			objects.push_back( terrainObj );
 
-			delete[] terrainBuf;
-
-			const uint32_t textureSize = static_cast<uint32_t>( sqrtf( static_cast<real32_t>( f.length ) ) );
-
 			// create texture
-			terrainTexture = new Renderer::Texture( textureSize, textureSize, Renderer::InternalFormat::R8,
-				terrainBuf );
+			terrainTexture = new Renderer::Texture( dimensions, dimensions, Renderer::InternalFormat::R8, terrainBuf );
+
+			delete[] terrainBuf;
 
 			// create shader program
 			static const Renderer::VertexAttribute attributes[] = {
 				{ 0, "in_Position" },
-			//	{ 1, "in_TexCoord" },
-			//	{ 2, "in_Colour" }
+				{ 1, "in_Normal" },
+				{ 2, "in_TexCoord" }
 			};
 			terrainProgram = new Renderer::ShaderProgram( "model", "model", attributes, ARRAY_LEN( attributes ) );
 

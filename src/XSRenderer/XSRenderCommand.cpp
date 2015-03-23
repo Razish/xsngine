@@ -169,21 +169,44 @@ namespace XS {
 			// bind the vertex/normal/uv buffers
 			if ( mesh->vertexBuffer ) {
 				mesh->vertexBuffer->Bind();
-				glEnableVertexAttribArray( 0 );
-			//	glEnableVertexAttribArray( 1 );
-			//	glEnableVertexAttribArray( 2 );
+				if ( mesh->vertices.size() ) {
+					glEnableVertexAttribArray( 0 );
+				}
+				if ( mesh->normals.size() ) {
+					glEnableVertexAttribArray( 1 );
+				}
+				if ( mesh->UVs.size() ) {
+					glEnableVertexAttribArray( 2 );
+				}
 
+				// calculate stride
+				GLsizei stride = 0;
+				if ( mesh->vertices.size() ) {
+					stride += sizeof(vector3);
+				}
+				if ( mesh->normals.size() ) {
+					stride += sizeof(vector3);
+				}
+				if ( mesh->UVs.size() ) {
+					stride += sizeof(vector2);
+				}
+
+				// set the attribute pointers
 				size_t offset = 0u;
-				const GLsizei stride = sizeof(vector3);
+				if ( mesh->vertices.size() ) {
+					glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<const GLvoid *>( offset ) );
+					offset += sizeof(vector3);
+				}
 
-				glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<const GLvoid *>( offset ) );
-				offset += sizeof(vector3);
+				if ( mesh->normals.size() ) {
+					glVertexAttribPointer( 1, 3, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<const GLvoid *>( offset ) );
+					offset += sizeof(vector3);
+				}
 
-			//	glVertexAttribPointer( 1, 3, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<const GLvoid *>( offset ) );
-			//	offset += sizeof(vector3);
-
-			//	glVertexAttribPointer( 2, 2, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<const GLvoid *>( offset ) );
-			//	offset += sizeof(vector2);
+				if ( mesh->UVs.size() ) {
+					glVertexAttribPointer( 2, 2, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<const GLvoid *>( offset ) );
+					offset += sizeof(vector2);
+				}
 			}
 
 			// issue the draw command
@@ -199,9 +222,15 @@ namespace XS {
 
 			// clean up state
 			if ( mesh->vertexBuffer ) {
-			//	glDisableVertexAttribArray( 2 );
-			//	glDisableVertexAttribArray( 1 );
-				glDisableVertexAttribArray( 0 );
+				if ( mesh->UVs.size() ) {
+					glDisableVertexAttribArray( 2 );
+				}
+				if ( mesh->normals.size() ) {
+					glDisableVertexAttribArray( 1 );
+				}
+				if ( mesh->vertices.size() ) {
+					glDisableVertexAttribArray( 0 );
+				}
 			}
 
 			if ( setWireframe ) {
