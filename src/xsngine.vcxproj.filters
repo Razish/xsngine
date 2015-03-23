@@ -19,6 +19,9 @@
     <Filter Include="XSInput">
       <UniqueIdentifier>{a4194aae-ee3f-4b04-98c7-b5b394a6d91b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="XSNetwork">
+      <UniqueIdentifier>{da324153-809f-4740-b49e-81446edfa947}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="XSClient\XSClient.cpp">
@@ -138,16 +141,33 @@
     <ClCompile Include="XSRenderer\XSView.cpp">
       <Filter>XSRenderer</Filter>
     </ClCompile>
-    <ClCompile Include="XSSystem\XSLinux.cpp">
-      <Filter>XSSystem</Filter>
-    </ClCompile>
     <ClCompile Include="XSSystem\XSWindows.cpp">
       <Filter>XSSystem</Filter>
     </ClCompile>
-    <ClCompile Include="XSNetwork\XSNetAddress.cpp" />
-    <ClCompile Include="XSNetwork\XSSocket.cpp" />
-    <ClCompile Include="XSSystem\XSUnix.cpp" />
-    <ClCompile Include="XSRenderer\XSModelXMF.cpp" />
+    <ClCompile Include="XSClient\XSBaseCamera.cpp">
+      <Filter>XSClient</Filter>
+    </ClCompile>
+    <ClCompile Include="XSClient\XSFlyCamera.cpp">
+      <Filter>XSClient</Filter>
+    </ClCompile>
+    <ClCompile Include="XSClient\XSGameObject.cpp">
+      <Filter>XSClient</Filter>
+    </ClCompile>
+    <ClCompile Include="XSInput\XSMouse.cpp">
+      <Filter>XSInput</Filter>
+    </ClCompile>
+    <ClCompile Include="XSNetwork\XSNetAddress.cpp">
+      <Filter>XSNetwork</Filter>
+    </ClCompile>
+    <ClCompile Include="XSNetwork\XSSocket.cpp">
+      <Filter>XSNetwork</Filter>
+    </ClCompile>
+    <ClCompile Include="XSSystem\XSUnix.cpp">
+      <Filter>XSSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="XSRenderer\XSModelXMF.cpp">
+      <Filter>XSRenderer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="XSClient\XSClient.h">
@@ -276,11 +296,33 @@
     <ClInclude Include="XSSystem\XSPlatform.h">
       <Filter>XSSystem</Filter>
     </ClInclude>
-    <ClInclude Include="XSNetwork\XSNetAddress.h" />
-    <ClInclude Include="XSNetwork\XSSocket.h" />
-    <ClInclude Include="XSRenderer\XSModelXMF.h" />
-    <ClInclude Include="XSClient\XSClientGame.h" />
-    <ClInclude Include="XSClient\XSClientConsole.h" />
+    <ClInclude Include="XSClient\XSBaseCamera.h">
+      <Filter>XSClient</Filter>
+    </ClInclude>
+    <ClInclude Include="XSClient\XSFlyCamera.h">
+      <Filter>XSClient</Filter>
+    </ClInclude>
+    <ClInclude Include="XSClient\XSGameObject.h">
+      <Filter>XSClient</Filter>
+    </ClInclude>
+    <ClInclude Include="XSInput\XSMouse.h">
+      <Filter>XSInput</Filter>
+    </ClInclude>
+    <ClInclude Include="XSNetwork\XSNetAddress.h">
+      <Filter>XSNetwork</Filter>
+    </ClInclude>
+    <ClInclude Include="XSNetwork\XSSocket.h">
+      <Filter>XSNetwork</Filter>
+    </ClInclude>
+    <ClInclude Include="XSClient\XSClientConsole.h">
+      <Filter>XSClient</Filter>
+    </ClInclude>
+    <ClInclude Include="XSClient\XSClientGame.h">
+      <Filter>XSClient</Filter>
+    </ClInclude>
+    <ClInclude Include="XSRenderer\XSModelXMF.h">
+      <Filter>XSRenderer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="XSClient\SConscript" />

@@ -11,9 +11,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="XSClient\XSBaseCamera.cpp" />
     <ClCompile Include="XSClient\XSClient.cpp" />
     <ClCompile Include="XSClient\XSClientConsole.cpp" />
     <ClCompile Include="XSClient\XSClientGame.cpp" />
+    <ClCompile Include="XSClient\XSFlyCamera.cpp" />
+    <ClCompile Include="XSClient\XSGameObject.cpp" />
     <ClCompile Include="XSCommon\XSColours.cpp" />
     <ClCompile Include="XSCommon\XSCommand.cpp" />
     <ClCompile Include="XSCommon\XSCommon.cpp" />
@@ -33,6 +36,7 @@
     <ClCompile Include="XSInput\XSInput.cpp" />
     <ClCompile Include="XSInput\XSInputField.cpp" />
     <ClCompile Include="XSInput\XSKeys.cpp" />
+    <ClCompile Include="XSInput\XSMouse.cpp" />
     <ClCompile Include="XSNetwork\XSNetAddress.cpp" />
     <ClCompile Include="XSNetwork\XSSocket.cpp" />
     <ClCompile Include="XSRenderer\XSBackend.cpp" />
@@ -53,14 +57,16 @@
     <ClCompile Include="XSRenderer\XSShaderProgram.cpp" />
     <ClCompile Include="XSRenderer\XSTexture.cpp" />
     <ClCompile Include="XSRenderer\XSView.cpp" />
-    <ClCompile Include="XSSystem\XSLinux.cpp" />
     <ClCompile Include="XSSystem\XSUnix.cpp" />
     <ClCompile Include="XSSystem\XSWindows.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="XSClient\XSBaseCamera.h" />
     <ClInclude Include="XSClient\XSClient.h" />
     <ClInclude Include="XSClient\XSClientConsole.h" />
     <ClInclude Include="XSClient\XSClientGame.h" />
+    <ClInclude Include="XSClient\XSFlyCamera.h" />
+    <ClInclude Include="XSClient\XSGameObject.h" />
     <ClInclude Include="XSCommon\XSColours.h" />
     <ClInclude Include="XSCommon\XSCommand.h" />
     <ClInclude Include="XSCommon\XSCommon.h" />
@@ -82,6 +88,7 @@
     <ClInclude Include="XSInput\XSInput.h" />
     <ClInclude Include="XSInput\XSInputField.h" />
     <ClInclude Include="XSInput\XSKeys.h" />
+    <ClInclude Include="XSInput\XSMouse.h" />
     <ClInclude Include="XSNetwork\XSNetAddress.h" />
     <ClInclude Include="XSNetwork\XSSocket.h" />
     <ClInclude Include="XSRenderer\XSBackend.h" />
