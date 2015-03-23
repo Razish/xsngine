@@ -133,8 +133,8 @@ namespace XS {
 			camera = new FlyCamera();
 			camera->SetFlySpeed( 0.05f );
 
-			const glm::vec3 cameraPos( -2.0f, 0.0f, 0.0f );
-			const glm::vec3 lookAt( 0.0f, 0.0f, 0.0f );
+			const glm::vec3 cameraPos( 64.0f, 64.0f, -64.0f );
+			const glm::vec3 lookAt( 64.0f, 0.0f, 64.0f );
 			const glm::vec3 up( 0.0f, 1.0f, 0.0f );
 
 			Cvar *r_zRange = Cvar::Get( "r_zRange" );
