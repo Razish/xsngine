@@ -280,8 +280,8 @@ int main( int argc, char **argv ) {
 		}
 
 		if ( developer ) {
-			const real64_t shutdownTIme = globalTimer.GetTiming( false, XS::TimerResolution::Milliseconds );
-			XS::console.Print( XS::PrintLevel::Developer, "Shutdown time: %.3f msec\n\n\n", shutdownTIme );
+			const real64_t shutdownTime = globalTimer.GetTiming( false, XS::TimerResolution::Milliseconds );
+			XS::console.Print( XS::PrintLevel::Normal, "Shutdown time: %.3f msec\n\n\n", shutdownTime );
 		}
 
 		return EXIT_SUCCESS;
