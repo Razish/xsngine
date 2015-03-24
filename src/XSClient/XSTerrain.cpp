@@ -27,12 +27,11 @@ namespace XS {
 			std::memset( heightmap, 0, f.length );
 			f.Read( heightmap );
 
-			//TODO: create mesh
 			GameObject *terrainObj = new GameObject();
 			terrainObj->renderObject = Renderer::Model::Register( nullptr );
 			Renderer::Mesh *mesh = new Renderer::Mesh();
 			const size_t dimensions = sqrt( f.length );
-			const real32_t scale = 64.0f;
+			const real32_t scale = 32.0f;
 
 			mesh->vertices.reserve( dimensions * dimensions );
 			for ( int row = 0; row < dimensions; row++ ) {
@@ -53,17 +52,17 @@ namespace XS {
 				}
 			}
 
-			mesh->indices.reserve( dimensions * dimensions );
+			mesh->indices.reserve( (dimensions - 1) * (dimensions - 1) );
 			for ( int row = 0; row < dimensions - 1; row++ ) {
 				for ( int col = 0; col < dimensions - 1; col++ ) {
 					const int16_t start = (row * dimensions) + col;
-					mesh->indices.push_back( (GLshort)start );
-					mesh->indices.push_back( (GLshort)(start + 1) );
-					mesh->indices.push_back( (GLshort)(start + dimensions) );
+					mesh->indices.push_back( start + dimensions );
+					mesh->indices.push_back( start + 1 );
+					mesh->indices.push_back( start );
 
-					mesh->indices.push_back( (GLshort)(start + 1) );
-					mesh->indices.push_back( (GLshort)(start + 1 + dimensions) );
-					mesh->indices.push_back( (GLshort)(start + dimensions) );
+					mesh->indices.push_back( start + dimensions );
+					mesh->indices.push_back( start + 1 + dimensions );
+					mesh->indices.push_back( start + 1 );
 				}
 			}
 			mesh->Upload();

@@ -9,7 +9,6 @@ namespace XS {
 
 		namespace Backend {
 
-			extern Cvar *r_fov;
 			extern Cvar *r_zRange;
 
 			extern GLuint defaultVao;

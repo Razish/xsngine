@@ -12,7 +12,6 @@ namespace XS {
 
 		namespace Backend {
 
-			Cvar *r_fov = nullptr;
 			Cvar *r_zRange = nullptr;
 
 			GLuint defaultVao = 0u;
@@ -23,7 +22,6 @@ namespace XS {
 			} state = {};
 
 			static void RegisterCvars( void ) {
-				r_fov = Cvar::Create( "r_fov", "110", "Field of view", CVAR_ARCHIVE );
 				r_zRange = Cvar::Create( "r_zRange", "0.1 4000.0", "Clipping plane range", CVAR_ARCHIVE );
 			}
 
@@ -38,9 +36,9 @@ namespace XS {
 				SetDepthFunction( DepthFunc::LessOrEqual );
 
 				// back-face culling
-				glDisable( GL_CULL_FACE );
-				//glCullFace( GL_BACK );
-				//glFrontFace( GL_CCW );
+				glEnable( GL_CULL_FACE );
+				glCullFace( GL_BACK );
+				glFrontFace( GL_CCW );
 
 				// alpha blending
 				ToggleAlphaBlending( true );
