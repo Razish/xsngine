@@ -21,7 +21,7 @@ namespace XS {
 				height = state.window.height;
 			}
 
-			perFrameData = new Backend::Buffer( BufferType::Uniform, nullptr, sizeof(real32_t) * 16 );
+			perFrameData = new Backend::Buffer( BufferType::Uniform, nullptr, 4 * 1024 * 1024 );
 
 			RegisterView( this );
 		}
@@ -44,12 +44,13 @@ namespace XS {
 				callbackPreRender( dt );
 			}
 
-			matrix4 *m = static_cast<matrix4 *>( perFrameData->Map() );
+			XS::Renderer::BufferMemory bufferMem = perFrameData->MapDiscard( sizeof( matrix4 ) );
+			matrix4 *m = static_cast<matrix4 *>( bufferMem.devicePtr );
 
 			memcpy( m->data, glm::value_ptr( projectionMatrix ), sizeof(m->data) );
 
 			perFrameData->Unmap();
-			perFrameData->BindRange( 6 );
+			perFrameData->BindRange( 6, bufferMem.offset, bufferMem.size );
 
 			// sort surfaces etc?
 
@@ -60,10 +61,11 @@ namespace XS {
 			}
 		}
 
-		void View::PostRender( real64_t dt ) const {
+		void View::PostRender( real64_t dt ) {
 			if ( callbackPostRender ) {
 				callbackPostRender( dt );
 			}
+			renderObjects.clear();
 		}
 
 		void View::Bind( void ) {

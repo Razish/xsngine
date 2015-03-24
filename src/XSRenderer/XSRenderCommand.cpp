@@ -37,11 +37,55 @@ namespace XS {
 		static Material *quadMaterial = nullptr;
 		static Texture *quadTexture = nullptr;
 
+		static uint32_t vertexAttribsEnabled = 0;
+
+		enum AttributeIndex
+		{
+			VERTEX_ATTRIB_0 = (1 << 0),
+			VERTEX_ATTRIB_1 = (1 << 1),
+			VERTEX_ATTRIB_2 = (1 << 2),
+			VERTEX_ATTRIB_3 = (1 << 3),
+			VERTEX_ATTRIB_4 = (1 << 4),
+			VERTEX_ATTRIB_5 = (1 << 5),
+			VERTEX_ATTRIB_6 = (1 << 6),
+			VERTEX_ATTRIB_7 = (1 << 7),
+		};
+
+		static void EnableVertexAttribs( uint32_t attribs )
+		{
+			uint32_t bit = 1;
+			uint32_t bitNumber = 0;
+			if ( attribs != vertexAttribsEnabled )
+			{
+				uint32_t savedAttribs = attribs;
+				while ( attribs )
+				{
+					if ( (attribs & 1) && !(vertexAttribsEnabled & bit) )
+					{
+						glEnableVertexAttribArray( bitNumber );
+					}
+					else if ( !(attribs & 1) && (vertexAttribsEnabled & bit) )
+					{
+						glDisableVertexAttribArray( bitNumber );
+					}
+
+					attribs >>= 1;
+					bit <<= 1;
+					bitNumber++;
+				}
+
+				vertexAttribsEnabled = savedAttribs;
+			}
+		}
+
 		void RenderCommand::Init( void ) {
 			static const uint16_t quadIndices[6] = { 0, 2, 1, 1, 2, 3 };
 
-			// v1(2), v2(2), v3(2), v4(2), st1(2), st2(2), st3(2), st4(2), c1(4) == 20 bytes
-			quadsVertexBuffer = new Buffer( BufferType::Vertex, nullptr, 20 * sizeof(real32_t) );
+			// 1MB vertex buffer
+			// Usage strategy is map-discard. In other words, keep appending to the buffer
+			// until we run out of memory. At this point, orphan the buffer by re-allocating
+			// a buffer of the same size and access bits.
+			quadsVertexBuffer = new Buffer( BufferType::Vertex, nullptr, 1024 * 1024 );
 			quadsIndexBuffer = new Buffer( BufferType::Index, quadIndices, sizeof(quadIndices) );
 
 			// create null quad material
@@ -117,7 +161,8 @@ namespace XS {
 			texcoords[3].x	= cmd.s2;
 			texcoords[3].y	= cmd.t2;
 
-			real32_t *vertexBuffer = static_cast<real32_t *>( quadsVertexBuffer->Map() );
+			BufferMemory bufferMem = quadsVertexBuffer->MapDiscard( 4 * sizeof( real32_t ) * 8 );
+			real32_t *vertexBuffer = static_cast<real32_t *>( bufferMem.devicePtr );
 			for ( size_t i = 0u; i < 4; i++ ) {
 				*vertexBuffer++ = vertices[i].x;
 				*vertexBuffer++ = vertices[i].y;
@@ -132,25 +177,20 @@ namespace XS {
 
 			quadsIndexBuffer->Bind();
 
-			glEnableVertexAttribArray( 0 );
-			glEnableVertexAttribArray( 1 );
-			glEnableVertexAttribArray( 2 );
-				intptr_t offset = 0;
-				const GLsizei stride = sizeof(vector2) + sizeof(vector2) + sizeof(vector4);
+			EnableVertexAttribs( VERTEX_ATTRIB_0 | VERTEX_ATTRIB_1 | VERTEX_ATTRIB_2 );
+			intptr_t offset = 0;
+			const GLsizei stride = sizeof(vector2) + sizeof(vector2) + sizeof(vector4);
 
-				glVertexAttribPointer( 0, 2, GL_FLOAT, GL_FALSE, stride, 0 );
-				offset += sizeof(vector2);
+			glVertexAttribPointer( 0, 2, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<const GLvoid *>( bufferMem.offset ) );
+			offset += sizeof(vector2);
 
-				glVertexAttribPointer( 1, 2, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<const GLvoid *>( offset ) );
-				offset += sizeof(vector2);
+			glVertexAttribPointer( 1, 2, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<const GLvoid *>( bufferMem.offset + offset ) );
+			offset += sizeof(vector2);
 
-				glVertexAttribPointer( 2, 4, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<const GLvoid *>( offset ) );
-				offset += sizeof(vector4);
+			glVertexAttribPointer( 2, 4, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<const GLvoid *>( bufferMem.offset + offset ) );
+			offset += sizeof(vector4);
 
-				glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0 );
-			glDisableVertexAttribArray( 2 );
-			glDisableVertexAttribArray( 1 );
-			glDisableVertexAttribArray( 0 );
+			glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0 );
 		}
 
 		static void DrawMesh( const Mesh *mesh ) {
@@ -169,15 +209,18 @@ namespace XS {
 			// bind the vertex/normal/uv buffers
 			if ( mesh->vertexBuffer ) {
 				mesh->vertexBuffer->Bind();
+				uint32_t vertexAttribs = 0;
 				if ( mesh->vertices.size() ) {
-					glEnableVertexAttribArray( 0 );
+					vertexAttribs |= VERTEX_ATTRIB_0;
 				}
 				if ( mesh->normals.size() ) {
-					glEnableVertexAttribArray( 1 );
+					vertexAttribs |= VERTEX_ATTRIB_1;
 				}
 				if ( mesh->UVs.size() ) {
-					glEnableVertexAttribArray( 2 );
+					vertexAttribs |= VERTEX_ATTRIB_2;
 				}
+
+				EnableVertexAttribs( vertexAttribs );
 
 				// calculate stride
 				GLsizei stride = 0;
@@ -221,18 +264,6 @@ namespace XS {
 			}
 
 			// clean up state
-			if ( mesh->vertexBuffer ) {
-				if ( mesh->UVs.size() ) {
-					glDisableVertexAttribArray( 2 );
-				}
-				if ( mesh->normals.size() ) {
-					glDisableVertexAttribArray( 1 );
-				}
-				if ( mesh->vertices.size() ) {
-					glDisableVertexAttribArray( 0 );
-				}
-			}
-
 			if ( setWireframe ) {
 				Backend::SetWireframe( previousWireframe );
 			}

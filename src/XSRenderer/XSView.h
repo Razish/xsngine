@@ -64,7 +64,7 @@ namespace XS {
 			// do not call externally, set callbacks via constructor
 			void PostRender(
 				real64_t dt
-			) const;
+			);
 
 			// add a renderable object to the view for this frame
 			void AddObject(

@@ -10,13 +10,22 @@ namespace XS {
 			Uniform
 		};
 
+		struct BufferMemory
+		{
+			size_t offset;
+			size_t size;
+			void *devicePtr;
+		};
+
 		namespace Backend {
 
 			class Buffer {
 			private:
 				GLuint	id;
 				GLenum	type;
+				size_t	offset;
 				size_t	size;
+				size_t	alignment;
 
 			public:
 				// don't allow default instantiation
@@ -36,6 +45,10 @@ namespace XS {
 					void
 				);
 
+				BufferMemory MapDiscard(
+					size_t size
+				);
+
 				void Unmap(
 					void
 				);
@@ -49,7 +62,9 @@ namespace XS {
 				) const;
 
 				void BindRange(
-					int index
+					int index,
+					size_t offset = 0,
+					size_t rangeSize = 0
 				) const;
 
 			};
