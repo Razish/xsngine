@@ -36,21 +36,23 @@ Steps:
 
 Make sure `C:\Python27` and `C:\Python27\Scripts` are in your `%PATH%` environment variable.  
 Install Visual Studio 2013 Community Edition or later for C++11 features.  
-You can try to use VS2010 but it is unsupported, and you may have to patch it with `msinttypes` (first google result)
+All projects use scons under the hood, and there are project files available for VS2013, Codelite and Code::Blocks.  
+You can also run a build from the command-line with `scons -Q` from within the `src` directory.
 
 ## Linux ##
 
-You will require libfreetype6-dev and libpng16-dev (which is not available in the main repositories as of 14.10)  
-Beware a dependency issue for libfreetype6-dev, which requires libpng12, you must install libpng16-dev from [dimensio/libpng16-deb](https://github.com/dimensio/libpng16-deb)
+You will require libsdl2-dev, libglu1-mesa-dev, libfreetype6-dev and libpng16-dev (which is not available in the main repositories as of Ubuntu 14.10)  
+libfreetype6-dev depends on libpng12-dev, so you will have to install that first, and then install libpng16-dev (dimensio/libpng16-deb) with the following method:
 
 ```bash
 $ git clone https://github.com/dimensio/libpng16-deb.git && cd libpng16-deb
 $ sudo apt-get install bundler curl
 $ bundle install
 $ make
-$ dpkg -i ./*.deb
+$ sudo dpkg -i ./*.deb
 ```
 
+To compile, run the following  
 ```bash
 $ cd src
 $ scons -Q
