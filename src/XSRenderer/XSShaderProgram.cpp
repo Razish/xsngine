@@ -178,14 +178,11 @@ namespace XS {
 			Link();
 			Bind();
 
-#ifdef CAMERA_TEST
-#else
 			// Until there are some data files to describe the shader, we'll do it like this for now.
 			GLint perFrame = glGetUniformBlockIndex( id, "PerFrame" );
 			if ( perFrame >= 0 ) {
 				glUniformBlockBinding( id, perFrame, 6 );
 			}
-#endif
 
 			if ( vertexShader ) {
 				glDetachShader( id, vertexShader->id );

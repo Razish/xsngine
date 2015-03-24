@@ -4,6 +4,8 @@ namespace XS {
 
 	namespace ClientGame {
 
+		class GameObject;
+
 		// initialise the ClientGame, create a View and load all resources etc
 		void Init(
 			void
@@ -17,6 +19,11 @@ namespace XS {
 		// prepare the scene for rendering, adding renderable objects to the view
 		void DrawFrame(
 			void
+		);
+
+		// add an object to the game
+		void AddObject(
+			GameObject *obj
 		);
 
 	} // namespace ClientGame

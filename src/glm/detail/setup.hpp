@@ -643,8 +643,7 @@
 #endif
 
 //
-#define GLM_HAS_TRIVIAL_QUERIES 0//( \
-	//((GLM_COMPILER & GLM_COMPILER_VC) && (GLM_COMPILER >= GLM_COMPILER_VC2013)))
+#define GLM_HAS_TRIVIAL_QUERIES 0//(((GLM_COMPILER & GLM_COMPILER_VC) && (GLM_COMPILER >= GLM_COMPILER_VC2013)))
 
 //
 #if GLM_LANG & GLM_LANG_CXX11_FLAG
@@ -948,7 +947,7 @@ namespace detail
 		}
 	}//namespace glm
 #	define GLM_COUNTOF(arr) glm::countof(arr)
-#elif _MSC_VER
+#elif defined(_MSC_VER)
 #	define GLM_COUNTOF(arr) _countof(arr)
 #else
 #	define GLM_COUNTOF(arr) sizeof(arr) / sizeof(arr[0])

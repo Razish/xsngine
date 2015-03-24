@@ -21,10 +21,7 @@ namespace XS {
 				height = state.window.height;
 			}
 
-#ifdef CAMERA_TEST
-#else
 			perFrameData = new Backend::Buffer( BufferType::Uniform, nullptr, sizeof(real32_t) * 16 );
-#endif
 
 			RegisterView( this );
 		}
@@ -47,15 +44,12 @@ namespace XS {
 				callbackPreRender( dt );
 			}
 
-#ifdef CAMERA_TEST
-#else
 			matrix4 *m = static_cast<matrix4 *>( perFrameData->Map() );
 
 			memcpy( m->data, glm::value_ptr( projectionMatrix ), sizeof(m->data) );
 
 			perFrameData->Unmap();
 			perFrameData->BindRange( 6 );
-#endif
 
 			// sort surfaces etc?
 

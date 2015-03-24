@@ -30,10 +30,7 @@ namespace XS {
 
 		public:
 			glm::mat4					 projectionMatrix;
-#ifdef CAMERA_TEST
-#else
 			Backend::Buffer				*perFrameData;
-#endif
 			std::queue<RenderCommand>	 renderCommands;
 			bool						 is2D;
 
@@ -49,10 +46,7 @@ namespace XS {
 
 			// do not call publicly
 			~View() {
-#ifdef CAMERA_TEST
-#else
 				delete perFrameData;
-#endif
 			}
 
 			// bind a view so that subsequent render calls are associated with it
