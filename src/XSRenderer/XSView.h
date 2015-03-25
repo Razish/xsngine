@@ -25,7 +25,7 @@ namespace XS {
 		struct View {
 		private:
 			uint32_t						width, height;
-			std::vector<const Renderable*>	renderObjects;
+			std::queue<const Renderable*>	renderObjects;
 			renderCallback_t				callbackPreRender, callbackPostRender;
 
 		public:

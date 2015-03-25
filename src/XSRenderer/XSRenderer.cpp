@@ -302,7 +302,7 @@ namespace XS {
 					continue;
 				}
 
-				currentView = view;
+				view->Bind();
 
 				view->PreRender( dt );
 				while ( !view->renderCommands.empty() ) {

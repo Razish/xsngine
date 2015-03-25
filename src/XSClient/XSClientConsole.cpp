@@ -90,8 +90,6 @@ namespace XS {
 				return;
 			}
 
-			const uint16_t fontSize = static_cast<uint16_t>( con_fontSize->GetInt32() );
-
 			view->Bind();
 
 			Renderer::DrawQuad(
@@ -116,6 +114,7 @@ namespace XS {
 			const real32_t x = 0.0f;
 			vector2 pos( x, 0.0f );
 			uint32_t drawn = 0u;
+			const uint16_t fontSize = static_cast<uint16_t>( con_fontSize->GetInt32() );
 			for ( const auto &it : lines ) {
 				const uint32_t linesToDraw = font->GetTextLineCount( pos, it, fontSize );
 				drawn += linesToDraw;

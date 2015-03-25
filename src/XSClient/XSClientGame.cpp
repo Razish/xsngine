@@ -34,11 +34,6 @@ namespace XS {
 
 		static void RenderScene( real64_t dt ) {
 			sceneView->projectionMatrix = camera->GetProjectionView();
-
-			// the view is already bound
-			for ( const auto &object : objects ) {
-				sceneView->AddObject( object->renderObject );
-			}
 		}
 
 		void Init( void ) {
@@ -79,11 +74,18 @@ namespace XS {
 		}
 
 		void RunFrame( real64_t dt ) {
+			Cvar *r_zRange = Cvar::Get( "r_zRange" );
+			real32_t zNear = r_zRange->GetReal32( 0 );
+			real32_t zFar = r_zRange->GetReal32( 1 );
+
+			camera->SetupPerspective( glm::radians( cg_fov->GetReal32() ), Renderer::state.window.aspectRatio, zNear, zFar );
 			camera->Update( dt );
 		}
 
 		void DrawFrame( void ) {
-			sceneView->Bind();
+			for ( const auto &object : objects ) {
+				sceneView->AddObject( object->renderObject );
+			}
 		}
 
 	} // namespace ClientGame

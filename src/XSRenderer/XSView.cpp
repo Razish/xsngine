@@ -54,10 +54,12 @@ namespace XS {
 
 			// sort surfaces etc?
 
-			for ( const auto &object : renderObjects ) {
-				if ( object ) {
-					object->Draw();
-				}
+			while ( !renderObjects.empty() ) {
+				const auto &object = renderObjects.front();
+
+				object->Draw();
+
+				renderObjects.pop();
 			}
 		}
 
@@ -65,7 +67,6 @@ namespace XS {
 			if ( callbackPostRender ) {
 				callbackPostRender( dt );
 			}
-			renderObjects.clear();
 		}
 
 		void View::Bind( void ) {
@@ -73,7 +74,7 @@ namespace XS {
 		}
 
 		void View::AddObject( const Renderable *renderObject ) {
-			renderObjects.push_back( renderObject );
+			renderObjects.push( renderObject );
 		}
 
 	} // namespace Renderer
