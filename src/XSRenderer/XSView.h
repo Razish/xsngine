@@ -18,21 +18,31 @@ namespace XS {
 
 		// forward declarations
 		class Renderable;
+		class Framebuffer;
+		class Texture;
 
 		// used for pre/post render callbacks
 		typedef void (*renderCallback_t)( real64_t dt );
 
 		struct View {
 		private:
-			uint32_t						width, height;
+			Texture							*colourTexture;
+			Texture							*depthTexture;
+			Texture							*stencilTexture;
+
 			std::queue<const Renderable*>	renderObjects;
+			std::queue<vector3>				pointLights;
+
 			renderCallback_t				callbackPreRender, callbackPostRender;
 
 		public:
-			glm::mat4					 projectionMatrix;
-			Backend::Buffer				*perFrameData;
-			std::queue<RenderCommand>	 renderCommands;
 			bool						 is2D;
+			uint32_t					 width;
+			uint32_t					 height;
+			Framebuffer					*fbo;
+			Backend::Buffer				*perFrameData;
+			glm::mat4					 projectionMatrix;
+			std::queue<RenderCommand>	 renderCommands;
 
 			// construct a view, specifying additional callbacks if necessary
 			// if width or height are 0, they are both inherited from the current resolution
@@ -45,9 +55,7 @@ namespace XS {
 			);
 
 			// do not call publicly
-			~View() {
-				delete perFrameData;
-			}
+			~View();
 
 			// bind a view so that subsequent render calls are associated with it
 			void Bind(
@@ -69,6 +77,11 @@ namespace XS {
 			// add a renderable object to the view for this frame
 			void AddObject(
 				const Renderable *renderObject
+			);
+
+			// add a point light to the view for this frame
+			void AddPointLight(
+				const vector3 &lightPos
 			);
 		};
 

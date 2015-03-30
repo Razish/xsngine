@@ -60,13 +60,6 @@ namespace XS {
 				throw( XSError( "Failed to create blank texture" ) );
 			}
 
-			/*
-			// fp16 textures don't play nicely with filtering (performance, support)
-			if ( internalFormat == IF_RGBA16F ) {
-				filterMode = GL_NEAREST;
-			}
-			*/
-
 			Bind( 0 );
 
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );

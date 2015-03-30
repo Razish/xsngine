@@ -22,7 +22,7 @@ namespace XS {
 			std::vector<vector2>	 UVs;
 			Backend::Buffer			*vertexBuffer;
 
-			std::vector<uint16_t>	 indices;
+			std::vector<uint32_t>	 indices;
 			Backend::Buffer			*indexBuffer;
 
 			ShaderProgram			*shader;

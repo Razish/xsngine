@@ -22,9 +22,9 @@ namespace XS {
 			mesh->normals.resize( mesh->vertices.size(), vector3( 0.0f, 0.0f, 0.0f ) );
 			size_t numIndices = mesh->indices.size();
 			for ( size_t i = 0; i < numIndices; i += 3 ) {
-				uint16_t ia = mesh->indices[i + 0];
-				uint16_t ib = mesh->indices[i + 1];
-				uint16_t ic = mesh->indices[i + 2];
+				uint32_t ia = mesh->indices[i + 0];
+				uint32_t ib = mesh->indices[i + 1];
+				uint32_t ic = mesh->indices[i + 2];
 				const size_t numVertices = mesh->vertices.size();
 				if ( ia >= numVertices || ib >= numVertices || ic >= numVertices ) {
 					continue;
@@ -169,12 +169,12 @@ namespace XS {
 						);
 						break;
 					}
-					uint16_t a = 0, b = 0, c = 0;
+					uint32_t a = 0, b = 0, c = 0;
 					for ( int i = 0; i < 3; i++ ) {
 						const char *str = nullptr;
 						parser.ParseString( &str );
 						if ( str ) {
-							sscanf( str, "%hd/%hd/%hd", &a, &b, &c );
+							sscanf( str, "%i/%i/%i", &a, &b, &c );
 							if ( a != 0 ) {
 								a--;
 							}

@@ -230,10 +230,12 @@ namespace XS {
 			if ( cmd[0] == '+' ) {
 				//TODO: handle buttons?
 				if ( ev.down ) {
-					// ...
+					Command::Append( cmd.c_str() );
 				}
 				else {
-					// ...
+					std::string newCmd = cmd;
+					newCmd[0] = '-';
+					Command::Append( newCmd.c_str() );
 				}
 				return;
 			}
@@ -247,12 +249,6 @@ namespace XS {
 			if ( clientConsole && clientConsole->KeyboardEvent( ev ) ) {
 				return;
 			}
-
-			/*
-			if ( XSClientGame->KeyEvent( key, down ) ) {
-				return;
-			}
-			*/
 
 			keystate[ev.key] = ev.down;
 			ExecuteBind( ev );

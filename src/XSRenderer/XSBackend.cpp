@@ -13,6 +13,7 @@ namespace XS {
 		namespace Backend {
 
 			Cvar *r_zRange = nullptr;
+			Cvar *r_wireframe = nullptr;
 
 			GLuint defaultVao = 0u;
 			GLuint defaultPbo = 0u;
@@ -23,6 +24,7 @@ namespace XS {
 
 			static void RegisterCvars( void ) {
 				r_zRange = Cvar::Create( "r_zRange", "0.1 4000.0", "Clipping plane range", CVAR_ARCHIVE );
+				r_wireframe = Cvar::Create( "r_wireframe", "0", "Enable wireframe rendering mode", CVAR_ARCHIVE );
 			}
 
 			void Init( void ) {
@@ -64,7 +66,7 @@ namespace XS {
 				glDeleteBuffers( 1, &defaultPbo );
 			}
 
-			void SetWireframe( bool on ) {
+			void ToggleWireframe( bool on ) {
 				state.wireFrame = on;
 				glPolygonMode( GL_FRONT_AND_BACK, on ? GL_LINE : GL_FILL );
 			}
@@ -84,7 +86,10 @@ namespace XS {
 					bits |= GL_DEPTH_BUFFER_BIT;
 				}
 
+#ifdef USE_FBO
+#else
 				glClear( bits );
+#endif
 
 				if ( clearColour ) {
 					glClearColor( colour.r, colour.g, colour.b, colour.a );
@@ -120,6 +125,68 @@ namespace XS {
 				}
 
 				glDepthFunc( glFunc );
+			}
+
+			void ToggleStencilTest( bool enabled ) {
+				if ( enabled ) {
+					glEnable( GL_STENCIL_TEST );
+				}
+				else {
+					glDisable( GL_STENCIL_TEST );
+				}
+			}
+
+			void SetStencilFunction( StencilFunc func ) {
+				GLenum glFunc = GL_ALWAYS;
+
+				switch( func ) {
+
+				case StencilFunc::Never: {
+					glFunc = GL_NEVER;
+				} break;
+
+				case StencilFunc::Always: {
+					glFunc = GL_ALWAYS;
+				} break;
+
+				case StencilFunc::Equal: {
+					glFunc = GL_EQUAL;
+				} break;
+
+				case StencilFunc::NotEqual: {
+					glFunc = GL_NOTEQUAL;
+				} break;
+
+				case StencilFunc::Less: {
+					glFunc = GL_LESS;
+				} break;
+
+				case StencilFunc::LessOrEqual: {
+					glFunc = GL_LEQUAL;
+				} break;
+
+				case StencilFunc::GreaterOrEqual: {
+					glFunc = GL_GEQUAL;
+				} break;
+
+				case StencilFunc::Greater: {
+					glFunc = GL_GREATER;
+				} break;
+
+				}
+
+				glStencilFunc( glFunc, 1, 0xFF );
+			}
+
+			void SetStencilOp( StencilOp op ) {
+#if 0
+				switch( op ) {
+
+				case StencilOp::Derp: {
+				} break;
+
+				}
+#endif
 			}
 
 			void ToggleAlphaBlending( bool enabled ) {

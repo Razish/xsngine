@@ -4,9 +4,12 @@
 #include "XSRenderer/XSRenderer.h"
 #include "XSRenderer/XSBuffer.h"
 #include "XSRenderer/XSView.h"
+#include "XSRenderer/XSFramebuffer.h"
 #include "XSRenderer/XSBackend.h"
 #include "XSRenderer/XSRenderable.h"
 #include "XSRenderer/XSShaderProgram.h"
+
+//#define USE_FBO
 
 namespace XS {
 
@@ -14,7 +17,8 @@ namespace XS {
 
 		View::View( uint32_t viewWidth, uint32_t viewHeight, bool is2D, renderCallback_t preRender,
 			renderCallback_t postRender )
-		: width( viewWidth ), height( viewHeight ), callbackPreRender( preRender ), callbackPostRender( postRender ), is2D( is2D )
+		: callbackPreRender( preRender ), callbackPostRender( postRender ), is2D( is2D ), width( viewWidth ),
+			height( viewHeight )
 		{
 			if ( !viewWidth || !viewHeight ) {
 				width = state.window.width;
@@ -23,7 +27,38 @@ namespace XS {
 
 			perFrameData = new Backend::Buffer( BufferType::Uniform, nullptr, 4 * 1024 * 1024 );
 
+#ifdef USE_FBO
+			fbo = new Framebuffer();
+			fbo->Bind();
+
+			colourTexture = new Texture( width, height );
+			fbo->AttachColourTexture( colourTexture, 0 );
+
+			if ( is2D ) {
+				depthTexture = nullptr;
+				stencilTexture = new Texture( width, height, InternalFormat::Stencil8 );
+				fbo->AttachDepthStencilTexture( stencilTexture );
+			}
+			else {
+				depthTexture = new Texture( width, height, InternalFormat::Depth24Stencil8 );
+				fbo->AttachDepthStencilTexture( depthTexture );
+				stencilTexture = nullptr;
+			}
+#else
+			fbo = nullptr;
+			colourTexture = nullptr;
+			depthTexture = nullptr;
+			stencilTexture = nullptr;
+#endif
+
 			RegisterView( this );
+		}
+
+		View::~View() {
+			delete depthTexture;
+			delete colourTexture;
+			delete fbo;
+			delete perFrameData;
 		}
 
 		void View::PreRender( real64_t dt ) {
@@ -61,6 +96,8 @@ namespace XS {
 
 				renderObjects.pop();
 			}
+
+
 		}
 
 		void View::PostRender( real64_t dt ) {
@@ -70,11 +107,21 @@ namespace XS {
 		}
 
 		void View::Bind( void ) {
-			BindView( this );
+			SetCurrentView( this );
+			if ( fbo ) {
+				fbo->Bind();
+			}
+			else {
+				Framebuffer::BindDefault();
+			}
 		}
 
 		void View::AddObject( const Renderable *renderObject ) {
 			renderObjects.push( renderObject );
+		}
+
+		void View::AddPointLight( const vector3 &lightPos ) {
+			//TODO: add point light to scene
 		}
 
 	} // namespace Renderer

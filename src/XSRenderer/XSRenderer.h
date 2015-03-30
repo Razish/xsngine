@@ -78,7 +78,7 @@ namespace XS {
 		);
 
 		// set the current view for subsequent rendering
-		void BindView(
+		void SetCurrentView(
 			View *view
 		);
 

@@ -6,6 +6,7 @@
 #include "XSCommon/XSError.h"
 #include "XSCommon/XSCvar.h"
 #include "XSCommon/XSGlobals.h"
+#include "XSCommon/XSTimer.h"
 #include "XSRenderer/XSRenderer.h"
 #include "XSRenderer/XSView.h"
 #include "XSRenderer/XSRenderCommand.h"
@@ -14,10 +15,14 @@
 #include "XSRenderer/XSShaderProgram.h"
 #include "XSRenderer/XSTexture.h"
 #include "XSRenderer/XSFont.h"
+#include "XSRenderer/XSImagePNG.h"
 
 #if defined(XS_OS_MAC)
 //#include <OpenCL/cl_gl_ext.h>
 #endif
+
+//#define USE_FBO
+//#define FBO_TEST
 
 namespace XS {
 
@@ -163,6 +168,7 @@ namespace XS {
 			Backend::Init();
 
 			Texture::Init();
+
 			ShaderProgram::Init();
 			Font::Init();
 
@@ -289,20 +295,29 @@ namespace XS {
 		}
 
 		void Update( real64_t dt ) {
-			const vector4 clear(
+			const vector4 clearColour(
 				r_clear->GetReal32( 0 ),
 				r_clear->GetReal32( 1 ),
 				r_clear->GetReal32( 2 ),
 				r_clear->GetReal32( 3 )
 			);
-			Backend::ClearBuffer( true, true, clear );
+
+#ifdef USE_FBO
+#else
+			Backend::ClearBuffer( true, true, clearColour );
+#endif
 
 			for ( const auto &view : views ) {
 				if ( r_skipRender->GetInt32() & (1 << static_cast<uint32_t>( view->is2D )) ) {
 					continue;
 				}
 
+				// bind the view's FBO
 				view->Bind();
+
+#ifdef USE_FBO
+				Backend::ClearBuffer( true, true, clearColour );
+#endif
 
 				view->PreRender( dt );
 				while ( !view->renderCommands.empty() ) {
@@ -315,6 +330,20 @@ namespace XS {
 				view->PostRender( dt );
 			}
 
+#ifdef USE_FBO
+			Framebuffer::BindDefault();
+			Backend::ClearBuffer( true, true, clearColour );
+
+			for ( const auto &view : views ) {
+				//TODO: composite render
+				Framebuffer::BlitColour(
+					view->fbo, nullptr, // from, to
+					view->width, view->height, // source dimensions
+					state.window.width, state.window.height // dest dimensions
+				);
+			}
+#endif
+
 			SDL_GL_SwapWindow( window );
 		}
 
@@ -322,7 +351,7 @@ namespace XS {
 			views.push_back( view );
 		}
 
-		void BindView( View *view ) {
+		void SetCurrentView( View *view ) {
 			currentView = view;
 		}
 

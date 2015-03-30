@@ -59,9 +59,9 @@ namespace XS {
 			vertexBuffer->Unmap();
 
 			if ( indices.size() > 0 ) {
-				indexBuffer = new Buffer( BufferType::Index, nullptr, indices.size() * sizeof(uint16_t) );
-				uint16_t *buffer = static_cast<uint16_t *>( indexBuffer->Map() );
-				for ( auto index : indices ) {
+				indexBuffer = new Buffer( BufferType::Index, nullptr, indices.size() * sizeof(uint32_t) );
+				uint32_t *buffer = static_cast<uint32_t *>( indexBuffer->Map() );
+				for ( const auto &index : indices ) {
 					*buffer++ = index;
 				}
 				indexBuffer->Unmap();

@@ -70,6 +70,7 @@ namespace XS {
 			ClientGame::RunFrame( dt );
 		}
 
+		// lazy initialise on first request per frame
 		real64_t GetElapsedTime( TimerResolution resolution ) {
 			static uint64_t lastFrame = 0u;
 			static real64_t timeSec = 0.0;
@@ -102,14 +103,7 @@ namespace XS {
 			}
 		}
 
-		static void DrawHUD( real64_t frametime ) {
-			hudView->Bind();
-
-			static Renderer::Font *font = nullptr;
-			if ( !font ) {
-				font = Renderer::Font::Register( "menu" );
-			}
-
+		static void DrawFPS( real64_t frametime, Renderer::Font *font ) {
 			static const uint32_t numSamples = 64u;
 			static real64_t samples[numSamples];
 			static uint32_t index = 0;
@@ -135,6 +129,17 @@ namespace XS {
 				0.0f
 			);
 			font->Draw( pos, fpsText, fpsTextSize );
+		}
+
+		static void DrawHUD( real64_t frametime ) {
+			hudView->Bind();
+
+			static Renderer::Font *font = nullptr;
+			if ( !font ) {
+				font = Renderer::Font::Register( "menu" );
+			}
+
+			DrawFPS( frametime, font );
 		}
 
 		void DrawFrame( real64_t frametime ) {

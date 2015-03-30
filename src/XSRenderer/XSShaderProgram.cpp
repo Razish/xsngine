@@ -76,8 +76,6 @@ namespace XS {
 		}
 
 		void Shader::Create( const char *path, const char *source, ShaderType shaderType ) {
-			int statusCode = 0;
-
 			id = glCreateShader( GetGLShaderType( shaderType ) );
 			type = shaderType;
 
@@ -88,6 +86,8 @@ namespace XS {
 
 			glShaderSource( id, 1, (const GLchar **)&source, nullptr );
 			if ( glGetError() == GL_INVALID_OPERATION ) {
+				SDL_assert( !"Invalid shader source" );
+
 				OutputShaderInfoLog( id );
 
 				glDeleteShader( id );
@@ -96,6 +96,7 @@ namespace XS {
 			}
 
 			glCompileShader( id );
+			int statusCode = 0;
 			glGetShaderiv( id, GL_COMPILE_STATUS, &statusCode );
 
 			if ( statusCode == GL_FALSE ) {
@@ -139,7 +140,7 @@ namespace XS {
 
 			f.Read( reinterpret_cast<uint8_t *>( &contents[0] ) );
 
-			Create( name, contents.c_str(), type );
+			Create( path, contents.c_str(), type );
 		}
 
 		Shader::~Shader() {
@@ -207,10 +208,13 @@ namespace XS {
 
 		// will create if necessary
 		ProgramVariable &ShaderProgram::GetUniform( const char *name ) {
-			auto var = std::find_if( std::begin(uniforms), std::end(uniforms),
-				[name](const ProgramVariable& uniform) {
-					return strcmp( uniform.name, name ) == 0;
-				} );
+			auto var = std::find_if(
+				std::begin(uniforms),
+				std::end(uniforms),
+				[name]( const ProgramVariable &uniform ) {
+					return !strcmp( uniform.name, name );
+				}
+			);
 
 			if ( var != std::end( uniforms ) ) {
 				return *var;
@@ -254,6 +258,10 @@ namespace XS {
 
 		void ShaderProgram::SetUniform1( const char *name, real32_t f ) {
 			glUniform1f( GetUniform( name ).location, f );
+		}
+
+		void ShaderProgram::SetUniform1( const char *name, const real32_t *m  ) {
+			glUniformMatrix4fv( GetUniform( name ).location, 1, GL_FALSE, m );
 		}
 
 		void ShaderProgram::SetUniform2( const char *name, real32_t f1, real32_t f2 ) {

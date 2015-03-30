@@ -9,6 +9,7 @@ files = [
 	'XSClient/XSBaseCamera.cpp',
 	'XSClient/XSClientGame.cpp',
 	'XSClient/XSFlyCamera.cpp',
+	'XSClient/XSGameObject.cpp',
 	'XSClient/XSTerrain.cpp'
 ]
 files = [build_dir + f for f in files]

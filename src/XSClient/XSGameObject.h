@@ -1,29 +1,33 @@
 #pragma once
 
-#include "XSRenderer/XSRenderable.h"
+#include "XSCommon/XSCommon.h"
+#include "XSCommon/XSVector.h"
 
 namespace XS {
+
+	namespace Renderer {
+		class Renderable;
+	}
 
 	namespace ClientGame {
 
 		class GameObject {
 		private:
-			// ...
+			vector3 position;
 
 		public:
 			Renderer::Renderable *renderObject;
 
-			GameObject()
-			: renderObject( nullptr )
-			{
-			};
+			GameObject();
+			~GameObject();
 
-			~GameObject() {
-				if ( renderObject ) {
-					delete renderObject;
-					renderObject = nullptr;
-				}
-			};
+			const vector3 &GetPosition(
+				void
+			) const;
+
+			void SetPosition(
+				const vector3 &pos
+			);
 		};
 
 	} // namespace ClientGame

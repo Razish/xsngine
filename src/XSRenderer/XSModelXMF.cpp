@@ -13,22 +13,28 @@
 #include "XSRenderer/XSShaderProgram.h"
 #include "XSRenderer/XSTexture.h"
 #include "XSRenderer/XSVertexAttributes.h"
+#include "XSRenderer/XSImagePNG.h"
 
 namespace XS {
 
 	namespace Renderer {
 
+		uint32_t XMF::version = 2u;
+
 		void XMF::Process( Mesh *mesh ) {
 			// create texture
-			uint8_t *texture = new uint8_t[128 * 128 * 4];
-			std::memset( texture, 255, sizeof(*texture) );
-			mesh->texture = new Texture( 128, 128, InternalFormat::RGBA8, texture );
+			if ( !mesh->texture ) {
+				uint8_t *texture = new uint8_t[128 * 128 * 4];
+				std::memset( texture, 255, sizeof(*texture) );
+				mesh->texture = new Texture( 128, 128, InternalFormat::RGBA8, texture );
+				delete[] texture;
+			}
 
 			// create shader program
 			static const VertexAttribute attributes[] = {
 				{ 0, "in_Position" },
-			//	{ 1, "in_Normal" },
-			//	{ 2, "in_TexCoord" },
+				{ 1, "in_Normal" },
+				{ 2, "in_TexCoord" },
 			};
 			mesh->shader = new ShaderProgram( "model", "model", attributes, ARRAY_LEN( attributes ) );
 
@@ -42,8 +48,6 @@ namespace XS {
 
 			mesh->Upload();
 			meshes.push_back( mesh );
-
-			delete[] texture;
 		}
 
 		bool XMF::LoadMeshes( void ) {
@@ -55,14 +59,34 @@ namespace XS {
 			char *buffer = new char[f.length];
 			f.Read( reinterpret_cast<uint8_t *>( buffer ) );
 			TokenParser parser( buffer );
-			Mesh *mesh = new Mesh();
-			console.Print( PrintLevel::Debug,
-				"%s loading new mesh for '%s' at 0x%" PRIXPTR "\n",
-				XS_FUNCTION,
-				modelPath.c_str(),
-				mesh
-			);
 
+			// check the version identifier
+			const char *token = parser.ParseToken();
+			if ( !String::CompareCase( token, "version" ) ) {
+				uint32_t ui = 0u;
+				parser.ParseUInt32( &ui );
+				if ( ui != XMF::version ) {
+					console.Print( PrintLevel::Normal,
+						"%s invalid XMF file '%s' wrong version identifier (%u != %u)\n",
+						XS_FUNCTION,
+						modelPath.c_str(),
+						ui,
+						XMF::version
+					);
+					return false;
+				}
+			}
+			else {
+				console.Print( PrintLevel::Normal,
+					"%s invalid XMF file '%s' missing version identifier!\n",
+					XS_FUNCTION,
+					modelPath.c_str()
+				);
+				return false;
+			}
+
+			// should be a valid XMF, try parsing it out
+			Mesh *mesh = nullptr;
 			while ( true ) {
 				const char *token = parser.ParseToken();
 				if ( !token[0] ) {
@@ -89,6 +113,16 @@ namespace XS {
 						modelPath.c_str(),
 						mesh
 					);
+
+					const char *str = nullptr;
+					parser.ParseString( &str );
+					if ( str ) {
+						uint32_t width, height;
+						uint8_t *textureContents = LoadPNG( str, &width, &height );
+						mesh->texture = new Texture( width, height, InternalFormat::RGBA8, textureContents );
+						delete textureContents;
+					}
+
 					parser.SkipLine();
 				}
 				else if ( !String::CompareCase( token, "v" ) ) {
@@ -108,8 +142,30 @@ namespace XS {
 					for ( int i = 0; i < 3; i++ ) {
 						parser.ParseReal32( &vertex.raw[i] );
 					}
-					console.Print( PrintLevel::Debug, "x: %.1f, y: %.1f, z: %.1f\n", vertex.x, vertex.y, vertex.z );
 					mesh->vertices.push_back( vertex );
+					parser.SkipLine();
+				}
+				else if ( !String::CompareCase( token, "uv" ) ) {
+					// new texture coordinates
+					if ( !mesh ) {
+						// something went wrong, we can't parse texture coordinates out if we don't know what mesh
+						//	they're related to
+						console.Print( PrintLevel::Normal,
+							"%s tried to parse UVs for '%s' without specifying a mesh!\n",
+							XS_FUNCTION,
+							modelPath.c_str()
+						);
+						break;
+					}
+
+					vector2 uv;
+					for ( int i = 0; i < 2; i++ ) {
+						parser.ParseReal32( &uv.raw[i] );
+					}
+					real32_t tmp = uv.x;
+					uv.x = uv.y;
+					uv.y = tmp;
+					mesh->UVs.push_back( uv );
 					parser.SkipLine();
 				}
 				else if ( !String::CompareCase( token, "f" ) ) {
@@ -124,16 +180,17 @@ namespace XS {
 						break;
 					}
 
-					uint16_t a = 0, b = 0, c = 0;
+					// vertex indices
+					uint32_t a = 0, b = 0, c = 0;
 					const char *str = nullptr;
 					parser.ParseString( &str );
 					if ( str ) {
-						sscanf( str, "%hd/%hd/%hd", &a, &b, &c );
-						console.Print( PrintLevel::Debug, "a: %hd, b: %hd, c: %hd\n", a, b, c );
+						sscanf( str, "%i/%i/%i", &a, &b, &c );
 						mesh->indices.push_back( a );
 						mesh->indices.push_back( b );
 						mesh->indices.push_back( c );
 					}
+
 					parser.SkipLine();
 				}
 				else {

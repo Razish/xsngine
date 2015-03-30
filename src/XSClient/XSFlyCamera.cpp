@@ -3,6 +3,7 @@
 #include "XSCommon/XSMatrix.h"
 #include "XSClient/XSFlyCamera.h"
 #include "XSClient/XSClient.h"
+#include "XSInput/XSInput.h"
 #include "XSInput/XSKeys.h"
 #include "XSRenderer/XSView.h"
 
@@ -27,42 +28,36 @@ namespace XS {
 			glm::vec3 vForward = worldTransform[2].xyz();
 
 			glm::vec3 wishDir;
-			if ( Client::keystate[SDLK_w] ) {
+			if ( Client::Input::perFrameState.moveForward ) {
 				wishDir -= vForward;
 			}
 
-			if ( Client::keystate[SDLK_s] ) {
+			if ( Client::Input::perFrameState.moveBack ) {
 				wishDir += vForward;
 			}
 
-			if ( Client::keystate[SDLK_a] ) {
+			if ( Client::Input::perFrameState.moveLeft ) {
 				wishDir -= vRight;
 			}
 
-			if ( Client::keystate[SDLK_d] ) {
+			if ( Client::Input::perFrameState.moveRight ) {
 				wishDir += vRight;
 			}
 
-			if ( Client::keystate[SDLK_SPACE] ) {
+			if ( Client::Input::perFrameState.moveUp ) {
 				wishDir += vUp;
 			}
 
-			if ( Client::keystate[SDLK_c] ) {
+			if ( Client::Input::perFrameState.moveDown ) {
 				wishDir += vUp * -1.0f;
 			}
 
 			glm::normalize( wishDir );
-			glm::vec3 wishVel = wishDir * flySpeed;
-
-			velocity += wishVel;
+			glm::vec3 velocity = wishDir * flySpeed * dt;
 
 			real32_t speed = velocity.length();
 			if ( speed > 0.01f ) {
-				glm::vec3 pos = GetPosition();
-				pos += velocity * dt * flySpeed;
-				velocity *= 0.75;
-
-				SetPosition( pos );
+				SetPosition( GetPosition() + velocity );
 			}
 		}
 

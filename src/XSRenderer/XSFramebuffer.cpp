@@ -11,6 +11,7 @@ namespace XS {
 		const Framebuffer *Framebuffer::currentReadFramebuffer = nullptr;
 		const Framebuffer *Framebuffer::currentWriteFramebuffer = nullptr;
 
+		// public, static
 		void Framebuffer::BindDefault( void ) {
 			if ( currentReadFramebuffer || currentWriteFramebuffer ) {
 				glBindFramebuffer( GL_FRAMEBUFFER, 0 );
@@ -42,14 +43,14 @@ namespace XS {
 		void Framebuffer::BlitColour( const Framebuffer *source, const Framebuffer *destination, int sourceWidth,
 			int sourceHeight, int destWidth, int destHeight )
 		{
-			Blit( source, destination, sourceWidth, sourceHeight, destWidth, destHeight, GL_COLOR_BUFFER_BIT);
+			Blit( source, destination, sourceWidth, sourceHeight, destWidth, destHeight, GL_COLOR_BUFFER_BIT );
 		}
 
 		void Framebuffer::BlitColourAndDepth( const Framebuffer *source, const Framebuffer *destination,
 			int sourceWidth, int sourceHeight, int destWidth, int destHeight )
 		{
 			Blit( source, destination, sourceWidth, sourceHeight, destWidth, destHeight,
-				GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+				GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		}
 
 		// instance functions
@@ -68,8 +69,16 @@ namespace XS {
 		}
 
 		void Framebuffer::AttachColourTexture( const Texture *texture, unsigned int slot ) {
+			// make sure it's bound
+			if ( currentReadFramebuffer != this || currentWriteFramebuffer != this ) {
+				console.Print( PrintLevel::Normal, "Attaching colour texture to FBO without it being bound, "
+					"binding now\n"
+				);
+				Bind();
+			}
+
 			if ( slot >= MAX_FBO_COLOR_TEXTURES ) {
-				console.Print( PrintLevel::Normal, "Invalid slot number given (%d), valid range is 0 - %d",
+				console.Print( PrintLevel::Normal, "Invalid slot number given (%d), valid range is 0 - %d\n",
 					slot,
 					MAX_FBO_COLOR_TEXTURES - 1
 				);
@@ -81,11 +90,27 @@ namespace XS {
 		}
 
 		void Framebuffer::AttachDepthTexture( const Texture *texture ) {
+			// make sure it's bound
+			if ( currentReadFramebuffer != this || currentWriteFramebuffer != this ) {
+				console.Print( PrintLevel::Normal, "Attaching depth texture to FBO without it being bound, "
+					"binding now\n"
+				);
+				Bind();
+			}
+
 			glFramebufferTexture2D( GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, texture->id, 0 );
 			depthTexture = texture;
 		}
 
 		void Framebuffer::AttachDepthStencilTexture( const Texture *texture ) {
+			// make sure it's bound
+			if ( currentReadFramebuffer != this || currentWriteFramebuffer != this ) {
+				console.Print( PrintLevel::Normal, "Attaching depth/stencil texture to FBO without it being bound, "
+					"binding now\n"
+				);
+				Bind();
+			}
+
 			glFramebufferTexture2D( GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, texture->id, 0 );
 			depthTexture = texture;
 			stencilTexture = texture->id;

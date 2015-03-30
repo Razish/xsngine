@@ -22,11 +22,8 @@ namespace XS {
 
 		namespace Input {
 
-			// per frame, accumulates until a movement command is generated
 			// store a small number of previous samples for interpolation (and extrapolation?)
-			typedef pvector2 PerFrameState;
-			static PerFrameState perFrameState = {};
-			std::queue<PerFrameState> previousStates;
+			std::queue<pvector2> previousStates;
 
 			void MouseWheelEvent( const struct MouseWheelEvent &ev ) {
 				// ...
@@ -36,9 +33,9 @@ namespace XS {
 			}
 			void MouseMotionEvent( const struct MouseMotionEvent &ev ) {
 				// accumulate the movement for this frame
-				perFrameState.x += static_cast<real64_t>( ev.x );
-				perFrameState.y += static_cast<real64_t>( ev.y );
-				if ( m_debug->GetBool() ) {
+				perFrameState.mouseDelta.x += static_cast<real64_t>( ev.x );
+				perFrameState.mouseDelta.y += static_cast<real64_t>( ev.y );
+				if ( debug_mouse->GetBool() ) {
 					console.Print( PrintLevel::Normal,
 						"MouseMotionEvent( %i, %i )\n",
 						ev.x,
@@ -48,7 +45,7 @@ namespace XS {
 			}
 
 			void CalculateMouseMotion( real64_t frameMsec, MovementCommand &cmd ) {
-				pvector2 totalDelta = perFrameState;
+				pvector2 totalDelta = perFrameState.mouseDelta;
 
 #if defined(MOUSE_SMOOTHING)
 				uint32_t numFrames = 0u;
@@ -71,8 +68,8 @@ namespace XS {
 
 					//TODO: scale by aspect ratio?
 					/*
-					const Cvar *r_fov = Cvar::Get( "r_fov" );
-					const real64_t fov = r_fov ? r_fov->GetReal64() : 75.0;
+					const Cvar *r_fov = Cvar::Get( "cg_fov" );
+					const real64_t fov = cg_fov ? cg_fov->GetReal64() : 75.0;
 					frameDelta *= fov / Renderer::state.window.aspectRatio;
 					*/
 
@@ -81,9 +78,9 @@ namespace XS {
 				while ( previousStates.size() >= m_smoothFrames->GetUInt32() ) {
 					previousStates.pop();
 				}
-				previousStates.push( perFrameState );
+				previousStates.push( perFrameState.mouseDelta );
 #endif
-				perFrameState.clear();
+				perFrameState.mouseDelta.clear();
 
 				const vector3 oldAngles = Client::state.viewAngles;
 
@@ -96,7 +93,7 @@ namespace XS {
 				}
 #endif
 
-				if ( m_debug->GetBool() && (!dblcmp( totalDelta.x, 0.0 ) || !dblcmp( totalDelta.y, 0.0 )) ) {
+				if ( debug_mouse->GetBool() && (!dblcmp( totalDelta.x, 0.0 ) || !dblcmp( totalDelta.y, 0.0 )) ) {
 					console.Print( PrintLevel::Normal,
 						"CalculateMouseMotion( %.3f, %.3f )\n",
 						static_cast<real32_t>( totalDelta.x ),

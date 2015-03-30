@@ -1,6 +1,7 @@
 #pragma once
 
 #include "XSRenderer/XSRenderer.h"
+#include "XSCommon/XSMatrix.h"
 
 namespace XS {
 
@@ -31,6 +32,7 @@ namespace XS {
 
 		struct DrawModelCommand {
 			const Model	*model;
+			matrix4		 transform;
 		};
 
 		struct ScreenshotCommand {
@@ -76,6 +78,8 @@ namespace XS {
 				void
 			) const;
 		};
+
+		void DrawQuad( const DrawQuadCommand &cmd );
 
 	} // namespace Renderer
 

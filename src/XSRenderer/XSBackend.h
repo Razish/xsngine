@@ -10,6 +10,7 @@ namespace XS {
 		namespace Backend {
 
 			extern Cvar *r_zRange;
+			extern Cvar *r_wireframe;
 
 			extern GLuint defaultVao;
 			extern GLuint defaultPbo;
@@ -22,7 +23,7 @@ namespace XS {
 				void
 			);
 
-			void SetWireframe(
+			void ToggleWireframe(
 				bool on
 			);
 
@@ -46,6 +47,40 @@ namespace XS {
 
 			void SetDepthFunction(
 				DepthFunc func
+			);
+
+
+			void ToggleStencilTest(
+				bool enabled
+			);
+
+			enum class StencilFunc {
+				Never,
+				Always,
+				Equal,
+				NotEqual,
+				Less,
+				LessOrEqual,
+				GreaterOrEqual,
+				Greater,
+			};
+
+			void SetStencilFunction(
+				StencilFunc func
+			);
+
+			enum class StencilOp {
+				Keep,
+				Zero,
+				Replace,
+				Increment,
+				IncrementWrap,
+				Decrement,
+				Invert,
+			};
+
+			void SetStencilOp(
+				StencilOp op
 			);
 
 			void ToggleAlphaBlending(

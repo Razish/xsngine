@@ -4,6 +4,7 @@
 #include "XSCommon/XSVector.h"
 #include "XSCommon/XSConsole.h"
 #include "XSCommon/XSColours.h"
+#include "XSCommon/XSCvar.h"
 #include "XSRenderer/XSRenderer.h"
 #include "XSRenderer/XSBackend.h"
 #include "XSRenderer/XSBuffer.h"
@@ -39,8 +40,7 @@ namespace XS {
 
 		static uint32_t vertexAttribsEnabled = 0;
 
-		enum AttributeIndex
-		{
+		enum AttributeIndex {
 			VERTEX_ATTRIB_0 = (1 << 0),
 			VERTEX_ATTRIB_1 = (1 << 1),
 			VERTEX_ATTRIB_2 = (1 << 2),
@@ -51,21 +51,17 @@ namespace XS {
 			VERTEX_ATTRIB_7 = (1 << 7),
 		};
 
-		static void EnableVertexAttribs( uint32_t attribs )
-		{
-			uint32_t bit = 1;
-			uint32_t bitNumber = 0;
-			if ( attribs != vertexAttribsEnabled )
-			{
+		static void EnableVertexAttribs( uint32_t attribs ) {
+			if ( attribs != vertexAttribsEnabled ) {
+				uint32_t bit = 1;
+				uint32_t bitNumber = 0;
+
 				uint32_t savedAttribs = attribs;
-				while ( attribs )
-				{
-					if ( (attribs & 1) && !(vertexAttribsEnabled & bit) )
-					{
+				while ( attribs ) {
+					if ( (attribs & 1) && !(vertexAttribsEnabled & bit) ) {
 						glEnableVertexAttribArray( bitNumber );
 					}
-					else if ( !(attribs & 1) && (vertexAttribsEnabled & bit) )
-					{
+					else if ( !(attribs & 1) && (vertexAttribsEnabled & bit) ) {
 						glDisableVertexAttribArray( bitNumber );
 					}
 
@@ -87,8 +83,6 @@ namespace XS {
 			// a buffer of the same size and access bits.
 			quadsVertexBuffer = new Buffer( BufferType::Vertex, nullptr, 1024 * 1024 );
 			quadsIndexBuffer = new Buffer( BufferType::Index, quadIndices, sizeof(quadIndices) );
-
-			// create null quad material
 
 			// create texture
 			static const size_t numChannels = 4;
@@ -122,7 +116,7 @@ namespace XS {
 			delete quadProgram;
 		}
 
-		static void DrawQuad( const DrawQuadCommand &cmd ) {
+		void DrawQuad( const DrawQuadCommand &cmd ) {
 			if ( cmd.material ) {
 				cmd.material->Bind();
 			}
@@ -181,13 +175,19 @@ namespace XS {
 			intptr_t offset = 0;
 			const GLsizei stride = sizeof(vector2) + sizeof(vector2) + sizeof(vector4);
 
-			glVertexAttribPointer( 0, 2, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<const GLvoid *>( bufferMem.offset ) );
+			glVertexAttribPointer( 0, 2, GL_FLOAT, GL_FALSE, stride,
+				reinterpret_cast<const GLvoid *>( bufferMem.offset + offset )
+			);
 			offset += sizeof(vector2);
 
-			glVertexAttribPointer( 1, 2, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<const GLvoid *>( bufferMem.offset + offset ) );
+			glVertexAttribPointer( 1, 2, GL_FLOAT, GL_FALSE, stride,
+				reinterpret_cast<const GLvoid *>( bufferMem.offset + offset )
+			);
 			offset += sizeof(vector2);
 
-			glVertexAttribPointer( 2, 4, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<const GLvoid *>( bufferMem.offset + offset ) );
+			glVertexAttribPointer( 2, 4, GL_FLOAT, GL_FALSE, stride,
+				reinterpret_cast<const GLvoid *>( bufferMem.offset + offset )
+			);
 			offset += sizeof(vector4);
 
 			glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0 );
@@ -200,16 +200,17 @@ namespace XS {
 
 			bool setWireframe = false;
 			bool previousWireframe = false;
-			if ( mesh->material->flags & MF_WIREFRAME ) {
+			if ( r_wireframe->GetBool() || (mesh->material->flags & MF_WIREFRAME) ) {
 				setWireframe = true;
-				previousWireframe = Backend::GetWireframe();
-				Backend::SetWireframe( true );
+				previousWireframe = GetWireframe();
+				ToggleWireframe( true );
 			}
 
 			// bind the vertex/normal/uv buffers
 			if ( mesh->vertexBuffer ) {
 				mesh->vertexBuffer->Bind();
-				uint32_t vertexAttribs = 0;
+
+				uint32_t vertexAttribs = 0u;
 				if ( mesh->vertices.size() ) {
 					vertexAttribs |= VERTEX_ATTRIB_0;
 				}
@@ -255,9 +256,9 @@ namespace XS {
 			// issue the draw command
 			if ( 0 ) {//mesh->indexBuffer ) {
 				mesh->indexBuffer->Bind();
-				int size;
+				GLint size = 0;
 				glGetBufferParameteriv( GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &size );
-				glDrawElements( GL_TRIANGLES, size / sizeof(uint16_t), GL_UNSIGNED_SHORT, 0 );
+				glDrawElements( GL_TRIANGLES, size / sizeof(uint32_t), GL_UNSIGNED_INT, 0 );
 			}
 			else {
 				glDrawArrays( GL_TRIANGLES, 0, mesh->indices.size() );
@@ -265,7 +266,7 @@ namespace XS {
 
 			// clean up state
 			if ( setWireframe ) {
-				Backend::SetWireframe( previousWireframe );
+				ToggleWireframe( previousWireframe );
 			}
 		}
 

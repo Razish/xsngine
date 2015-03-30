@@ -151,6 +151,24 @@ namespace XS {
 			return true;
 		}
 
+		bool AddButton( const char *name, CommandFunc down, CommandFunc up ) {
+			CommandFunc &downFunc = commandTable[String::Format( "+%s", name ).c_str()];
+			if ( downFunc ) {
+				console.Print( PrintLevel::Normal, "Tried to register command \"%s\" twice\n", name );
+				return false;
+			}
+			downFunc = down;
+
+			CommandFunc &upFunc = commandTable[String::Format( "-%s", name ).c_str()];
+			if ( upFunc ) {
+				console.Print( PrintLevel::Normal, "Tried to register command \"%s\" twice\n", name );
+				return false;
+			}
+			upFunc = up;
+
+			return true;
+		}
+
 	} // namespace Command
 
 } // namespace XS

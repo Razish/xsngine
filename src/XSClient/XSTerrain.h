@@ -26,6 +26,8 @@ namespace XS {
 			Terrain(
 				const char *path
 			);
+
+			~Terrain();
 		};
 
 	} // namespace ClientGame

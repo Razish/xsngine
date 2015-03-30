@@ -3,6 +3,7 @@
 #include <SDL2/SDL.h>
 
 #include "XSCommon/XSCommon.h"
+#include "XSCommon/XSCommand.h"
 #include "XSCommon/XSEvent.h"
 #include "XSCommon/XSCvar.h"
 #include "XSCommon/XSError.h"
@@ -17,15 +18,19 @@ namespace XS {
 
 		namespace Input {
 
+			PerFrameState perFrameState = {};
+
+			static Cvar *debug_input = nullptr;
+			Cvar *debug_mouse = nullptr;
 			Cvar *m_acceleration = nullptr;
-			Cvar *m_debug = nullptr;
 			Cvar *m_sensitivity = nullptr;
 			Cvar *m_smooth = nullptr;
 			Cvar *m_smoothFrames = nullptr;
 
 			static void RegisterCvars( void ) {
+				debug_input = Cvar::Create( "debug_input", "0", "Show debugging information for input", CVAR_ARCHIVE );
+				debug_mouse = Cvar::Create( "debug_mouse", "0", "Show debugging information for mouse input", CVAR_ARCHIVE );
 				m_acceleration = Cvar::Create( "m_acceleration", "0", "Enable mouse acceleration", CVAR_ARCHIVE );
-				m_debug = Cvar::Create( "m_debug", "0", "Show debugging information for mouse input", CVAR_ARCHIVE );
 				m_sensitivity = Cvar::Create( "m_sensitivity", "1", "Sensitivity of mouse input", CVAR_ARCHIVE );
 				m_smooth = Cvar::Create( "m_smoothMouse", "0", "Smooth the mouse input across multiple frames",
 					CVAR_ARCHIVE );
@@ -33,8 +38,62 @@ namespace XS {
 					"across", CVAR_ARCHIVE );
 			}
 
+			static void Cmd_MoveForward_Down( const CommandContext * const context ) {
+				Input::perFrameState.moveForward = true;
+			}
+			static void Cmd_MoveForward_Up( const CommandContext * const context ) {
+				Input::perFrameState.moveForward = false;
+			}
+			static void Cmd_MoveBack_Down( const CommandContext * const context ) {
+				Input::perFrameState.moveBack = true;
+			}
+			static void Cmd_MoveBack_Up( const CommandContext * const context ) {
+				Input::perFrameState.moveBack = false;
+			}
+			static void Cmd_MoveLeft_Down( const CommandContext * const context ) {
+				Input::perFrameState.moveLeft = true;
+			}
+			static void Cmd_MoveLeft_Up( const CommandContext * const context ) {
+				Input::perFrameState.moveLeft = false;
+			}
+			static void Cmd_MoveRight_Down( const CommandContext * const context ) {
+				Input::perFrameState.moveRight = true;
+			}
+			static void Cmd_MoveRight_Up( const CommandContext * const context ) {
+				Input::perFrameState.moveRight = false;
+			}
+			static void Cmd_MoveUp_Down( const CommandContext * const context ) {
+				Input::perFrameState.moveUp = true;
+			}
+			static void Cmd_MoveUp_Up( const CommandContext * const context ) {
+				Input::perFrameState.moveUp = false;
+			}
+			static void Cmd_MoveDown_Down( const CommandContext * const context ) {
+				Input::perFrameState.moveDown = true;
+			}
+			static void Cmd_MoveDown_Up( const CommandContext * const context ) {
+				Input::perFrameState.moveDown = false;
+			}
+
+			static void AddCommands( void ) {
+				Command::AddCommand( "+forward", Cmd_MoveForward_Down );
+				Command::AddCommand( "-forward", Cmd_MoveForward_Up );
+				Command::AddCommand( "+back", Cmd_MoveBack_Down );
+				Command::AddCommand( "-back", Cmd_MoveBack_Up );
+				Command::AddCommand( "+left", Cmd_MoveLeft_Down );
+				Command::AddCommand( "-left", Cmd_MoveLeft_Up );
+				Command::AddCommand( "+right", Cmd_MoveRight_Down );
+				Command::AddCommand( "-right", Cmd_MoveRight_Up );
+				Command::AddCommand( "+jump", Cmd_MoveUp_Down );
+				Command::AddCommand( "-jump", Cmd_MoveUp_Up );
+				Command::AddCommand( "+crouch", Cmd_MoveDown_Down );
+				Command::AddCommand( "-crouch", Cmd_MoveDown_Up );
+			}
+
 			void Init( void ) {
 				RegisterCvars();
+
+				AddCommands();
 
 				// raw input
 				// this is also set in ClientConsole upon (de)activation
@@ -53,93 +112,121 @@ namespace XS {
 						static const char *funcName = XS_FUNCTION_VERBOSE;
 						switch ( e.window.event ) {
 						case SDL_WINDOWEVENT_SHOWN: {
-							console.Print( PrintLevel::Developer, "%s: Window %d shown\n",
-								funcName,
-								e.window.windowID
-							);
+							if ( debug_input->GetBool() ) {
+								console.Print( PrintLevel::Normal, "%s: Window %d shown\n",
+									funcName,
+									e.window.windowID
+								);
+							}
 						} break;
 						case SDL_WINDOWEVENT_HIDDEN: {
-							console.Print( PrintLevel::Developer, "%s: Window %d hidden\n",
-								funcName,
-								e.window.windowID
-							);
+							if ( debug_input->GetBool() ) {
+								console.Print( PrintLevel::Normal, "%s: Window %d hidden\n",
+									funcName,
+									e.window.windowID
+								);
+							}
 						} break;
 						case SDL_WINDOWEVENT_EXPOSED: {
-							console.Print( PrintLevel::Developer, "%s: Window %d exposed\n",
-								funcName,
-								e.window.windowID
-							);
+							if ( debug_input->GetBool() ) {
+								console.Print( PrintLevel::Normal, "%s: Window %d exposed\n",
+									funcName,
+									e.window.windowID
+								);
+							}
 						} break;
 						case SDL_WINDOWEVENT_MOVED: {
-							console.Print( PrintLevel::Developer, "%s: Window %d moved to %d,%d\n",
-								funcName,
-								e.window.windowID,
-								e.window.data1,
-								e.window.data2
-							);
+							if ( debug_input->GetBool() ) {
+								console.Print( PrintLevel::Normal, "%s: Window %d moved to %d,%d\n",
+									funcName,
+									e.window.windowID,
+									e.window.data1,
+									e.window.data2
+								);
+							}
 						} break;
 						case SDL_WINDOWEVENT_RESIZED: {
-							console.Print( PrintLevel::Developer, "%s: Window %d resized to %dx%d\n",
-								funcName,
-								e.window.windowID,
-								e.window.data1,
-								e.window.data2
-							);
+							if ( debug_input->GetBool() ) {
+								console.Print( PrintLevel::Normal, "%s: Window %d resized to %dx%d\n",
+									funcName,
+									e.window.windowID,
+									e.window.data1,
+									e.window.data2
+								);
+							}
 						} break;
 						case SDL_WINDOWEVENT_MINIMIZED: {
-							console.Print( PrintLevel::Developer, "%s: Window %d minimized\n",
-								funcName,
-								e.window.windowID
-							);
+							if ( debug_input->GetBool() ) {
+								console.Print( PrintLevel::Normal, "%s: Window %d minimized\n",
+									funcName,
+									e.window.windowID
+								);
+							}
 						} break;
 						case SDL_WINDOWEVENT_MAXIMIZED: {
-							console.Print( PrintLevel::Developer, "%s: Window %d maximized\n",
-								funcName,
-								e.window.windowID
-							);
+							if ( debug_input->GetBool() ) {
+								console.Print( PrintLevel::Normal, "%s: Window %d maximized\n",
+									funcName,
+									e.window.windowID
+								);
+							}
 						} break;
 						case SDL_WINDOWEVENT_RESTORED: {
-							console.Print( PrintLevel::Developer, "%s: Window %d restored\n",
-								funcName,
-								e.window.windowID
-							);
+							if ( debug_input->GetBool() ) {
+								console.Print( PrintLevel::Normal, "%s: Window %d restored\n",
+									funcName,
+									e.window.windowID
+								);
+							}
 						} break;
 						case SDL_WINDOWEVENT_ENTER: {
-							console.Print( PrintLevel::Developer, "%s: Mouse entered window %d\n",
-								funcName,
-								e.window.windowID
-							);
+							if ( debug_input->GetBool() ) {
+								console.Print( PrintLevel::Normal, "%s: Mouse entered window %d\n",
+									funcName,
+									e.window.windowID
+								);
+							}
 						} break;
 						case SDL_WINDOWEVENT_LEAVE: {
-							console.Print( PrintLevel::Developer, "%s: Mouse left window %d\n",
-								funcName,
-								e.window.windowID
-							);
+							if ( debug_input->GetBool() ) {
+								console.Print( PrintLevel::Normal, "%s: Mouse left window %d\n",
+									funcName,
+									e.window.windowID
+								);
+							}
 						} break;
 						case SDL_WINDOWEVENT_FOCUS_GAINED: {
-							console.Print( PrintLevel::Developer, "%s: Window %d gained keyboard focus\n",
-								funcName,
-								e.window.windowID
-							);
+							if ( debug_input->GetBool() ) {
+								console.Print( PrintLevel::Normal, "%s: Window %d gained keyboard focus\n",
+									funcName,
+									e.window.windowID
+								);
+							}
 						} break;
 						case SDL_WINDOWEVENT_FOCUS_LOST: {
-							console.Print( PrintLevel::Developer, "%s: Window %d lost keyboard focus\n",
-								funcName,
-								e.window.windowID
-							);
+							if ( debug_input->GetBool() ) {
+								console.Print( PrintLevel::Normal, "%s: Window %d lost keyboard focus\n",
+									funcName,
+									e.window.windowID
+								);
+							}
 						} break;
 						case SDL_WINDOWEVENT_CLOSE: {
-							console.Print( PrintLevel::Developer, "%s: Window %d closed\n",
-								funcName,
-								e.window.windowID
-							);
+							if ( debug_input->GetBool() ) {
+								console.Print( PrintLevel::Normal, "%s: Window %d closed\n",
+									funcName,
+									e.window.windowID
+								);
+							}
 						} break;
 						default: {
-							console.Print( PrintLevel::Developer, "%s: Window %d got unknown event %d\n",
-								funcName,
-								e.window.windowID,
-								e.window.event
-							);
+							if ( debug_input->GetBool() ) {
+								console.Print( PrintLevel::Normal, "%s: Window %d got unknown event %d\n",
+									funcName,
+									e.window.windowID,
+									e.window.event
+								);
+							}
 						} break;
 						}
 					} break;
@@ -229,7 +316,7 @@ namespace XS {
 					} break;
 
 					default: {
-						console.Print( PrintLevel::Normal, "Unhandled SDL event %d\n",
+						console.Print( PrintLevel::Developer, "Unhandled SDL event %d\n",
 							e.type
 						);
 					} break;

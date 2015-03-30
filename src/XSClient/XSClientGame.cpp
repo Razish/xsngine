@@ -9,6 +9,7 @@
 #include "XSClient/XSGameObject.h"
 #include "XSClient/XSTerrain.h"
 #include "XSRenderer/XSView.h"
+#include "XSRenderer/XSModel.h"
 
 namespace XS {
 
@@ -43,8 +44,8 @@ namespace XS {
 			camera = new FlyCamera();
 			camera->SetFlySpeed( 0.05f );
 
-			const glm::vec3 cameraPos( 64.0f, 64.0f, 0.0f );
-			const glm::vec3 lookAt( 64.0f, 0.0f, 64.0f );
+			const glm::vec3 cameraPos( 0.0f, 0.0f, 0.0f );
+			const glm::vec3 lookAt( 0.0f, 0.0f, -1.0f );
 			const glm::vec3 up( 0.0f, 1.0f, 0.0f );
 
 			Cvar *r_zRange = Cvar::Get( "r_zRange" );
@@ -56,12 +57,13 @@ namespace XS {
 
 			terrain = new Terrain( "textures/terrain.raw" );
 
-		//	GameObject *plane = new GameObject();
-		//	plane->renderObject = Renderer::Model::Register( "models/plane.xmf" );
-		//	objects.push_back( plane );
+			GameObject *plane = new GameObject();
+			plane->renderObject = Renderer::Model::Register( "models/plane.xmf" );
+			objects.push_back( plane );
 
 		//	GameObject *box = new GameObject();
 		//	box->renderObject = Renderer::Model::Register( "models/box.xmf" );
+		//	box->SetPosition( vector3( 0.0f, 0.0f, 0.0f ) );
 		//	objects.push_back( box );
 		}
 
@@ -83,9 +85,11 @@ namespace XS {
 		}
 
 		void DrawFrame( void ) {
+			static const vector3 lightPos( 0.0f, 32.0f, 0.0f );
 			for ( const auto &object : objects ) {
 				sceneView->AddObject( object->renderObject );
 			}
+			sceneView->AddPointLight( lightPos );
 		}
 
 	} // namespace ClientGame

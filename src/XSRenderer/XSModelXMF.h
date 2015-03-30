@@ -8,6 +8,8 @@ namespace XS {
 	namespace Renderer {
 
 		class XMF : public Model {
+		private:
+			static uint32_t version;
 
 			// load the mesh from disk
 			bool LoadMeshes(

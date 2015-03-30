@@ -237,14 +237,6 @@ int main( int argc, char **argv ) {
 			const real64_t frameRate = XS::Common::r_framerate->GetReal64();
 			const real64_t renderMsec = 1000.0 / frameRate;
 			if ( frameTime < renderMsec ) {
-				/*
-				XS::console.Print( XS::PrintLevel::Debug,
-					"frameTime %.5f < %.5f, delaying for %0i\n",
-					frameTime,
-					renderMsec,
-					static_cast<uint32_t>( renderMsec - frameTime )
-				);
-				*/
 				//TODO: busy-wait?
 				//FIXME: retrieve scheduler granularity
 				SDL_Delay( static_cast<uint32_t>( renderMsec - frameTime ) );
