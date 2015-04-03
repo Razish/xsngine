@@ -9,15 +9,14 @@ namespace XS {
 		#define MAX_FBO_COLOR_TEXTURES (4)
 
 		class Framebuffer {
-		private:
+		public:
+			static const Framebuffer	*currentReadFramebuffer;
+			static const Framebuffer	*currentWriteFramebuffer;
+
 			uint32_t		 id;
 			const Texture	*colourTextures[MAX_FBO_COLOR_TEXTURES];
 			const Texture	*depthTexture;
 			unsigned int	 stencilTexture;
-
-		public:
-			static const Framebuffer	*currentReadFramebuffer;
-			static const Framebuffer	*currentWriteFramebuffer;
 
 			// bind the default framebuffer
 			static void BindDefault(

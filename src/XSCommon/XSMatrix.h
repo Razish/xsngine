@@ -108,11 +108,6 @@ namespace XS {
 	struct matrix4 {
 		real32_t	data[16];
 
-		// xtors
-		matrix4() {
-			identity();
-		}
-
 		// string representation of the matrix4 object
 		std::string tostring(
 			void
@@ -155,7 +150,8 @@ namespace XS {
 		}
 
 		inline matrix4 invertAffine( void ) {
-			matrix3 r;
+			matrix3 r = {};
+			r.identity();
 			r.data[0] = data[ 0];
 			r.data[1] = data[ 1];
 			r.data[2] = data[ 2];
@@ -200,7 +196,9 @@ namespace XS {
 
 			real32_t determinant = data[0] * cofactor0 - data[1] * cofactor1 + data[2] * cofactor2 - data[3] * cofactor3;
 			if ( std::abs( determinant ) < 0.000001f ) {
-				return matrix4();
+				matrix4 m;
+				m.identity();
+				return m;
 			}
 
 			real32_t cofactor4  = getCofactor( data[1], data[2], data[3], data[9], data[10], data[11], data[13], data[14], data[15] );
@@ -369,7 +367,8 @@ namespace XS {
 
 	inline matrix4 ortho( real32_t left, real32_t right, real32_t top, real32_t bottom, real32_t zNear, real32_t zFar )
 	{
-		matrix4 m;
+		matrix4 m = {};
+		m.identity();
 
 		m.at( 0, 0 ) = 2.0f / (right - left);
 		m.at( 1, 1 ) = 2.0f / (top - bottom);
@@ -386,7 +385,8 @@ namespace XS {
 		// convert degrees to radians and divide by 2
 		const real32_t f = 1.0f / tanf( fovY * static_cast<real32_t>( M_PI ) / 360.0f );
 
-		matrix4 m;
+		matrix4 m = {};
+		m.identity();
 		m.at( 0, 0 ) = f / aspectRatio;
 		m.at( 1, 1 ) = f;
 		m.at( 2, 2 ) = (zFar + zNear) / (zFar - zNear);

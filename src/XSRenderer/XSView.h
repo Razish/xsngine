@@ -28,7 +28,6 @@ namespace XS {
 		private:
 			Texture							*colourTexture;
 			Texture							*depthTexture;
-			Texture							*stencilTexture;
 
 			std::queue<const Renderable*>	renderObjects;
 			std::queue<vector3>				pointLights;

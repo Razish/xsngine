@@ -62,6 +62,10 @@ namespace XS {
 			if ( !id ) {
 				throw( XSError( "Failed to create framebuffer" ) );
 			}
+
+			for ( int i = 0; i < MAX_FBO_COLOR_TEXTURES; i++ ) {
+				colourTextures[i] = nullptr;
+			}
 		}
 
 		Framebuffer::~Framebuffer() {

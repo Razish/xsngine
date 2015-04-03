@@ -132,6 +132,10 @@ namespace XS {
 		}
 
 		static void DrawHUD( real64_t frametime ) {
+			if ( !hudView ) {
+				return;
+			}
+
 			hudView->Bind();
 
 			static Renderer::Font *font = nullptr;

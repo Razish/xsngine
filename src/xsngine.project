@@ -286,6 +286,8 @@
     <File Name="../bin/shaders/v_quad.glsl"/>
     <File Name="../bin/shaders/v_terrain.glsl"/>
     <File Name="../bin/shaders/v_text.glsl"/>
+    <File Name="../bin/shaders/f_composite.glsl"/>
+    <File Name="../bin/shaders/v_composite.glsl"/>
   </VirtualDirectory>
   <Settings Type="Dynamic Library">
     <GlobalSettings>

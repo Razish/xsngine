@@ -16,13 +16,16 @@
 #include "XSRenderer/XSTexture.h"
 #include "XSRenderer/XSFont.h"
 #include "XSRenderer/XSImagePNG.h"
+#include "XSRenderer/XSMaterial.h"
+#include "XSRenderer/XSVertexAttributes.h"
+#include "XSRenderer/XSMaterial.h"
 
 #if defined(XS_OS_MAC)
 //#include <OpenCL/cl_gl_ext.h>
 #endif
 
-//#define USE_FBO
-//#define FBO_TEST
+#define USE_FBO
+#define FBO_COMPOSITE
 
 namespace XS {
 
@@ -44,6 +47,11 @@ namespace XS {
 
 		std::vector<View *> views;
 		static View *currentView = nullptr;
+
+#ifdef FBO_COMPOSITE
+		static ShaderProgram *compositeShader = nullptr;
+		Backend::Buffer *perFrameData = nullptr;
+#endif
 
 		static const char *GLErrSeverityToString( GLenum severity ) {
 			switch ( severity ) {
@@ -170,6 +178,20 @@ namespace XS {
 			Texture::Init();
 
 			ShaderProgram::Init();
+
+#ifdef FBO_COMPOSITE
+			// create composite shader
+			static const VertexAttribute attributes[] = {
+				{ 0, "in_Position" },
+				{ 1, "in_TexCoord" },
+				{ 2, "in_Colour" },
+			};
+			if ( !compositeShader ) {
+				compositeShader = new ShaderProgram( "composite", "composite", attributes, ARRAY_LEN( attributes ) );
+			}
+			perFrameData = new Backend::Buffer( BufferType::Uniform, nullptr, 4 * 1024 * 1024 );
+#endif
+
 			Font::Init();
 
 			RenderCommand::Init();
@@ -335,12 +357,56 @@ namespace XS {
 			Backend::ClearBuffer( true, true, clearColour );
 
 			for ( const auto &view : views ) {
-				//TODO: composite render
+#ifdef FBO_COMPOSITE
+				Material compositeMaterial = {};
+				compositeMaterial.shaderProgram = compositeShader;
+
+				Material::SamplerBinding colourBinding = {};
+					colourBinding.unit = 0;
+					colourBinding.texture = const_cast<Texture *>( view->fbo->colourTextures[0] );
+				compositeMaterial.samplerBindings.push_back( colourBinding );
+
+				Material::SamplerBinding depthBinding = {};
+					depthBinding.unit = 1;
+					depthBinding.texture = const_cast<Texture *>( view->fbo->depthTexture );
+				compositeMaterial.samplerBindings.push_back( depthBinding );
+
+				matrix4 o = ortho(
+					0.0f,
+					static_cast<real32_t>( state.window.width ),
+					0.0f,
+					static_cast<real32_t>( state.window.height ),
+					0.0f, // zNear
+					1.0f // zFar
+				);
+				glm::mat4 projectionMatrix = glm::make_mat4( o.data );
+
+				BufferMemory bufferMem = perFrameData->MapDiscard( sizeof( matrix4 ) );
+				matrix4 *m = static_cast<matrix4 *>( bufferMem.devicePtr );
+
+				memcpy( m->data, glm::value_ptr( projectionMatrix ), sizeof(m->data) );
+
+				perFrameData->Unmap();
+				perFrameData->BindRange( 6, bufferMem.offset, bufferMem.size );
+
+				DrawQuadCommand cmd = {};
+					cmd.x = cmd.y = 0.0f;
+					cmd.s1 = 0.0f;
+					cmd.t1 = 1.0f;
+					cmd.s2 = 1.0f;
+					cmd.t2 = 0.0f;
+					cmd.w = state.window.width;
+					cmd.h = state.window.height;
+					cmd.material = &compositeMaterial;
+					cmd.colour = nullptr;
+				DrawQuad( cmd );
+#else
 				Framebuffer::BlitColour(
 					view->fbo, nullptr, // from, to
 					view->width, view->height, // source dimensions
 					state.window.width, state.window.height // dest dimensions
 				);
+#endif
 			}
 #endif
 
@@ -390,6 +456,7 @@ namespace XS {
 
 			RenderCommand cmd( CommandType::DrawModel );
 			cmd.drawModel.model = model;
+			cmd.drawModel.transform.identity();
 			currentView->renderCommands.push( cmd );
 		}
 

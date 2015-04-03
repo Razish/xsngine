@@ -86,7 +86,7 @@ namespace XS {
 		}
 
 		void ClientConsole::Draw( void ) {
-			if ( !visible ) {
+			if ( !visible || !view ) {
 				return;
 			}
 

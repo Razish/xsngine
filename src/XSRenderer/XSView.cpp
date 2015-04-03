@@ -9,7 +9,7 @@
 #include "XSRenderer/XSRenderable.h"
 #include "XSRenderer/XSShaderProgram.h"
 
-//#define USE_FBO
+#define USE_FBO
 
 namespace XS {
 
@@ -35,20 +35,17 @@ namespace XS {
 			fbo->AttachColourTexture( colourTexture, 0 );
 
 			if ( is2D ) {
-				depthTexture = nullptr;
-				stencilTexture = new Texture( width, height, InternalFormat::Stencil8 );
-				fbo->AttachDepthStencilTexture( stencilTexture );
+				depthTexture = new Texture( width, height, InternalFormat::Stencil8 );
+				fbo->AttachDepthStencilTexture( depthTexture );
 			}
 			else {
 				depthTexture = new Texture( width, height, InternalFormat::Depth24Stencil8 );
 				fbo->AttachDepthStencilTexture( depthTexture );
-				stencilTexture = nullptr;
 			}
 #else
 			fbo = nullptr;
 			colourTexture = nullptr;
 			depthTexture = nullptr;
-			stencilTexture = nullptr;
 #endif
 
 			RegisterView( this );
@@ -96,8 +93,6 @@ namespace XS {
 
 				renderObjects.pop();
 			}
-
-
 		}
 
 		void View::PostRender( real64_t dt ) {

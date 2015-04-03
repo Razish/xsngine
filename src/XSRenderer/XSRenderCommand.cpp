@@ -254,6 +254,7 @@ namespace XS {
 			}
 
 			// issue the draw command
+			//FIXME: index buffer is all kinds of wrong when using glDrawElements
 			if ( 0 ) {//mesh->indexBuffer ) {
 				mesh->indexBuffer->Bind();
 				GLint size = 0;
