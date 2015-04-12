@@ -1,0 +1,83 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<link href="css/style.css" rel="stylesheet">
+<script type="text/javascript" language="javascript">
+function show( id ) {
+	document.getElementById( id ).style.display = '';
+	for ( i=0; i<document.getElementsByTagName( 'section' ).length; i++ ) {
+		if ( document.getElementsByTagName( 'section' )[i].id != id ) {
+			document.getElementsByTagName( 'section' )[i].style.display = 'none';
+		}
+	}
+}
+</script>
+</head>
+<body onload="show( 'synopsis' )">
+	<div id="pagewrap">
+		<!-- page header -->
+		<div id="header">
+			<span class="project-name">xsngine</span><br />
+			<span class="project-desc">High performance, low latency game engine.</span>
+
+			<!-- navbar -->
+			<div id="nav">
+				<p>
+					| <span class="button" onclick="show( 'synopsis' )">Synopsis</span>
+					| <span class="button" onclick="show( 'features' )">Features</span> 
+					| <span class="button" onclick="show( 'download' )">Download</span> |
+				</p>
+			</div>
+		</div>
+		<hr />
+
+		<!-- synopsis -->
+		<section id="synopsis">
+			<h1>Synopsis</h1>
+			<div class="paragraph">
+				<p>
+					xsngine is a flexible open-source game engine targeting ridiculously high framerates with loads of pretty things.<br />
+					Runs natively on 32/64 bit Windows, Mac and Linux using SDL2 and OpenGL for maximum portability.
+				</p>
+				<p>
+					The primary goal of the project is to build a powerful engine that can create games which feel great, rather than creating a <em>one size fits all</em> &quot;artist's toolkit&quot;<br />
+					Drawing inspiration from iD Tech and competitive shooters, performance is a #1 priority whilst bringing modern rendering techniques to the table.
+				</p>
+			</div>
+		</section>
+
+		<!-- feature list -->
+		<section id="features">
+			<h1>Features</h1>
+			<ul>
+				<li>Deferred rendering (diffuse, specular, normal) with anti-aliasing</li>
+				<li>Physically Based Rendering (<a href="http://en.wikipedia.org/Physically_Based_Rendering">PBR</a>)</li>
+				<li>Shadow mapping</li>
+				<li>Particle system</li>
+				<li>Real world ighting phenomena (fog, high dynamic range rendering, bloom, scotopic luminance, depth of field + bokeh)</li>
+				<li>Import/export tools for modelling software -> XMF (xsngine model format)</li>
+				<li>Client/server networking model ala iD Tech 3</li>
+				<li>High precision, low latency input controls with multiple input methods</li>
+			</ul>
+		</section>
+
+		<!-- download links -->
+		<section id="download">
+			<h1>Downloads</h1>
+			<div class="paragraph">
+				<p>
+					xsngine is licenced under the MIT/X11 licence, thus the full source code is freely available to modify and redistribute.
+				</p>
+				<p>
+					The source code is under git version control at GitHub: <a href="https://github.com/Razish/xsngine">Razish/xsngine</a><br />
+					The assets are under git version control at GitHub: <a href="https://github.com/Razish/xsngine-assets">Razish/xsngine-assets</a>
+				</p>
+				<p>
+					If you wish to contribute, there are build instructions in the project's README.md for all platforms.
+				</p>
+			</div>
+		</section>
+	</div>
+</body>
+</html>

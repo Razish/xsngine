@@ -1,0 +1,89 @@
+* {
+	tab-size: 4;
+}
+
+body {
+	background-color: #A0A0A0;
+}
+
+div#pagewrap {
+	background-color: #202020;
+	padding: 32px 0 32px 0;
+	margin: 0;
+	font-family: "Trebuchet MS", sans-serif;
+	font-size: 12pt;
+	color: #FFFFFF;
+	max-width: 960px;
+	margin: auto;
+	box-shadow: 0 0 12px 4px #202020;
+}
+
+/* anchors */
+div#pagewrap a {
+	color: #7F7FFF;
+	text-decoration: none;
+}
+div#pagewrap a:hover {
+	color: #A0FF7F;
+	text-decoration: underline;
+}
+
+/* horizontal rules */
+div#pagewrap hr {
+	border: 0;
+	padding: 0;
+	margin: 8px;
+	height: 0;
+	box-shadow: 0 0 6px 1px #606060;
+	color: #000;
+}
+
+/* page divisions */
+div#pagewrap div {
+	margin: 0;
+	padding: 0;
+}
+
+/* headers */
+div#pagewrap h1 {
+	font-family: "Arial", sans-serif;
+	font-weight: normal;
+	letter-spacing: 4px;
+	margin-left: 8px;
+}
+
+div#header {
+	text-align: center;
+	padding-bottom: 10px;
+	margin-bottom: 10px;
+}
+
+div#header span.project-name {
+	color: #A0FF7F;
+	font-family: "OCR A Std", sans-serif;
+	font-size: 32px;
+}
+
+div#header span.description {
+	color: #C0C0C0;
+}
+
+div#header div#nav span.button {
+	padding: 8px;
+	color: #7F7FFF;
+	background-color: #404040;
+	border-radius: 4px;
+}
+
+div#header div#nav span.button:hover {
+	padding: 8px;
+	color: #A0FF7F;
+	background-color: #404040;
+	border-radius: 4px;
+	cursor: pointer;
+}
+
+div.paragraph p {
+	margin-left: 24px;
+	margin-right: 24px;
+}
