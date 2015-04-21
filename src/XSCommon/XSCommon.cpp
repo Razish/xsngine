@@ -90,6 +90,13 @@ namespace XS {
 				char *buffer = new char[f.length];
 					f.Read( reinterpret_cast<uint8_t *>(buffer) );
 
+					// normalise line endings
+					for ( size_t i = 0; i < f.length; i++ ) {
+						if ( buffer[i] == '\r' ) {
+							buffer[i] = '\n';
+						}
+					}
+
 					Command::ExecuteBuffer(); // flush buffer before we issue commands
 					char *current = strtok( buffer, "\n" );
 					while ( current ) {
