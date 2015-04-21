@@ -168,6 +168,9 @@
     <ClCompile Include="XSRenderer\XSModelXMF.cpp">
       <Filter>XSRenderer</Filter>
     </ClCompile>
+    <ClCompile Include="XSClient\XSTerrain.cpp">
+      <Filter>XSClient</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="XSClient\XSClient.h">
@@ -322,6 +325,9 @@
     </ClInclude>
     <ClInclude Include="XSRenderer\XSModelXMF.h">
       <Filter>XSRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="XSClient\XSTerrain.h">
+      <Filter>XSClient</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
