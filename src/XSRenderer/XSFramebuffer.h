@@ -87,7 +87,7 @@ namespace XS {
 			) const;
 
 			// check if framebuffer usage is valid
-			void Check(
+			bool Check(
 				void
 			) const;
 		};

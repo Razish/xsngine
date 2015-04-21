@@ -35,7 +35,7 @@ namespace XS {
 			fbo->AttachColourTexture( colourTexture, 0 );
 
 			if ( is2D ) {
-				depthTexture = new Texture( width, height, InternalFormat::Stencil8 );
+				depthTexture = new Texture( width, height, InternalFormat::Depth24Stencil8 );
 				fbo->AttachDepthStencilTexture( depthTexture );
 			}
 			else {
@@ -105,6 +105,7 @@ namespace XS {
 			SetCurrentView( this );
 			if ( fbo ) {
 				fbo->Bind();
+				fbo->Check();
 			}
 			else {
 				Framebuffer::BindDefault();

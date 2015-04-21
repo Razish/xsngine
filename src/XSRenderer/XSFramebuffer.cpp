@@ -58,6 +58,9 @@ namespace XS {
 		: id( 0 ), depthTexture( nullptr ), stencilTexture( 0u )
 		{
 			glGenFramebuffers( 1, &id );
+			if ( Check() ) {
+				console.Print( PrintLevel::Normal, "Creation of framebuffer %d completed succesfully.\n", id );
+			}
 
 			if ( !id ) {
 				throw( XSError( "Failed to create framebuffer" ) );
@@ -128,7 +131,7 @@ namespace XS {
 			}
 		}
 
-		void Framebuffer::Check( void ) const {
+		bool Framebuffer::Check( void ) const {
 			unsigned int status = glCheckFramebufferStatus( GL_FRAMEBUFFER );
 
 			switch ( status ) {
@@ -165,13 +168,16 @@ namespace XS {
 			} break;
 
 			case GL_FRAMEBUFFER_COMPLETE: {
-				console.Print( PrintLevel::Developer, "Creation of framebuffer %d completed successfully\n", id );
+				// this is the only acceptable case
+				return true;
 			} break;
 			}
 
 			if ( status != GL_FRAMEBUFFER_COMPLETE ) {
 				console.Print( PrintLevel::Normal, "Creation of framebuffer %d could not be completed.\n", id );
 			}
+
+			return false;
 		}
 
 	} // namespace Renderer
