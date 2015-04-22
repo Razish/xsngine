@@ -126,9 +126,11 @@ namespace XS {
 					}
 				}
 
-				const CommandFunc &func = commandTable[name];
-				if ( func ) {
-					func( &context );
+				if ( commandTable.find( name ) != commandTable.end() ) {
+					const CommandFunc &func = commandTable[name];
+					if ( func ) {
+						func( &context );
+					}
 				}
 				else {
 					console.Print( PrintLevel::Normal, "Unknown command \"%s\"\n", cmd.c_str()  );
