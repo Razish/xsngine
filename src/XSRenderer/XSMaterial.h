@@ -32,6 +32,11 @@ namespace XS {
 			std::vector<BufferBinding>	 bufferBindings;
 			uint32_t					 flags;
 
+			Material()
+			: shaderProgram( nullptr ), flags( 0u )
+			{
+			}
+
 			// use this material for subsequent rendering
 			void Bind(
 				void
