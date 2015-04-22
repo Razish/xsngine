@@ -326,6 +326,7 @@ namespace XS {
 			);
 
 #ifdef USE_FBO
+			Backend::SetBlendFunction( Backend::BlendFunc::SourceAlpha, Backend::BlendFunc::OneMinusSourceAlpha );
 #else
 			Backend::ClearBuffer( true, true, clearColour );
 #endif
