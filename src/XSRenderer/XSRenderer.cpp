@@ -50,7 +50,6 @@ namespace XS {
 
 #ifdef FBO_COMPOSITE
 		static ShaderProgram *compositeShader = nullptr;
-		Backend::Buffer *perFrameData = nullptr;
 #endif
 
 		static const char *GLErrSeverityToString( GLenum severity ) {
@@ -192,7 +191,6 @@ namespace XS {
 			if ( !compositeShader ) {
 				compositeShader = new ShaderProgram( "composite", "composite", attributes, ARRAY_LEN( attributes ) );
 			}
-			perFrameData = new Backend::Buffer( BufferType::Uniform, nullptr, 4 * 1024 * 1024 );
 #endif
 
 			Font::Init();
@@ -358,6 +356,7 @@ namespace XS {
 #ifdef USE_FBO
 			Framebuffer::BindDefault();
 			Backend::ClearBuffer( true, true, clearColour );
+			Backend::SetBlendFunction( Backend::BlendFunc::One, Backend::BlendFunc::One );
 
 			for ( const auto &view : views ) {
 #ifdef FBO_COMPOSITE
@@ -369,37 +368,15 @@ namespace XS {
 					colourBinding.texture = const_cast<Texture *>( view->fbo->colourTextures[0] );
 				compositeMaterial.samplerBindings.push_back( colourBinding );
 
-				Material::SamplerBinding depthBinding = {};
-					depthBinding.unit = 1;
-					depthBinding.texture = const_cast<Texture *>( view->fbo->depthTexture );
-				compositeMaterial.samplerBindings.push_back( depthBinding );
-
-				matrix4 o = ortho(
-					0.0f,
-					static_cast<real32_t>( state.window.width ),
-					0.0f,
-					static_cast<real32_t>( state.window.height ),
-					0.0f, // zNear
-					1.0f // zFar
-				);
-				glm::mat4 projectionMatrix = glm::make_mat4( o.data );
-
-				BufferMemory bufferMem = perFrameData->MapDiscard( sizeof( matrix4 ) );
-				matrix4 *m = static_cast<matrix4 *>( bufferMem.devicePtr );
-
-				memcpy( m->data, glm::value_ptr( projectionMatrix ), sizeof(m->data) );
-
-				perFrameData->Unmap();
-				perFrameData->BindRange( 6, bufferMem.offset, bufferMem.size );
-
 				DrawQuadCommand cmd = {};
-					cmd.x = cmd.y = 0.0f;
+					cmd.x = -1.0f;
+					cmd.y = 1.0f;
 					cmd.s1 = 0.0f;
 					cmd.t1 = 1.0f;
 					cmd.s2 = 1.0f;
 					cmd.t2 = 0.0f;
-					cmd.w = state.window.width;
-					cmd.h = state.window.height;
+					cmd.w = 2.0f;
+					cmd.h = -2.0f;
 					cmd.material = &compositeMaterial;
 					cmd.colour = nullptr;
 				DrawQuad( cmd );
