@@ -67,6 +67,5 @@ As Mac and Linux both have a UNIX environment + tools, the process between the t
 # Debugging #
 All the provided project files assume there is an executable file named `xsngine` in the current working directory.  
 Because different platforms will have different binary names, and these tools are used on all platforms, it is recommended to create a symlink from `xsngine.exe` to e.g. `xsn.x86.exe` - On Windows you will require the Win32 Symlink Extensions.  
-On Windows, you may also want to symlink SDL2.dll to the correct one for your architecture, e.g. src/SDL2.dll -> bin/SDL2x86.dll
 
 Run the binary with `+set com_path ../bin` to load assets correctly. See [xsngine-assets](https://github.com/Razish/xsngine-assets) for these files.
