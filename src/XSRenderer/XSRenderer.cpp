@@ -366,6 +366,7 @@ namespace XS {
 
 				Material::SamplerBinding colourBinding = {};
 					colourBinding.unit = 0;
+				//	colourBinding.uniform = "u_viewTexture";
 					colourBinding.texture = const_cast<Texture *>( view->fbo->colourTextures[0] );
 				compositeMaterial.samplerBindings.push_back( colourBinding );
 

@@ -18,6 +18,15 @@ namespace XS {
 			}
 
 			for ( const auto &binding : samplerBindings ) {
+				if ( !binding.uniform.empty() ) {
+					// set the sampler binding's texture unit
+					//FIXME: optimise/cache the uniform's location
+					GLint location = glGetUniformLocation(
+						ShaderProgram::GetCurrentProgram(),
+						binding.uniform.c_str()
+					);
+					glUniform1i( location, binding.unit );
+				}
 				binding.texture->Bind( binding.unit );
 			}
 		}

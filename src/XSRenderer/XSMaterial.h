@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <vector>
 
 namespace XS {
@@ -18,8 +19,9 @@ namespace XS {
 
 		struct Material {
 			struct SamplerBinding {
-				int		 unit;
-				Texture	*texture;
+				int		 	 unit;
+				std::string	 uniform;
+				Texture		*texture;
 			};
 
 			struct BufferBinding {

@@ -100,6 +100,7 @@ namespace XS {
 
 			if ( lastUsedTexture[unit] != this ) {
 				glBindTexture( GL_TEXTURE_2D, id );
+				lastUsedTexture[unit] = this;
 			}
 		}
 
