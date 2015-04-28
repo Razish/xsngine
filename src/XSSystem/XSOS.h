@@ -18,6 +18,7 @@ namespace XS {
 		);
 
 		// returns the maximum length of a full system path
+		//TODO: implement on Windows
 		uint32_t GetPathMax(
 			void
 		);

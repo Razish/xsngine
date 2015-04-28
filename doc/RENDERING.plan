@@ -37,3 +37,11 @@ particles
 	GPU-based particles - geometry shaders and transform feedback
 	different billboard types - lock to Z axis (create transform)
 	disable depth write, enable depth test, enable alpha blend, no alpha test
+
+deferred rendering
+	for each view
+		run geometry pass
+			output diffuse, normal, position, texcoord as textures
+		run lighting pass
+			input is texures for diffuse, normal, position, texcoord
+			input is uniforms for position and texcoord

@@ -93,17 +93,15 @@ namespace XS {
 
 			// create program
 			static const VertexAttribute attributes[] = {
-				{ 0, "in_Position" },
-				{ 1, "in_TexCoord" },
-				{ 2, "in_Colour" }
+				{ 0, "in_position" },
+				{ 1, "in_texCoord" },
+				{ 2, "in_colour" }
 			};
 			quadProgram = new ShaderProgram( "quad", "quad", attributes, ARRAY_LEN( attributes ) );
 
 			// create material
 			quadMaterial = new Material();
-			Material::SamplerBinding samplerBinding;
-			samplerBinding.unit = 0;
-			samplerBinding.texture = quadTexture;
+			Material::SamplerBinding samplerBinding( quadTexture );
 			quadMaterial->samplerBindings.push_back( samplerBinding );
 			quadMaterial->shaderProgram = quadProgram;
 		}

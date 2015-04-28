@@ -9,14 +9,12 @@
 #include "XSRenderer/XSRenderable.h"
 #include "XSRenderer/XSShaderProgram.h"
 
-#define USE_FBO
-
 namespace XS {
 
 	namespace Renderer {
 
-		View::View( uint32_t viewWidth, uint32_t viewHeight, bool is2D, renderCallback_t preRender,
-			renderCallback_t postRender )
+		View::View( uint32_t viewWidth, uint32_t viewHeight, bool is2D, RenderCallback preRender,
+			RenderCallback postRender )
 		: callbackPreRender( preRender ), callbackPostRender( postRender ), is2D( is2D ), width( viewWidth ),
 			height( viewHeight )
 		{
@@ -27,33 +25,40 @@ namespace XS {
 
 			perFrameData = new Backend::Buffer( BufferType::Uniform, nullptr, 4 * 1024 * 1024 );
 
-#ifdef USE_FBO
 			fbo = new Framebuffer();
 			fbo->Bind();
 
-			colourTexture = new Texture( width, height );
-			fbo->AttachColourTexture( colourTexture, 0 );
+			// diffuse
+			textures[RenderTarget::Diffuse] = new Texture( width, height, InternalFormat::RGBA8 );
+			fbo->AttachColourTexture( textures[RenderTarget::Diffuse], RenderTarget::Diffuse );
 
-			if ( is2D ) {
-				depthTexture = new Texture( width, height, InternalFormat::Depth24Stencil8 );
-				fbo->AttachDepthStencilTexture( depthTexture );
-			}
-			else {
-				depthTexture = new Texture( width, height, InternalFormat::Depth24Stencil8 );
-				fbo->AttachDepthStencilTexture( depthTexture );
-			}
-#else
-			fbo = nullptr;
-			colourTexture = nullptr;
-			depthTexture = nullptr;
-#endif
+			// normal
+			textures[RenderTarget::Normal] = new Texture( width, height, InternalFormat::RGB8 );
+			fbo->AttachColourTexture( textures[RenderTarget::Normal], RenderTarget::Normal );
+
+			// position
+			textures[RenderTarget::Position] = new Texture( width, height, InternalFormat::RGBA8 );
+			fbo->AttachColourTexture( textures[RenderTarget::Position], RenderTarget::Position );
+
+			// tex coord
+			textures[RenderTarget::TexCoord] = new Texture( width, height, InternalFormat::RGBA8 );
+			fbo->AttachColourTexture( textures[RenderTarget::TexCoord], RenderTarget::TexCoord );
+
+			// lighting pass
+			textures[RenderTarget::Lighting] = new Texture( width, height, InternalFormat::RGBA8 );
+			fbo->AttachColourTexture( textures[RenderTarget::Lighting], RenderTarget::Lighting );
+
+			// depth
+			textures[RenderTarget::Depth] = new Texture( width, height, InternalFormat::Depth24Stencil8 );
+			fbo->AttachDepthStencilTexture( textures[RenderTarget::Depth] );
 
 			RegisterView( this );
 		}
 
 		View::~View() {
-			delete depthTexture;
-			delete colourTexture;
+			for ( auto texture : textures ) {
+				delete texture;
+			}
 			delete fbo;
 			delete perFrameData;
 		}
@@ -76,10 +81,16 @@ namespace XS {
 				callbackPreRender( dt );
 			}
 
-			XS::Renderer::BufferMemory bufferMem = perFrameData->MapDiscard( sizeof( matrix4 ) );
+			XS::Renderer::BufferMemory bufferMem = perFrameData->MapDiscard( sizeof( matrix4 ) * 2 );
 			matrix4 *m = static_cast<matrix4 *>( bufferMem.devicePtr );
 
 			memcpy( m->data, glm::value_ptr( projectionMatrix ), sizeof(m->data) );
+			m++;
+
+			if ( !is2D ) {
+				memcpy( m->data, glm::value_ptr( worldMatrix ), sizeof(m->data) );
+				m++;
+			}
 
 			perFrameData->Unmap();
 			perFrameData->BindRange( 6, bufferMem.offset, bufferMem.size );

@@ -288,6 +288,8 @@
     <File Name="../bin/shaders/v_text.glsl"/>
     <File Name="../bin/shaders/f_composite.glsl"/>
     <File Name="../bin/shaders/v_composite.glsl"/>
+    <File Name="../bin/shaders/f_lightAmbient.glsl"/>
+    <File Name="../bin/shaders/v_lightAmbient.glsl"/>
   </VirtualDirectory>
   <Settings Type="Dynamic Library">
     <GlobalSettings>

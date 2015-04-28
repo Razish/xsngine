@@ -41,17 +41,15 @@ namespace XS {
 
 			// create shader program
 			static const VertexAttribute attributes[] = {
-				{ 0, "in_Position" },
-				{ 1, "in_Normal" },
-				{ 2, "in_TexCoord" },
+				{ 0, "in_position" },
+				{ 1, "in_normal" },
+				{ 2, "in_texCoord" },
 			};
 			mesh->shader = new ShaderProgram( "model", "model", attributes, ARRAY_LEN( attributes ) );
 
 			// create material
 			mesh->material = new Material();
-			Material::SamplerBinding samplerBinding;
-			samplerBinding.unit = 0;
-			samplerBinding.texture = mesh->texture;
+			Material::SamplerBinding samplerBinding( mesh->texture );
 			mesh->material->samplerBindings.push_back( samplerBinding );
 			mesh->material->shaderProgram = mesh->shader;
 

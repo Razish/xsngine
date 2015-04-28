@@ -24,9 +24,6 @@
 //#include <OpenCL/cl_gl_ext.h>
 #endif
 
-#define USE_FBO
-#define FBO_COMPOSITE
-
 namespace XS {
 
 	namespace Renderer {
@@ -48,11 +45,11 @@ namespace XS {
 		std::vector<View *> views;
 		static View *currentView = nullptr;
 
-#ifdef FBO_COMPOSITE
 		static ShaderProgram *compositeShader = nullptr;
-#endif
+		static ShaderProgram *lightAmbientShader = nullptr;
 
-		static const char *GLErrSeverityToString( GLenum severity ) {
+#if 1
+		static const char *DEBUG_GLErrorSeverityToString( GLenum severity ) {
 			switch ( severity ) {
 			case GL_DEBUG_SEVERITY_HIGH_ARB: {
 				return "High";
@@ -72,7 +69,7 @@ namespace XS {
 			}
 		}
 
-		static const char *GLErrSourceToString( GLenum source ) {
+		static const char *DEBUG_GLErrorSourceToString( GLenum source ) {
 			switch ( source ) {
 			case GL_DEBUG_SOURCE_API_ARB: {
 				return "API";
@@ -104,7 +101,7 @@ namespace XS {
 			}
 		}
 
-		static const char *GLErrTypeToString( GLenum type ) {
+		static const char *DEBUG_GLErrorTypeToString( GLenum type ) {
 			switch ( type ) {
 			case GL_DEBUG_TYPE_ERROR_ARB: {
 				return "Error";
@@ -146,12 +143,13 @@ namespace XS {
 
 			console.Print( PrintLevel::Normal,
 				"[%s] [%s] %s: %s\n",
-				GLErrSeverityToString( severity ),
-				GLErrSourceToString( source ),
-				GLErrTypeToString( type ),
+				DEBUG_GLErrorSeverityToString( severity ),
+				DEBUG_GLErrorSourceToString( source ),
+				DEBUG_GLErrorTypeToString( type ),
 				message
 			);
 		}
+#endif
 
 		void Init( void ) {
 			state.valid = true;
@@ -167,7 +165,7 @@ namespace XS {
 					glewGetErrorString( error ) ).c_str() ) );
 			}
 
-#if 0
+#if 1
 			// this causes a driver bug on Nvidia GTX 680 driver version 350.12 targeting OpenGL 3.1 core profile
 			if ( GLEW_ARB_debug_output ) {
 				glEnable( GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB );
@@ -181,17 +179,31 @@ namespace XS {
 
 			ShaderProgram::Init();
 
-#ifdef FBO_COMPOSITE
-			// create composite shader
-			static const VertexAttribute attributes[] = {
-				{ 0, "in_Position" },
-				{ 1, "in_TexCoord" },
-				{ 2, "in_Colour" },
+			// create light ambient shader
+			static const VertexAttribute lightAmbientAttributes[] = {
+				{ 0, "in_position" },
+				{ 1, "in_texCoord" },
+				{ 2, "in_colour" },
 			};
-			if ( !compositeShader ) {
-				compositeShader = new ShaderProgram( "composite", "composite", attributes, ARRAY_LEN( attributes ) );
-			}
-#endif
+			lightAmbientShader = new ShaderProgram(
+				"lightAmbient",
+				"lightAmbient",
+				lightAmbientAttributes,
+				ARRAY_LEN( lightAmbientAttributes )
+			);
+
+			// create composite shader
+			static const VertexAttribute compositeAttributes[] = {
+				{ 0, "in_position" },
+				{ 1, "in_texCoord" },
+				{ 2, "in_colour" },
+			};
+			compositeShader = new ShaderProgram(
+				"composite",
+				"composite",
+				compositeAttributes,
+				ARRAY_LEN( compositeAttributes )
+			);
 
 			Font::Init();
 
@@ -211,7 +223,7 @@ namespace XS {
 		}
 
 		void RegisterCvars( void ) {
-			r_clear = Cvar::Create( "r_clear", "0.1607 0.1921 0.2039 1.0", "Colour of the backbuffer", CVAR_ARCHIVE );
+			r_clear = Cvar::Create( "r_clear", "0.1607 0.1921 0.2039", "Colour of the backbuffer", CVAR_ARCHIVE );
 			r_debug = Cvar::Create( "r_debug", "0", "Enable debugging information", CVAR_ARCHIVE );
 			r_multisample = Cvar::Create( "r_multisample", "2", "Multisample Anti-Aliasing (MSAA) level",
 				CVAR_ARCHIVE );
@@ -224,26 +236,23 @@ namespace XS {
 		}
 
 		void CreateDisplay( void ) {
-			Uint32 windowFlags = SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI;
-
 			if ( SDL_Init( SDL_INIT_VIDEO ) != 0 ) {
 				return;
-			}
-
-			if ( vid_noBorder->GetBool() ) {
-				windowFlags |= SDL_WINDOW_BORDERLESS;
 			}
 
 			// targeting OpenGL 3.1 core
 			SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 3 );
 			SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 1 );
 			SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE );
+
+			// forward-compatible, debug context
 			uint32_t contextFlags = SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG;
 			if ( Common::com_developer->GetBool() ) {
 				contextFlags |= SDL_GL_CONTEXT_DEBUG_FLAG;
 			}
 			SDL_GL_SetAttribute( SDL_GL_CONTEXT_FLAGS, contextFlags );
 
+			//FIXME: no MSAA for deferred rendering
 			int multisample = r_multisample->GetInt32();
 			if ( multisample > 0 ) {
 				SDL_GL_SetAttribute( SDL_GL_MULTISAMPLEBUFFERS, 1 );
@@ -254,10 +263,11 @@ namespace XS {
 				SDL_GL_SetAttribute( SDL_GL_MULTISAMPLEBUFFERS, 0 );
 			}
 
-		#ifdef _DEBUG
-			// request debug context
-			SDL_GL_SetAttribute( SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG );
-		#endif
+			// create the window
+			Uint32 windowFlags = SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI;
+			if ( vid_noBorder->GetBool() ) {
+				windowFlags |= SDL_WINDOW_BORDERLESS;
+			}
 
 			const int32_t width = vid_width->GetInt32();
 			const int32_t height = vid_height->GetInt32();
@@ -322,14 +332,10 @@ namespace XS {
 				r_clear->GetReal32( 0 ),
 				r_clear->GetReal32( 1 ),
 				r_clear->GetReal32( 2 ),
-				r_clear->GetReal32( 3 )
+				1.0f
 			);
 
-#ifdef USE_FBO
 			Backend::SetBlendFunction( Backend::BlendFunc::SourceAlpha, Backend::BlendFunc::OneMinusSourceAlpha );
-#else
-			Backend::ClearBuffer( true, true, clearColour );
-#endif
 
 			for ( const auto &view : views ) {
 				if ( r_skipRender->GetInt32() & (1 << static_cast<uint32_t>( view->is2D )) ) {
@@ -338,12 +344,13 @@ namespace XS {
 
 				// bind the view's FBO
 				view->Bind();
+				view->fbo->ToggleDeferredMRT( true, true );
 
-#ifdef USE_FBO
-				Backend::ClearBuffer( true, true, clearColour );
-#endif
-
+				// set up information needed for the view (e.g. camera projection)
 				view->PreRender( dt );
+
+				// geometry pass
+				Backend::ClearBuffer( true, true, clearColour );
 				while ( !view->renderCommands.empty() ) {
 					const auto &cmd = view->renderCommands.front();
 
@@ -351,23 +358,77 @@ namespace XS {
 
 					view->renderCommands.pop();
 				}
+
+				// lighting pass
+				Material lightingMaterial = {};
+				lightingMaterial.shaderProgram = lightAmbientShader;
+
+				Material::SamplerBinding diffuseBinding(
+					const_cast<Texture *>( view->fbo->colourTextures[View::RenderTarget::Diffuse] ),
+					"u_diffuseTexture",
+					0
+				);
+				lightingMaterial.samplerBindings.push_back( diffuseBinding );
+
+				Material::SamplerBinding normalBinding(
+					const_cast<Texture *>( view->fbo->colourTextures[View::RenderTarget::Normal] ),
+					"u_normalTexture",
+					1
+				);
+				lightingMaterial.samplerBindings.push_back( normalBinding );
+
+				Material::SamplerBinding positionBinding(
+					const_cast<Texture *>( view->fbo->colourTextures[View::RenderTarget::Position] ),
+					"u_positionTexture",
+					2
+				);
+				lightingMaterial.samplerBindings.push_back( positionBinding );
+
+				Material::SamplerBinding texcoordBinding(
+					const_cast<Texture *>( view->fbo->colourTextures[View::RenderTarget::TexCoord] ),
+					"u_texcoordTexture",
+					3
+				);
+				lightingMaterial.samplerBindings.push_back( texcoordBinding );
+
+				view->fbo->ToggleDeferredMRT( true, false );
+
+				DrawQuadCommand cmd = {};
+					cmd.x = -1.0f;
+					cmd.y = 1.0f;
+					cmd.s1 = 0.0f;
+					cmd.t1 = 1.0f;
+					cmd.s2 = 1.0f;
+					cmd.t2 = 0.0f;
+					cmd.w = 2.0f;
+					cmd.h = -2.0f;
+					cmd.material = &lightingMaterial;
+					cmd.colour = nullptr;
+				DrawQuad( cmd );
+
+				view->fbo->ToggleDeferredMRT( false, false );
+
+				// post processing
 				view->PostRender( dt );
 			}
 
-#ifdef USE_FBO
+			// composite pass
+			// render all views to the backbuffer
 			Framebuffer::BindDefault();
 			Backend::ClearBuffer( true, true, clearColour );
 			Backend::SetBlendFunction( Backend::BlendFunc::One, Backend::BlendFunc::One );
 
 			for ( const auto &view : views ) {
-#ifdef FBO_COMPOSITE
 				Material compositeMaterial = {};
 				compositeMaterial.shaderProgram = compositeShader;
 
-				Material::SamplerBinding colourBinding = {};
-					colourBinding.unit = 0;
-				//	colourBinding.uniform = "u_viewTexture";
-					colourBinding.texture = const_cast<Texture *>( view->fbo->colourTextures[0] );
+				Material::SamplerBinding colourBinding(
+					view->is2D
+						? const_cast<Texture *>( view->fbo->colourTextures[0] )
+						: const_cast<Texture *>( view->fbo->colourTextures[View::RenderTarget::Lighting] ),
+					"u_viewTexture",
+					0
+				);
 				compositeMaterial.samplerBindings.push_back( colourBinding );
 
 				DrawQuadCommand cmd = {};
@@ -382,15 +443,7 @@ namespace XS {
 					cmd.material = &compositeMaterial;
 					cmd.colour = nullptr;
 				DrawQuad( cmd );
-#else
-				Framebuffer::BlitColour(
-					view->fbo, nullptr, // from, to
-					view->width, view->height, // source dimensions
-					state.window.width, state.window.height // dest dimensions
-				);
-#endif
 			}
-#endif
 
 			SDL_GL_SwapWindow( window );
 		}

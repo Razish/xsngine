@@ -19,12 +19,23 @@ namespace XS {
 
 		struct Material {
 			struct SamplerBinding {
-				int		 	 unit;
-				std::string	 uniform;
+				SamplerBinding(
+					Texture *texture,
+					const char *uniform = nullptr,
+					int unit = 0
+				);
+
 				Texture		*texture;
+				char		 uniform[128];
+				int		 	 unit;
 			};
 
 			struct BufferBinding {
+				BufferBinding()
+				: index( 0 ), buffer( nullptr )
+				{
+				}
+
 				int				 index;
 				Backend::Buffer	*buffer;
 			};

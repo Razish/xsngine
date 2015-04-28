@@ -6,7 +6,7 @@ namespace XS {
 
 	namespace Renderer {
 
-		#define MAX_FBO_COLOR_TEXTURES (4)
+		#define MAX_FBO_COLOR_TEXTURES (8)
 
 		class Framebuffer {
 		public:
@@ -84,6 +84,13 @@ namespace XS {
 			// bind the framebuffer for subsequent rendering
 			void Bind(
 				void
+			) const;
+
+			// toggle deferred rendering or forward rendering
+			// if rendering to MRT, order is assumed: diffuse, normal, world-position, texture coordinates
+			void ToggleDeferredMRT(
+				bool enableDeferred, // forward or deferred rendering
+				bool enableMRT
 			) const;
 
 			// check if framebuffer usage is valid

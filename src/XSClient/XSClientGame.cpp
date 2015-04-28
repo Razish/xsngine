@@ -35,6 +35,7 @@ namespace XS {
 
 		static void RenderScene( real64_t dt ) {
 			sceneView->projectionMatrix = camera->GetProjectionView();
+			sceneView->worldMatrix = camera->GetWorld();
 		}
 
 		void Init( void ) {

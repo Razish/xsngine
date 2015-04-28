@@ -61,6 +61,9 @@ namespace XS {
 			inline const glm::mat4 &GetView( void ) const {
 				return viewTransform;
 			}
+			inline const glm::mat4 &GetWorld( void ) const {
+				return worldTransform;
+			}
 			inline const glm::mat4 &GetProjectionView( void ) const {
 				return projectionViewTransform;
 			}

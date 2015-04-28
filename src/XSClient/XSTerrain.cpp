@@ -100,17 +100,15 @@ namespace XS {
 
 			// create shader program
 			static const Renderer::VertexAttribute attributes[] = {
-				{ 0, "in_Position" },
-				{ 1, "in_Normal" },
-				{ 2, "in_TexCoord" },
+				{ 0, "in_position" },
+				{ 1, "in_normal" },
+				{ 2, "in_texCoord" },
 			};
 			program = new Renderer::ShaderProgram( "model", "model", attributes, ARRAY_LEN( attributes ) );
 
 			// create material
 			material = new Renderer::Material();
-			Renderer::Material::SamplerBinding samplerBinding;
-			samplerBinding.unit = 0;
-			samplerBinding.texture = texture;
+			Renderer::Material::SamplerBinding samplerBinding( texture );
 			material->samplerBindings.push_back( samplerBinding );
 			material->shaderProgram = program;
 			//terrainMaterial->flags |= Renderer::MF_WIREFRAME;

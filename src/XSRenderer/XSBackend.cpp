@@ -86,11 +86,6 @@ namespace XS {
 					bits |= GL_DEPTH_BUFFER_BIT;
 				}
 
-#ifdef USE_FBO
-#else
-				glClear( bits );
-#endif
-
 				if ( clearColour ) {
 					glClearColor( colour.r, colour.g, colour.b, colour.a );
 				}

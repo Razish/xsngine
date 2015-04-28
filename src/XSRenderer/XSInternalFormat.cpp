@@ -13,6 +13,10 @@ namespace XS {
 				return GL_RGBA8;
 			} break;
 
+			case InternalFormat::RGB8: {
+				return GL_RGB8;
+			} break;
+
 			case InternalFormat::R8: {
 				return GL_R8;
 			} break;

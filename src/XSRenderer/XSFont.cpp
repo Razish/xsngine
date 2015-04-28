@@ -33,9 +33,7 @@ namespace XS {
 		static Material *CreateFontMaterial( Texture &fontTexture ) {
 			Material *fontMaterial = new Material();
 
-			Material::SamplerBinding samplerBinding;
-			samplerBinding.unit = 0;
-			samplerBinding.texture = &fontTexture;
+			Material::SamplerBinding samplerBinding( &fontTexture );
 
 			fontMaterial->samplerBindings.push_back( samplerBinding );
 			fontMaterial->shaderProgram = fontProgram;
@@ -289,9 +287,9 @@ namespace XS {
 			fonts["console"] = new Font( "console" );
 
 			static const VertexAttribute attributes[] = {
-				{ 0, "in_Position" },
-				{ 1, "in_TexCoord" },
-				{ 2, "in_Colour" }
+				{ 0, "in_position" },
+				{ 1, "in_texCoord" },
+				{ 2, "in_colour" }
 			};
 
 			fontProgram = new ShaderProgram( "text", "text", attributes, ARRAY_LEN( attributes ) );

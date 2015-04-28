@@ -11,6 +11,25 @@ namespace XS {
 		const Framebuffer *Framebuffer::currentReadFramebuffer = nullptr;
 		const Framebuffer *Framebuffer::currentWriteFramebuffer = nullptr;
 
+		static const struct {
+			GLenum forward[1];
+			GLenum deferredSRT[1];
+			GLenum deferredMRT[4];
+		} renderBuffers = {
+			{ // forward
+				GL_BACK_LEFT
+			},
+			{ // deferredSRT
+				GL_COLOR_ATTACHMENT4
+			},
+			{ // deferredMRT
+				GL_COLOR_ATTACHMENT0,
+				GL_COLOR_ATTACHMENT1,
+				GL_COLOR_ATTACHMENT2,
+				GL_COLOR_ATTACHMENT3
+			}
+		};
+
 		// public, static
 		void Framebuffer::BindDefault( void ) {
 			if ( currentReadFramebuffer || currentWriteFramebuffer ) {
@@ -128,6 +147,20 @@ namespace XS {
 				glBindFramebuffer( GL_FRAMEBUFFER, id );
 				currentReadFramebuffer	= this;
 				currentWriteFramebuffer = this;
+			}
+		}
+
+		void Framebuffer::ToggleDeferredMRT( bool enableDeferred, bool enableMRT ) const {
+			if ( enableDeferred ) {
+				if ( enableMRT ) {
+					glDrawBuffers( ARRAY_LEN( renderBuffers.deferredMRT ), renderBuffers.deferredMRT );
+				}
+				else {
+					glDrawBuffers( ARRAY_LEN( renderBuffers.deferredSRT ), renderBuffers.deferredSRT );
+				}
+			}
+			else {
+				glDrawBuffers( ARRAY_LEN( renderBuffers.forward ), renderBuffers.forward );
 			}
 		}
 
