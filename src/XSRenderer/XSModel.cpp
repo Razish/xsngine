@@ -105,7 +105,7 @@ namespace XS {
 					console.Print( PrintLevel::Normal, "%s removing model '%s'\n", XS_FUNCTION, modelPath.c_str() );
 				}
 			}
-			else {
+			else if ( !modelPath.empty() ) {
 				SDL_assert( !"could not find model" );
 				console.Print( PrintLevel::Normal,
 					"%s could not find model for '%s'\n",

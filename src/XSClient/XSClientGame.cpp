@@ -4,6 +4,7 @@
 #include "XSCommon/XSFile.h"
 #include "XSCommon/XSString.h"
 #include "XSCommon/XSMatrix.h"
+#include "XSCommon/XSCommand.h"
 #include "XSClient/XSBaseCamera.h"
 #include "XSClient/XSFlyCamera.h"
 #include "XSClient/XSGameObject.h"
@@ -15,7 +16,7 @@ namespace XS {
 
 	namespace ClientGame {
 
-		static Cvar *cg_fov = nullptr;
+		Cvar *cg_fov = nullptr;
 
 		static Renderer::View *sceneView = nullptr;
 		static FlyCamera *camera = nullptr;
@@ -28,9 +29,30 @@ namespace XS {
 			objects.push_back( obj );
 		}
 
+		void RemoveObject( GameObject *obj ) {
+			auto it = std::find( objects.begin(), objects.end(), obj );
+			if ( it != objects.end() ) {
+				objects.erase( it );
+			}
+		}
+
 		static void RegisterCvars( void ) {
 			//fov = degrees( pi * 0.75 ) / 1.25 because math
 			cg_fov = Cvar::Create( "cg_fov", "108", "Field of view", CVAR_ARCHIVE );
+			cg_terrainPersistence = Cvar::Create( "cg_terrainPersistence", "0.25", "Terrain roughness", CVAR_ARCHIVE );
+			cg_terrainFrequency = Cvar::Create( "cg_terrainFrequency", "0.075", "Terrain complexity", CVAR_ARCHIVE );
+			cg_terrainAmplitude = Cvar::Create( "cg_terrainAmplitude", "1.0", "Terrain max height", CVAR_ARCHIVE );
+			cg_terrainOctaves = Cvar::Create( "cg_terrainOctaves", "4", "Terrain detail", CVAR_ARCHIVE );
+			cg_terrainDimensions = Cvar::Create( "cg_terrainDimensions", "128", "Terrain resolution", CVAR_ARCHIVE );
+		}
+
+		static void Cmd_ReloadTerrain( const CommandContext * const context ) {
+			delete terrain;
+			terrain = new Terrain( nullptr );
+		}
+
+		static void RegisterCommands( void ) {
+			Command::AddCommand( "reloadTerrain", Cmd_ReloadTerrain );
 		}
 
 		static void RenderScene( real64_t dt ) {
@@ -39,6 +61,7 @@ namespace XS {
 
 		void Init( void ) {
 			RegisterCvars();
+			RegisterCommands();
 
 			sceneView = new Renderer::View( 0u, 0u, false, RenderScene );
 			camera = new FlyCamera();

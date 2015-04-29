@@ -152,6 +152,8 @@
     <File Name="XSClient/XSTerrain.cpp"/>
     <File Name="XSClient/XSTerrain.h"/>
     <File Name="XSClient/XSGameObject.cpp"/>
+    <File Name="XSClient/XSPerlin.h"/>
+    <File Name="XSClient/XSPerlin.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="XSInput">
     <File Name="XSInput/XSInputField.cpp"/>

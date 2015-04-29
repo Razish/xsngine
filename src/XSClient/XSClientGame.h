@@ -2,9 +2,13 @@
 
 namespace XS {
 
+	class Cvar;
+
 	namespace ClientGame {
 
 		class GameObject;
+
+		extern Cvar *cg_fov;
 
 		// initialise the ClientGame, create a View and load all resources etc
 		void Init(
@@ -23,6 +27,11 @@ namespace XS {
 
 		// add an object to the game
 		void AddObject(
+			GameObject *obj
+		);
+
+		// remove an object from the game
+		void RemoveObject(
 			GameObject *obj
 		);
 

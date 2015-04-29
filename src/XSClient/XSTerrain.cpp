@@ -1,9 +1,11 @@
 #include "XSCommon/XSCommon.h"
 #include "XSCommon/XSFile.h"
 #include "XSCommon/XSConsole.h"
+#include "XSCommon/XSCvar.h"
 #include "XSClient/XSClientGame.h"
 #include "XSClient/XSGameObject.h"
 #include "XSClient/XSTerrain.h"
+#include "XSClient/XSPerlin.h"
 #include "XSRenderer/XSRenderer.h"
 #include "XSRenderer/XSShaderProgram.h"
 #include "XSRenderer/XSMaterial.h"
@@ -12,11 +14,17 @@
 #include "XSRenderer/XSMesh.h"
 #include "XSRenderer/XSVertexAttributes.h"
 
-#define FILE_TERRAIN
+//#define FILE_TERRAIN
 
 namespace XS {
 
 	namespace ClientGame {
+
+		Cvar *cg_terrainPersistence = nullptr;
+		Cvar *cg_terrainFrequency = nullptr;
+		Cvar *cg_terrainAmplitude = nullptr;
+		Cvar *cg_terrainOctaves = nullptr;
+		Cvar *cg_terrainDimensions = nullptr;
 
 		Terrain::Terrain( const char *path ) {
 #ifdef FILE_TERRAIN
@@ -30,7 +38,7 @@ namespace XS {
 #ifdef FILE_TERRAIN
 			const size_t dimensions = sqrt( f.length );
 #else
-			const size_t dimensions = 512;
+			const size_t dimensions = cg_terrainDimensions->GetUInt32();
 #endif
 
 #ifdef FILE_TERRAIN
@@ -38,18 +46,27 @@ namespace XS {
 			std::memset( heightmap, 0, f.length );
 			f.Read( heightmap );
 #else
-			uint8_t heightmap[dimensions * dimensions] = {};
+			Perlin perlin(
+				cg_terrainPersistence->GetReal64(), // persistence
+				cg_terrainFrequency->GetReal64(), // frequency
+				cg_terrainAmplitude->GetReal64(), // amplitude
+				cg_terrainOctaves->GetInt32(), // octaves
+				rand() // seed
+			);
+
+			uint8_t *heightmap = new uint8_t[dimensions * dimensions];
+			std::memset( heightmap, 0, dimensions * dimensions );
 			for ( int row = 0; row < dimensions; row++ ) {
 				for ( int col = 0; col < dimensions; col++ ) {
-					real32_t r = rand() / static_cast<real32_t>( RAND_MAX );
-					heightmap[(row * dimensions) + col] = r * 255.0f;
+				//	real32_t r = rand() / static_cast<real32_t>( RAND_MAX );
+					real64_t r = (perlin.GetHeight( row, col ) + 1.0) / 2.0;
+					heightmap[(row * dimensions) + col] = static_cast<uint8_t>( r * 128.0 );
 				}
 			}
-
 #endif
 
-			GameObject *terrainObj = new GameObject();
-			terrainObj->renderObject = Renderer::Model::Register( nullptr );
+			gameObj = new GameObject();
+			gameObj->renderObject = Renderer::Model::Register( nullptr );
 			Renderer::Mesh *mesh = new Renderer::Mesh();
 			const real32_t scale = 128.0f;
 
@@ -88,15 +105,13 @@ namespace XS {
 
 			mesh->Upload();
 
-			dynamic_cast<Renderer::Model *>( terrainObj->renderObject )->meshes.push_back( mesh );
-			AddObject( terrainObj );
+			dynamic_cast<Renderer::Model *>( gameObj->renderObject )->meshes.push_back( mesh );
+			AddObject( gameObj );
 
 			// create texture
 			texture = new Renderer::Texture( dimensions, dimensions, Renderer::InternalFormat::R8, heightmap );
 
-#ifdef FILE_TERRAIN
 			delete[] heightmap;
-#endif
 
 			// create shader program
 			static const Renderer::VertexAttribute attributes[] = {
@@ -119,7 +134,8 @@ namespace XS {
 		}
 
 		Terrain::~Terrain() {
-			delete material;
+			RemoveObject( gameObj );
+			delete gameObj;
 			delete program;
 			delete texture;
 		}

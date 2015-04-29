@@ -148,6 +148,8 @@ static XS::Timer globalTimer;
 
 int main( int argc, char **argv ) {
 	try {
+		srand( time( nullptr ) );
+
 		// critical initialisation
 		XS::File::Init();
 		XS::Common::RegisterCvars();

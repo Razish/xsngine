@@ -2,6 +2,8 @@
 
 namespace XS {
 
+	class Cvar;
+
 	namespace Renderer {
 		class ShaderProgram;
 		class Texture;
@@ -10,11 +12,18 @@ namespace XS {
 
 	namespace ClientGame {
 
+		extern Cvar *cg_terrainPersistence;
+		extern Cvar *cg_terrainFrequency;
+		extern Cvar *cg_terrainAmplitude;
+		extern Cvar *cg_terrainOctaves;
+		extern Cvar *cg_terrainDimensions;
+
 		class Terrain {
 		private:
 			Renderer::ShaderProgram	*program;
 			Renderer::Material		*material;
 			Renderer::Texture		*texture;
+			GameObject				*gameObj;
 
 		public:
 			// don't allow default instantiation
