@@ -337,7 +337,9 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="XSClient\SConscript" />
     <None Include="SConstruct" />
+    <None Include="XSClient\SConscript">
+      <Filter>XSClient</Filter>
+    </None>
   </ItemGroup>
 </Project>
