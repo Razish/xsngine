@@ -58,8 +58,8 @@ namespace XS {
 			std::memset( heightmap, 0, dimensions * dimensions );
 			for ( int row = 0; row < dimensions; row++ ) {
 				for ( int col = 0; col < dimensions; col++ ) {
-				//	real32_t r = rand() / static_cast<real32_t>( RAND_MAX );
-					real64_t r = (perlin.GetHeight( row, col ) + 1.0) / 2.0;
+					real64_t p = perlin.GetHeight( row, col ); // [-1.0, 1.0]
+					real64_t r = (p + 1.0) / 2.0; // [0.0, 1.0]
 					heightmap[(row * dimensions) + col] = static_cast<uint8_t>( r * 128.0 );
 				}
 			}
