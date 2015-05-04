@@ -1,7 +1,5 @@
 #include <algorithm>
 
-#include <SDL2/SDL.h>
-
 #include "XSCommon/XSCommon.h"
 #include "XSCommon/XSConsole.h"
 #include "XSCommon/XSCvar.h"
@@ -11,6 +9,7 @@
 #include "XSInput/XSInputField.h"
 #include "XSClient/XSClient.h"
 #include "XSClient/XSClientConsole.h"
+#include "XSInput/XSMouse.h"
 #include "XSRenderer/XSFont.h"
 #include "XSRenderer/XSView.h"
 #include "XSRenderer/XSRenderer.h"
@@ -32,7 +31,22 @@ namespace XS {
 				input->Clear();
 			}
 			visible = !visible;
-			SDL_SetRelativeMouseMode( visible ? SDL_FALSE : SDL_TRUE );
+			Input::CaptureMouse( !visible );
+		}
+
+		// negative for down, positive for up
+		void ClientConsole::Scroll( int amount ) {
+			if ( amount > 0 ) {
+				if ( scrollAmount + amount < static_cast<int32_t>( console->buffer->GetNumLines() - lineCount ) ) {
+					scrollAmount += amount;
+				}
+			}
+			else if ( amount < 0 ) {
+				scrollAmount += amount;
+				if ( scrollAmount < 0 ) {
+					scrollAmount = 0;
+				}
+			}
 		}
 
 		bool ClientConsole::KeyboardEvent( const struct KeyboardEvent &ev ) {
@@ -41,20 +55,11 @@ namespace XS {
 			}
 
 			if ( ev.down ) {
-				if ( ev.key == SDLK_BACKQUOTE ) {
-					// hardcoded console exit
-					Toggle();
-				}
-				else if ( ev.key == SDLK_PAGEUP ) {
-					if ( scrollAmount + 1 < static_cast<int32_t>( console->buffer->GetNumLines() - lineCount ) ) {
-						scrollAmount++;
-					}
+				if ( ev.key == SDLK_PAGEUP ) {
+					Scroll( 1 );
 				}
 				else if ( ev.key == SDLK_PAGEDOWN ) {
-					scrollAmount--;
-					if ( scrollAmount < 0 ) {
-						scrollAmount = 0;
-					}
+					Scroll( -1 );
 				}
 				else {
 					input->KeyboardEvent( ev );
@@ -62,6 +67,15 @@ namespace XS {
 			}
 
 			return true;
+		}
+
+		void ClientConsole::MouseWheelEvent( const struct MouseWheelEvent &ev ) {
+			if ( ev.up ) {
+				Scroll( ev.amount );
+			}
+			else {
+				Scroll ( ev.amount * -1 );
+			}
 		}
 
 		ClientConsole::ClientConsole( Console *consoleInstance )

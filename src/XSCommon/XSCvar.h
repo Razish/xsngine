@@ -78,6 +78,11 @@ namespace XS {
 			void
 		);
 
+		// set the cvar's default str
+		void SetDefaultString(
+			const char *defaultStr
+		);
+
 		// modify flags for a cvar
 		// can not unset INIT flag if game is already initialised
 		void SetFlags(

@@ -340,7 +340,7 @@ namespace XS {
 				view->Bind();
 
 #ifdef USE_FBO
-				Backend::ClearBuffer( true, true, clearColour );
+				Backend::ClearBuffer( true, true, vector4( 0.0f, 0.0f, 0.0f, 1.0f ) );
 #endif
 
 				view->PreRender( dt );

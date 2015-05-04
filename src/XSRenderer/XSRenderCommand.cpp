@@ -34,7 +34,7 @@ namespace XS {
 		static Buffer *quadsVertexBuffer;
 		static Buffer *quadsIndexBuffer;
 
-		static ShaderProgram *quadProgram = nullptr;
+		ShaderProgram *quadProgram = nullptr;
 		static Material *quadMaterial = nullptr;
 		static Texture *quadTexture = nullptr;
 

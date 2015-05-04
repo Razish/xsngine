@@ -50,6 +50,24 @@ namespace XS {
 			bool down
 		);
 
+		// handle a mouse motion event if menu is visible
+		// returns true if menu caught the event
+		bool MouseMotionEvent(
+			const struct MouseMotionEvent &ev
+		);
+
+		// handle a mouse button event if menu is visible
+		// returns true if menu caught the event
+		bool MouseButtonEvent(
+			const struct MouseButtonEvent &ev
+		);
+
+		// handle a keyboard event if menu is visible
+		// returns true if menu caught the event
+		void KeyboardEvent(
+			const struct KeyboardEvent &ev
+		);
+
 		// toggle visibility of the console, locking or releasing mouse control
 		void Cmd_ToggleConsole(
 			const CommandContext * const context

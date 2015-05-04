@@ -41,36 +41,43 @@ namespace XS {
 		);
 
 		// parse the current token as a string
+		// returns true upon error
 		bool ParseString(
 			const char **s
 		);
 
 		// parse the current token as a signed 32 bit integer
+		// returns true upon error
 		bool ParseInt32(
 			int32_t *i
 		);
 
 		// parse the current token as an unsigned 32 bit integer
+		// returns true upon error
 		bool ParseUInt32(
 			uint32_t *i
 		);
 
 		// parse the current token as a signed 16 bit integer
+		// returns true upon error
 		bool ParseInt16(
 			int16_t *i
 		);
 
 		// parse the current token as a 32 bit floating point number
+		// returns true upon error
 		bool ParseReal32(
 			real32_t *f
 		);
 
 		// parse the current token as a 64 bit floating point number
+		// returns true upon error
 		bool ParseReal64(
 			real64_t *f
 		);
 
 		// parse the current token as an unsigned 8 bit integer
+		// returns true upon error
 		bool ParseUInt8(
 			uint8_t *i
 		);

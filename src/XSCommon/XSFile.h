@@ -18,17 +18,18 @@ namespace XS {
 	//	com_path may only be set during initialisation
 	//
 	//	Example of reading a text file:
-	//		const File f( "path/to.file", FileMode::READ );
+	//		const File f( "path/to.file", FileMode::Read );
 	//		if ( !f.open ) {
 	//			return;
 	//		}
 	//		char *buffer = new char[f.length];
-	//			f.Read( (byte *)buffer, f.length );	// second argument is optional, defaults to file.length
+	//			f.Read( reinterpret_cast<uint8_t *>( buffer ), f.length );	// second argument is optional, defaults to
+	//																		//	file.length
 	//			// do things to buffer here
 	//		delete[] buffer;
 	//
 	//	Example of writing a text file:
-	//		const File f( "path/to.file", FileMode::WRITE );
+	//		const File f( "path/to.file", FileMode::Write );
 	//		if ( !f.open ) {
 	//			return;
 	//		}

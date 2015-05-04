@@ -97,7 +97,7 @@ namespace XS {
 
 				// raw input
 				// this is also set in ClientConsole upon (de)activation
-				SDL_SetRelativeMouseMode( SDL_TRUE );
+				CaptureMouse( true );
 			}
 
 			void Poll( void ) {
@@ -289,6 +289,7 @@ namespace XS {
 					} break;
 
 					case SDL_MULTIGESTURE: {
+#if 0
 						XSEvent ev( EventType::MouseWheel );
 
 						//FIXME: translate gesture events into actual mouse wheel events
@@ -296,6 +297,7 @@ namespace XS {
 						ev.mouseWheel.amount = 1u;
 
 						Event::Queue( &ev );
+#endif
 					} break;
 
 					case SDL_KEYDOWN:

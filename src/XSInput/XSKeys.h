@@ -20,9 +20,6 @@ namespace XS {
 		);
 
 		// pass input events to the client system (console -> menus -> binds/ingame)
-		void KeyboardEvent(
-			const KeyboardEvent &ev
-		);
 
 		// list all key bindings
 		void Cmd_ListBinds(
@@ -37,6 +34,11 @@ namespace XS {
 		// append all key bindings to the specified string
 		void WriteBinds(
 			std::string &str
+		);
+
+		// ???
+		void ExecuteBind(
+			const struct KeyboardEvent &ev
 		);
 
 	} // namespace Client

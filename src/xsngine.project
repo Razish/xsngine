@@ -152,8 +152,16 @@
     <File Name="XSClient/XSTerrain.cpp"/>
     <File Name="XSClient/XSTerrain.h"/>
     <File Name="XSClient/XSGameObject.cpp"/>
+    <File Name="XSClient/XSMenu.cpp"/>
+    <File Name="XSClient/XSMenu.h"/>
+    <File Name="XSClient/XSMenuElement.cpp"/>
+    <File Name="XSClient/XSMenuElement.h"/>
+    <File Name="XSClient/XSMenuElementSlider.cpp"/>
+    <File Name="XSClient/XSMenuElementSlider.h"/>
     <File Name="XSClient/XSPerlin.h"/>
     <File Name="XSClient/XSPerlin.cpp"/>
+    <File Name="XSClient/XSMenuManager.cpp"/>
+    <File Name="XSClient/XSMenuManager.h"/>
   </VirtualDirectory>
   <VirtualDirectory Name="XSInput">
     <File Name="XSInput/XSInputField.cpp"/>

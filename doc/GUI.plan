@@ -1,0 +1,36 @@
+just had a discussion with my teacher on how to handle the interface WRT aspect ratio/coordinate systems/scaling and we decided on having 5 (corners + center) anchor points, and unit coordinates
+so your health/etc menu might be tied to the bottom-left anchor point, spanning the third quadrant of the screen where position [1.0, 1.0] would be the center of the screen
+or er, it would letter-box to be aspect-correct, so it would always be square pixels
+that means on 16:9, it would not quite reach the horizontal middle of the screen, but it would reach the vertical middle
+but i guess you could have another anchor point there on the bottom-middle of the screen
+...hm, another brief discussion we decided to not hard-code these anchor points, but have them as concepts
+so your root menu element would define the anchor point. the anchor point just being the point which your coordinates are relative to
+so the root menu element for your health bar will be positioned at screen-space [0.0, 0.0] (bottom-left and have an anchor point in screen-space [0.0, 0.0] (bottom-left)
+
+				16x9
+  _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+|               | |               |
+|               | |               |
+|               | |               |
+|               | |               |
+| x x x x x - - - - - - - - - - - |
+|         x     | |               |
+|         x     | |               | 
+|         x     | |               |
+| ---hp---x     | |               |
+  ¯ ¯ ¯ ¯ ¯ ¯ ¯ ¯ ¯ ¯ ¯ ¯ ¯ ¯ ¯ ¯
+
+and a timer at the top of your screen may be positioned at [0.5, 1.0]
+
+				16x9
+  _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+|           x   | |   x           |
+|           x   | |   x           |
+|           x   | |   x           |
+|           x   | |   x           |
+| - - - - - x x x x x x - - - - - |
+|               | |               |
+|               | |               | 
+|               | |               |
+|               | |               |
+  ¯ ¯ ¯ ¯ ¯ ¯ ¯ ¯ ¯ ¯ ¯ ¯ ¯ ¯ ¯ ¯

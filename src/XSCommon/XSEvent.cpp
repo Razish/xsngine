@@ -6,6 +6,7 @@
 #include "XSCommon/XSString.h"
 #include "XSCommon/XSConsole.h"
 #include "XSCommon/XSError.h"
+#include "XSClient/XSClient.h" // FIXME: this should not depend on client
 #include "XSInput/XSKeys.h"
 #include "XSInput/XSMouse.h"
 

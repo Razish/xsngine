@@ -15,15 +15,20 @@ namespace XS {
 
 			extern vector2 mouseDelta;
 
+			// lock mouse to screen and only recieve relative mouse movement, or behave like a regular window
+			void CaptureMouse(
+				bool capture
+			);
+
 			// pass input events to the client system (console -> menus -> binds/ingame)
 			void MouseWheelEvent(
-				const MouseWheelEvent &ev
+				const struct MouseWheelEvent &ev
 			);
 			void MouseButtonEvent(
-				const MouseButtonEvent &ev
+				const struct MouseButtonEvent &ev
 			);
 			void MouseMotionEvent(
-				const MouseMotionEvent &ev
+				const struct MouseMotionEvent &ev
 			);
 
 			void CalculateMouseMotion(

@@ -30,6 +30,8 @@ namespace XS {
 			Renderer::View	*view;
 			Renderer::Font	*font;
 
+			void Scroll( int amount ); // negative for down, positive for up
+
 		public:
 			// instantiate the ClientConsole for a specified Console object
 			ClientConsole(
@@ -55,6 +57,11 @@ namespace XS {
 			// handle a key event for the input field
 			bool KeyboardEvent(
 				const struct KeyboardEvent &ev
+			);
+
+			// handle a mouse wheel event for scrolling
+			void MouseWheelEvent(
+				const struct MouseWheelEvent &ev
 			);
 
 			// toggle visibility of the console

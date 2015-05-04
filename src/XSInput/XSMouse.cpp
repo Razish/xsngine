@@ -1,5 +1,7 @@
 #include <queue>
 
+#include <SDL2/SDL.h>
+
 #include "XSCommon/XSCommon.h"
 #include "XSCommon/XSString.h"
 #include "XSCommon/XSEvent.h"
@@ -7,6 +9,7 @@
 #include "XSCommon/XSCvar.h"
 #include "XSCommon/XSConsole.h"
 #include "XSClient/XSClient.h"
+#include "XSClient/XSClientConsole.h"
 #include "XSInput/XSInput.h"
 #include "XSRenderer/XSRenderer.h"
 
@@ -25,13 +28,32 @@ namespace XS {
 			// store a small number of previous samples for interpolation (and extrapolation?)
 			std::queue<pvector2> previousStates;
 
+			static bool captureMouse = false;
+
+			void CaptureMouse( bool capture ) {
+				captureMouse = capture;
+
+				SDL_SetRelativeMouseMode( captureMouse ? SDL_TRUE : SDL_FALSE );
+			}
+
 			void MouseWheelEvent( const struct MouseWheelEvent &ev ) {
-				// ...
+				if ( clientConsole ) {
+					clientConsole->MouseWheelEvent( ev );
+				}
 			}
+
 			void MouseButtonEvent( const struct MouseButtonEvent &ev ) {
-				// ...
+				if ( Client::MouseButtonEvent( ev ) ) {
+					return;
+				}
 			}
+
 			void MouseMotionEvent( const struct MouseMotionEvent &ev ) {
+				// see if the client (menu) handled the mouse movement
+				if ( Client::MouseMotionEvent( ev ) ) {
+					return;
+				}
+
 				// accumulate the movement for this frame
 				perFrameState.mouseDelta.x += static_cast<real64_t>( ev.x );
 				perFrameState.mouseDelta.y += static_cast<real64_t>( ev.y );
@@ -68,7 +90,7 @@ namespace XS {
 
 					//TODO: scale by aspect ratio?
 					/*
-					const Cvar *r_fov = Cvar::Get( "cg_fov" );
+					const Cvar *cg_fov = Cvar::Get( "cg_fov" );
 					const real64_t fov = cg_fov ? cg_fov->GetReal64() : 75.0;
 					frameDelta *= fov / Renderer::state.window.aspectRatio;
 					*/

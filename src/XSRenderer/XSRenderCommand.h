@@ -9,6 +9,7 @@ namespace XS {
 
 		struct Material;
 		class Model;
+		class ShaderProgram;
 
 		//FIXME: polymorphism?
 		enum class CommandType {
@@ -57,6 +58,11 @@ namespace XS {
 			// don't allow default instantiation
 			RenderCommand() = delete;
 
+			RenderCommand( CommandType commandType )
+			: type( commandType )
+			{
+			}
+
 			// initialise render command queue
 			// create default material, allocate GPU buffers
 			static void Init(
@@ -68,18 +74,17 @@ namespace XS {
 				void
 			);
 
-			RenderCommand( CommandType commandType )
-			: type( commandType )
-			{
-			}
-
 			// dispatch the render command to the associated function
 			void Execute(
 				void
 			) const;
 		};
 
-		void DrawQuad( const DrawQuadCommand &cmd );
+		void DrawQuad(
+			const DrawQuadCommand &cmd
+		);
+
+		extern ShaderProgram *quadProgram;
 
 	} // namespace Renderer
 

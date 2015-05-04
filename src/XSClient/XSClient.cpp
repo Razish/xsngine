@@ -1,3 +1,5 @@
+#include <stack>
+
 #include "XSCommon/XSCommon.h"
 #include "XSCommon/XSError.h"
 #include "XSCommon/XSString.h"
@@ -6,11 +8,15 @@
 #include "XSCommon/XSVector.h"
 #include "XSCommon/XSTimer.h"
 #include "XSCommon/XSGlobals.h"
+#include "XSCommon/XSEvent.h"
 #include "XSClient/XSClient.h"
 #include "XSClient/XSClientGame.h"
 #include "XSClient/XSClientConsole.h"
+#include "XSClient/XSMenuManager.h"
+#include "XSClient/XSTerrain.h"
 #include "XSInput/XSInput.h"
 #include "XSInput/XSMouse.h"
+#include "XSInput/XSKeys.h"
 #include "XSRenderer/XSFont.h"
 #include "XSRenderer/XSView.h"
 
@@ -19,11 +25,15 @@ namespace XS {
 	namespace Client {
 
 		ClientState state = {};
-
 		uint64_t frameNum = 0u;
 
+		// hud
 		static Renderer::View *hudView = nullptr;
 
+		// menus
+		MenuManager *menu = nullptr;
+
+		// console input
 		ClientConsole *clientConsole = nullptr;
 
 		void Cmd_ToggleConsole( const CommandContext * const context ) {
@@ -34,9 +44,61 @@ namespace XS {
 			clientConsole->Toggle();
 		}
 
+		void Cmd_OpenMenu( const CommandContext * const context ) {
+			menu->OpenMenu( (*context)[0].c_str() );
+		}
+
+		static void RegisterCommands( void ) {
+			Command::AddCommand( "openMenu", Cmd_OpenMenu );
+		}
+
+		bool MouseMotionEvent( const struct MouseMotionEvent &ev ) {
+			if ( menu->isOpen ) {
+				menu->MouseMotionEvent( ev );
+				return true;
+			}
+			return false;
+		}
+
+		bool MouseButtonEvent( const struct MouseButtonEvent &ev ) {
+			if ( menu->isOpen ) {
+				menu->MouseButtonEvent( ev );
+				return true;
+			}
+			return false;
+		}
+
+		void KeyboardEvent( const struct KeyboardEvent &ev ) {
+			// hardcoded console short-circuit
+			if ( clientConsole ) {
+				if ( ev.down && ev.key == SDLK_BACKQUOTE ) {
+					clientConsole->Toggle();
+					return;
+				}
+				else if ( clientConsole->KeyboardEvent( ev ) ) {
+					return;
+				}
+			}
+
+			// let the menu consume key events
+			if ( menu->isOpen ) {
+				menu->KeyboardEvent( ev );
+				return;
+			}
+
+			// fall through to gamecode
+			keystate[ev.key] = ev.down;
+			ExecuteBind( ev );
+		}
+
 		void Init( void ) {
+			RegisterCommands();
+
 			// hud
 			hudView = new Renderer::View( 0u, 0u, true );
+			menu = new MenuManager();
+			menu->RegisterMenu( "menus/settings.xmenu" );
+		//	menu->OpenMenu( "settings" );
 
 			// console
 			clientConsole = new ClientConsole( &console );
@@ -131,6 +193,28 @@ namespace XS {
 			font->Draw( pos, fpsText, fpsTextSize );
 		}
 
+		static void DrawMenus( Renderer::Font *font ) {
+			if ( menu->isOpen ) {
+				menu->PaintMenus();
+				menu->DrawCursor();
+			}
+		}
+
+		static void DrawDebugInfo( Renderer::Font *font ) {
+			std::string fovText = String::Format( "fov: %.03f", ClientGame::cg_fov->GetReal32() ).c_str();
+			const uint16_t fovTextSize = 16u;
+			real32_t textWidth = 0.0f;
+			for ( const char *p = fovText.c_str(); *p; p++ ) {
+				textWidth += font->GetGlyphWidth( *p, fovTextSize );
+			}
+
+			vector2 pos(
+				2.0f,
+				0.0f
+			);
+			font->Draw( pos, fovText, fovTextSize );
+		}
+
 		static void DrawHUD( real64_t frametime ) {
 			if ( !hudView ) {
 				return;
@@ -144,6 +228,10 @@ namespace XS {
 			}
 
 			DrawFPS( frametime, font );
+
+			DrawMenus( font );
+
+			DrawDebugInfo( font );
 		}
 
 		void DrawFrame( real64_t frametime ) {

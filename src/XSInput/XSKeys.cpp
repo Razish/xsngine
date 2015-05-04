@@ -213,7 +213,7 @@ namespace XS {
 			binds[keycode] = value;
 		}
 
-		static void ExecuteBind( const struct KeyboardEvent &ev ) {
+		void ExecuteBind( const struct KeyboardEvent &ev ) {
 			const std::string &cmd = binds[ev.key];
 
 			if ( cmd.empty() ) {
@@ -243,15 +243,6 @@ namespace XS {
 			if ( ev.down ) {
 				Command::Append( cmd.c_str() );
 			}
-		}
-
-		void KeyboardEvent( const struct KeyboardEvent &ev ) {
-			if ( clientConsole && clientConsole->KeyboardEvent( ev ) ) {
-				return;
-			}
-
-			keystate[ev.key] = ev.down;
-			ExecuteBind( ev );
 		}
 
 		void WriteBinds( std::string &str ) {

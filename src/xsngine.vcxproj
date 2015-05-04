@@ -17,6 +17,10 @@
     <ClCompile Include="XSClient\XSClientGame.cpp" />
     <ClCompile Include="XSClient\XSFlyCamera.cpp" />
     <ClCompile Include="XSClient\XSGameObject.cpp" />
+    <ClCompile Include="XSClient\XSMenu.cpp" />
+    <ClCompile Include="XSClient\XSMenuElement.cpp" />
+    <ClCompile Include="XSClient\XSMenuElementSlider.cpp" />
+    <ClCompile Include="XSClient\XSMenuManager.cpp" />
     <ClCompile Include="XSClient\XSPerlin.cpp" />
     <ClCompile Include="XSClient\XSTerrain.cpp" />
     <ClCompile Include="XSCommon\XSColours.cpp" />
@@ -69,6 +73,10 @@
     <ClInclude Include="XSClient\XSClientGame.h" />
     <ClInclude Include="XSClient\XSFlyCamera.h" />
     <ClInclude Include="XSClient\XSGameObject.h" />
+    <ClInclude Include="XSClient\XSMenu.h" />
+    <ClInclude Include="XSClient\XSMenuElement.h" />
+    <ClInclude Include="XSClient\XSMenuElementSlider.h" />
+    <ClInclude Include="XSClient\XSMenuManager.h" />
     <ClInclude Include="XSClient\XSPerlin.h" />
     <ClInclude Include="XSClient\XSTerrain.h" />
     <ClInclude Include="XSCommon\XSColours.h" />

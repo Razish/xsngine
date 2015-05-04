@@ -10,6 +10,10 @@ files = [
 	'XSClient/XSClientGame.cpp',
 	'XSClient/XSFlyCamera.cpp',
 	'XSClient/XSGameObject.cpp',
+	'XSClient/XSMenu.cpp',
+	'XSClient/XSMenuElement.cpp',
+	'XSClient/XSMenuElementSlider.cpp',
+	'XSClient/XSMenuManager.cpp',
 	'XSClient/XSPerlin.cpp',
 	'XSClient/XSTerrain.cpp'
 ]

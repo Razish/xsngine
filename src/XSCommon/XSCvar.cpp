@@ -86,6 +86,7 @@ namespace XS {
 				}
 
 				cvar->description = description;
+				cvar->defaultStr = value;
 			}
 
 			if ( flags != CVAR_NONE ) {
