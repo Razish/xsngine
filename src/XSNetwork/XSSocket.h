@@ -29,10 +29,6 @@
 
 namespace XS {
 
-	// helper class
-	// creates a socket and connects to the specified host
-	//TODO: supports socksv5
-
 	enum class SocketType {
 		TCP,
 		UDP,
@@ -40,6 +36,9 @@ namespace XS {
 		SOCKS_UDP
 	};
 
+	// helper class
+	// creates a socket and connects to the specified host
+	//TODO: supports socksv5
 	class Socket {
 	private:
 		//SocketType	 type;
@@ -57,6 +56,7 @@ namespace XS {
 			uint16_t socketPort
 		);
 
+		// ???
 		void Send(
 			const uint8_t *buf,
 			size_t bufSize

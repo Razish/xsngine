@@ -36,13 +36,14 @@ union pointerAlias_t {
 	intptr_t	iptr;
 	void		*v;
 	real32_t	*f32;
+	real64_t	*f64;
 	int32_t		*i32;
 	uint32_t	*ui32;
 	uint8_t		*ui8;
 	int8_t		*i8;
 };
 
-#define ARRAY_LEN( x ) (sizeof( (x) ) / sizeof( (*x) ))
+#define ARRAY_LEN( x ) (sizeof((x)) / sizeof((*x)))
 #define STR( str ) #str
 #define XSTR( str ) STR( str )
 

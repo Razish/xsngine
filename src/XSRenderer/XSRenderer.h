@@ -110,10 +110,12 @@ namespace XS {
 			const Material *material
 		);
 
+		// ???
 		void DrawModel(
 			const Model *model
 		);
 
+		// ???
 		void DrawParticles(
 			const Backend::Buffer *vbo,
 			const Backend::Buffer *ibo,

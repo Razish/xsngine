@@ -15,32 +15,39 @@ namespace XS {
 			extern GLuint defaultVao;
 			extern GLuint defaultPbo;
 
+			// ???
 			void Init(
 				void
 			);
 
+			// ???
 			void Shutdown(
 				void
 			);
 
+			// ???
 			void ToggleWireframe(
 				bool on
 			);
 
+			// ???
 			bool GetWireframe(
 				void
 			);
 
+			// ???
 			void ClearBuffer(
 				bool clearColour,
 				bool clearDepth,
 				const vector4 &colour
 			);
 
+			// ???
 			void ToggleDepthTest(
 				bool enabled
 			);
 
+			// ???
 			void ToggleDepthWrite(
 				bool enabled
 			);
@@ -49,11 +56,12 @@ namespace XS {
 				LessOrEqual,
 			};
 
+			// ???
 			void SetDepthFunction(
 				DepthFunc func
 			);
 
-
+			// ???
 			void ToggleStencilTest(
 				bool enabled
 			);
@@ -69,6 +77,7 @@ namespace XS {
 				Greater,
 			};
 
+			// ???
 			void SetStencilFunction(
 				StencilFunc func
 			);
@@ -83,10 +92,12 @@ namespace XS {
 				Invert,
 			};
 
+			// ???
 			void SetStencilOp(
 				StencilOp op
 			);
 
+			// ???
 			void ToggleAlphaBlending(
 				bool enabled
 			);
@@ -109,6 +120,7 @@ namespace XS {
 				SourceAlphaSaturate,
 			};
 
+			// ???
 			void SetBlendFunction(
 				BlendFunc sourceFunc,
 				BlendFunc destFunc

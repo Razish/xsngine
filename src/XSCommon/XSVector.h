@@ -59,9 +59,13 @@ namespace XS {
 		static inline bool compare( const vector2 &lhs, const vector2 &rhs ) {
 			return (flcmp( lhs.x, rhs.x ) && flcmp( lhs.y, rhs.y ));
 		}
+
+		// ???
 		inline bool compare( const vector2 &rhs ) const {
 			return (flcmp( x, rhs.x ) && flcmp( y, rhs.y ));
 		}
+
+		// ???
 		inline bool operator==( const vector2 &rhs ) {
 			return compare( rhs );
 		}
@@ -70,6 +74,8 @@ namespace XS {
 		inline vector2 operator+( const vector2 &rhs ) const {
 			return vector2( x + rhs.x, y + rhs.y );
 		}
+
+		// ???
         inline vector2& operator+=( const vector2& rhs ) {
 			x += rhs.x;
 			y += rhs.y;
@@ -80,6 +86,8 @@ namespace XS {
 		inline vector2 operator-( const vector2 &rhs ) const {
 			return vector2( x - rhs.x, y - rhs.y );
 		}
+
+		// ???
         inline vector2& operator-=( const vector2& rhs ) {
 			x -= rhs.x;
 			y -= rhs.y;
@@ -103,6 +111,8 @@ namespace XS {
 			x = -x;
 			y = -y;
 		}
+
+		// ???
 		static inline vector2 inverse( const vector2 &in ) {
 			return vector2( -in.x, -in.y );
 		}
@@ -111,6 +121,8 @@ namespace XS {
 		inline vector2 operator*( const real32_t scalar ) const {
 			return vector2( x * scalar, y * scalar );
 		}
+
+		// ???
 		inline vector2& operator*=( const real32_t scalar ) {
 			x *= scalar;
 			y *= scalar;
@@ -121,6 +133,8 @@ namespace XS {
 		inline vector2 operator*( const vector2 &rhs ) const {
 			return vector2( x * rhs.x, y * rhs.y );
 		}
+
+		// ???
 		inline vector2& operator*=( const vector2 &rhs ) {
 			x *= rhs.x;
 			y *= rhs.y;
@@ -131,6 +145,8 @@ namespace XS {
 		inline vector2 operator/( const real32_t divisor ) const {
 			return vector2( x / divisor, y / divisor );
 		}
+
+		// ???
 		inline vector2& operator/=( const real32_t divisor ) {
 			x /= divisor;
 			y /= divisor;
@@ -141,6 +157,8 @@ namespace XS {
 		inline vector2 operator/( const vector2 &rhs ) const {
 			return vector2( x / rhs.x, y / rhs.y );
 		}
+
+		// ???
 		inline vector2& operator/=( const vector2 &rhs ) {
 			x /= rhs.x;
 			y /= rhs.y;
@@ -196,9 +214,13 @@ namespace XS {
 		static inline bool compare( const pvector2 &lhs, const pvector2 &rhs ) {
 			return (dblcmp( lhs.x, rhs.x ) && dblcmp( lhs.y, rhs.y ));
 		}
+
+		// ???
 		inline bool compare( const pvector2 &rhs ) const {
 			return (dblcmp( x, rhs.x ) && dblcmp( y, rhs.y ));
 		}
+
+		// ???
 		inline bool operator==( const pvector2 &rhs ) {
 			return compare( rhs );
 		}
@@ -207,6 +229,8 @@ namespace XS {
 		inline pvector2 operator+( const pvector2 &rhs ) const {
 			return pvector2( x + rhs.x, y + rhs.y );
 		}
+
+		// ???
         inline pvector2& operator+=( const pvector2& rhs ) {
 			x += rhs.x;
 			y += rhs.y;
@@ -217,6 +241,8 @@ namespace XS {
 		inline pvector2 operator-( const pvector2 &rhs ) const {
 			return pvector2( x - rhs.x, y - rhs.y );
 		}
+
+		// ???
         inline pvector2& operator-=( const pvector2& rhs ) {
 			x -= rhs.x;
 			y -= rhs.y;
@@ -240,6 +266,8 @@ namespace XS {
 			x = -x;
 			y = -y;
 		}
+
+		// ???
 		static inline pvector2 inverse( const pvector2 &in ) {
 			return pvector2( -in.x, -in.y );
 		}
@@ -248,6 +276,8 @@ namespace XS {
 		inline pvector2 operator*( const real64_t scalar ) const {
 			return pvector2( x * scalar, y * scalar );
 		}
+
+		// ???
 		inline pvector2& operator*=( const real64_t scalar ) {
 			x *= scalar;
 			y *= scalar;
@@ -258,6 +288,8 @@ namespace XS {
 		inline pvector2 operator*( const pvector2 &rhs ) const {
 			return pvector2( x * rhs.x, y * rhs.y );
 		}
+
+		// ???
 		inline pvector2& operator*=( const pvector2 &rhs ) {
 			x *= rhs.x;
 			y *= rhs.y;
@@ -268,6 +300,8 @@ namespace XS {
 		inline pvector2 operator/( const real64_t divisor ) const {
 			return pvector2( x / divisor, y / divisor );
 		}
+
+		// ???
 		inline pvector2& operator/=( const real64_t divisor ) {
 			x /= divisor;
 			y /= divisor;
@@ -278,6 +312,8 @@ namespace XS {
 		inline pvector2 operator/( const pvector2 &rhs ) const {
 			return pvector2( x / rhs.x, y / rhs.y );
 		}
+
+		// ???
 		inline pvector2& operator/=( const pvector2 &rhs ) {
 			x /= rhs.x;
 			y /= rhs.y;
@@ -340,9 +376,13 @@ namespace XS {
 		static inline bool compare( const vector3 &lhs, const vector3 &rhs ) {
 			return (flcmp( lhs.x, rhs.x ) && flcmp( lhs.y, rhs.y ) && flcmp( lhs.z, rhs.z ));
 		}
+
+		// ???
 		inline bool compare( const vector3 &rhs ) const {
 			return (flcmp( x, rhs.x ) && flcmp( y, rhs.y ) && flcmp( z, rhs.z ));
 		}
+
+		// ???
 		inline bool operator==( const vector3 &rhs ) {
 			return compare( rhs );
 		}
@@ -351,6 +391,8 @@ namespace XS {
 		inline vector3 operator+( const vector3 &rhs ) const {
 			return vector3( x + rhs.x, y + rhs.y, z + rhs.z );
 		}
+
+		// ???
         inline vector3& operator+=( const vector3& rhs ) {
 			x += rhs.x;
 			y += rhs.y;
@@ -362,6 +404,8 @@ namespace XS {
 		inline vector3 operator-( const vector3 &rhs ) const {
 			return vector3( x - rhs.x, y - rhs.y, z - rhs.z );
 		}
+
+		// ???
         inline vector3& operator-=( const vector3& rhs ) {
 			x -= rhs.x;
 			y -= rhs.y;
@@ -389,6 +433,8 @@ namespace XS {
 			y = -y;
 			z = -z;
 		}
+
+		// ???
 		static inline vector3 inverse( const vector3 &in ) {
 			return vector3( -in.x, -in.y, -in.z );
 		}
@@ -397,6 +443,8 @@ namespace XS {
 		inline vector3 operator*( const real32_t scalar ) const {
 			return vector3( x * scalar, y * scalar, z * scalar );
 		}
+
+		// ???
 		inline vector3& operator*=( const real32_t scalar ) {
 			x *= scalar;
 			y *= scalar;
@@ -408,6 +456,8 @@ namespace XS {
 		inline vector3 operator*( const vector3 &rhs ) const {
 			return vector3( x * rhs.x, y * rhs.y, z * rhs.z );
 		}
+
+		// ???
 		inline vector3& operator*=( const vector3 &rhs ) {
 			x *= rhs.x;
 			y *= rhs.y;
@@ -419,6 +469,8 @@ namespace XS {
 		inline vector3 operator/( const real32_t divisor ) const {
 			return vector3( x / divisor, y / divisor, z / divisor );
 		}
+
+		// ???
 		inline vector3& operator/=( const real32_t divisor ) {
 			x /= divisor;
 			y /= divisor;
@@ -430,6 +482,8 @@ namespace XS {
 		inline vector3 operator/( const vector3 &rhs ) const {
 			return vector3( x / rhs.x, y / rhs.y, z / rhs.z );
 		}
+
+		// ???
 		inline vector3& operator/=( const vector3 &rhs ) {
 			x /= rhs.x;
 			y /= rhs.y;
@@ -451,12 +505,18 @@ namespace XS {
 		inline real32_t length( void ) const {
 			return sqrtf( x*x + y*y + z*z );
 		}
+
+		// ???
 		static inline real32_t length( const vector3 &vec ) {
 			return vec.length();
 		}
+
+		// ???
 		inline real32_t lengthSquared( void ) const {
 			return x*x + y*y + z*z;
 		}
+
+		// ???
 		static inline real32_t lengthSquared( const vector3 &vec ) {
 			return vec.lengthSquared();
 		}
@@ -465,6 +525,8 @@ namespace XS {
 		static inline real32_t distance( const vector3 &a, const vector3 &b ) {
 			return length( a - b );
 		}
+
+		// ???
 		static inline real32_t distanceSquared( const vector3 &a, const vector3 &b ) {
 			return lengthSquared( a - b );
 		}
@@ -475,6 +537,8 @@ namespace XS {
 		inline void normaliseFast( void ) {
 			*this *= 1.0f / length();
 		}
+
+		// ???
 		inline real32_t normalise( void ) {
 			real32_t length = this->length();
 
@@ -485,6 +549,8 @@ namespace XS {
 
 			return length;
 		}
+
+		// ???
 		static inline vector3 normalise( const vector3 &vec ) {
 			vector3 result = vec;
 
@@ -502,6 +568,8 @@ namespace XS {
 		static inline real32_t dot( const vector3 &a, const vector3 &b ) {
 			return a.x*b.x + a.y*b.y + a.z*b.z;
 		}
+
+		// ???
 		inline real32_t dot( const vector3 &vec ) const {
 			return x*vec.x + y*vec.y + z*vec.z;
 		}
@@ -516,6 +584,8 @@ namespace XS {
 
 			return result;
 		}
+
+		// ???
 		inline vector3 cross( const vector3 &v ) const {
 			return cross( *this, v );
 		}
@@ -568,9 +638,13 @@ namespace XS {
 		static inline bool compare( const pvector3 &lhs, const pvector3 &rhs ) {
 			return (dblcmp( lhs.x, rhs.x ) && flcmp( lhs.y, rhs.y ) && flcmp( lhs.z, rhs.z ));
 		}
+
+		// ???
 		inline bool compare( const pvector3 &rhs ) const {
 			return (dblcmp( x, rhs.x ) && flcmp( y, rhs.y ) && flcmp( z, rhs.z ));
 		}
+
+		// ???
 		inline bool operator==( const pvector3 &rhs ) {
 			return compare( rhs );
 		}
@@ -579,6 +653,8 @@ namespace XS {
 		inline pvector3 operator+( const pvector3 &rhs ) const {
 			return pvector3( x + rhs.x, y + rhs.y, z + rhs.z );
 		}
+
+		// ???
         inline pvector3& operator+=( const pvector3 &rhs ) {
 			x += rhs.x;
 			y += rhs.y;
@@ -590,6 +666,8 @@ namespace XS {
 		inline pvector3 operator-( const pvector3 &rhs ) const {
 			return pvector3( x - rhs.x, y - rhs.y, z - rhs.z );
 		}
+
+		// ???
         inline pvector3& operator-=( const pvector3& rhs ) {
 			x -= rhs.x;
 			y -= rhs.y;
@@ -617,6 +695,8 @@ namespace XS {
 			y = -y;
 			z = -z;
 		}
+
+		// ???
 		static inline pvector3 inverse( const pvector3 &in ) {
 			return pvector3( -in.x, -in.y, -in.z );
 		}
@@ -625,6 +705,8 @@ namespace XS {
 		inline pvector3 operator*( const real64_t scalar ) const {
 			return pvector3( x * scalar, y * scalar, z * scalar );
 		}
+
+		// ???
 		inline pvector3& operator*=( const real64_t scalar ) {
 			x *= scalar;
 			y *= scalar;
@@ -636,6 +718,8 @@ namespace XS {
 		inline pvector3 operator*( const pvector3 &rhs ) const {
 			return pvector3( x * rhs.x, y * rhs.y, z * rhs.z );
 		}
+
+		// ???
 		inline pvector3& operator*=( const pvector3 &rhs ) {
 			x *= rhs.x;
 			y *= rhs.y;

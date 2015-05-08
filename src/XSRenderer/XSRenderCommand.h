@@ -11,6 +11,8 @@ namespace XS {
 		class Model;
 		class ShaderProgram;
 
+		extern ShaderProgram *quadProgram;
+
 		//FIXME: polymorphism?
 		enum class CommandType {
 			DrawQuad,
@@ -88,11 +90,10 @@ namespace XS {
 			) const;
 		};
 
+		// ???
 		void DrawQuad(
 			const DrawQuadCommand &cmd
 		);
-
-		extern ShaderProgram *quadProgram;
 
 	} // namespace Renderer
 

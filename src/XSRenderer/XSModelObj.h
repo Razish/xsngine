@@ -8,7 +8,7 @@ namespace XS {
 	namespace Renderer {
 
 		class Obj : public Model {
-
+		private:
 			// load the mesh from disk
 			bool LoadMeshes(
 				void
@@ -18,7 +18,6 @@ namespace XS {
 			void Process(
 				Mesh *mesh
 			);
-
 		};
 
 	} // namespace Renderer

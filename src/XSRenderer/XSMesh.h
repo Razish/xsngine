@@ -16,7 +16,6 @@ namespace XS {
 		} // namespace Backend
 
 		struct Mesh {
-
 			std::vector<vector3>	 vertices;
 			std::vector<vector3>	 normals;
 			std::vector<vector2>	 UVs;
@@ -40,7 +39,6 @@ namespace XS {
 			{
 			}
 			~Mesh();
-
 		};
 
 	} // namespace Renderer

@@ -41,26 +41,32 @@ namespace XS {
 
 				~Buffer();
 
+				// ???
 				void *Map(
 					void
 				);
 
+				// ???
 				BufferMemory MapDiscard(
 					size_t size
 				);
 
+				// ???
 				void Unmap(
 					void
 				);
 
+				// ???
 				GLuint GetID(
 					void
 				) const;
 
+				// ???
 				void Bind(
 					void
 				) const;
 
+				// ???
 				void BindRange(
 					int index,
 					size_t offset = 0,

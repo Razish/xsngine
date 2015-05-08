@@ -20,7 +20,6 @@ namespace XS {
 			void Process(
 				Mesh *mesh
 			);
-
 		};
 
 	} // namespace Renderer

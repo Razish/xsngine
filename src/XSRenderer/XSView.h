@@ -29,7 +29,7 @@ namespace XS {
 			Texture							*colourTexture;
 			Texture							*depthTexture;
 
-			std::queue<const Renderable*>	renderObjects;
+			std::queue<const Renderable *>	renderObjects;
 			std::queue<vector3>				pointLights;
 
 			renderCallback_t				callbackPreRender, callbackPostRender;

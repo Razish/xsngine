@@ -112,7 +112,7 @@ namespace XS {
 		}
 
 		Shader::Shader( ShaderType type, const char *name ) {
-			char path[XS_MAX_FILENAME] = { '\0' };
+			char path[XS_MAX_FILENAME] = {};
 
 			switch ( type ) {
 			case ShaderType::Vertex: {
@@ -135,6 +135,8 @@ namespace XS {
 			if ( !f.open ) {
 				throw( XSError( String::Format( "Shader(): Could not open file \"%s\"", name ).c_str() ) );
 			}
+
+			SDL_assert( f.length );
 
 			std::string contents( f.length, '\0' );
 

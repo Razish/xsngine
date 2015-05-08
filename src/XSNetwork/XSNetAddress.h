@@ -19,7 +19,7 @@ namespace XS {
 		union {
 			byteAlias32_t ipv4;
 			struct {
-				int32_t dummy;
+				uint8_t dummy[32];
 			} ipv6;
 		} address;
 
@@ -31,7 +31,10 @@ namespace XS {
 		);
 		~NetAddress() {}
 
-		NetAddress ToNetworkOrder( void ) const; // copy
+		// ???
+		NetAddress ToNetworkOrder(
+			void
+		) const; // copy
 	};
 
 } // namespace XS

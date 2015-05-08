@@ -24,13 +24,18 @@ namespace XS {
 			void MouseWheelEvent(
 				const struct MouseWheelEvent &ev
 			);
+
+			// ???
 			void MouseButtonEvent(
 				const struct MouseButtonEvent &ev
 			);
+
+			// ???
 			void MouseMotionEvent(
 				const struct MouseMotionEvent &ev
 			);
 
+			// ???
 			void CalculateMouseMotion(
 				real64_t frameMsec,
 				MovementCommand &cmd

@@ -32,6 +32,7 @@ namespace XS {
 			renderObject = this;
 
 			emitRate = static_cast<real32_t>( life ) / static_cast<real32_t>( count );
+			emitTime = 0.0;
 
 			// 1MB vertex buffer
 			// usage strategy is map-discard i.e. keep appending to the buffer until we run out of memory.
