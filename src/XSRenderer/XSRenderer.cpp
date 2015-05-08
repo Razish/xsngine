@@ -19,6 +19,7 @@
 #include "XSRenderer/XSMaterial.h"
 #include "XSRenderer/XSVertexAttributes.h"
 #include "XSRenderer/XSMaterial.h"
+#include "XSRenderer/XSBuffer.h"
 
 #if defined(XS_OS_MAC)
 //#include <OpenCL/cl_gl_ext.h>
@@ -438,7 +439,19 @@ namespace XS {
 
 			RenderCommand cmd( CommandType::DrawModel );
 			cmd.drawModel.model = model;
-			cmd.drawModel.transform.identity();
+			currentView->renderCommands.push( cmd );
+		}
+
+		void DrawParticles( const Backend::Buffer *vbo, const Backend::Buffer *ibo, const Material *material,
+			size_t count )
+		{
+			AssertView();
+
+			RenderCommand cmd( CommandType::DrawParticles );
+			cmd.drawParticles.vbo = vbo;
+			cmd.drawParticles.ibo = ibo;
+			cmd.drawParticles.material = material;
+			cmd.drawParticles.count = count;
 			currentView->renderCommands.push( cmd );
 		}
 

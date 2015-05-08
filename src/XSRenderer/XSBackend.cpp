@@ -103,13 +103,21 @@ namespace XS {
 			void ToggleDepthTest( bool enabled ) {
 				if ( enabled ) {
 					glEnable( GL_DEPTH_TEST );
-					glDepthMask( GL_TRUE );
+					//FIXME: move to SetDepthFunction
 					glDepthFunc( GL_LESS );
 					glDepthRange( 0.0, 1.0 );
 				}
 				else {
 					glDisable( GL_DEPTH_TEST );
+				}
+			}
+
+			void ToggleDepthWrite( bool enabled ) {
+				if ( enabled ) {
 					glDepthMask( GL_FALSE );
+				}
+				else {
+					glDepthMask( GL_TRUE );
 				}
 			}
 

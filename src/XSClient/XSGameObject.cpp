@@ -5,17 +5,16 @@ namespace XS {
 
 	namespace ClientGame {
 
-		GameObject::GameObject()
-		: renderObject( nullptr )
-		{
-		};
-
 		GameObject::~GameObject() {
 			if ( renderObject ) {
 				delete renderObject;
 				renderObject = nullptr;
 			}
 		};
+
+		void GameObject::Update( real64_t dt ) {
+			// ...
+		}
 
 		const vector3 &GameObject::GetPosition( void ) const {
 			return position;

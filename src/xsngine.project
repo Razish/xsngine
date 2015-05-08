@@ -162,6 +162,8 @@
     <File Name="XSClient/XSPerlin.cpp"/>
     <File Name="XSClient/XSMenuManager.cpp"/>
     <File Name="XSClient/XSMenuManager.h"/>
+    <File Name="XSClient/XSParticleEmitter.cpp"/>
+    <File Name="XSClient/XSParticleEmitter.h"/>
   </VirtualDirectory>
   <VirtualDirectory Name="XSInput">
     <File Name="XSInput/XSInputField.cpp"/>
@@ -255,6 +257,8 @@
     <File Name="XSRenderer/XSModelObj.h"/>
     <File Name="XSRenderer/XSModelXMF.cpp"/>
     <File Name="XSRenderer/XSModelXMF.h"/>
+    <File Name="XSRenderer/XSParticle.cpp"/>
+    <File Name="XSRenderer/XSParticle.h"/>
   </VirtualDirectory>
   <VirtualDirectory Name="XSSystem">
     <File Name="XSSystem/XSOS.h"/>
@@ -298,6 +302,8 @@
     <File Name="../bin/shaders/v_text.glsl"/>
     <File Name="../bin/shaders/f_composite.glsl"/>
     <File Name="../bin/shaders/v_composite.glsl"/>
+    <File Name="../bin/shaders/f_particle.glsl"/>
+    <File Name="../bin/shaders/v_particle.glsl"/>
   </VirtualDirectory>
   <Settings Type="Dynamic Library">
     <GlobalSettings>

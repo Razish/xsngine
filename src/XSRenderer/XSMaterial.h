@@ -19,9 +19,9 @@ namespace XS {
 
 		struct Material {
 			struct SamplerBinding {
-				int		 	 unit;
-				std::string	 uniform;
-				Texture		*texture;
+				int		 	 	 unit;
+				std::string	 	 uniform;
+				const Texture	*texture;
 			};
 
 			struct BufferBinding {

@@ -11,6 +11,14 @@ namespace XS {
 
 	namespace Renderer {
 
+		namespace Backend {
+			class Buffer;
+		} // namespace Backend
+
+		struct Material;
+		struct View;
+		class Model;
+
 		extern struct RendererState {
 			bool valid;
 
@@ -29,10 +37,6 @@ namespace XS {
 				const char *shaderVersion;
 			} driver;
 		} state;
-
-		struct Material;
-		struct View;
-		class Model;
 
 		// used internally
 		// register cvars owned by the renderer
@@ -108,6 +112,13 @@ namespace XS {
 
 		void DrawModel(
 			const Model *model
+		);
+
+		void DrawParticles(
+			const Backend::Buffer *vbo,
+			const Backend::Buffer *ibo,
+			const Material *material,
+			size_t count
 		);
 
 	} // namespace Renderer

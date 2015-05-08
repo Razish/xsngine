@@ -48,8 +48,15 @@ namespace XS {
 			menu->OpenMenu( (*context)[0].c_str() );
 		}
 
+		void Cmd_ReloadMenu( const CommandContext * const context ) {
+			delete menu;
+			menu = new MenuManager();
+			menu->RegisterMenu( "menus/settings.xmenu" );
+		}
+
 		static void RegisterCommands( void ) {
 			Command::AddCommand( "openMenu", Cmd_OpenMenu );
+			Command::AddCommand( "reloadMenu", Cmd_ReloadMenu );
 		}
 
 		bool MouseMotionEvent( const struct MouseMotionEvent &ev ) {

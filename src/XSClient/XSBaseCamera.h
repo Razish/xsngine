@@ -21,11 +21,10 @@ namespace XS {
 
 			virtual void Update( real64_t dt ) = 0;
 
-			/*
-			inline const glm::mat4 &GetTransform( void ) {
+			inline const glm::mat4 &GetTransform( void ) const {
 				return worldTransform;
-			} const;
-			*/
+			};
+
 			void SetTransform(
 				const glm::mat4 &transform
 			);

@@ -14,6 +14,7 @@ files = [
 	'XSClient/XSMenuElement.cpp',
 	'XSClient/XSMenuElementSlider.cpp',
 	'XSClient/XSMenuManager.cpp',
+	'XSClient/XSParticleEmitter.cpp',
 	'XSClient/XSPerlin.cpp',
 	'XSClient/XSTerrain.cpp'
 ]

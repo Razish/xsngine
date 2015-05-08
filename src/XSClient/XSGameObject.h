@@ -18,8 +18,11 @@ namespace XS {
 		public:
 			Renderer::Renderable *renderObject;
 
-			GameObject();
-			~GameObject();
+			GameObject()
+			: renderObject( nullptr )
+			{
+			}
+			virtual ~GameObject();
 
 			const vector3 &GetPosition(
 				void
@@ -27,6 +30,10 @@ namespace XS {
 
 			void SetPosition(
 				const vector3 &pos
+			);
+
+			virtual void Update(
+				const real64_t dt
 			);
 		};
 

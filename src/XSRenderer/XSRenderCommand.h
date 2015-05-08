@@ -15,6 +15,7 @@ namespace XS {
 		enum class CommandType {
 			DrawQuad,
 			DrawModel,
+			DrawParticles,
 			Screenshot
 		};
 
@@ -33,7 +34,13 @@ namespace XS {
 
 		struct DrawModelCommand {
 			const Model	*model;
-			matrix4		 transform;
+		};
+
+		struct DrawParticlesCommand {
+			const Backend::Buffer	*vbo;
+			const Backend::Buffer	*ibo;
+			const Material			*material;
+			size_t					 count;
 		};
 
 		struct ScreenshotCommand {
@@ -50,9 +57,10 @@ namespace XS {
 
 		public:
 			union {
-				DrawQuadCommand		drawQuad;
-				DrawModelCommand	drawModel;
-				ScreenshotCommand	screenshot;
+				DrawQuadCommand			drawQuad;
+				DrawModelCommand		drawModel;
+				DrawParticlesCommand	drawParticles;
+				ScreenshotCommand		screenshot;
 			};
 
 			// don't allow default instantiation

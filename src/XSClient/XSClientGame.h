@@ -7,8 +7,10 @@ namespace XS {
 	namespace ClientGame {
 
 		class GameObject;
+		class FlyCamera;
 
 		extern Cvar *cg_fov;
+		extern FlyCamera *camera;
 
 		// initialise the ClientGame, create a View and load all resources etc
 		void Init(

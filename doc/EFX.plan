@@ -1,0 +1,5 @@
+ClientGame instantiates a ClientGame::ParticleEmitter, which is a ClientGame::GameObject as-well as a Renderer::Renderable
+	ParticleEmitter maintains a pool of Renderer::Particle objects
+		this pool is guaranteed to be contiguous memory, and must be iterated via index up to numParticles
+		when a particle is no longer wanted, it is swapped with the last living particle and marked dead, then particle count is decreased
+	ParticleEmitter is fully responsible for its Particle objects - it must create, update, render and destroy them

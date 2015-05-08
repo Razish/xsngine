@@ -41,6 +41,10 @@ namespace XS {
 				bool enabled
 			);
 
+			void ToggleDepthWrite(
+				bool enabled
+			);
+
 			enum class DepthFunc {
 				LessOrEqual,
 			};

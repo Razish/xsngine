@@ -6,7 +6,7 @@ namespace XS {
 
 	namespace Renderer {
 
-		// abstract base class implemented by e.g. Model, Effect
+		// abstract base class implemented by e.g. Model, Particle
 		class Renderable {
 		private:
 			matrix4 transform;
