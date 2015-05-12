@@ -128,7 +128,6 @@ namespace XS {
 			//FIXME: optimise with better container and investigate swap vs resize performance
 
 			// simulate all particles
-			vertexData = reinterpret_cast<Vertex *>( vertexBuffer->Map() );
 			for ( size_t i = 0u; i < numParticles; i++ ) {
 				auto &p = pool[i];
 				if ( !p.Update( dt ) ) {
@@ -140,7 +139,6 @@ namespace XS {
 					continue;
 				}
 			}
-			vertexBuffer->Unmap();
 
 #ifdef PARTICLE_SORT_ALL
 			Sort();

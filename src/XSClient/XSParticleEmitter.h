@@ -38,7 +38,7 @@ namespace XS {
 				glm::vec4	position;
 				glm::vec2	uv;
 				glm::vec4	colour;
-			} *vertexData;
+			};
 			Renderer::Backend::Buffer		*vertexBuffer;
 			Renderer::Backend::Buffer		*indexBuffer;
 
