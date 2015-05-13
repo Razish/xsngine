@@ -1,6 +1,7 @@
 #include "XSCommon/XSCommon.h"
 #include "XSCommon/XSConsole.h"
 #include "XSCommon/XSError.h"
+#include "XSCommon/XSCvar.h"
 #include "XSRenderer/XSRenderer.h"
 #include "XSRenderer/XSFramebuffer.h"
 
@@ -59,7 +60,9 @@ namespace XS {
 		{
 			glGenFramebuffers( 1, &id );
 			if ( Check() ) {
-				console.Print( PrintLevel::Normal, "Creation of framebuffer %d completed succesfully.\n", id );
+				if ( r_debug->GetBool() ) {
+					console.Print( PrintLevel::Normal, "Creation of framebuffer %d completed successfully.\n", id );
+				}
 			}
 
 			if ( !id ) {

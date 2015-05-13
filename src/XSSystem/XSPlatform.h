@@ -1,22 +1,22 @@
 #pragma once
 
-#define PRODUCT_NAME			"xsngine"
+#define PRODUCT_NAME "xsngine"
 
 #ifndef REVISION
 	#define REVISION "unavailable"
 #endif
 
 #ifdef _DEBUG
-	#define PRODUCT_VERSION		"development debug - rev " REVISION
+	#define PRODUCT_VERSION "development debug - rev " REVISION
 #else
-	#define PRODUCT_VERSION		"development - rev " REVISION
+	#define PRODUCT_VERSION "development - rev " REVISION
 #endif
 
 #ifndef ARCH_STRING
 	#error "Unknown architecture"
 #endif // ARCH_STRING
 
-#define WINDOW_TITLE			PRODUCT_NAME " [" PRODUCT_VERSION "] " ARCH_STRING
+#define WINDOW_TITLE PRODUCT_NAME " [" PRODUCT_VERSION "] " ARCH_STRING
 
 // Win64
 #if defined(_WIN64) || defined(__WIN64__)

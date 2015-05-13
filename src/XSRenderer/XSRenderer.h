@@ -11,6 +11,8 @@ namespace XS {
 
 	namespace Renderer {
 
+		extern Cvar *r_debug;
+
 		namespace Backend {
 			class Buffer;
 		} // namespace Backend

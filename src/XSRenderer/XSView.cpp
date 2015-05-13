@@ -117,7 +117,7 @@ namespace XS {
 		}
 
 		void View::AddPointLight( const vector3 &lightPos ) {
-			//TODO: add point light to scene
+			pointLights.push( lightPos );
 		}
 
 	} // namespace Renderer

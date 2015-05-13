@@ -38,7 +38,7 @@ namespace XS {
 		static SDL_GLContext context;
 
 		static Cvar *r_clear = nullptr;
-		static Cvar *r_debug = nullptr;
+		Cvar *r_debug = nullptr;
 		static Cvar *r_multisample = nullptr;
 		static Cvar *r_skipRender = nullptr;
 		static Cvar *r_swapInterval = nullptr;
@@ -396,6 +396,7 @@ namespace XS {
 			SDL_GL_SwapWindow( window );
 		}
 
+		//TODO: unify View code, perhaps static functions/members
 		void RegisterView( View *view ) {
 			views.push_back( view );
 		}
