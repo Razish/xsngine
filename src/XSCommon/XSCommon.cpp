@@ -255,8 +255,13 @@ int main( int argc, char **argv ) {
 	catch( const XS::XSError &e ) {
 		const bool developer = XS::Common::com_developer->GetBool();
 
+		if ( !e.intended ) {
+			SDL_assert( !"A fatal error has occurred. Please check your console.log.\nPress \"ignore\" to proceed with "
+				"shutdown" );
+		}
+
 		XS::console.Print( XS::PrintLevel::Normal, "\n*** " PRODUCT_NAME " is shutting down\n" );
-		if ( e.what() ) {
+		if ( !e.intended && e.what() ) {
 			XS::console.Print( XS::PrintLevel::Normal, "Reason: %s\n", e.what() );
 		}
 		XS::console.Print( XS::PrintLevel::Normal, "\n" );

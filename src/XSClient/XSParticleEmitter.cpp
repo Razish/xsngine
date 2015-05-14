@@ -26,13 +26,12 @@ namespace XS {
 	namespace ClientGame {
 
 		ParticleEmitter::ParticleEmitter( uint32_t count, uint32_t life, const char *textureName )
-		: numParticles( 0u ), count( count ), life( life )
+		: pool( count ), numParticles( 0u ), count( count ), life( life ), emitTime( 0.0 )
 		{
-			pool.reserve( count );
-			renderObject = this;
+			// this must be nulled at the start of the function, see note at end of function
+			renderObject = nullptr;
 
 			emitRate = static_cast<real32_t>( life ) / static_cast<real32_t>( count );
-			emitTime = 0.0;
 
 			// 1MB vertex buffer
 			// usage strategy is map-discard i.e. keep appending to the buffer until we run out of memory.
@@ -71,6 +70,10 @@ namespace XS {
 			};
 			shader = new Renderer::ShaderProgram( "particle", "particle", attributes, ARRAY_LEN( attributes ) );
 			material->shaderProgram = shader;
+
+			// this must come last because if the constructor for ParticleEmitter fails, the destructor for GameObject
+			//	will delete its renderObject (i.e. this ParticleEmitter)
+			renderObject = this;
 		}
 
 #ifdef PARTICLE_SORT_ALL

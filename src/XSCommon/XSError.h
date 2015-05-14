@@ -12,23 +12,29 @@ namespace XS {
 		std::string		msg;
 
 	public:
+		bool			intended;
+
+		XSError& operator=( const XSError& ) = delete;
+
 		XSError( std::string &errorMsg )
-		: msg( errorMsg )
+		: msg( errorMsg ), intended( false )
 		{
 		}
 
 		XSError( const char *errorMsg )
-		: msg( errorMsg )
+		: msg( errorMsg ), intended( false )
+		{
+		}
+
+		// should only be used if shutdown was desired
+		XSError()
+		: msg( "generic shutdown" ), intended( true )
 		{
 		}
 
 		virtual const char *what() const noexcept {
 			return msg.c_str();
 		}
-
-		// don't allow default instantiation
-		XSError() = delete;
-		XSError& operator=( const XSError& ) = delete;
 	};
 
 } // namespace XS

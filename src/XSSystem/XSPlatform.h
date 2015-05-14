@@ -29,6 +29,11 @@
 	#define PATH_SEP '\\'
 	#define DLL_EXT ".dll"
 
+	// Visual Studio still doesn't support noexcept
+	#if defined(_MSC_VER) && _MSC_VER <= 1800
+		#define noexcept throw()
+	#endif
+
 	#define XS_LITTLE_ENDIAN
 
 // Win32
@@ -41,6 +46,11 @@
 	#endif
 	#define PATH_SEP '\\'
 	#define DLL_EXT ".dll"
+
+	// Visual Studio still doesn't support noexcept
+	#if defined(_MSC_VER) && _MSC_VER <= 1800
+		#define noexcept throw()
+	#endif
 
 	#define XS_LITTLE_ENDIAN
 

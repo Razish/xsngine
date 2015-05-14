@@ -87,7 +87,8 @@ namespace XS {
 		}
 
 		static void Cmd_Quit( const CommandContext * const context ) {
-			throw( XSError( "Quit application" ) );
+			// generic shutdown
+			throw( XSError() );
 		}
 
 		void Init( void ) {
