@@ -55,6 +55,12 @@ namespace XS {
 			}
 		}
 
+		static void Cmd_ResetCvar( const CommandContext * const context ) {
+			Cvar *cv = Cvar::Get( (*context)[0] );
+
+			cv->Set( cv->GetDefaultString() );
+		}
+
 		static void Cmd_SetCvar( const CommandContext * const context ) {
 			if ( context->size() < 2 ) {
 				console.Print( PrintLevel::Normal, "\"set\" failed. Must specify a cvar and value\n" );
@@ -91,6 +97,7 @@ namespace XS {
 			AddCommand( "cmdlist", Cmd_ListCommands );
 			AddCommand( "cvarlist", Cmd_ListCvars );
 			AddCommand( "print", Cmd_PrintCvar );
+			AddCommand( "reset", Cmd_ResetCvar );
 			AddCommand( "set", Cmd_SetCvar );
 			AddCommand( "toggle", Cmd_ToggleCvar );
 			AddCommand( "toggleconsole", Client::Cmd_ToggleConsole );
