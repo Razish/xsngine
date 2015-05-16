@@ -117,9 +117,16 @@
 
 
 // compiler specific junk, function names etc
-#if !defined(_MSC_VER)
+#if defined(_MSC_VER)
+	// visual studio
+	#define XS_FUNCTION __FUNCTION__
+	#define XS_FUNCTION_VERBOSE __FUNCSIG__
+#elif defined(__GNUC__) || defined(__clang__)
+	// gcc, clang
 	#define XS_FUNCTION __PRETTY_FUNCTION__
 	#define XS_FUNCTION_VERBOSE __PRETTY_FUNCTION__
+#elif defined(__INTEL_COMPILER)
+	//TODO: icc / intel
 #else
 	#define XS_FUNCTION "<unknown-func>"
 	#define XS_FUNCTION_VERBOSE XS_FUNCTION
