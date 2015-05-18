@@ -12,11 +12,6 @@ namespace XS {
 
 		extern uint64_t frameNum;
 
-		extern struct ClientState {
-
-			vector3 viewAngles;
-		} state;
-
 		// initialise the Client object, loading related subsystems
 		void Init(
 			void

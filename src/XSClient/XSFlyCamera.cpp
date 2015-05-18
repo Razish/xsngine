@@ -1,8 +1,10 @@
 #include "XSCommon/XSCommon.h"
 #include "XSCommon/XSVector.h"
 #include "XSCommon/XSMatrix.h"
+#include "XSCommon/XSConsole.h"
 #include "XSClient/XSFlyCamera.h"
 #include "XSClient/XSClient.h"
+#include "XSClient/XSClientGame.h"
 #include "XSInput/XSInput.h"
 #include "XSInput/XSKeys.h"
 #include "XSRenderer/XSView.h"
@@ -62,8 +64,8 @@ namespace XS {
 		}
 
 		void FlyCamera::HandleMouseInput( real64_t dt ) {
-			real64_t xOffset = Client::state.viewAngles.y / 360.0;
-			real64_t yOffset = Client::state.viewAngles.x / 360.0;
+			real64_t xOffset = state.viewDelta.yaw / 360.0;
+			real64_t yOffset = state.viewDelta.pitch / 360.0;
 			CalculateRotation( dt, xOffset, yOffset );
 		}
 

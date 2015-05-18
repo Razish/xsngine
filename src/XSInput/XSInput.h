@@ -10,27 +10,24 @@ namespace XS {
 
 		namespace Input {
 
-			extern Cvar *debug_mouse;
-			extern Cvar *m_acceleration;
 			extern Cvar *m_sensitivity;
-			extern Cvar *m_smooth;
-			extern Cvar *m_smoothFrames;
 
 			// per frame, accumulates until a movement command is generated
 			extern struct PerFrameState {
-				pvector2 mouseDelta;
-				bool moveForward;
-				bool moveBack;
-				bool moveLeft;
-				bool moveRight;
-				bool moveUp;
-				bool moveDown;
+				bool	moveForward, moveBack;
+				bool	moveLeft, moveRight;
+				bool	moveUp, moveDown;
 			} perFrameState;
 
 			//TODO: move movement command generation to gamecode?
 			struct MovementCommand {
 				vector3 viewAngles;
 				uint8_t buttonState;
+				struct {
+					int32_t FB : 2; // -1 for back, 0 for neutral, 1 for forward
+					int32_t RL : 2; // -1 for left, 0 for neutral, 1 for right
+					int32_t UD : 2; // -1 for down, 0 for neutral, 1 for up
+				} move;
 			};
 
 			// initialise input state, register cvars, etc
@@ -45,7 +42,7 @@ namespace XS {
 
 			// generate a movement command for this frame's accumulated input
 			MovementCommand GenerateMovementCommand(
-				real64_t dt
+				void
 			);
 
 		} // namespace Input

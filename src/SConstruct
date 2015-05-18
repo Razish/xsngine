@@ -158,8 +158,7 @@ files = [
 	'XSInput/XSInputField.cpp',
 	'XSInput/XSKeys.cpp',
 	'XSInput/XSMouse.cpp',
-	'XSNetwork/XSNetAddress.cpp',
-	'XSNetwork/XSSocket.cpp',
+	'XSNetwork/XSNetwork.cpp',
 	'XSRenderer/XSBackend.cpp',
 	'XSRenderer/XSBuffer.cpp',
 	'XSRenderer/XSFont.cpp',
@@ -219,6 +218,7 @@ elif plat == 'Windows':
 		'Imm32',
 		'OleAut32'
 	]
+	# xsngine-provided libs with release + debug versions, so append the signifying 'd' based on configuration
 	dlibs = [
 		'SDL2',
 		'SDL2main',
@@ -443,7 +443,7 @@ env['CPPDEFINES'] += [ {
 		'Darwin': lambda x: 'XS_OS_MAC'
 	}[plat](plat)
 ]
-env['CPPPATH'] = [ '#', '#/freetype', '#/GLEW', '#/libpng', '#/zlib' ]
+env['CPPPATH'] = [ '#', '#/freetype', '#/GLEW', '#/libpng', '#/zlib', '#/RakNet' ]
 
 # arch width
 env['CPPDEFINES'] += [ 'ARCH_WIDTH='+str( bits ), 'ARCH_STRING=\\"'+arch+'\\"' ]
@@ -461,7 +461,8 @@ files = [build_dir + f for f in files]
 
 # libraries
 libraries = [
-	'XSClient'
+	'XSClient',
+	'RakNet',
 ]
 env['LIBS'] = [
 	env.SConscript(

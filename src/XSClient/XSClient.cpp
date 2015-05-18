@@ -17,6 +17,7 @@
 #include "XSInput/XSInput.h"
 #include "XSInput/XSMouse.h"
 #include "XSInput/XSKeys.h"
+#include "XSNetwork/XSNetwork.h"
 #include "XSRenderer/XSFont.h"
 #include "XSRenderer/XSView.h"
 
@@ -24,7 +25,6 @@ namespace XS {
 
 	namespace Client {
 
-		ClientState state = {};
 		uint64_t frameNum = 0u;
 
 		// hud
@@ -44,19 +44,39 @@ namespace XS {
 			clientConsole->Toggle();
 		}
 
-		void Cmd_OpenMenu( const CommandContext * const context ) {
+		static void Cmd_OpenMenu( const CommandContext * const context ) {
 			menu->OpenMenu( (*context)[0].c_str() );
 		}
 
-		void Cmd_ReloadMenu( const CommandContext * const context ) {
+		static void Cmd_ReloadMenu( const CommandContext * const context ) {
 			delete menu;
 			menu = new MenuManager();
 			menu->RegisterMenu( "menus/settings.xmenu" );
 		}
 
+		static void Cmd_Ping( const CommandContext * const context ) {
+			Network::XSPacket packet( Network::ID_XS_PING );
+
+			packet.data = nullptr;
+			packet.dataLen = 0u;
+
+			Network::Send( &packet );
+		}
+
+		static void Cmd_Say( const CommandContext * const context ) {
+			Network::XSPacket packet( Network::ID_XS_TEXT_MESSAGE );
+
+			packet.data = static_cast<const void *>( (*context)[0].c_str() );
+			packet.dataLen = (*context)[0].length();
+
+			Network::Send( &packet );
+		}
+
 		static void RegisterCommands( void ) {
 			Command::AddCommand( "openMenu", Cmd_OpenMenu );
 			Command::AddCommand( "reloadMenu", Cmd_ReloadMenu );
+			Command::AddCommand( "ping", Cmd_Ping );
+			Command::AddCommand( "say", Cmd_Say );
 		}
 
 		bool MouseMotionEvent( const struct MouseMotionEvent &ev ) {
@@ -64,6 +84,9 @@ namespace XS {
 				menu->MouseMotionEvent( ev );
 				return true;
 			}
+
+			ClientGame::MouseMotionEvent( ev );
+
 			return false;
 		}
 
@@ -120,7 +143,15 @@ namespace XS {
 		}
 
 		void NetworkPump( real64_t dt ) {
-			Input::GenerateMovementCommand( dt );
+			if ( !Network::IsConnected() ) {
+				return;
+			}
+
+			// generate this frame's movement command
+			Input::GenerateMovementCommand();
+
+			// handle generic messages
+			Network::Receive();
 		}
 
 		void RunFrame( real64_t dt ) {
@@ -243,7 +274,7 @@ namespace XS {
 
 		void DrawFrame( real64_t frametime ) {
 			// draw game view
-			ClientGame::DrawFrame();
+			ClientGame::DrawFrame( frametime );
 
 			// draw HUD
 			DrawHUD( frametime );

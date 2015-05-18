@@ -1,0 +1,17 @@
+import glob
+
+Import( '*' )
+
+# environment
+env.VariantDir( build_dir, '#', duplicate = 0 )
+raknet_env = env.Clone()
+
+raknet_env['CPPDEFINES'] += [ 'RakAssert(x) = ' ]
+
+# sources
+files = glob.glob( "*.cpp" )
+files = [build_dir + 'RakNet/' + f for f in files]
+
+# targets
+result = raknet_env.StaticLibrary( build_dir + 'RakNet' + arch, files )
+Return( "result" )

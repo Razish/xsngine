@@ -5,11 +5,14 @@
 #include "XSCommon/XSString.h"
 #include "XSCommon/XSMatrix.h"
 #include "XSCommon/XSCommand.h"
+#include "XSCommon/XSEvent.h"
+#include "XSClient/XSClientGame.h"
 #include "XSClient/XSBaseCamera.h"
 #include "XSClient/XSFlyCamera.h"
 #include "XSClient/XSGameObject.h"
 #include "XSClient/XSTerrain.h"
 #include "XSClient/XSParticleEmitter.h"
+#include "XSInput/XSInput.h"
 #include "XSRenderer/XSView.h"
 #include "XSRenderer/XSModel.h"
 
@@ -23,6 +26,8 @@ namespace XS {
 		static Renderer::View *sceneView = nullptr;
 		static Terrain *terrain = nullptr;
 		FlyCamera *camera = nullptr;
+
+		GameState state = {};
 
 		// always allocate with `new`
 		static std::vector<GameObject *> objects;
@@ -110,24 +115,43 @@ namespace XS {
 		}
 
 		void RunFrame( real64_t dt ) {
-			Cvar *r_zRange = Cvar::Get( "r_zRange" );
-			real32_t zNear = r_zRange->GetReal32( 0 );
-			real32_t zFar = r_zRange->GetReal32( 1 );
-
-			camera->SetupPerspective( glm::radians( cg_fov->GetReal32() ), Renderer::state.window.aspectRatio, zNear, zFar );
-			camera->Update( dt );
-
 			for ( auto &object : objects ) {
 				object->Update( dt );
 			}
 		}
 
-		void DrawFrame( void ) {
-			static const vector3 lightPos( 0.0f, 32.0f, 0.0f );
+		void DrawFrame( real64_t dt ) {
+			Cvar *r_zRange = Cvar::Get( "r_zRange" );
+			real32_t zNear = r_zRange->GetReal32( 0 );
+			real32_t zFar = r_zRange->GetReal32( 1 );
+
+			camera->SetupPerspective(
+				glm::radians( cg_fov->GetReal32() ),
+				Renderer::state.window.aspectRatio,
+				zNear,
+				zFar
+			);
+			camera->Update( dt );
+
+			// add objects to scene
 			for ( const auto &object : objects ) {
 				sceneView->AddObject( object->renderObject );
 			}
+
+			// add lights to scene
+			static const vector3 lightPos( 0.0f, 32.0f, 0.0f );
 			sceneView->AddPointLight( lightPos );
+
+			state.viewDelta.clear();
+		}
+
+		void MouseMotionEvent( const struct MouseMotionEvent &ev ) {
+			vector3 delta( ev.y, ev.x, 0.0f );
+
+			delta *= Client::Input::m_sensitivity->GetReal32();
+
+			state.viewAngles += delta;
+			state.viewDelta += delta;
 		}
 
 	} // namespace ClientGame

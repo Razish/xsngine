@@ -34,7 +34,6 @@ namespace XS {
 			void CalculateRotation( real64_t dt, real64_t xOffset, real64_t yOffset);
 
 			real32_t flySpeed;
-			glm::vec3 velocity;
 		};
 
 	} // namespace ClientGame

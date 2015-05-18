@@ -1,5 +1,5 @@
 what does do about sound backend?? THIS IS BROKEN - openalsoft, sdl2
-networking: sctp? tcp auth + udp game? raknet? zeromq?
+networking: RakNet, client/server architecture. see NETWORKING.plan
 video - bother at all? theora+vorbis
 scripting - necessary? just use native code. if anything, JIT
 
@@ -18,7 +18,8 @@ MAIN LOOP
 
 	pump client networking (movement commands)
 		1 movement command per client frame. look into semi-fixed timestep integration (gafferongames)
-	run client frame
+
+	run client frame (following client-as-terminal ideology - inspect one frame lag issues)
 		process server updates
 		simulate local entities
 		movement prediction (movement commands have been generated)

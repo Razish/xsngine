@@ -8,6 +8,8 @@
 #include "XSCommon/XSCvar.h"
 #include "XSCommon/XSError.h"
 #include "XSCommon/XSConsole.h"
+#include "XSClient/XSClient.h"
+#include "XSClient/XSClientGame.h"
 #include "XSInput/XSInput.h"
 #include "XSInput/XSKeys.h"
 #include "XSInput/XSMouse.h"
@@ -21,21 +23,11 @@ namespace XS {
 			PerFrameState perFrameState = {};
 
 			static Cvar *debug_input = nullptr;
-			Cvar *debug_mouse = nullptr;
-			Cvar *m_acceleration = nullptr;
 			Cvar *m_sensitivity = nullptr;
-			Cvar *m_smooth = nullptr;
-			Cvar *m_smoothFrames = nullptr;
 
 			static void RegisterCvars( void ) {
 				debug_input = Cvar::Create( "debug_input", "0", "Show debugging information for input", CVAR_ARCHIVE );
-				debug_mouse = Cvar::Create( "debug_mouse", "0", "Show debugging information for mouse input", CVAR_ARCHIVE );
-				m_acceleration = Cvar::Create( "m_acceleration", "0", "Enable mouse acceleration", CVAR_ARCHIVE );
 				m_sensitivity = Cvar::Create( "m_sensitivity", "1", "Sensitivity of mouse input", CVAR_ARCHIVE );
-				m_smooth = Cvar::Create( "m_smoothMouse", "0", "Smooth the mouse input across multiple frames",
-					CVAR_ARCHIVE );
-				m_smoothFrames = Cvar::Create( "m_smoothFrames", "2", "How many frames to smooth the mouse input "
-					"across", CVAR_ARCHIVE );
 			}
 
 			static void Cmd_MoveForward_Down( const CommandContext * const context ) {
@@ -340,13 +332,18 @@ namespace XS {
 				return movementCmds.back();
 			}
 
-			MovementCommand GenerateMovementCommand( real64_t dt ) {
+			MovementCommand GenerateMovementCommand( void ) {
 				//TODO: keep a list of previously generated movement commands to resend
 				MovementCommand &cmd = AllocateMovementCommand();
 
 				//TODO: get button state etc
+				cmd.buttonState = 0u;
 
-				CalculateMouseMotion( dt, cmd );
+				cmd.move.FB		= perFrameState.moveForward	+ (perFrameState.moveBack * -1);
+				cmd.move.RL		= perFrameState.moveRight	+ (perFrameState.moveLeft * -1);
+				cmd.move.UD		= perFrameState.moveUp		+ (perFrameState.moveDown * -1);
+
+				cmd.viewAngles = ClientGame::state.viewAngles;
 
 				return cmd;
 			}

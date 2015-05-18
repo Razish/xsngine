@@ -14,6 +14,7 @@
 #include "XSClient/XSClient.h"
 #include "XSInput/XSInput.h"
 #include "XSInput/XSKeys.h"
+#include "XSNetwork/XSNetwork.h"
 #include "XSRenderer/XSRenderer.h"
 
 namespace XS {
@@ -175,7 +176,7 @@ int main( int argc, char **argv ) {
 		}
 
 		XS::Event::Init();
-	//	XS::Network::Init();
+		XS::Network::Init();
 		XS::Client::Input::Init();
 
 		if ( XS::Common::com_developer->GetBool() ) {
