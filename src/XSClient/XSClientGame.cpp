@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include "XSCommon/XSCommon.h"
 #include "XSCommon/XSConsole.h"
 #include "XSCommon/XSCvar.h"

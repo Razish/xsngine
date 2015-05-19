@@ -36,9 +36,9 @@ namespace XS {
 		}
 
 		static void OutputShaderInfoLog( int shader ) {
-			int logLength = 0;
+			GLint logLength = 0;
 
-			Indent indent ( 1 );
+			Indent indent( 1 );
 
 			glGetShaderiv( shader, GL_INFO_LOG_LENGTH, &logLength );
 

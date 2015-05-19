@@ -194,6 +194,7 @@ if plat == 'Linux':
 		'GL',
 		'm',
 		'png16',
+		'pthread',
 		'SDL2'
 	]
 elif plat == 'Darwin':

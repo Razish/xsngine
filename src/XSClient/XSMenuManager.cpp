@@ -113,11 +113,16 @@ namespace XS {
 
 		// pass a keyboard event to the top-most menu
 		void MenuManager::KeyboardEvent( const struct KeyboardEvent &ev ) {
-			const Menu *menu = GetCurrentMenu();
+			//const Menu *menu = GetCurrentMenu();
 			if ( ev.down && ev.key == SDLK_ESCAPE ) {
 				PopMenu();
-				menu = nullptr;
+			//	menu = nullptr;
 			}
+			/*
+			if ( menu ) {
+				menu->KeyboardEvent( ev );
+			}
+			*/
 		}
 
 		// pass a mouse motion event to the menu
