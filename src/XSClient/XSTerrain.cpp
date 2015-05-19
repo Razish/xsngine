@@ -25,10 +25,6 @@ namespace XS {
 		Cvar *cg_terrainOctaves = nullptr;
 		Cvar *cg_terrainDimensions = nullptr;
 
-		static uint8_t GetHeight( const uint8_t *data, size_t size, size_t row, size_t col ) {
-			return data[(row * size) + col];
-		}
-
 		Terrain::Terrain( const char *path ) {
 
 			const size_t dimensions = cg_terrainDimensions->GetUInt32();
