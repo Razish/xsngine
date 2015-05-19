@@ -207,16 +207,20 @@ namespace XS {
 
 			// bind the vertex/normal/uv buffers
 			if ( mesh->vertexBuffer ) {
+				const bool hasVerts = !mesh->vertices.empty();
+				const bool hasNormals = !mesh->normals.empty();
+				const bool hasUVs = !mesh->UVs.empty();
+
 				mesh->vertexBuffer->Bind();
 
 				uint32_t vertexAttribs = 0u;
-				if ( mesh->vertices.size() ) {
+				if ( hasVerts ) {
 					vertexAttribs |= VERTEX_ATTRIB_0;
 				}
-				if ( mesh->normals.size() ) {
+				if ( hasNormals ) {
 					vertexAttribs |= VERTEX_ATTRIB_1;
 				}
-				if ( mesh->UVs.size() ) {
+				if ( hasUVs ) {
 					vertexAttribs |= VERTEX_ATTRIB_2;
 				}
 
@@ -224,29 +228,29 @@ namespace XS {
 
 				// calculate stride
 				GLsizei stride = 0;
-				if ( mesh->vertices.size() ) {
+				if ( hasVerts ) {
 					stride += sizeof(vector3);
 				}
-				if ( mesh->normals.size() ) {
+				if ( hasNormals ) {
 					stride += sizeof(vector3);
 				}
-				if ( mesh->UVs.size() ) {
+				if ( hasUVs ) {
 					stride += sizeof(vector2);
 				}
 
 				// set the attribute pointers
 				size_t offset = 0u;
-				if ( mesh->vertices.size() ) {
+				if ( hasVerts ) {
 					glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<const GLvoid *>( offset ) );
 					offset += sizeof(vector3);
 				}
 
-				if ( mesh->normals.size() ) {
+				if ( hasNormals ) {
 					glVertexAttribPointer( 1, 3, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<const GLvoid *>( offset ) );
 					offset += sizeof(vector3);
 				}
 
-				if ( mesh->UVs.size() ) {
+				if ( hasUVs ) {
 					glVertexAttribPointer( 2, 2, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<const GLvoid *>( offset ) );
 					offset += sizeof(vector2);
 				}
