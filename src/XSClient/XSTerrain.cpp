@@ -56,6 +56,7 @@ namespace XS {
 			Renderer::Mesh *mesh = new Renderer::Mesh();
 			const real32_t scale = 128.0f;
 
+			// positions
 			mesh->vertices.reserve( dimensions * dimensions );
 			for ( int row = 0; row < dimensions; row++ ) {
 				const float fRow = static_cast<real32_t>( row );
@@ -75,29 +76,26 @@ namespace XS {
 				}
 			}
 
+			delete[] heightmap;
+
+			// normals
 			mesh->normals.reserve( dimensions * dimensions );
 			for ( int row = 0; row < dimensions; row++ ) {
 				for ( int col = 0; col < dimensions; col++ ) {
 					//TODO: handle edge cases more gracefully
-#if 0
-					const real32_t x = GetHeight( heightmap, dimensions, col ? col - 1 : col, row )
-						- GetHeight( heightmap, dimensions, col < (dimensions - 1) ? col + 1 : col, row );
-					const real32_t z = GetHeight( heightmap, dimensions, col, row ? row - 1 : row )
-						- GetHeight( heightmap, dimensions, col, row < (dimensions - 1) ? row + 1 : row );
-#else
-					const real32_t x = -(GetHeight( heightmap, dimensions, col + 1, row )
-						- GetHeight( heightmap, dimensions, col - 1, row ));
-					const real32_t z = GetHeight( heightmap, dimensions, col, row + 1 )
-						- GetHeight( heightmap, dimensions, col, row - 1 );
-#endif
-					vector3 normal( x, 2.0f, z );
+					vector3 normal;
+					if ( row != dimensions - 1 && col != dimensions - 1 ) {
+						vector3 a = mesh->vertices[row * dimensions + col];
+						vector3 b = vector3( mesh->vertices[(row + 1) * dimensions + col] );
+						vector3 d = vector3( mesh->vertices[(row + 1) * dimensions + (col + 1)] );
+						normal = vector3::cross( b - a, d - a );
+					}
 					normal.normaliseFast();
 					mesh->normals.push_back( normal );
 				}
 			}
 
-			delete[] heightmap;
-
+			// indices
 			mesh->indices.reserve( (dimensions - 1) * (dimensions - 1) * 6 );
 			for ( int row = 0; row < dimensions - 1; row++ ) {
 				for ( int col = 0; col < dimensions - 1; col++ ) {
