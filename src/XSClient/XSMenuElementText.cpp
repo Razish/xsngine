@@ -85,8 +85,14 @@ namespace XS {
 					break;
 				}
 
+				// properties
+				if ( !String::Compare( tok, "properties" ) ) {
+					ParseProperties( parser, fileName );
+					parser->SkipLine();
+				}
+
 				// name
-				if ( !String::Compare( tok, "name" ) ) {
+				else if ( !String::Compare( tok, "name" ) ) {
 					if ( parser->ParseString( &tok ) ) {
 						console.Print( PrintLevel::Normal,
 							"%s missing name definition when parsing text menu element from %s:%i\n",
@@ -186,15 +192,11 @@ namespace XS {
 				textWidth,
 				assets.font->lineHeight[pointSize]
 			);
-			const vector2 midPoint(
-				topLeft.x + (textSize.x / 2.0f),
-				topLeft.y + (textSize.y / 2.0f)
-			);
 
 			// draw the text
 			assets.font->Draw(
 				properties.centered
-					? midPoint - (textSize / 2.0f)
+					? topLeft - (textSize / 2.0f)
 					: topLeft,
 				text,
 				pointSize,

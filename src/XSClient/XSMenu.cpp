@@ -67,7 +67,7 @@ namespace XS {
 				MenuElement *element = nullptr;
 				while ( true ) {
 					const char *token = parser->ParseToken();
-					if ( !token[0] ) {
+					if ( !token[0] || !String::Compare( token, "}" ) ) {
 						// end of file
 						element = nullptr;
 						break;
