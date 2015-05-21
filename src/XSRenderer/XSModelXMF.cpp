@@ -61,12 +61,7 @@ namespace XS {
 					const auto &p2 = mesh->vertices[mesh->indices[i + 1]];
 					const auto &p3 = mesh->vertices[mesh->indices[i + 2]];
 
-					vector3 u = p2 - p1;
-					vector3 v = p3 - p1;
-					vector3 normal = vector3::cross( u, v );
-					normal.normaliseFast();
-
-					surfaceNormals[i/3] = normal;
+					surfaceNormals[i/3] = vector3::cross( p2 - p1, p3 - p1 );
 				}
 
 				// then for each vertex, sum all the neighbouring surface normals to obtain the vertex normal
