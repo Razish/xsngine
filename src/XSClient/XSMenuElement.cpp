@@ -14,6 +14,10 @@ namespace XS {
 			std::memset( &properties, 0, sizeof(properties) );
 		}
 
+		const vector2 *MenuElement::GetSize( void ) const {
+			return nullptr;
+		}
+
 		MenuElement::~MenuElement() {
 			// ...
 		}

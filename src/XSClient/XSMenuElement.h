@@ -19,14 +19,20 @@ namespace XS {
 
 			Menu			*parent;
 			vector2			 position;
-			vector2			 size;
 			std::string		 name;
 			struct Properties {
 				bool			hidden;
+				bool			decorative;
 			} properties;
 
 		public:
 			virtual ~MenuElement() = 0;
+
+			// get the size of the element
+			//	this is used to check if menu button events should be passed to the element
+			virtual const vector2 *GetSize(
+				void
+			) const;
 
 			// paint the element on the screen
 			virtual void Paint(

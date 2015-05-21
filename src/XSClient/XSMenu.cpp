@@ -11,12 +11,13 @@
 #include "XSClient/XSMenuElement.h"
 #include "XSClient/XSMenuElementButton.h"
 #include "XSClient/XSMenuElementSlider.h"
+#include "XSClient/XSMenuElementText.h"
 
 namespace XS {
 
 	namespace Client {
 
-		uint32_t Menu::version = 1u;
+		uint32_t Menu::version = 2u;
 
 		Menu::Menu( const char *fileName ) {
 			const File f( fileName );
@@ -145,6 +146,24 @@ namespace XS {
 
 						parser->SkipLine();
 					}
+					else if ( !String::Compare( token, "text" ) ) {
+						if ( element ) {
+							console.Print( PrintLevel::Normal,
+								"%s tried to parse text menu element in %s:%i whilst parsing another element\n",
+								XS_FUNCTION,
+								parser->GetCurrentLine(),
+								fileName
+							);
+							break;
+						}
+
+						element = new MenuElementText( parser, fileName );
+						element->parent = this;
+						elements.push_back( element );
+						element = nullptr;
+
+						parser->SkipLine();
+					}
 					else {
 						parser->SkipLine();
 					}
@@ -175,12 +194,16 @@ namespace XS {
 			{
 				// pass it down the chain
 				for ( auto element : elements ) {
-					const real32_t elementX = element->position.x;
-					const real32_t elementY = element->position.y;
-					if ( cursorX > elementX && cursorX < (elementX + element->size.x)
-						&& cursorY > elementY && cursorY < (elementY + element->size.y) )
-					{
-						element->MouseButtonEvent( ev, cursorPos );
+					if ( !element->properties.decorative ) {
+						const real32_t elementX = element->position.x;
+						const real32_t elementY = element->position.y;
+						const vector2 *size = element->GetSize();
+						if ( size
+							&& cursorX > elementX && cursorX < (elementX + size->x)
+							&& cursorY > elementY && cursorY < (elementY + size->y) )
+						{
+							element->MouseButtonEvent( ev, cursorPos );
+						}
 					}
 				}
 				return true;
@@ -202,13 +225,17 @@ namespace XS {
 			{
 				// pass it down the chain
 				for ( auto element : elements ) {
-					const real32_t elementX = element->position.x;
-					const real32_t elementY = element->position.y;
-					if ( cursorX > elementX && cursorX < (elementX + element->size.x)
-						&& cursorY > elementY && cursorY < (elementY + element->size.y) )
-					{
-						element->MouseMotionEvent( cursorPos );
-						return true;
+					if ( !element->properties.decorative ) {
+						const real32_t elementX = element->position.x;
+						const real32_t elementY = element->position.y;
+						const vector2 *size = element->GetSize();
+						if ( size
+							&& cursorX > elementX && cursorX < (elementX + size->x)
+							&& cursorY > elementY && cursorY < (elementY + size->y) )
+						{
+							element->MouseMotionEvent( cursorPos );
+							return true;
+						}
 					}
 				}
 			}

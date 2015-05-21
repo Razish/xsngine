@@ -166,6 +166,8 @@
     <File Name="XSClient/XSParticleEmitter.h"/>
     <File Name="XSClient/XSMenuElementButton.cpp"/>
     <File Name="XSClient/XSMenuElementButton.h"/>
+    <File Name="XSClient/XSMenuElementText.cpp"/>
+    <File Name="XSClient/XSMenuElementText.h"/>
   </VirtualDirectory>
   <VirtualDirectory Name="XSInput">
     <File Name="XSInput/XSInputField.cpp"/>

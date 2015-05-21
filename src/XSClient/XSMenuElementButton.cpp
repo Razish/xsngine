@@ -1,5 +1,3 @@
-#include <algorithm>
-
 #include <SDL2/SDL.h>
 
 #include "XSCommon/XSCommon.h"
@@ -59,7 +57,7 @@ namespace XS {
 		}
 
 		MenuElementButton::MenuElementButton( TokenParser *parser, const char *fileName )
-		: texture( "" ), cmd( "" )
+		: size( 0.0f, 0.0f ), texture( "" ), cmd( "" ), text( "" ), pointSize( 0u )
 		{
 			std::memset( &properties, 0, sizeof(properties) );
 			std::memset( &assets, 0, sizeof(assets) );
@@ -137,7 +135,7 @@ namespace XS {
 					parser->SkipLine();
 				}
 
-				// command
+				// texture
 				else if ( !String::Compare( tok, "texture" ) ) {
 					if ( parser->ParseString( &tok ) ) {
 						console.Print( PrintLevel::Normal,
@@ -207,6 +205,7 @@ namespace XS {
 					parser->SkipLine();
 				}
 
+				// text to display
 				else if ( !String::Compare( tok, "text" ) ) {
 					if ( parser->ParseString( &tok ) ) {
 						console.Print( PrintLevel::Normal,
@@ -225,6 +224,11 @@ namespace XS {
 					parser->SkipLine();
 				}
 			}
+		}
+
+		// get the size of the slider
+		const vector2 *MenuElementButton::GetSize( void ) const {
+			return &size;
 		}
 
 		void MenuElementButton::Paint( void ) {

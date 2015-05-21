@@ -8,25 +8,19 @@ namespace XS {
 
 	namespace Renderer {
 		struct Material;
+		class Font;
 	}
 
 	namespace Client {
 
-		class MenuElementSlider : public MenuElement {
+		class MenuElementText : public MenuElement {
 		private:
-			static struct Assets {
-				Renderer::Material	*thumb;
-				Renderer::Material	*bar;
+			struct {
+				Renderer::Font		*font;
 			} assets;
 
-			vector2			size;
-			std::string		cvarName;
-			struct {
-				real32_t		bottom;
-				real32_t		top;
-			} range;
-			std::string		postExecCommand;
-			bool updatingValue;
+			std::string		text;
+			uint16_t		pointSize;
 
 			struct Properties {
 				bool			centered;
@@ -38,27 +32,18 @@ namespace XS {
 				const char *fileName
 			);
 
-			void UpdateValue(
-				real32_t frac
-			);
-
 		public:
 			// don't allow default instantiation
-			MenuElementSlider() = delete;
-			MenuElementSlider( const MenuElementSlider& ) = delete;
-			MenuElementSlider& operator=( const MenuElementSlider& ) = delete;
+			MenuElementText() = delete;
+			MenuElementText( const MenuElementText& ) = delete;
+			MenuElementText& operator=( const MenuElementText& ) = delete;
 
-			MenuElementSlider(
+			MenuElementText(
 				TokenParser *parser,
 				const char *fileName
 			);
 
-			// get the size of the slider
-			const vector2 *GetSize(
-				void
-			) const;
-
-			// draw the slider
+			// draw the text
 			void Paint(
 				void
 			);

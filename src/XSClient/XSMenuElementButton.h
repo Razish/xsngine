@@ -20,6 +20,7 @@ namespace XS {
 				Renderer::Font		*font;
 			} assets;
 
+			vector2			size;
 			std::string		texture;
 			std::string		cmd;
 			std::string		text;
@@ -46,7 +47,12 @@ namespace XS {
 				const char *fileName
 			);
 
-			// draw the slider
+			// get the size of the button
+			const vector2 *GetSize(
+				void
+			) const;
+
+			// draw the button
 			void Paint(
 				void
 			);
