@@ -123,7 +123,7 @@
 	#define XS_FUNCTION_VERBOSE __FUNCSIG__
 #elif defined(__GNUC__) || defined(__clang__)
 	// gcc, clang
-	#define XS_FUNCTION __PRETTY_FUNCTION__
+	#define XS_FUNCTION __FUNCTION__
 	#define XS_FUNCTION_VERBOSE __PRETTY_FUNCTION__
 #elif defined(__INTEL_COMPILER)
 	//TODO: icc / intel

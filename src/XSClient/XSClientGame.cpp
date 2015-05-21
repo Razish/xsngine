@@ -95,14 +95,13 @@ namespace XS {
 
 			terrain = new Terrain( "textures/terrain.raw" );
 
-			GameObject *plane = new GameObject();
-			plane->renderObject = Renderer::Model::Register( "models/plane.xmf" );
-			objects.push_back( plane );
+			GameObject *monkey = new GameObject();
+			monkey->renderObject = Renderer::Model::Register( "models/monkey.xmf" );
+			objects.push_back( monkey );
 
-		//	GameObject *box = new GameObject();
-		//	box->renderObject = Renderer::Model::Register( "models/box.xmf" );
-		//	box->SetPosition( vector3( 0.0f, 0.0f, 0.0f ) );
-		//	objects.push_back( box );
+			GameObject *torus = new GameObject();
+			torus->renderObject = Renderer::Model::Register( "models/torus.xmf" );
+			objects.push_back( torus );
 
 			GameObject *pe = new ParticleEmitter( cg_numParticles->GetInt32(), 1000u, "textures/fx/orb.png" );
 			objects.push_back( pe );

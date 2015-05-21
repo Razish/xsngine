@@ -19,7 +19,7 @@ namespace XS {
 
 	namespace Renderer {
 
-		uint32_t XMF::version = 2u;
+		uint32_t XMF::version = 3u;
 
 		void XMF::Process( Mesh *mesh ) {
 			// create texture
@@ -45,6 +45,44 @@ namespace XS {
 			samplerBinding.texture = mesh->texture;
 			mesh->material->samplerBindings.push_back( samplerBinding );
 			mesh->material->shaderProgram = mesh->shader;
+
+			if ( mesh->normals.empty() ) {
+				console.Print( PrintLevel::Developer,
+					"Calculating surface normals using Newell's method\n"
+				);
+
+				std::vector<vector3> surfaceNormals;
+				surfaceNormals.resize( mesh->indices.size() / 3 );
+				mesh->normals.resize( mesh->vertices.size() );
+
+				// first calculate surface normals
+				for ( size_t i = 0; i < mesh->indices.size(); i += 3 ) {
+					const auto &p1 = mesh->vertices[mesh->indices[i + 0]];
+					const auto &p2 = mesh->vertices[mesh->indices[i + 1]];
+					const auto &p3 = mesh->vertices[mesh->indices[i + 2]];
+
+					vector3 u = p2 - p1;
+					vector3 v = p3 - p1;
+					vector3 normal = vector3::cross( u, v );
+					normal.normaliseFast();
+
+					surfaceNormals[i/3] = normal;
+				}
+
+				// then for each vertex, sum all the neighbouring surface normals to obtain the vertex normal
+				for ( size_t iV = 0u; iV < mesh->vertices.size(); iV++ ) {
+					vector3 normal( 0.0f );
+					for ( size_t iN = 0u; iN < mesh->indices.size(); iN += 3 ) {
+						for ( size_t f = 0u; f < 3; f++ ) {
+							if ( mesh->indices[iN + f] == iV ) {
+								normal += surfaceNormals[iN / 3];
+							}
+						}
+					}
+					normal.normaliseFast();
+					mesh->normals[iV] = normal;
+				}
+			}
 
 			mesh->Upload();
 			meshes.push_back( mesh );
@@ -143,6 +181,26 @@ namespace XS {
 						parser.ParseReal32( &vertex.raw[i] );
 					}
 					mesh->vertices.push_back( vertex );
+					parser.SkipLine();
+				}
+				else if ( !String::CompareCase( token, "vn" ) ) {
+					// new normal
+					if ( !mesh ) {
+						// something went wrong, we can't parse normals out if we don't know what mesh they're
+						//	related to
+						console.Print( PrintLevel::Normal,
+							"%s tried to parse normals for '%s' without specifying a mesh!\n",
+							XS_FUNCTION,
+							modelPath.c_str()
+						);
+						break;
+					}
+
+					vector3 normal;
+					for ( int i = 0; i < 3; i++ ) {
+						parser.ParseReal32( &normal.raw[i] );
+					}
+					mesh->normals.push_back( normal );
 					parser.SkipLine();
 				}
 				else if ( !String::CompareCase( token, "uv" ) ) {

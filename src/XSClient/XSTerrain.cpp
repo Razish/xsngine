@@ -37,20 +37,20 @@ namespace XS {
 				rand() // seed
 			);
 
-			uint8_t *heightmap = new uint8_t[dimensions * dimensions];
+			real32_t *heightmap = new real32_t[dimensions * dimensions];
 			std::memset( heightmap, 0, dimensions * dimensions );
 			for ( int row = 0; row < dimensions; row++ ) {
 				for ( int col = 0; col < dimensions; col++ ) {
 					real64_t p = perlin.GetHeight( row, col ); // [-1.0, 1.0]
 					real64_t r = (p + 1.0) / 2.0; // [0.0, 1.0]
-					heightmap[(row * dimensions) + col] = static_cast<uint8_t>( r * 128.0 );
+					heightmap[(row * dimensions) + col] = r;
 				}
 			}
 
 			gameObj = new GameObject();
 			gameObj->renderObject = Renderer::Model::Register( nullptr );
 			Renderer::Mesh *mesh = new Renderer::Mesh();
-			const real32_t scale = 128.0f;
+			const real32_t scale = 64.0f;
 
 			// positions
 			mesh->vertices.reserve( dimensions * dimensions );
@@ -58,11 +58,11 @@ namespace XS {
 				const float fRow = static_cast<real32_t>( row );
 				for ( int col = 0; col < dimensions; col++ ) {
 					const float fCol = static_cast<real32_t>( col );
-					const uint8_t *sample = &heightmap[(row * dimensions) + col];
+					const real32_t *sample = &heightmap[(row * dimensions) + col];
 					vector3 pos;
-					pos.x = -fRow;
-					pos.y = (static_cast<real32_t>( *sample ) / 255.0f) * scale;
-					pos.z = -fCol;
+					pos.x = fRow - (dimensions / 2.0f);
+					pos.y = (*sample * scale) - (scale / 1.5f);
+					pos.z = fCol - (dimensions / 2.0f);
 					mesh->vertices.push_back( pos );
 
 					vector2 uv;
@@ -82,9 +82,9 @@ namespace XS {
 					vector3 normal;
 					if ( row != dimensions - 1 && col != dimensions - 1 ) {
 						vector3 a = mesh->vertices[row * dimensions + col];
-						vector3 b = vector3( mesh->vertices[(row + 1) * dimensions + col] );
-						vector3 d = vector3( mesh->vertices[(row + 1) * dimensions + (col + 1)] );
-						normal = vector3::cross( b - a, d - a );
+						vector3 u = vector3( mesh->vertices[(row + 1) * dimensions + col] );
+						vector3 v = vector3( mesh->vertices[(row + 1) * dimensions + (col + 1)] );
+						normal = vector3::cross( u - a, v - a ) * -1.0f;
 					}
 					normal.normaliseFast();
 					mesh->normals.push_back( normal );

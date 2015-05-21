@@ -60,9 +60,10 @@ namespace XS {
 		}
 
 		MenuElementSlider::MenuElementSlider( TokenParser *parser, const char *fileName )
-		: updatingValue( false )
+		: cvarName( "" ), postExecCommand( "" ), updatingValue( false )
 		{
 			std::memset( &properties, 0, sizeof(properties) );
+			std::memset( &range, 0, sizeof(range) );
 
 			const char *tok = nullptr;
 			parser->ParseString( &tok );
@@ -170,10 +171,30 @@ namespace XS {
 					}
 					parser->SkipLine();
 				}
+
+				// post-exec command
+				else if ( !String::Compare( tok, "postExec" ) ) {
+					if ( parser->ParseString( &tok ) ) {
+						console.Print( PrintLevel::Normal,
+							"%s missing postExec definition when parsing slider menu element from %s:%i\n",
+							XS_FUNCTION,
+							fileName,
+							parser->GetCurrentLine()
+						);
+						parser->SkipLine();
+						continue;
+					}
+					else {
+						postExecCommand = tok;
+					}
+
+					parser->SkipLine();
+				}
 			}
 		}
 
 		void MenuElementSlider::Paint( void ) {
+			// lazy loading
 			if ( !assets.thumb ) {
 				Renderer::Material *material = new Renderer::Material();
 
@@ -293,6 +314,9 @@ namespace XS {
 			}
 			else {
 				updatingValue = false;
+				if ( !postExecCommand.empty() ) {
+					Command::Append( postExecCommand.c_str() );
+				}
 			}
 		}
 

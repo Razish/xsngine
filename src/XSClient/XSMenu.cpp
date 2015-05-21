@@ -9,6 +9,7 @@
 #include "XSClient/XSClient.h"
 #include "XSClient/XSMenu.h"
 #include "XSClient/XSMenuElement.h"
+#include "XSClient/XSMenuElementButton.h"
 #include "XSClient/XSMenuElementSlider.h"
 
 namespace XS {
@@ -107,6 +108,24 @@ namespace XS {
 							size.w = w;
 							size.h = h;
 						}
+					}
+					else if ( !String::Compare( token, "button" ) ) {
+						if ( element ) {
+							console.Print( PrintLevel::Normal,
+								"%s tried to parse button menu element in %s:%i whilst parsing another element\n",
+								XS_FUNCTION,
+								parser->GetCurrentLine(),
+								fileName
+							);
+							break;
+						}
+
+						element = new MenuElementButton( parser, fileName );
+						element->parent = this;
+						elements.push_back( element );
+						element = nullptr;
+
+						parser->SkipLine();
 					}
 					else if ( !String::Compare( token, "slider" ) ) {
 						if ( element ) {

@@ -8,24 +8,22 @@ namespace XS {
 
 	namespace Renderer {
 		struct Material;
+		class Font;
 	}
 
 	namespace Client {
 
-		class MenuElementSlider : public MenuElement {
+		class MenuElementButton : public MenuElement {
 		private:
-			static struct Assets {
-				Renderer::Material	*thumb;
-				Renderer::Material	*bar;
+			struct {
+				Renderer::Material	*background;
+				Renderer::Font		*font;
 			} assets;
 
-			std::string		cvarName;
-			struct {
-				real32_t		bottom;
-				real32_t		top;
-			} range;
-			std::string		postExecCommand;
-			bool updatingValue;
+			std::string		texture;
+			std::string		cmd;
+			std::string		text;
+			uint16_t		pointSize;
 
 			struct Properties {
 				bool			centered;
@@ -37,17 +35,13 @@ namespace XS {
 				const char *fileName
 			);
 
-			void UpdateValue(
-				real32_t frac
-			);
-
 		public:
 			// don't allow default instantiation
-			MenuElementSlider() = delete;
-			MenuElementSlider( const MenuElementSlider& ) = delete;
-			MenuElementSlider& operator=( const MenuElementSlider& ) = delete;
+			MenuElementButton() = delete;
+			MenuElementButton( const MenuElementButton& ) = delete;
+			MenuElementButton& operator=( const MenuElementButton& ) = delete;
 
-			MenuElementSlider(
+			MenuElementButton(
 				TokenParser *parser,
 				const char *fileName
 			);

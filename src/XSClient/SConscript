@@ -12,6 +12,7 @@ files = [
 	'XSClient/XSGameObject.cpp',
 	'XSClient/XSMenu.cpp',
 	'XSClient/XSMenuElement.cpp',
+	'XSClient/XSMenuElementButton.cpp',
 	'XSClient/XSMenuElementSlider.cpp',
 	'XSClient/XSMenuManager.cpp',
 	'XSClient/XSParticleEmitter.cpp',
