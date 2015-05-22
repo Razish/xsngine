@@ -111,26 +111,62 @@ namespace XS {
 			dynamic_cast<Renderer::Model *>( gameObj->renderObject )->meshes.push_back( mesh );
 			AddObject( gameObj );
 
-			// create texture
-			uint32_t outWidth = 0u, outHeight = 0u;
-			uint8_t *dirtData = Renderer::LoadPNG( "textures/dirt.png", &outWidth, &outHeight );
-			texture = new Renderer::Texture( outWidth, outHeight, Renderer::InternalFormat::RGBA8, dirtData );
-			delete dirtData;
-
 			// create shader program
 			static const Renderer::VertexAttribute attributes[] = {
 				{ 0, "in_Position" },
 				{ 1, "in_Normal" },
 				{ 2, "in_TexCoord" },
 			};
-			program = new Renderer::ShaderProgram( "model", "model", attributes, ARRAY_LEN( attributes ) );
+			program = new Renderer::ShaderProgram( "terrain", "terrain", attributes, ARRAY_LEN( attributes ) );
 
 			// create material
 			material = new Renderer::Material();
-			Renderer::Material::SamplerBinding samplerBinding;
-			samplerBinding.unit = 0;
-			samplerBinding.texture = texture;
-			material->samplerBindings.push_back( samplerBinding );
+
+			// create textures
+			uint32_t outWidth = 0u, outHeight = 0u;
+
+			// grass texture
+			uint8_t *grassData = Renderer::LoadPNG( "textures/grass.png", &outWidth, &outHeight );
+			grassTexture = new Renderer::Texture( outWidth, outHeight, Renderer::InternalFormat::RGBA8, grassData );
+			delete grassData;
+			Renderer::Material::SamplerBinding samplerBindingGrass;
+			samplerBindingGrass.unit = 0;
+			samplerBindingGrass.uniform = "u_grassTexture";
+			samplerBindingGrass.texture = grassTexture;
+			material->samplerBindings.push_back( samplerBindingGrass );
+
+			// dirt texture
+			uint8_t *dirtData = Renderer::LoadPNG( "textures/dirt.png", &outWidth, &outHeight );
+			dirtTexture = new Renderer::Texture( outWidth, outHeight, Renderer::InternalFormat::RGBA8, dirtData );
+			delete dirtData;
+			Renderer::Material::SamplerBinding samplerBindingDirt;
+			samplerBindingDirt.unit = 1;
+			samplerBindingDirt.uniform = "u_dirtTexture";
+			samplerBindingDirt.texture = dirtTexture;
+			material->samplerBindings.push_back( samplerBindingDirt );
+
+			// snow texture
+			uint8_t *snowData = Renderer::LoadPNG( "textures/snow.png", &outWidth, &outHeight );
+			snowTexture = new Renderer::Texture( outWidth, outHeight, Renderer::InternalFormat::RGBA8, snowData );
+			delete snowData;
+			Renderer::Material::SamplerBinding samplerBindingSnow;
+			samplerBindingSnow.unit = 2;
+			samplerBindingSnow.uniform = "u_snowTexture";
+			samplerBindingSnow.texture = snowTexture;
+			material->samplerBindings.push_back( samplerBindingSnow );
+
+			real32_t averagePoint = 0.0f;
+			real32_t highestPoint = 0.0f;
+			for ( const auto &v : mesh->vertices ) {
+				averagePoint += v.y;
+				if ( v.y > highestPoint ) {
+					highestPoint = v.y;
+				}
+			}
+			averagePoint /= static_cast<real32_t>( mesh->vertices.size() );
+			program->SetUniform1( "u_lowPoint", averagePoint );
+			program->SetUniform1( "u_highPoint", highestPoint );
+
 			material->shaderProgram = program;
 			//terrainMaterial->flags |= Renderer::MF_WIREFRAME;
 
@@ -141,7 +177,9 @@ namespace XS {
 			RemoveObject( gameObj );
 			delete gameObj;
 			delete program;
-			delete texture;
+			delete dirtTexture;
+			delete grassTexture;
+			delete snowTexture;
 		}
 
 	} // namespace ClientGame

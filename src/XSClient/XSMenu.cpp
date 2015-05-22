@@ -17,7 +17,7 @@ namespace XS {
 
 	namespace Client {
 
-		uint32_t Menu::version = 2u;
+		uint32_t Menu::version = 3u;
 
 		Menu::Menu( const char *fileName ) {
 			const File f( fileName );
@@ -195,15 +195,7 @@ namespace XS {
 				// pass it down the chain
 				for ( auto element : elements ) {
 					if ( !element->properties.decorative ) {
-						const real32_t elementX = element->position.x;
-						const real32_t elementY = element->position.y;
-						const vector2 *size = element->GetSize();
-						if ( size
-							&& cursorX > elementX && cursorX < (elementX + size->x)
-							&& cursorY > elementY && cursorY < (elementY + size->y) )
-						{
-							element->MouseButtonEvent( ev, cursorPos );
-						}
+						element->MouseButtonEvent( ev, cursorPos );
 					}
 				}
 				return true;
@@ -226,18 +218,10 @@ namespace XS {
 				// pass it down the chain
 				for ( auto element : elements ) {
 					if ( !element->properties.decorative ) {
-						const real32_t elementX = element->position.x;
-						const real32_t elementY = element->position.y;
-						const vector2 *size = element->GetSize();
-						if ( size
-							&& cursorX > elementX && cursorX < (elementX + size->x)
-							&& cursorY > elementY && cursorY < (elementY + size->y) )
-						{
-							element->MouseMotionEvent( cursorPos );
-							return true;
-						}
+						element->MouseMotionEvent( cursorPos );
 					}
 				}
+				return true;
 			}
 			return false;
 		}

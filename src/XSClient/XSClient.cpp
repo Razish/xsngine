@@ -239,18 +239,7 @@ namespace XS {
 		}
 
 		static void DrawDebugInfo( Renderer::Font *font ) {
-			std::string fovText = String::Format( "fov: %.03f", ClientGame::cg_fov->GetReal32() ).c_str();
-			const uint16_t fovTextSize = 16u;
-			real32_t textWidth = 0.0f;
-			for ( const char *p = fovText.c_str(); *p; p++ ) {
-				textWidth += font->GetGlyphWidth( *p, fovTextSize );
-			}
-
-			vector2 pos(
-				2.0f,
-				0.0f
-			);
-			font->Draw( pos, fovText, fovTextSize );
+			// ...
 		}
 
 		static void DrawHUD( real64_t frametime ) {

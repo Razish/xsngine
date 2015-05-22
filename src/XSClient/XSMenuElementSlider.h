@@ -8,30 +8,43 @@ namespace XS {
 
 	namespace Renderer {
 		struct Material;
+		class Font;
 	}
 
 	namespace Client {
 
 		class MenuElementSlider : public MenuElement {
 		private:
-			static struct Assets {
+			struct {
 				Renderer::Material	*thumb;
 				Renderer::Material	*bar;
+				Renderer::Font		*font;
 			} assets;
 
 			vector2			size;
 			std::string		cvarName;
 			struct {
-				real32_t		bottom;
-				real32_t		top;
+				real32_t bottom, top;
 			} range;
 			std::string		postExecCommand;
-			bool updatingValue;
+			bool			updatingValue;
+
+			// tooltip
+			uint16_t		pointSize;
+			std::string		tooltipText;
+			bool			mouseHovering;
+			real64_t		lastTooltipTime;
+			vector2			lastMousePos;
 
 			struct Properties {
 				bool			centered;
 				bool			vertical;
+				bool			integral;
 			} properties;
+
+			bool MouseWithinBounds(
+				const vector2 &mousePos
+			) const;
 
 			void ParseProperties(
 				TokenParser *parser,
@@ -52,11 +65,6 @@ namespace XS {
 				TokenParser *parser,
 				const char *fileName
 			);
-
-			// get the size of the slider
-			const vector2 *GetSize(
-				void
-			) const;
 
 			// draw the slider
 			void Paint(

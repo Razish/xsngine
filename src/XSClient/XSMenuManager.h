@@ -27,6 +27,7 @@ namespace XS {
 			struct {
 				Renderer::Material	*cursor;
 			} assets;
+			uint32_t cursorWidth, cursorHeight;
 
 		public:
 			MenuManager();

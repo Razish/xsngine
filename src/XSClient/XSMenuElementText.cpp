@@ -8,6 +8,7 @@
 #include "XSCommon/XSTokenParser.h"
 #include "XSCommon/XSColours.h"
 #include "XSCommon/XSEvent.h"
+#include "XSCommon/XSCvar.h"
 #include "XSClient/XSClient.h"
 #include "XSClient/XSMenuElementText.h"
 #include "XSRenderer/XSMaterial.h"
@@ -43,7 +44,7 @@ namespace XS {
 				}
 
 				// centered
-				if ( !String::Compare( tok, "centered" ) ) {
+				else if ( !String::Compare( tok, "centered" ) ) {
 					properties.centered = true;
 					parser->SkipLine();
 				}
@@ -86,7 +87,7 @@ namespace XS {
 				}
 
 				// properties
-				if ( !String::Compare( tok, "properties" ) ) {
+				else if ( !String::Compare( tok, "properties" ) ) {
 					ParseProperties( parser, fileName );
 					parser->SkipLine();
 				}
@@ -178,15 +179,31 @@ namespace XS {
 		}
 
 		void MenuElementText::Paint( void ) {
+			if ( text.empty() ) {
+				return;
+			}
+
 			const vector2 topLeft(
 				position.x * Renderer::state.window.width,
 				position.y * Renderer::state.window.height
 			);
 
-			const size_t textLen = text.length();
+			std::string displayText;
+			if ( text[0] == '$' ) {
+				Cvar *cv = Cvar::Get( text.substr( 1 ) );
+				if ( !cv ) {
+					return;
+				}
+				displayText = cv->GetFullString();
+			}
+			else {
+				displayText = text;
+			}
+
+			const size_t textLen = displayText.length();
 			real32_t textWidth = 0.0f;
 			for ( size_t i = 0u; i < textLen; i++ ) {
-				textWidth += assets.font->GetGlyphWidth( text[i], pointSize );
+				textWidth += assets.font->GetGlyphWidth( displayText[i], pointSize );
 			}
 			const vector2 textSize(
 				textWidth,
@@ -198,9 +215,9 @@ namespace XS {
 				properties.centered
 					? topLeft - (textSize / 2.0f)
 					: topLeft,
-				text,
+				displayText,
 				pointSize,
-				&colourTable[ColourIndex(COLOUR_RED)]
+				&colourTable[ColourIndex(COLOUR_WHITE)]
 			);
 		}
 

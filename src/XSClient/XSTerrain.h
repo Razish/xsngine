@@ -22,7 +22,9 @@ namespace XS {
 		private:
 			Renderer::ShaderProgram	*program;
 			Renderer::Material		*material;
-			Renderer::Texture		*texture;
+			Renderer::Texture		*dirtTexture;
+			Renderer::Texture		*grassTexture;
+			Renderer::Texture		*snowTexture;
 			GameObject				*gameObj;
 
 		public:

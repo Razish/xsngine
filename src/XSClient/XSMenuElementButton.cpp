@@ -43,14 +43,8 @@ namespace XS {
 				}
 
 				// centered
-				if ( !String::Compare( tok, "centered" ) ) {
+				else if ( !String::Compare( tok, "centered" ) ) {
 					properties.centered = true;
-					parser->SkipLine();
-				}
-
-				// vertical
-				else if ( !String::Compare( tok, "vertical" ) ) {
-					properties.vertical = true;
 					parser->SkipLine();
 				}
 			}
@@ -83,8 +77,14 @@ namespace XS {
 					break;
 				}
 
+				// properties
+				else if ( !String::Compare( tok, "properties" ) ) {
+					ParseProperties( parser, fileName );
+					parser->SkipLine();
+				}
+
 				// name
-				if ( !String::Compare( tok, "name" ) ) {
+				else if ( !String::Compare( tok, "name" ) ) {
 					if ( parser->ParseString( &tok ) ) {
 						console.Print( PrintLevel::Normal,
 							"%s missing name definition when parsing button menu element from %s:%i\n",
@@ -226,10 +226,19 @@ namespace XS {
 			}
 		}
 
-		// get the size of the slider
-		const vector2 *MenuElementButton::GetSize( void ) const {
-			return &size;
+		bool MenuElementButton::MouseWithinBounds( const vector2 &mousePos ) const {
+			vector2 topLeft = position;
+			if ( properties.centered ) {
+				topLeft -= size / 2.0f;
+			}
+			if ( mousePos.x > topLeft.x && mousePos.x < (topLeft.x + size.x)
+				&& mousePos.y > topLeft.y && mousePos.y < (topLeft.y + size.y) )
+			{
+				return true;
+			}
+			return false;
 		}
+
 
 		void MenuElementButton::Paint( void ) {
 			// lazy loading
@@ -255,12 +264,12 @@ namespace XS {
 				delete bgData;
 			}
 
-			const vector2 topLeft(
-				position.x * Renderer::state.window.width,
-				position.y * Renderer::state.window.height
-			);
 			const real32_t bgWidth = size.x * Renderer::state.window.width;
 			const real32_t bgHeight = size.y * Renderer::state.window.height;
+			const vector2 topLeft(
+				(position.x * Renderer::state.window.width) - (bgWidth / 2.0f),
+				(position.y * Renderer::state.window.height) - (bgHeight / 2.0f)
+			);
 
 			Renderer::DrawQuad(
 				topLeft.x, topLeft.y,
@@ -294,6 +303,10 @@ namespace XS {
 		}
 
 		void MenuElementButton::MouseButtonEvent( const struct MouseButtonEvent &ev, const vector2 &cursorPos ) {
+			if ( !MouseWithinBounds( cursorPos ) ) {
+				return;
+			}
+
 			if ( ev.pressed && (ev.button == SDL_BUTTON_LEFT) ) {
 				Command::Append( cmd.c_str() );
 			}

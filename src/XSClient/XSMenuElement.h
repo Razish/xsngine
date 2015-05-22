@@ -28,10 +28,10 @@ namespace XS {
 		public:
 			virtual ~MenuElement() = 0;
 
-			// get the size of the element
-			//	this is used to check if menu button events should be passed to the element
-			virtual const vector2 *GetSize(
-				void
+			// determine whether or not events should be consumed by this element
+			bool MouseWithinBounds(
+				const vector2 &mousePos,
+				const vector2 &size
 			) const;
 
 			// paint the element on the screen

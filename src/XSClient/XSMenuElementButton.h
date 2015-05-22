@@ -28,8 +28,11 @@ namespace XS {
 
 			struct Properties {
 				bool			centered;
-				bool			vertical;
 			} properties;
+
+			bool MouseWithinBounds(
+				const vector2 &mousePos
+			) const;
 
 			void ParseProperties(
 				TokenParser *parser,
@@ -46,11 +49,6 @@ namespace XS {
 				TokenParser *parser,
 				const char *fileName
 			);
-
-			// get the size of the button
-			const vector2 *GetSize(
-				void
-			) const;
 
 			// draw the button
 			void Paint(

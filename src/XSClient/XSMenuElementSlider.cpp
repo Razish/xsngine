@@ -16,12 +16,11 @@
 #include "XSRenderer/XSInternalFormat.h"
 #include "XSRenderer/XSTexture.h"
 #include "XSRenderer/XSRenderCommand.h"
+#include "XSRenderer/XSFont.h"
 
 namespace XS {
 
 	namespace Client {
-
-		MenuElementSlider::Assets MenuElementSlider::assets = {};
 
 		void MenuElementSlider::ParseProperties( TokenParser *parser, const char *fileName ) {
 			const char *tok = nullptr;
@@ -46,7 +45,7 @@ namespace XS {
 				}
 
 				// centered
-				if ( !String::Compare( tok, "centered" ) ) {
+				else if ( !String::Compare( tok, "centered" ) ) {
 					properties.centered = true;
 					parser->SkipLine();
 				}
@@ -56,14 +55,22 @@ namespace XS {
 					properties.vertical = true;
 					parser->SkipLine();
 				}
+
+				// integral values
+				else if ( !String::Compare( tok, "integral" ) ) {
+					properties.integral = true;
+					parser->SkipLine();
+				}
 			}
 		}
 
 		MenuElementSlider::MenuElementSlider( TokenParser *parser, const char *fileName )
-		: size( 0.0f, 0.0f ), cvarName( "" ), postExecCommand( "" ), updatingValue( false )
+		: size( 0.0f, 0.0f ), cvarName( "" ), postExecCommand( "" ), updatingValue( false ), pointSize( 0u ),
+			tooltipText( "" ), mouseHovering( false ), lastTooltipTime( 0.0 ), lastMousePos( 0.0f, 0.0f )
 		{
-			std::memset( &properties, 0, sizeof(properties) );
+			std::memset( &assets, 0, sizeof(assets) );
 			std::memset( &range, 0, sizeof(range) );
+			std::memset( &properties, 0, sizeof(properties) );
 
 			const char *tok = nullptr;
 			parser->ParseString( &tok );
@@ -86,8 +93,14 @@ namespace XS {
 					break;
 				}
 
+				// properties
+				else if ( !String::Compare( tok, "properties" ) ) {
+					ParseProperties( parser, fileName );
+					parser->SkipLine();
+				}
+
 				// name
-				if ( !String::Compare( tok, "name" ) ) {
+				else if ( !String::Compare( tok, "name" ) ) {
 					if ( parser->ParseString( &tok ) ) {
 						console.Print( PrintLevel::Normal,
 							"%s missing name definition when parsing slider menu element from %s:%i\n",
@@ -172,6 +185,53 @@ namespace XS {
 					parser->SkipLine();
 				}
 
+				// font + size
+				else if ( !String::Compare( tok, "font" ) ) {
+					if ( parser->ParseString( &tok ) ) {
+						console.Print( PrintLevel::Normal,
+							"%s missing font definition when parsing cvar menu element from %s:%i\n",
+							XS_FUNCTION,
+							fileName,
+							parser->GetCurrentLine()
+						);
+						parser->SkipLine();
+						continue;
+					}
+					else {
+						assets.font = Renderer::Font::Register( tok );
+					}
+
+					uint32_t tmpPointSize;
+					if ( parser->ParseUInt32( &tmpPointSize ) ) {
+						console.Print( PrintLevel::Normal,
+							"%s missing font size definition when parsing cvar menu element from %s:%i\n",
+							XS_FUNCTION,
+							fileName,
+							parser->GetCurrentLine()
+						);
+					}
+					else {
+						pointSize = static_cast<uint16_t>( tmpPointSize );
+					}
+
+					parser->SkipLine();
+				}
+
+				else if ( !String::Compare( tok, "tooltip" ) ) {
+					if ( parser->ParseString( &tok ) ) {
+						console.Print( PrintLevel::Normal,
+							"%s missing tooltip definition when parsing slider menu element from %s:%i\n",
+							XS_FUNCTION,
+							fileName,
+							parser->GetCurrentLine()
+						);
+					}
+					else {
+						tooltipText = tok;
+					}
+					parser->SkipLine();
+				}
+
 				// post-exec command
 				else if ( !String::Compare( tok, "postExec" ) ) {
 					if ( parser->ParseString( &tok ) ) {
@@ -193,9 +253,17 @@ namespace XS {
 			}
 		}
 
-		// get the size of the slider
-		const vector2 *MenuElementSlider::GetSize( void ) const {
-			return &size;
+		bool MenuElementSlider::MouseWithinBounds( const vector2 &mousePos ) const {
+			vector2 topLeft = position;
+			if ( properties.centered ) {
+				topLeft -= size / 2.0f;
+			}
+			if ( mousePos.x > topLeft.x && mousePos.x < (topLeft.x + size.x)
+				&& mousePos.y > topLeft.y && mousePos.y < (topLeft.y + size.y) )
+			{
+				return true;
+			}
+			return false;
 		}
 
 		void MenuElementSlider::Paint( void ) {
@@ -287,6 +355,27 @@ namespace XS {
 					assets.thumb
 				);
 			}
+
+			real64_t currentTime = GetElapsedTime();
+			if ( mouseHovering ) {
+				lastTooltipTime = currentTime;
+			}
+			const real64_t fadeTime = 333.0;
+			if ( !updatingValue && lastTooltipTime > currentTime - fadeTime ) {
+				const real64_t alpha = 1.0 - ((currentTime - lastTooltipTime) / fadeTime);
+				static vector4 colour( 1.0f, 1.0f, 1.0f, 1.0f );
+				colour.a = alpha;
+				const vector2 pos(
+					(lastMousePos.x + 0.03333f) * Renderer::state.window.width,
+					lastMousePos.y * Renderer::state.window.height
+				);
+				assets.font->Draw(
+					pos,
+					tooltipText,
+					pointSize,
+					&colour
+				);
+			}
 		}
 
 		void MenuElementSlider::UpdateValue( real32_t frac ) {
@@ -295,14 +384,22 @@ namespace XS {
 				return;
 			}
 
-			// scale the fractional value up to the real fov value based on the range of the slider
+			// scale the fractional value up to the real value based on the range of the slider
 			const real32_t d = range.top - range.bottom;
-			const real32_t desiredFov = (frac * d) + range.bottom;
+			real32_t desiredValue = (frac * d) + range.bottom;
 
-			cvar->Set( desiredFov );
+			if ( properties.integral ) {
+				cvar->Set( static_cast<uint32_t>( std::round( desiredValue ) ) );
+			}
+			else {
+				cvar->Set( desiredValue );
+			}
 		}
 
 		void MenuElementSlider::MouseButtonEvent( const struct MouseButtonEvent &ev, const vector2 &cursorPos ) {
+			if ( !MouseWithinBounds( cursorPos ) ) {
+				return;
+			}
 			Cvar *cvar = Cvar::Get( cvarName );
 			if ( !cvar ) {
 				return;
@@ -326,6 +423,16 @@ namespace XS {
 		}
 
 		void MenuElementSlider::MouseMotionEvent( const vector2 &cursorPos ) {
+			if ( MouseWithinBounds( cursorPos ) ) {
+				mouseHovering = true;
+				lastMousePos = cursorPos;
+			}
+			else {
+				mouseHovering = false;
+				updatingValue = false;
+				return;
+			}
+
 			if ( updatingValue ) {
 				// find the fractional point we clicked at
 				const real32_t cursorX = cursorPos.x;

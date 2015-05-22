@@ -27,6 +27,7 @@ namespace XS {
 					);
 					glUniform1i( location, binding.unit );
 				}
+				SDL_assert( binding.texture );
 				binding.texture->Bind( binding.unit );
 			}
 		}

@@ -17,7 +17,7 @@ namespace XS {
 	}
 
 	std::string vector4::tostring( void ) const {
-		return String::Format( "%.2f, %.2f, %.2f, %.2f", x, y, w );
+		return String::Format( "%.2f, %.2f, %.2f, %.2f", x, y, z, w );
 	}
 
 } // namespace XS

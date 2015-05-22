@@ -23,7 +23,6 @@ namespace XS {
 			Renderer::Material *material = new Renderer::Material();
 
 			Renderer::Material::SamplerBinding samplerBinding = {};
-			uint32_t cursorWidth, cursorHeight;
 			uint8_t *cursorData = Renderer::LoadPNG(
 				"textures/ui/cursor.png",
 				&cursorWidth, &cursorHeight
@@ -97,7 +96,7 @@ namespace XS {
 			);
 			Renderer::DrawQuad(
 				realPos.x, realPos.y,
-				64.0f, 64.0f,
+				cursorWidth / 4.0f, cursorHeight / 4.0f,
 				0.0f, 0.0f, 1.0f, 1.0f,
 				&colourTable[ColourIndex( COLOUR_WHITE )],
 				assets.cursor
