@@ -429,6 +429,15 @@ namespace XS {
 			}
 			else {
 				mouseHovering = false;
+				if ( updatingValue ) {
+					const real32_t cursorX = cursorPos.x;
+					const real32_t realPos = cursorX - position.x;
+					const real32_t f = realPos / size.x;
+					UpdateValue( f );
+					if ( !postExecCommand.empty() ) {
+						Command::Append( postExecCommand.c_str() );
+					}
+				}
 				updatingValue = false;
 				return;
 			}
