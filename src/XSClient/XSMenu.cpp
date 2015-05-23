@@ -180,6 +180,13 @@ namespace XS {
 					element->Paint();
 				}
 			}
+
+			// render tooltip
+			for ( auto element : elements ) {
+				if ( !element->properties.hidden ) {
+					element->DrawTooltip();
+				}
+			}
 		}
 
 		bool Menu::MouseButtonEvent( const struct MouseButtonEvent &ev, const vector2 &cursorPos ) {

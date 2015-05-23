@@ -18,7 +18,6 @@ namespace XS {
 			struct {
 				Renderer::Material	*thumb;
 				Renderer::Material	*bar;
-				Renderer::Font		*font;
 			} assets;
 
 			vector2			size;
@@ -28,13 +27,6 @@ namespace XS {
 			} range;
 			std::string		postExecCommand;
 			bool			updatingValue;
-
-			// tooltip
-			uint16_t		pointSize;
-			std::string		tooltipText;
-			bool			mouseHovering;
-			real64_t		lastTooltipTime;
-			vector2			lastMousePos;
 
 			struct Properties {
 				bool			centered;

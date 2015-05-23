@@ -65,8 +65,7 @@ namespace XS {
 		}
 
 		MenuElementSlider::MenuElementSlider( TokenParser *parser, const char *fileName )
-		: size( 0.0f, 0.0f ), cvarName( "" ), postExecCommand( "" ), updatingValue( false ), pointSize( 0u ),
-			tooltipText( "" ), mouseHovering( false ), lastTooltipTime( 0.0 ), lastMousePos( 0.0f, 0.0f )
+		: size( 0.0f, 0.0f ), cvarName( "" ), postExecCommand( "" ), updatingValue( false )
 		{
 			std::memset( &assets, 0, sizeof(assets) );
 			std::memset( &range, 0, sizeof(range) );
@@ -96,6 +95,12 @@ namespace XS {
 				// properties
 				else if ( !String::Compare( tok, "properties" ) ) {
 					ParseProperties( parser, fileName );
+					parser->SkipLine();
+				}
+
+				// tooltip
+				else if ( !String::Compare( tok, "tooltip" ) ) {
+					ParseTooltip( parser, fileName );
 					parser->SkipLine();
 				}
 
@@ -181,53 +186,6 @@ namespace XS {
 					else {
 						range.bottom = bottom;
 						range.top = top;
-					}
-					parser->SkipLine();
-				}
-
-				// font + size
-				else if ( !String::Compare( tok, "font" ) ) {
-					if ( parser->ParseString( &tok ) ) {
-						console.Print( PrintLevel::Normal,
-							"%s missing font definition when parsing cvar menu element from %s:%i\n",
-							XS_FUNCTION,
-							fileName,
-							parser->GetCurrentLine()
-						);
-						parser->SkipLine();
-						continue;
-					}
-					else {
-						assets.font = Renderer::Font::Register( tok );
-					}
-
-					uint32_t tmpPointSize;
-					if ( parser->ParseUInt32( &tmpPointSize ) ) {
-						console.Print( PrintLevel::Normal,
-							"%s missing font size definition when parsing cvar menu element from %s:%i\n",
-							XS_FUNCTION,
-							fileName,
-							parser->GetCurrentLine()
-						);
-					}
-					else {
-						pointSize = static_cast<uint16_t>( tmpPointSize );
-					}
-
-					parser->SkipLine();
-				}
-
-				else if ( !String::Compare( tok, "tooltip" ) ) {
-					if ( parser->ParseString( &tok ) ) {
-						console.Print( PrintLevel::Normal,
-							"%s missing tooltip definition when parsing slider menu element from %s:%i\n",
-							XS_FUNCTION,
-							fileName,
-							parser->GetCurrentLine()
-						);
-					}
-					else {
-						tooltipText = tok;
 					}
 					parser->SkipLine();
 				}
@@ -355,27 +313,6 @@ namespace XS {
 					assets.thumb
 				);
 			}
-
-			real64_t currentTime = GetElapsedTime();
-			if ( mouseHovering ) {
-				lastTooltipTime = currentTime;
-			}
-			const real64_t fadeTime = 333.0;
-			if ( !updatingValue && lastTooltipTime > currentTime - fadeTime ) {
-				const real64_t alpha = 1.0 - ((currentTime - lastTooltipTime) / fadeTime);
-				static vector4 colour( 1.0f, 1.0f, 1.0f, 1.0f );
-				colour.a = alpha;
-				const vector2 pos(
-					(lastMousePos.x + 0.03333f) * Renderer::state.window.width,
-					lastMousePos.y * Renderer::state.window.height
-				);
-				assets.font->Draw(
-					pos,
-					tooltipText,
-					pointSize,
-					&colour
-				);
-			}
 		}
 
 		void MenuElementSlider::UpdateValue( real32_t frac ) {
@@ -424,11 +361,11 @@ namespace XS {
 
 		void MenuElementSlider::MouseMotionEvent( const vector2 &cursorPos ) {
 			if ( MouseWithinBounds( cursorPos ) ) {
-				mouseHovering = true;
-				lastMousePos = cursorPos;
+				tooltip.mouseHovering = true;
+				tooltip.lastMousePos = cursorPos;
 			}
 			else {
-				mouseHovering = false;
+				tooltip.mouseHovering = false;
 				if ( updatingValue ) {
 					const real32_t cursorX = cursorPos.x;
 					const real32_t realPos = cursorX - position.x;

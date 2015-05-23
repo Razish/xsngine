@@ -7,6 +7,10 @@ namespace XS {
 	class TokenParser;
 	class Menu;
 
+	namespace Renderer {
+		class Font;
+	}
+
 	namespace Client {
 
 		class MenuElement {
@@ -25,6 +29,15 @@ namespace XS {
 				bool			decorative;
 			} properties;
 
+			struct Tooltip {
+				Renderer::Font	*font;
+				uint16_t		 pointSize;
+				std::string		 text;
+				bool			 mouseHovering;
+				real64_t		 lastMouseTime;
+				vector2			 lastMousePos;
+			} tooltip;
+
 		public:
 			virtual ~MenuElement() = 0;
 
@@ -38,6 +51,17 @@ namespace XS {
 			virtual void Paint(
 				void
 			) = 0;
+
+			// parse a tooltip definition
+			void ParseTooltip(
+				TokenParser *parser,
+				const char *fileName
+			);
+
+			// draw the tooltip
+			void DrawTooltip(
+				void
+			);
 
 			// handle a mouse button event
 			virtual void MouseButtonEvent(
