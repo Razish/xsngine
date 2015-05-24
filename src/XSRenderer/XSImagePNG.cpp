@@ -19,7 +19,10 @@ namespace XS {
 
 		void user_read_data( png_structp png_ptr, png_bytep data, png_size_t length );
 		void png_print_error( png_structp png_ptr, png_const_charp msg ) {
-			console.Print( PrintLevel::Normal, "%s\n", msg );
+			console.Print( PrintLevel::Developer,
+				"%s\n",
+				msg
+			);
 		}
 
 		bool IsPowerOfTwo( int i ) {
@@ -50,27 +53,31 @@ namespace XS {
 			}
 
 			// returns true on successful read, must delete[] data from caller
+			//	outWidth and outHeight will be filled in with the image's width/height. they are not read or used for
+			//	scaling
 			bool Read( uint8_t **data, uint32_t *outWidth, uint32_t *outHeight ) {
 				*data = nullptr;
+
+				// initialise the width/height to 0 so we know if reading succeeded
 				if ( outWidth ) {
-					*outWidth = 0;
+					*outWidth = 0u;
 				}
 				if ( outHeight ) {
-					*outHeight = 0;
+					*outHeight = 0u;
 				}
 
 				// make sure we're actually reading PNG data.
-				const int SIGNATURE_LEN = 8;
-				uint8_t ident[SIGNATURE_LEN];
-				memcpy( ident, buf, SIGNATURE_LEN );
-				if ( !png_check_sig( ident, SIGNATURE_LEN ) ) {
-					console.Print( PrintLevel::Normal, "PNG signature not found in given image\n" );
+				const size_t signatureLen = 8;
+				uint8_t ident[signatureLen] = {};
+				std::memcpy( ident, buf, signatureLen );
+				if ( !png_check_sig( ident, signatureLen ) ) {
+					console.Print( PrintLevel::Developer, "PNG signature not found in given image\n" );
 					return false;
 				}
 
 				png_ptr = png_create_read_struct( PNG_LIBPNG_VER_STRING, nullptr, png_print_error, png_print_error );
 				if ( !png_ptr ) {
-					console.Print( PrintLevel::Normal, "Could not allocate enough memory to load the image\n" );
+					console.Print( PrintLevel::Developer, "Could not allocate enough memory to load the image\n" );
 					return false;
 				}
 
@@ -79,48 +86,49 @@ namespace XS {
 					return false;
 				}
 
-				// We've read the signature
-				offset += SIGNATURE_LEN;
+				// we've read the signature
+				offset += signatureLen;
 
-				// Setup reading information, and read header
+				// setup reading information, and read header
+				// the io_ptr simply points to this class instance, and our user_read_data function will cast it back
 				png_set_read_fn( png_ptr, (png_voidp)this, &user_read_data );
-				png_set_sig_bytes( png_ptr, SIGNATURE_LEN );
+				png_set_sig_bytes( png_ptr, signatureLen );
 				png_read_info( png_ptr, info_ptr );
 
 				png_uint_32 width_, height_;
 				int depth, colortype;
 				png_get_IHDR( png_ptr, info_ptr, &width_, &height_, &depth, &colortype, nullptr, nullptr, nullptr );
 
-				// While modern OpenGL can handle non-PoT textures, it's faster to handle only PoT
-				//	so that the graphics driver doesn't have to fiddle about with the texture when uploading.
+				// while modern OpenGL can handle non-PoT textures, it's faster to handle only PoT so that the graphics
+				//	driver doesn't have to fiddle about with the texture when uploading.
 				if ( !IsPowerOfTwo( width_ ) || !IsPowerOfTwo( height_ ) ) {
 					console.Print( PrintLevel::Normal, "Width or height is not a power-of-two.\n" );
 					return false;
 				}
 
-				// If we need to load a non-RGB(A)8 image, colortype should be PNG_COLOR_TYPE_PALETTE or
+				// if we need to load a non-RGB(A)8 image, colortype should be PNG_COLOR_TYPE_PALETTE or
 				//	PNG_COLOR_TYPE_GRAY.
 				if ( colortype != PNG_COLOR_TYPE_RGB && colortype != PNG_COLOR_TYPE_RGBA ) {
 					console.Print( PrintLevel::Normal, "Image is not 24-bit or 32-bit\n" );
 					return false;
 				}
 
-				// Read the png data
-				// Expand RGB -> RGBA
+				// read the png data
+				// expand from RGB -> RGBA if necessary, filling alpha channel with 255 for full opacity
 				if ( colortype == PNG_COLOR_TYPE_RGB ) {
 					png_set_add_alpha( png_ptr, 0xff, PNG_FILLER_AFTER );
 				}
 
 				png_read_update_info( png_ptr, info_ptr );
 
-				// We always assume there are 4 channels. RGB channels are expanded to RGBA when read.
+				// we always assume there are 4 channels. RGB channels are expanded to RGBA when read.
 				uint8_t *tempData = new uint8_t[width_ * height_ * 4];
 				if ( !tempData ) {
 					console.Print( PrintLevel::Normal, "Could not allocate enough memory to load the image\n" );
 					return false;
 				}
 
-				// Dynamic array of row pointers, with 'height' elements, initialized to NULL.
+				// dynamic array of row pointers, with 'height' elements, initialized to NULL.
 				uint8_t **row_pointers = new uint8_t*[sizeof(uint8_t *) * height_];
 				if ( !row_pointers ) {
 					console.Print( PrintLevel::Normal, "Could not allocate enough memory to load the image\n" );
@@ -128,20 +136,20 @@ namespace XS {
 					return false;
 				}
 
-				// Re-set the jmp so that these new memory allocations can be reclaimed
+				// re-set the jmp so that these new memory allocations can be reclaimed
 				if ( setjmp( png_jmpbuf( png_ptr ) ) ) {
 					delete[] row_pointers;
 					delete[] tempData;
 					return false;
 				}
 
-				for ( unsigned int i = 0, j = 0; i < height_; i++, j += 4 ) {
+				for ( size_t i = 0u, j = 0u; i < height_; i++, j += 4 ) {
 					row_pointers[i] = tempData + j*width_;
 				}
 
 				png_read_image( png_ptr, row_pointers );
 
-				// Finish reading
+				// finish reading
 				png_read_end( png_ptr, nullptr );
 				delete[] row_pointers;
 
@@ -178,10 +186,13 @@ namespace XS {
 				return nullptr;
 			}
 
-			if ( Common::com_developer->GetBool() )
-				console.Print( PrintLevel::Normal, "Loading \"%s\"...\n", filename );
+			console.Print( PrintLevel::Developer,
+				"Loading \"%s\"...\n",
+				filename
+			);
 
 			uint8_t *buf = new uint8_t[f.length];
+			std::memset( buf, 0, f.length );
 			f.Read( buf );
 
 			PNGFileReader r( buf );
@@ -246,7 +257,7 @@ namespace XS {
 
 			png_bytepp rows = static_cast<png_bytepp>( png_malloc( png, h * sizeof(png_bytep) ) );
 			std::memset( rows, 0, h * sizeof(png_bytep) );
-			for ( int i = 0; i < h; i++ ) {
+			for ( size_t i = 0u; i < h; i++ ) {
 				rows[i] = (png_bytep)(pixels + (h - i - 1) * w * numChannels);
 			}
 
