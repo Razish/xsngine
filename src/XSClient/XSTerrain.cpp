@@ -29,12 +29,13 @@ namespace XS {
 
 			const size_t dimensions = cg_terrainDimensions->GetUInt32();
 
+			//FIXME: seeds > 32k break the generator
 			Perlin perlin(
 				cg_terrainPersistence->GetReal64(), // persistence
 				cg_terrainFrequency->GetReal64(), // frequency
 				cg_terrainAmplitude->GetReal64(), // amplitude
 				cg_terrainOctaves->GetInt32(), // octaves
-				rand() // seed
+				rand() & 0x7FFFu // seed
 			);
 
 			real32_t *heightmap = new real32_t[dimensions * dimensions];
@@ -59,15 +60,17 @@ namespace XS {
 				for ( int col = 0; col < dimensions; col++ ) {
 					const float fCol = static_cast<real32_t>( col );
 					const real32_t *sample = &heightmap[(row * dimensions) + col];
-					vector3 pos;
-					pos.x = fRow - (dimensions / 2.0f);
-					pos.y = (*sample * scale) - (scale / 1.5f);
-					pos.z = fCol - (dimensions / 2.0f);
+					vector3 pos(
+						fRow - (dimensions / 2.0f),
+						(*sample * scale) - (scale / 1.5f),
+						fCol - (dimensions / 2.0f)
+					);
 					mesh->vertices.push_back( pos );
 
-					vector2 uv;
-					uv.x = fCol / dimensions;
-					uv.y = fRow / dimensions;
+					vector2 uv(
+						fCol / dimensions,
+						fRow / dimensions
+					);
 					mesh->UVs.push_back( uv );
 				}
 			}
