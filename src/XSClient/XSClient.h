@@ -25,7 +25,7 @@ namespace XS {
 
 		// pump any network events for the ClientGame
 		void NetworkPump(
-			real64_t dt
+			void
 		);
 
 		// run a frame and pass control to the ClientGame

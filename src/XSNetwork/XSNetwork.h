@@ -33,6 +33,11 @@ namespace XS {
 		);
 
 		// ???
+		void Shutdown(
+			void
+		);
+
+		// ???
 		bool IsConnected(
 			void
 		);
@@ -44,6 +49,11 @@ namespace XS {
 		);
 
 		// ???
+		void Disconnect(
+			void
+		);
+
+		// ???
 		void Receive(
 			void
 		);
@@ -51,6 +61,11 @@ namespace XS {
 		// ???
 		void Send(
 			const XSPacket *packet
+		);
+
+		// ???
+		void PrintStatus(
+			void
 		);
 
 	} // namespace Network

@@ -44,17 +44,25 @@ namespace XS {
 			clientConsole->Toggle();
 		}
 
+		static void Cmd_Disconnect( const CommandContext * const context ) {
+			Network::Disconnect();
+		}
+
+		static void Cmd_Connect( const CommandContext * const context ) {
+			const char *hostname = (*context)[0].c_str();
+			uint16_t port = atoi( (*context)[1].c_str() );
+			Network::Connect( hostname, port );
+		}
+
 		static void Cmd_OpenMenu( const CommandContext * const context ) {
 			menu->OpenMenu( (*context)[0].c_str() );
 		}
 
-		static void Cmd_ReloadMenu( const CommandContext * const context ) {
-			delete menu;
-			menu = new MenuManager();
-			menu->RegisterMenu( "menus/settings.xmenu" );
-		}
-
 		static void Cmd_Ping( const CommandContext * const context ) {
+			if ( !Network::IsConnected() ) {
+				return;
+			}
+
 			Network::XSPacket packet( Network::ID_XS_PING );
 
 			packet.data = nullptr;
@@ -63,7 +71,17 @@ namespace XS {
 			Network::Send( &packet );
 		}
 
+		static void Cmd_ReloadMenu( const CommandContext * const context ) {
+			delete menu;
+			menu = new MenuManager();
+			menu->RegisterMenu( "menus/settings.xmenu" );
+		}
+
 		static void Cmd_Say( const CommandContext * const context ) {
+			if ( !Network::IsConnected() ) {
+				return;
+			}
+
 			Network::XSPacket packet( Network::ID_XS_TEXT_MESSAGE );
 
 			packet.data = static_cast<const void *>( (*context)[0].c_str() );
@@ -73,9 +91,11 @@ namespace XS {
 		}
 
 		static void RegisterCommands( void ) {
+			Command::AddCommand( "disconnect", Cmd_Disconnect );
+			Command::AddCommand( "connect", Cmd_Connect );
 			Command::AddCommand( "openMenu", Cmd_OpenMenu );
-			Command::AddCommand( "reloadMenu", Cmd_ReloadMenu );
 			Command::AddCommand( "ping", Cmd_Ping );
+			Command::AddCommand( "reloadMenu", Cmd_ReloadMenu );
 			Command::AddCommand( "say", Cmd_Say );
 		}
 
@@ -124,6 +144,8 @@ namespace XS {
 		void Init( void ) {
 			RegisterCommands();
 
+			Network::Init();
+
 			// hud
 			hudView = new Renderer::View( 0u, 0u, true );
 			menu = new MenuManager();
@@ -142,7 +164,7 @@ namespace XS {
 			delete hudView;
 		}
 
-		void NetworkPump( real64_t dt ) {
+		void NetworkPump( void ) {
 			if ( !Network::IsConnected() ) {
 				return;
 			}

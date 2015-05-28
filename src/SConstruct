@@ -109,6 +109,11 @@ else:
 status, rawrevision = commands.getstatusoutput( 'git rev-parse --short HEAD' )
 revision = None if status else rawrevision
 
+if revision:
+	status = commands.getstatusoutput( 'git diff-index --quiet HEAD' )
+	if status:
+		revision += '*'
+
 # set job/thread count
 if plat == 'Linux' or plat == 'Darwin':
 	# works on recent mac/linux
@@ -178,6 +183,8 @@ files = [
 	'XSRenderer/XSShaderProgram.cpp',
 	'XSRenderer/XSTexture.cpp',
 	'XSRenderer/XSView.cpp',
+	'XSServer/XSServer.cpp',
+	'XSServer/XSServerConsole.cpp',
 	'GLEW/glew.c',
 ]
 if plat == 'Windows':
@@ -463,6 +470,7 @@ files = [build_dir + f for f in files]
 # libraries
 libraries = [
 	'XSClient',
+	'XSServer',
 	'RakNet',
 ]
 env['LIBS'] = [

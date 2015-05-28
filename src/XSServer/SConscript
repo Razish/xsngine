@@ -1,0 +1,15 @@
+Import( '*' )
+
+# environment
+env.VariantDir( build_dir, '#', duplicate = 0 )
+server_env = env.Clone()
+
+# sources
+files = [
+	'XSServer/XSServerGame.cpp'
+]
+files = [build_dir + f for f in files]
+
+# targets
+result = server_env.StaticLibrary( build_dir + 'XSServer' + arch, files )
+Return( "result" )

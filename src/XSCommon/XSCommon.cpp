@@ -16,6 +16,7 @@
 #include "XSInput/XSKeys.h"
 #include "XSNetwork/XSNetwork.h"
 #include "XSRenderer/XSRenderer.h"
+#include "XSServer/XSServer.h"
 
 namespace XS {
 
@@ -176,16 +177,17 @@ int main( int argc, char **argv ) {
 		}
 
 		XS::Event::Init();
-		XS::Network::Init();
-		XS::Client::Input::Init();
+		if ( XS::Common::com_dedicated->GetBool() ) {
+			XS::Server::Init();
+		}
+		else {
+			XS::Client::Input::Init();
+			XS::Client::Init();
+		}
 
 		if ( XS::Common::com_developer->GetBool() ) {
 			real64_t t = globalTimer.GetTiming( true, XS::TimerResolution::Milliseconds );
 			XS::console.Print( XS::PrintLevel::Developer, "Init time: %.0f milliseconds\n", t );
-		}
-
-		if ( !XS::Common::com_dedicated->GetBool() ) {
-			XS::Client::Init();
 		}
 
 		// post-init stuff
@@ -211,18 +213,17 @@ int main( int argc, char **argv ) {
 			accumulator += sliceMsec;
 
 			// input
-			//TODO: run on another thread at 1000hz
-			if ( !XS::Common::com_dedicated->GetBool() ) {
+			if ( XS::Common::com_dedicated->GetBool() ) {
+				//TODO: tty input
+			}
+			else {
+				//TODO: run on another thread at 1000hz?
 				XS::Client::Input::Poll();
 			}
 
 			// event pump
 			XS::Event::Pump();
 			XS::Command::ExecuteBuffer();
-
-			// server frame, then network (snapshot)
-		//	XS::Server::RunFrame( dt );
-		//	XS::Server::NetworkPump();
 
 			while ( accumulator >= dt ) {
 				// this is so we can still react to input events if we're hitching
@@ -231,18 +232,28 @@ int main( int argc, char **argv ) {
 				XS::Event::Pump();
 				XS::Command::ExecuteBuffer();
 
-				// create movement command and send it off
-				XS::Client::NetworkPump( dt );
+				if ( XS::Common::com_dedicated->GetBool() ) {
+					// server frame, then network (snapshot)
+					XS::Server::RunFrame( dt );
+					XS::Server::NetworkPump();
+				}
+				else {
+					// recieve server update
+					// create movement command and send it off
+					XS::Client::NetworkPump();
 
-				// run local prediction
-				XS::Client::RunFrame( dt );
+					// run local prediction from latest server snapshot
+					XS::Client::RunFrame( dt );
+				}
 				accumulator -= dt;
 			}
 
-			// alpha = accumulator / dt;
-			// lerp( previousState, alpha, currentState )
-			XS::Client::DrawFrame( frameTime );
-			XS::Renderer::Update( frameTime/*state*/ );
+			if ( !XS::Common::com_dedicated->GetBool() ) {
+				// alpha = accumulator / dt;
+				// lerp( previousState, alpha, currentState )
+				XS::Client::DrawFrame( frameTime );
+				XS::Renderer::Update( frameTime/*state*/ );
+			}
 
 			const real64_t frameRate = XS::Common::r_framerate->GetReal64();
 			const real64_t renderMsec = 1000.0 / frameRate;
@@ -275,8 +286,10 @@ int main( int argc, char **argv ) {
 		// indent the console for this scope
 		{
 			XS::Indent indent( 1 );
-			XS::Client::Shutdown();
-			XS::Renderer::Shutdown();
+			if ( !XS::Common::com_dedicated->GetBool() ) {
+				XS::Client::Shutdown();
+				XS::Renderer::Shutdown();
+			}
 
 			if ( XS::Cvar::initialised ) {
 				// only write out the configuration if xsngine was able to fully initialise, else we'll be writing

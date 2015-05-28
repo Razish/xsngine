@@ -22,8 +22,6 @@ files = [
 ]
 files = [build_dir + f for f in files]
 
-
-
 # targets
 result = client_env.StaticLibrary( build_dir + 'XSClient' + arch, files )
 Return( "result" )
