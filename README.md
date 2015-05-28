@@ -19,7 +19,7 @@ All code must be compatible with the MIT licence (see LICENSE)
 
 # Related Repos #
 * [xsngine-assets](https://github.com/Razish/xsngine-assets)
-* [TODO: xsngine-tools](https://github.com/Razish/xsngine-tools)
+* [xsngine-tools](https://github.com/Razish/xsngine-tools)
 
 # Compiling #
 
