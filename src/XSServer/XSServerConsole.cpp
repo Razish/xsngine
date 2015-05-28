@@ -1,7 +1,9 @@
+#if defined(XS_OS_LINUX) || defined(XS_OS_MAC)
 #include <unistd.h>
 #include <signal.h>
 #include <fcntl.h>
 #include <sys/time.h>
+#endif
 
 #include "XSCommon/XSCommon.h"
 #include "XSCommon/XSConsole.h"

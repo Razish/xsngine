@@ -113,7 +113,7 @@
 
 #include <string.h> // Needed for strcat and strcpy
 #include "Export.h"
-//#define MAX_FILE_READ_BUFFER 8000 
+//#define MAX_FILE_READ_BUFFER 8000
 #define SHA1_LENGTH 20
 
 
@@ -170,6 +170,7 @@
 #else
 #ifndef TCHAR
 #define TCHAR char
+#define _TCHAR_DEFINED
 #endif
 #ifndef _T
 #define _T(__x) (__x)
