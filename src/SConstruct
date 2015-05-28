@@ -113,7 +113,7 @@ status, rawrevision = commands.getstatusoutput( 'git rev-parse --short HEAD' )
 revision = None if status else rawrevision
 
 if revision:
-	status = commands.getstatusoutput( 'git diff-index --quiet HEAD' )
+	status, dummy = commands.getstatusoutput( 'git diff-index --quiet HEAD' )
 	if status:
 		revision += '*'
 
