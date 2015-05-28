@@ -83,7 +83,9 @@ namespace XS {
 
 		// pop a menu from the stack
 		void MenuManager::PopMenu( void ) {
-			stack.pop_back();
+			if ( !stack.empty() ) {
+				stack.pop_back();
+			}
 			if ( stack.empty() ) {
 				privateIsOpen = false;
 			}
