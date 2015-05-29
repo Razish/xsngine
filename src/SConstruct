@@ -78,6 +78,8 @@ realcxx = ARGUMENTS.get( 'CXX', None )
 
 if 'CC' in os.environ:
 	if 'ccc' in os.environ['CC']:
+		env['CC'] = os.environ['CC']
+		env['CXX'] = os.environ['CXX']
 		# running a scan-build
 		if realcc is None or realcxx is None:
 			raise Exception( 'please specify CC/CXX as such: scons CC=gcc CXX=g++' )
