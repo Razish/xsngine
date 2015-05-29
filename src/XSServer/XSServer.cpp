@@ -62,7 +62,7 @@ namespace XS {
 		}
 
 		void NetworkPump( void ) {
-			if ( !Network::IsConnected() ) {
+			if ( !Network::IsActive() ) {
 				return;
 			}
 

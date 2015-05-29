@@ -43,6 +43,11 @@ namespace XS {
 		);
 
 		// ???
+		bool IsActive(
+			void
+		);
+
+		// ???
 		bool Connect(
 			const char *hostname,
 			uint16_t port

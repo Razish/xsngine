@@ -96,8 +96,19 @@ namespace XS {
 			return connected;
 		}
 
+		bool IsActive( void ) {
+			return peer != nullptr;
+		}
+
 		bool Connect( const char *hostname, uint16_t port ) {
-			port = defaultPort + !isServer;
+			if ( !hostname || !hostname[0] ) {
+				hostname = "127.0.0.1";
+			}
+
+			if ( port ) {
+				port = defaultPort + !isServer;
+			}
+
 			if ( isServer ) {
 				console.Print( PrintLevel::Normal,
 					"Can't connect to a host as the server\n"
@@ -131,21 +142,20 @@ namespace XS {
 				return;
 			}
 
-			console.Print( PrintLevel::Normal,
-				"Closing network connection.\n"
-			);
-
 			if ( isServer ) {
 			}
 			else {
-				peer->CloseConnection( peer->GetSystemAddressFromIndex( 0 ), false );
+				console.Print( PrintLevel::Normal,
+					"Closing network connection.\n"
+				);
+				peer->CloseConnection( peer->GetSystemAddressFromIndex( 0 ), true );
 			}
 
 			connected = false;
 		}
 
 		void Receive( void ) {
-			SDL_assert( connected );
+			SDL_assert( peer );
 
 			Packet *packet = nullptr;
 			while ( (packet = peer->Receive()) ) {

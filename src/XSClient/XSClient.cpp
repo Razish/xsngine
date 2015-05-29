@@ -49,8 +49,9 @@ namespace XS {
 		}
 
 		static void Cmd_Connect( const CommandContext * const context ) {
-			const char *hostname = (*context)[0].c_str();
-			uint16_t port = atoi( (*context)[1].c_str() );
+			size_t numArgs = context->size();
+			const char *hostname = (numArgs >= 1) ? (*context)[0].c_str() : nullptr;
+			uint16_t port = (numArgs >= 2) ? atoi( (*context)[1].c_str() ) : 0u;
 			Network::Connect( hostname, port );
 		}
 
@@ -165,15 +166,15 @@ namespace XS {
 		}
 
 		void NetworkPump( void ) {
-			if ( !Network::IsConnected() ) {
+			if ( !Network::IsActive() ) {
 				return;
 			}
 
-			// generate this frame's movement command
-			Input::GenerateMovementCommand();
-
 			// handle generic messages
 			Network::Receive();
+
+			// generate this frame's movement command
+			Input::GenerateMovementCommand();
 		}
 
 		void RunFrame( real64_t dt ) {
