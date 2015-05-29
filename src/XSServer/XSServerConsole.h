@@ -22,6 +22,10 @@ namespace XS {
 
 #if defined(XS_OS_LINUX) || defined(XS_OS_MAC)
 			struct termios tc;
+#elif defined(XS_OS_WINDOWS)
+			void	*hInput;
+			void	*hOutput;
+			void	*hError;
 #endif
 
 			void Open(
@@ -35,6 +39,12 @@ namespace XS {
 			void Backspace(
 				void
 			) const;
+
+#if defined(XS_OS_WINDOWS)
+			void Show(
+				void
+			);
+#endif
 
 			void Close(
 				void
