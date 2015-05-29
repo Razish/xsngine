@@ -5,9 +5,12 @@
 # options:
 #	debug		generate debug information, value 2 also enables optimisations
 #	force32		force 32 bit target when on 64 bit machine
+#	CC			ONLY USE WITH SCAN-BUILD - specify the underlying C compiler to use
+#	CXX			ONLY USE WITH SCAN-BUILD - specify the underlying C++ compiler to use
 #
 # example:
 #	scons -Q debug=1 force32=1
+#	scan-build scons -Q debug=1 force32=1 CC=gcc CXX=g++
 #
 # envvars:
 #	MORE_WARNINGS	enable additional warnings
@@ -68,13 +71,28 @@ env = Environment(
 	#tools = ['gcc', 'g++', 'ar', 'as', 'gnulink'],
 	ENV = { 'PATH' : os.environ['PATH'] }
 )
-env['CC'] = os.getenv( 'CC' ) or env[ 'CC' ]
-env['CXX'] = os.getenv( 'CXX' ) or env[ 'CXX' ]
+
+# set the proper compiler name
+realcc = ARGUMENTS.get( 'CC', None )
+realcxx = ARGUMENTS.get( 'CXX', None )
+
+if 'CC' in os.environ:
+	if 'ccc' in os.environ['CC']:
+		# running a scan-build
+		if realcc is None or realcxx is None:
+			raise Exception( 'please specify CC/CXX as such: scons CC=gcc CXX=g++' )
+	else:
+		# not a scan-build, do not allow inheriting CC/CXX from outside environment
+		raise Exception( 'please specify CC/CXX as such: scons CC=gcc CXX=g++' )
+elif realcc is None and realcxx is None:
+	realcc = env['CC']
+	realcxx = env['CXX']
+
 env['ENV'].update( x for x in os.environ.items() if x[0].startswith( 'CCC_' ) )
-if 'TERM' in os.environ:
-	env['ENV']['TERM'] = os.environ['TERM']
 
 # prettify the compiler output
+if 'TERM' in os.environ:
+	env['ENV']['TERM'] = os.environ['TERM']
 import sys
 colours = {}
 colours['white'] = '\033[1;97m'
@@ -101,11 +119,11 @@ env['SHLINKCOMSTR'] = env['LINKCOMSTR'] = \
 
 # obtain the compiler version
 import commands
-if env['CC'] == 'cl':
+if realcc == 'cl':
 	# msvc
 	ccversion = env['MSVC_VERSION']
-elif env['CC'] == 'clang' or env['CC'] == 'gcc':
-	status, ccrawversion = commands.getstatusoutput( env['CC'] + ' -dumpversion' )
+elif realcc == 'gcc' or realcc == 'clang':
+	status, ccrawversion = commands.getstatusoutput( realcc + ' -dumpversion' )
 	ccversion = None if status else ccrawversion
 
 # git revision
@@ -131,7 +149,7 @@ elif plat == 'Windows':
 
 # notify the user of the build configuration
 if not env.GetOption( 'clean' ):
-	msg = 'Building for ' + plat + ' ' + str(bits) + ' bits (' + env['CC'] + ' ' + ccversion + ', python ' + platform.python_version() + ')'
+	msg = 'Building for ' + plat + ' ' + str(bits) + ' bits (' + realcc + '/' + realcxx + ' ' + ccversion + ', python ' + platform.python_version() + ')'
 	if debug:
 		msg += ', debug symbols'
 	if debug == 0 or debug == 2:
@@ -240,7 +258,7 @@ elif plat == 'Windows':
 	libs += [lib + 'd' for lib in dlibs]
 
 # compiler switches
-if env['CC'] == 'gcc' or env['CC'] == 'clang':
+if realcc == 'gcc' or realcc == 'clang':
 	env['CPPDEFINES'] = []
 	env['CFLAGS'] = []
 	env['CCFLAGS'] = []
@@ -286,7 +304,7 @@ if env['CC'] == 'gcc' or env['CC'] == 'clang':
 			'-Wswitch-default',
 			'-Wunreachable-code',
 		]
-		if env['CC'] == 'gcc':
+		if realcc == 'gcc':
 			env['CCFLAGS'] += [
 				'-Wdouble-promotion',
 				'-Wsuggest-attribute=const',
@@ -294,7 +312,7 @@ if env['CC'] == 'gcc' or env['CC'] == 'clang':
 			]
 
 	# gcc-specific warnings
-	if env['CC'] == 'gcc' and arch != 'arm':
+	if realcc == 'gcc' and arch != 'arm':
 		env['CCFLAGS'] += [
 			'-Wlogical-op',
 		]
@@ -325,7 +343,7 @@ if env['CC'] == 'gcc' or env['CC'] == 'clang':
 				'-mno-sse2',
 				'-ffloat-store',
 			]
-			if env['CC'] == 'gcc':
+			if realcc == 'gcc':
 				env['CCFLAGS'] += [
 					'-fexcess-precision=standard',
 				]
@@ -365,8 +383,8 @@ if env['CC'] == 'gcc' or env['CC'] == 'clang':
 	if plat == 'Darwin':
 		env['FRAMEWORKS'] = [ 'OpenGL' ]
 
-elif env['CC'] == 'cl':
-	# assume msvc
+elif realcc == 'cl':
+	# msvc
 	env['CFLAGS'] = [
 		'/TC',	# compile as c
 	]
@@ -457,15 +475,15 @@ elif env['CC'] == 'cl':
 
 # debug / release
 if debug == 0 or debug == 2:
-	if env['CC'] == 'gcc' or env['CC'] == 'clang':
+	if realcc == 'gcc' or realcc == 'clang':
 		env['CCFLAGS'] += [
 			'-O3',
 		]
-		if debug == 0 and env['CC'] == 'gcc':
+		if debug == 0 and realcc == 'gcc':
 			env['LINKFLAGS'] += [
 				'-s',	# strip unused symbols
 			]
-	elif env['CC'] == 'cl':
+	elif realcc == 'cl':
 		env['CCFLAGS'] += [
 			'/O2',	# maximise speed
 		]
@@ -480,11 +498,11 @@ if debug == 0 or debug == 2:
 		]
 
 if debug:
-	if env['CC'] == 'gcc' or env['CC'] == 'clang':
+	if realcc == 'gcc' or realcc == 'clang':
 		env['CCFLAGS'] += [
 			'-g3',
 		]
-	elif env['CC'] == 'cl':
+	elif realcc == 'cl':
 		env['CCFLAGS'] += [
 			'/Od',		# disable optimisations
 			'/Z7',		# emit debug information
@@ -523,7 +541,10 @@ env['CPPPATH'] = [
 ]
 
 # arch width
-env['CPPDEFINES'] += [ 'ARCH_WIDTH='+str( bits ), 'ARCH_STRING=\\"'+arch+'\\"' ]
+env['CPPDEFINES'] += [
+	'ARCH_WIDTH=' + str( bits ),
+	'ARCH_STRING=\\"' + arch + '\\"'
+]
 
 if debug == 1:
 	configuration = 'debug'
@@ -532,7 +553,7 @@ elif debug == 2:
 else:
 	configuration = 'release'
 
-build_dir = 'build' + '/' + configuration + '/' + env['CC'] + '/' + str(bits) + '/'
+build_dir = 'build' + '/' + configuration + '/' + realcc + '/' + str(bits) + '/'
 env.VariantDir( build_dir, '.', duplicate = 0 )
 files = [build_dir + f for f in files]
 
