@@ -69,7 +69,7 @@ namespace XS {
 		finalOut += str;
 
 		//TODO: strip colours?
-		fprintf( stdout, finalOut.c_str() );
+		fprintf( stdout, "%s", finalOut.c_str() );
 		buffer->Append( finalOut );
 
 	#if defined(XS_OS_WINDOWS) && defined(_DEBUG)

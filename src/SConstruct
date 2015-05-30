@@ -314,7 +314,7 @@ if realcc == 'gcc' or realcc == 'clang':
 			]
 
 	# gcc-specific warnings
-	if realcc == 'gcc' and arch != 'arm':
+	if realcc == 'gcc' and cmp_version( ccversion, '4.6' ) >= 0 and arch != 'arm':
 		env['CCFLAGS'] += [
 			'-Wlogical-op',
 		]
