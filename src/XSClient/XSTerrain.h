@@ -12,6 +12,8 @@ namespace XS {
 
 	namespace ClientGame {
 
+		class Entity;
+
 		extern Cvar *cg_terrainPersistence;
 		extern Cvar *cg_terrainFrequency;
 		extern Cvar *cg_terrainAmplitude;
@@ -25,7 +27,7 @@ namespace XS {
 			Renderer::Texture		*dirtTexture;
 			Renderer::Texture		*grassTexture;
 			Renderer::Texture		*snowTexture;
-			GameObject				*gameObj;
+			Entity					*entity;
 
 		public:
 			// don't allow default instantiation

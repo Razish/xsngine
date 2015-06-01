@@ -2,9 +2,11 @@
 #include "XSCommon/XSVector.h"
 #include "XSCommon/XSMatrix.h"
 #include "XSCommon/XSConsole.h"
+#include "XSCommon/XSCvar.h"
 #include "XSClient/XSFlyCamera.h"
 #include "XSClient/XSClient.h"
 #include "XSClient/XSClientGame.h"
+#include "XSClient/XSClientGameState.h"
 #include "XSInput/XSInput.h"
 #include "XSInput/XSKeys.h"
 #include "XSRenderer/XSView.h"
@@ -19,6 +21,17 @@ namespace XS {
 	namespace ClientGame {
 
 		void FlyCamera::Update( real64_t dt ) {
+			Cvar *r_zRange = Cvar::Get( "r_zRange" );
+			real32_t zNear = r_zRange->GetReal32( 0 );
+			real32_t zFar = r_zRange->GetReal32( 1 );
+
+			SetupPerspective(
+				glm::radians( cg_fov->GetReal32() ),
+				Renderer::state.window.aspectRatio,
+				zNear,
+				zFar
+			);
+
 			HandleKeyboardInput( dt );
 			HandleMouseInput( dt );
 		}

@@ -105,7 +105,7 @@ namespace XS {
 				hostname = "127.0.0.1";
 			}
 
-			if ( port ) {
+			if ( !port ) {
 				port = defaultPort + !isServer;
 			}
 

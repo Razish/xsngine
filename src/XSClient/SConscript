@@ -8,8 +8,9 @@ client_env = env.Clone()
 files = [
 	'XSClient/XSBaseCamera.cpp',
 	'XSClient/XSClientGame.cpp',
+	'XSClient/XSClientGameState.cpp',
 	'XSClient/XSFlyCamera.cpp',
-	'XSClient/XSGameObject.cpp',
+	'XSClient/XSEntity.cpp',
 	'XSClient/XSMenu.cpp',
 	'XSClient/XSMenuElement.cpp',
 	'XSClient/XSMenuElementButton.cpp',

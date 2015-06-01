@@ -9,9 +9,10 @@
 #include "XSCommon/XSCommand.h"
 #include "XSCommon/XSEvent.h"
 #include "XSClient/XSClientGame.h"
+#include "XSClient/XSClientGameState.h"
 #include "XSClient/XSBaseCamera.h"
 #include "XSClient/XSFlyCamera.h"
-#include "XSClient/XSGameObject.h"
+#include "XSClient/XSEntity.h"
 #include "XSClient/XSTerrain.h"
 #include "XSClient/XSParticleEmitter.h"
 #include "XSInput/XSInput.h"
@@ -29,19 +30,14 @@ namespace XS {
 		static Terrain *terrain = nullptr;
 		FlyCamera *camera = nullptr;
 
-		GameState state = {};
-
-		// always allocate with `new`
-		static std::vector<GameObject *> objects;
-
-		void AddObject( GameObject *obj ) {
-			objects.push_back( obj );
+		void AddObject( Entity *entity ) {
+			state.entities.push_back( entity );
 		}
 
-		void RemoveObject( GameObject *obj ) {
-			auto it = std::find( objects.begin(), objects.end(), obj );
-			if ( it != objects.end() ) {
-				objects.erase( it );
+		void RemoveObject( Entity *obj ) {
+			auto it = std::find( state.entities.begin(), state.entities.end(), obj );
+			if ( it != state.entities.end() ) {
+				state.entities.erase( it );
 			}
 		}
 
@@ -69,17 +65,13 @@ namespace XS {
 			sceneView->projectionMatrix = camera->GetProjectionView();
 		}
 
-		void Init( void ) {
-			RegisterCvars();
-			RegisterCommands();
-
-			sceneView = new Renderer::View( 0u, 0u, false, RenderScene );
+		static void SetupCamera( void ) {
 			camera = new FlyCamera();
 			camera->SetFlySpeed( 0.05f );
 
 			const glm::vec3 cameraPos( 0.0f, 0.0f, 0.0f );
-			const glm::vec3 lookAt( 0.0f, 0.0f, -1.0f );
-			const glm::vec3 up( 0.0f, 1.0f, 0.0f );
+			const glm::vec3 lookAt( 0.0f, 0.0f, -1.0f ); // looking down -Z
+			const glm::vec3 up( 0.0f, 1.0f, 0.0f ); // Y is up
 
 			Cvar *r_zRange = Cvar::Get( "r_zRange" );
 			real32_t zNear = r_zRange->GetReal32( 0 );
@@ -92,51 +84,53 @@ namespace XS {
 				zFar
 			);
 			camera->LookAt( cameraPos, lookAt, up );
+		}
+
+		static void AddObjects( void ) {
+			Entity *monkey = new Entity();
+			monkey->renderObject = Renderer::Model::Register( "models/monkey.xmf" );
+			AddObject( monkey );
+
+			Entity *torus = new Entity();
+			torus->renderObject = Renderer::Model::Register( "models/torus.xmf" );
+			AddObject( torus );
+
+			Entity *pe = new ParticleEmitter( cg_numParticles->GetInt32(), 1000u, "textures/fx/orb.png" );
+			AddObject( pe );
+		}
+
+		void Init( void ) {
+			RegisterCvars();
+			RegisterCommands();
+
+			sceneView = new Renderer::View( 0u, 0u, false, RenderScene );
+			SetupCamera();
 
 			terrain = new Terrain( "textures/terrain.raw" );
 
-			GameObject *monkey = new GameObject();
-			monkey->renderObject = Renderer::Model::Register( "models/monkey.xmf" );
-			objects.push_back( monkey );
-
-			GameObject *torus = new GameObject();
-			torus->renderObject = Renderer::Model::Register( "models/torus.xmf" );
-			objects.push_back( torus );
-
-			GameObject *pe = new ParticleEmitter( cg_numParticles->GetInt32(), 1000u, "textures/fx/orb.png" );
-			objects.push_back( pe );
+			AddObjects();
 		}
 
 		void Shutdown( void ) {
+			for ( auto entity : state.entities ) {
+				delete entity;
+			}
 			delete terrain;
 			delete sceneView;
-			for ( auto object : objects ) {
-				delete object;
-			}
 		}
 
 		void RunFrame( real64_t dt ) {
-			for ( auto &object : objects ) {
-				object->Update( dt );
+			for ( auto &entity : state.entities ) {
+				entity->Update( dt );
 			}
 		}
 
 		void DrawFrame( real64_t dt ) {
-			Cvar *r_zRange = Cvar::Get( "r_zRange" );
-			real32_t zNear = r_zRange->GetReal32( 0 );
-			real32_t zFar = r_zRange->GetReal32( 1 );
-
-			camera->SetupPerspective(
-				glm::radians( cg_fov->GetReal32() ),
-				Renderer::state.window.aspectRatio,
-				zNear,
-				zFar
-			);
 			camera->Update( dt );
 
 			// add objects to scene
-			for ( const auto &object : objects ) {
-				sceneView->AddObject( object->renderObject );
+			for ( const auto &entity : state.entities ) {
+				entity->AddToScene( sceneView );
 			}
 
 			// add lights to scene

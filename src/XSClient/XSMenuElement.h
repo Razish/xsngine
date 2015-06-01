@@ -2,6 +2,8 @@
 
 #include <string>
 
+#include "XSCommon/XSVector.h"
+
 namespace XS {
 
 	class TokenParser;

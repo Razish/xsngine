@@ -22,6 +22,9 @@
     <Filter Include="XSNetwork">
       <UniqueIdentifier>{da324153-809f-4740-b49e-81446edfa947}</UniqueIdentifier>
     </Filter>
+    <Filter Include="XSServer">
+      <UniqueIdentifier>{901ec2dd-5ee7-44da-8d21-ccb39a356787}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="XSClient\XSClient.cpp">
@@ -150,17 +153,8 @@
     <ClCompile Include="XSClient\XSFlyCamera.cpp">
       <Filter>XSClient</Filter>
     </ClCompile>
-    <ClCompile Include="XSClient\XSGameObject.cpp">
-      <Filter>XSClient</Filter>
-    </ClCompile>
     <ClCompile Include="XSInput\XSMouse.cpp">
       <Filter>XSInput</Filter>
-    </ClCompile>
-    <ClCompile Include="XSNetwork\XSNetAddress.cpp">
-      <Filter>XSNetwork</Filter>
-    </ClCompile>
-    <ClCompile Include="XSNetwork\XSSocket.cpp">
-      <Filter>XSNetwork</Filter>
     </ClCompile>
     <ClCompile Include="XSSystem\XSUnix.cpp">
       <Filter>XSSystem</Filter>
@@ -185,6 +179,39 @@
     </ClCompile>
     <ClCompile Include="XSClient\XSMenuManager.cpp">
       <Filter>XSClient</Filter>
+    </ClCompile>
+    <ClCompile Include="XSServer\XSServer.cpp">
+      <Filter>XSServer</Filter>
+    </ClCompile>
+    <ClCompile Include="XSServer\XSServerConsole.cpp">
+      <Filter>XSServer</Filter>
+    </ClCompile>
+    <ClCompile Include="XSServer\XSServerGame.cpp">
+      <Filter>XSServer</Filter>
+    </ClCompile>
+    <ClCompile Include="XSClient\XSClientGameState.cpp">
+      <Filter>XSClient</Filter>
+    </ClCompile>
+    <ClCompile Include="XSClient\XSEntity.cpp">
+      <Filter>XSClient</Filter>
+    </ClCompile>
+    <ClCompile Include="XSClient\XSMenuElementButton.cpp">
+      <Filter>XSClient</Filter>
+    </ClCompile>
+    <ClCompile Include="XSClient\XSMenuElementText.cpp">
+      <Filter>XSClient</Filter>
+    </ClCompile>
+    <ClCompile Include="XSNetwork\XSNetwork.cpp">
+      <Filter>XSNetwork</Filter>
+    </ClCompile>
+    <ClCompile Include="XSClient\XSParticleEmitter.cpp">
+      <Filter>XSClient</Filter>
+    </ClCompile>
+    <ClCompile Include="XSRenderer\XSParticle.cpp">
+      <Filter>XSRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="XSServer\XSEntity.cpp">
+      <Filter>XSServer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -320,17 +347,8 @@
     <ClInclude Include="XSClient\XSFlyCamera.h">
       <Filter>XSClient</Filter>
     </ClInclude>
-    <ClInclude Include="XSClient\XSGameObject.h">
-      <Filter>XSClient</Filter>
-    </ClInclude>
     <ClInclude Include="XSInput\XSMouse.h">
       <Filter>XSInput</Filter>
-    </ClInclude>
-    <ClInclude Include="XSNetwork\XSNetAddress.h">
-      <Filter>XSNetwork</Filter>
-    </ClInclude>
-    <ClInclude Include="XSNetwork\XSSocket.h">
-      <Filter>XSNetwork</Filter>
     </ClInclude>
     <ClInclude Include="XSClient\XSClientConsole.h">
       <Filter>XSClient</Filter>
@@ -359,11 +377,47 @@
     <ClInclude Include="XSClient\XSMenuManager.h">
       <Filter>XSClient</Filter>
     </ClInclude>
+    <ClInclude Include="XSServer\XSServer.h">
+      <Filter>XSServer</Filter>
+    </ClInclude>
+    <ClInclude Include="XSServer\XSServerConsole.h">
+      <Filter>XSServer</Filter>
+    </ClInclude>
+    <ClInclude Include="XSServer\XSServerGame.h">
+      <Filter>XSServer</Filter>
+    </ClInclude>
+    <ClInclude Include="XSClient\XSClientGameState.h">
+      <Filter>XSClient</Filter>
+    </ClInclude>
+    <ClInclude Include="XSClient\XSEntity.h">
+      <Filter>XSClient</Filter>
+    </ClInclude>
+    <ClInclude Include="XSClient\XSMenuElementButton.h">
+      <Filter>XSClient</Filter>
+    </ClInclude>
+    <ClInclude Include="XSClient\XSMenuElementText.h">
+      <Filter>XSClient</Filter>
+    </ClInclude>
+    <ClInclude Include="XSNetwork\XSNetwork.h">
+      <Filter>XSNetwork</Filter>
+    </ClInclude>
+    <ClInclude Include="XSClient\XSParticleEmitter.h">
+      <Filter>XSClient</Filter>
+    </ClInclude>
+    <ClInclude Include="XSRenderer\XSParticle.h">
+      <Filter>XSRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="XSServer\XSEntity.h">
+      <Filter>XSServer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="SConstruct" />
     <None Include="XSClient\SConscript">
       <Filter>XSClient</Filter>
+    </None>
+    <None Include="XSServer\SConscript">
+      <Filter>XSServer</Filter>
     </None>
   </ItemGroup>
 </Project>

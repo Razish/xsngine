@@ -1,5 +1,9 @@
 #pragma once
 
+#include <string>
+
+#include "XSCommon/XSVector.h"
+
 namespace XS {
 
 	namespace Client {

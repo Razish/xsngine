@@ -4,7 +4,6 @@
 
 #include "XSCommon/XSCommand.h"
 #include "XSCommon/XSTimer.h"
-#include "XSCommon/XSVector.h"
 
 namespace XS {
 

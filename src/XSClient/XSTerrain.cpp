@@ -3,7 +3,7 @@
 #include "XSCommon/XSConsole.h"
 #include "XSCommon/XSCvar.h"
 #include "XSClient/XSClientGame.h"
-#include "XSClient/XSGameObject.h"
+#include "XSClient/XSEntity.h"
 #include "XSClient/XSTerrain.h"
 #include "XSClient/XSPerlin.h"
 #include "XSRenderer/XSRenderer.h"
@@ -48,8 +48,8 @@ namespace XS {
 				}
 			}
 
-			gameObj = new GameObject();
-			gameObj->renderObject = Renderer::Model::Register( nullptr );
+			entity = new Entity();
+			entity->renderObject = Renderer::Model::Register( nullptr );
 			Renderer::Mesh *mesh = new Renderer::Mesh();
 			const real32_t scale = 64.0f;
 
@@ -111,8 +111,8 @@ namespace XS {
 
 			mesh->Upload();
 
-			dynamic_cast<Renderer::Model *>( gameObj->renderObject )->meshes.push_back( mesh );
-			AddObject( gameObj );
+			dynamic_cast<Renderer::Model *>( entity->renderObject )->meshes.push_back( mesh );
+			AddObject( entity );
 
 			// create shader program
 			static const Renderer::VertexAttribute attributes[] = {
@@ -177,8 +177,7 @@ namespace XS {
 		}
 
 		Terrain::~Terrain() {
-			RemoveObject( gameObj );
-			delete gameObj;
+			RemoveObject( entity );
 			delete program;
 			delete dirtTexture;
 			delete grassTexture;

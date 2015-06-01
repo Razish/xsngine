@@ -1,11 +1,23 @@
 #pragma once
 
+#include <vector>
+
 namespace XS {
 
 	namespace ServerGame {
 
+		class Entity;
+
+		enum GameType : uint32_t {
+			DM,
+			TeamDM,
+			CTF,
+		};
+
 		extern struct GameState {
-			uint32_t dummy;
+			GameType					gameType;
+			std::vector<Entity *>		entities;
+			uint32_t					numEntities;
 		} state;
 
 		// initialise the ServerGame
@@ -16,6 +28,11 @@ namespace XS {
 		// run a frame, simulate entities
 		void RunFrame(
 			real64_t dt
+		);
+
+		// ???
+		void GenerateSnapshot(
+			void
 		);
 
 	} // namespace ServerGame

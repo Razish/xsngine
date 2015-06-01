@@ -9,7 +9,7 @@
 #include "XSCommon/XSError.h"
 #include "XSCommon/XSConsole.h"
 #include "XSClient/XSClient.h"
-#include "XSClient/XSClientGame.h"
+#include "XSClient/XSClientGameState.h"
 #include "XSInput/XSInput.h"
 #include "XSInput/XSKeys.h"
 #include "XSInput/XSMouse.h"

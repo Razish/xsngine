@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "XSClient/XSGameObject.h"
+#include "XSClient/XSEntity.h"
 #include "XSRenderer/XSParticle.h"
 #include "XSRenderer/XSRenderable.h"
 
@@ -22,7 +22,7 @@ namespace XS {
 
 	namespace ClientGame {
 
-		class ParticleEmitter : public GameObject, public Renderer::Renderable {
+		class ParticleEmitter : public Entity, public Renderer::Renderable {
 		private:
 			// only iterate via index (up to numParticles) and treat pool as contiguous memory
 			// the list of particles is sorted by alive/dead status to improve performance and avoid the overhead of

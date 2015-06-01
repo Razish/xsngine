@@ -148,10 +148,8 @@
     <File Name="XSClient/XSBaseCamera.cpp"/>
     <File Name="XSClient/XSFlyCamera.cpp"/>
     <File Name="XSClient/XSFlyCamera.h"/>
-    <File Name="XSClient/XSGameObject.h"/>
     <File Name="XSClient/XSTerrain.cpp"/>
     <File Name="XSClient/XSTerrain.h"/>
-    <File Name="XSClient/XSGameObject.cpp"/>
     <File Name="XSClient/XSMenu.cpp"/>
     <File Name="XSClient/XSMenu.h"/>
     <File Name="XSClient/XSMenuElement.cpp"/>
@@ -168,6 +166,11 @@
     <File Name="XSClient/XSMenuElementButton.h"/>
     <File Name="XSClient/XSMenuElementText.cpp"/>
     <File Name="XSClient/XSMenuElementText.h"/>
+    <File Name="XSClient/XSEntity.h"/>
+    <File Name="XSClient/XSClientGameState.cpp"/>
+    <File Name="XSClient/XSClientGameState.h"/>
+    <File Name="XSClient/XSEntity.cpp"/>
+    <File Name="XSCommon/XSCommand.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="XSInput">
     <File Name="XSInput/XSInputField.cpp"/>
@@ -191,7 +194,6 @@
     <File Name="XSCommon/XSConsole.h"/>
     <File Name="XSCommon/XSCommon.h"/>
     <File Name="XSCommon/XSConsole.cpp"/>
-    <File Name="XSCommon/XSCommand.cpp"/>
     <File Name="XSCommon/XSGlobals.h"/>
     <File Name="XSCommon/XSColours.cpp"/>
     <File Name="XSCommon/XSMessageBuffer.cpp"/>
@@ -582,6 +584,10 @@
     <File Name="XSServer/XSServerGame.h"/>
     <File Name="XSServer/XSServerConsole.cpp"/>
     <File Name="XSServer/XSServerConsole.h"/>
+    <File Name="XSServer/XSEntity.cpp"/>
+    <File Name="XSServer/XSEntity.h"/>
+    <File Name="XSServer/XSEntitySphere.cpp"/>
+    <File Name="XSServer/XSEntitySphere.h"/>
   </VirtualDirectory>
   <Settings Type="Dynamic Library">
     <GlobalSettings>
@@ -599,7 +605,7 @@
       </Compiler>
       <Linker Options="" Required="yes"/>
       <ResourceCompiler Options="" Required="no"/>
-      <General OutputFile="" IntermediateDirectory="./Debug" Command="xsngine" CommandArguments="+set com_path &quot;../bin&quot; +set com_dedicated &quot;0&quot;" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="." PauseExecWhenProcTerminates="yes" IsGUIProgram="yes" IsEnabled="yes"/>
+      <General OutputFile="" IntermediateDirectory="./Debug" Command="xsngine" CommandArguments="+set com_path &quot;../bin&quot; +set com_dedicated &quot;1&quot;" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="." PauseExecWhenProcTerminates="yes" IsGUIProgram="yes" IsEnabled="yes"/>
       <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
         <![CDATA[]]>
       </Environment>

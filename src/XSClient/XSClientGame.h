@@ -1,23 +1,16 @@
 #pragma once
 
-#include "XSCommon/XSVector.h"
-
 namespace XS {
 
 	class Cvar;
 
 	namespace ClientGame {
 
-		class GameObject;
+		class Entity;
 		class FlyCamera;
 
 		extern Cvar *cg_fov;
 		extern FlyCamera *camera;
-
-		extern struct GameState {
-			vector3 viewAngles;
-			vector3 viewDelta;
-		} state;
 
 		// initialise the ClientGame, create a View and load all resources etc
 		void Init(
@@ -36,12 +29,12 @@ namespace XS {
 
 		// add an object to the game
 		void AddObject(
-			GameObject *obj
+			Entity *obj
 		);
 
 		// remove an object from the game
 		void RemoveObject(
-			GameObject *obj
+			Entity *obj
 		);
 
 		void MouseMotionEvent(

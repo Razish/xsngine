@@ -55,10 +55,16 @@ namespace XS {
 			Network::Init();
 
 			serverConsole = new ServerConsole();
+
+			ServerGame::Init();
 		}
 
 		void Shutdown( void ) {
 			delete serverConsole;
+		}
+
+		static void BroadcastState( void ) {
+			ServerGame::GenerateSnapshot();
 		}
 
 		void NetworkPump( void ) {
@@ -68,6 +74,11 @@ namespace XS {
 
 			// handle generic messages
 			Network::Receive();
+
+			//TODO: simulate player input
+
+			// issue a snapshot
+			BroadcastState();
 		}
 
 		void RunFrame( real64_t dt ) {
