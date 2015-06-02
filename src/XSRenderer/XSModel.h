@@ -23,7 +23,7 @@ namespace XS {
 		class Model : public Renderable {
 		private:
 			ModelType	type;
-			uint32_t	refCount;
+			uint32_t	refCount = 0u; // misnomer, actually counts how many duplicates exist, not how many instances
 
 		public:
 			std::string			modelPath;

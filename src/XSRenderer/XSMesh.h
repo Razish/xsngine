@@ -19,25 +19,20 @@ namespace XS {
 			std::vector<vector3>	 vertices;
 			std::vector<vector3>	 normals;
 			std::vector<vector2>	 UVs;
-			Backend::Buffer			*vertexBuffer;
+			Backend::Buffer			*vertexBuffer = nullptr;
 
 			std::vector<uint32_t>	 indices;
-			Backend::Buffer			*indexBuffer;
+			Backend::Buffer			*indexBuffer = nullptr;
 
-			ShaderProgram			*shader;
-			Material				*material;
-			Texture					*texture;
+			ShaderProgram			*shader = nullptr;
+			Material				*material = nullptr;
+			Texture					*texture = nullptr;
 
 			// upload mesh to GPU
 			void Upload(
 				void
 			);
 
-			Mesh()
-			: vertexBuffer( nullptr ), indexBuffer( nullptr ), shader( nullptr ), material( nullptr ),
-				texture( nullptr )
-			{
-			}
 			~Mesh();
 		};
 

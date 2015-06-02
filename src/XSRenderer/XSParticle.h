@@ -16,11 +16,11 @@ namespace XS {
 		public:
 			Particle();
 
-			int32_t		life; // in milliseconds
-			glm::vec3	position;
-			glm::vec3	velocity;
-			real64_t	size; // square
-			glm::vec4	colour;
+			int32_t		life = 0; // in milliseconds
+			glm::vec3	position{ 0.0f, 0.0f, 0.0f };
+			glm::vec3	velocity{ 0.0f, 1.0f, 0.0f };
+			real64_t	size = 1.0f; // square
+			glm::vec4	colour{ 1.0f, 1.0f, 1.0f, 1.0f };
 
 			matrix4		transform;
 

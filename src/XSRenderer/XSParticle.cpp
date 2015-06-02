@@ -5,10 +5,7 @@ namespace XS {
 
 	namespace Renderer {
 
-		Particle::Particle()
-		: life( 0 ), position( 0.0f, 0.0f, 0.0f ), velocity( 0.0f, 0.0f, 0.0f ), size( 1.0f ),
-			colour( 1.0f, 1.0f, 1.0f, 1.0f )
-		{
+		Particle::Particle() {
 			real32_t speed = 8.0f + (2.0f * (rand() / static_cast<real32_t>( RAND_MAX )));
 
 			real32_t r;

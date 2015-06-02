@@ -45,13 +45,8 @@ namespace XS {
 
 		// a ShaderProgram has a list of type ProgramVariable for uniforms
 		struct ProgramVariable {
-			const char		*name;
-			int				 location;
-
-			ProgramVariable()
-			: name( nullptr ), location( 0 )
-			{
-			}
+			const char		*name = nullptr;
+			int				 location = 0;
 		};
 
 

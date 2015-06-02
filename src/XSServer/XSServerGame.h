@@ -15,7 +15,7 @@ namespace XS {
 		};
 
 		extern struct GameState {
-			GameType					gameType;
+			GameType					gameType = GameType::DM;
 			std::vector<Entity *>		entities;
 			uint32_t					numEntities;
 		} state;

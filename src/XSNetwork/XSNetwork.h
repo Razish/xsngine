@@ -13,8 +13,8 @@ namespace XS {
 
 		struct XSPacket {
 			GameMessage		 msg;
-			const void		*data;
-			size_t			 dataLen;
+			const void		*data = nullptr;
+			size_t			 dataLen = 0u;
 
 			// don't allow default instantiation
 			XSPacket() = delete;
@@ -22,7 +22,7 @@ namespace XS {
 			XSPacket& operator=( const XSPacket& ) = delete;
 
 			XSPacket( GameMessage msg )
-			: msg( msg ), data( nullptr ), dataLen( 0u )
+			: msg( msg )
 			{
 			}
 		};

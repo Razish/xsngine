@@ -12,11 +12,6 @@ namespace XS {
 	struct matrix3 {
 		real32_t	data[9];
 
-		// xtors
-		matrix3() {
-			identity();
-		}
-
 		// string representation of the matrix3 object
 		std::string tostring(
 			void

@@ -29,15 +29,10 @@ namespace XS {
 				Backend::Buffer	*buffer;
 			};
 
-			ShaderProgram				*shaderProgram;
+			ShaderProgram				*shaderProgram = nullptr;
 			std::vector<SamplerBinding>	 samplerBindings;
 			std::vector<BufferBinding>	 bufferBindings;
-			uint32_t					 flags;
-
-			Material()
-			: shaderProgram( nullptr ), flags( 0u )
-			{
-			}
+			uint32_t					 flags = 0u;
 
 			// use this material for subsequent rendering
 			void Bind(

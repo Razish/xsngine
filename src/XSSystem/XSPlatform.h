@@ -84,10 +84,6 @@
 	#error "Operating system not supported"
 #endif
 
-#if !defined(ARCH_STRING)
-	#error "Architecture not supported"
-#endif
-
 #if !defined(PATH_SEP)
 	#error "PATH_SEP not defined"
 #endif
