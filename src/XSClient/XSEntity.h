@@ -4,7 +4,7 @@ namespace XS {
 
 	namespace Renderer {
 		class Renderable;
-		class View;
+		struct View;
 	}
 
 	namespace ClientGame {
