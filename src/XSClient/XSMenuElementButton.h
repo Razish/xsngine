@@ -16,18 +16,18 @@ namespace XS {
 		class MenuElementButton : public MenuElement {
 		private:
 			struct {
-				Renderer::Material	*background;
-				Renderer::Font		*font;
+				Renderer::Material	*background = nullptr;
+				Renderer::Font		*font = nullptr;
 			} assets;
 
 			vector2			size;
 			std::string		texture;
 			std::string		cmd;
 			std::string		text;
-			uint16_t		pointSize;
+			uint16_t		pointSize = 16u;
 
 			struct Properties {
-				bool			centered;
+				bool			centered = false;
 			} properties;
 
 			bool MouseWithinBounds(

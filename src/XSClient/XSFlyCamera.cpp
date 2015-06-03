@@ -103,10 +103,6 @@ namespace XS {
 			UpdateProjectionViewTransform();
 		}
 
-		void FlyCamera::SetFlySpeed( real32_t speed ) {
-			flySpeed = speed;
-		}
-
 	} // namespace ClientGame
 
 } // namespace XS

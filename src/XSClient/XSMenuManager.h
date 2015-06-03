@@ -21,13 +21,13 @@ namespace XS {
 			// list of all loaded menus
 			std::unordered_map<std::string, Menu *>	menus;
 
-			bool	privateIsOpen;
+			bool	privateIsOpen = false;
 			vector2	cursorPos; // [0.0, 1.0]
 
 			struct {
-				Renderer::Material	*cursor;
+				Renderer::Material	*cursor = nullptr;
 			} assets;
-			uint32_t cursorWidth, cursorHeight;
+			uint32_t cursorWidth = 0u, cursorHeight = 0u;
 
 		public:
 			MenuManager();

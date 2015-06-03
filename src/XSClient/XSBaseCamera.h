@@ -11,7 +11,11 @@ namespace XS {
 
 		class BaseCamera {
 		public:
-			BaseCamera();
+			// don't allow default instantiation
+			BaseCamera() = delete;
+			BaseCamera( const BaseCamera& ) = delete;
+			BaseCamera& operator=( const BaseCamera& ) = delete;
+
 			BaseCamera(
 				const glm::vec3 &position
 			);
@@ -19,7 +23,9 @@ namespace XS {
 				const glm::mat4 &transform
 			);
 
-			virtual void Update( real64_t dt ) = 0;
+			virtual void Update(
+				real64_t dt
+			) = 0;
 
 			inline const glm::mat4 &GetTransform( void ) const {
 				return worldTransform;

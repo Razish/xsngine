@@ -22,10 +22,6 @@ namespace XS {
 			std::memset( &tooltip, 0, sizeof(tooltip) );
 		}
 
-		MenuElement::~MenuElement() {
-			// ...
-		}
-
 		void MenuElement::ParseTooltip( TokenParser *parser, const char *fileName ) {
 			const char *tok = nullptr;
 			parser->ParseString( &tok );

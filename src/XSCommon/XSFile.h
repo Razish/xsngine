@@ -52,12 +52,12 @@ namespace XS {
 			void
 		);
 
-		FILE		*file;
+		FILE		*file = nullptr;
 		FileMode	 mode;
 
 	public:
-		long	length;
-		bool	open;
+		long	length = 0;
+		bool	open = false;
 		char	path[FILENAME_MAX]; //TODO: XS_MAX_FILENAME
 
 		// initialise the filesystem

@@ -23,26 +23,24 @@ namespace XS {
 		protected:
 			MenuElement();
 
-			Menu			*parent;
+			Menu			*parent = nullptr;
 			vector2			 position;
 			std::string		 name;
 			struct Properties {
-				bool			hidden;
-				bool			decorative;
+				bool			hidden = false;
+				bool			decorative = false;
 			} properties;
 
 			struct Tooltip {
-				Renderer::Font	*font;
-				uint16_t		 pointSize;
+				Renderer::Font	*font = nullptr;
+				uint16_t		 pointSize = 16u;
 				std::string		 text;
-				bool			 mouseHovering;
-				real64_t		 lastMouseTime;
+				bool			 mouseHovering = false;
+				real64_t		 lastMouseTime = 0.0;
 				vector2			 lastMousePos;
 			} tooltip;
 
 		public:
-			virtual ~MenuElement() = 0;
-
 			// determine whether or not events should be consumed by this element
 			bool MouseWithinBounds(
 				const vector2 &mousePos,

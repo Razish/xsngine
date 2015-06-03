@@ -21,16 +21,18 @@ namespace XS {
 		// driver for global Console instance to handle client interaction/rendering
 		extern class ClientConsole {
 		private:
-			Console			*console;
-			bool			 visible;
-			int32_t			 scrollAmount;
-			uint32_t		 lineCount;
-			Cvar 			*con_fontSize;
-			InputField		*input;
-			Renderer::View	*view;
-			Renderer::Font	*font;
+			Console			*console = nullptr;
+			bool			 visible = false;
+			int32_t			 scrollAmount = 0;
+			uint32_t		 lineCount = 0u;
+			Cvar 			*con_fontSize = nullptr;
+			InputField		*input = nullptr;
+			Renderer::View	*view = nullptr;
+			Renderer::Font	*font = nullptr;
 
-			void Scroll( int amount ); // negative for down, positive for up
+			void Scroll(
+				int amount // negative for down, positive for up
+			);
 
 		public:
 			// instantiate the ClientConsole for a specified Console object

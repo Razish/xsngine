@@ -1,12 +1,13 @@
 #pragma once
 
 #include "XSCommon/XSMessageBuffer.h"
+
 namespace XS {
 
 	enum class PrintLevel {
 		Normal,
 		Debug,
-		Developer
+		Developer,
 	};
 
 	extern struct Console {

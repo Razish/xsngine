@@ -13,14 +13,7 @@ namespace XS {
 
 	namespace ClientGame {
 
-		BaseCamera::BaseCamera()
-		: BaseCamera( glm::mat4() )
-		{
-		}
-
-		BaseCamera::BaseCamera( const glm::vec3 &position )
-		: BaseCamera()
-		{
+		BaseCamera::BaseCamera( const glm::vec3 &position ) {
 			worldTransform[3] = glm::vec4( position, 1.0 );
 			perspectiveSet = false;
 		}
@@ -38,7 +31,7 @@ namespace XS {
 
 		void BaseCamera::SetPosition( const glm::vec3 &position)
 		{
-			worldTransform[3] = glm::vec4( position, 1 );
+			worldTransform[3] = glm::vec4( position, 1.0f );
 			UpdateProjectionViewTransform();
 		}
 

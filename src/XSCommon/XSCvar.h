@@ -12,12 +12,12 @@ namespace XS {
 	#define CVAR_READONLY	(0x0008u)	// can only be set by code
 
 	struct CvarValue {
-		std::string 	str;
-		int32_t			int32;
-		uint32_t		uint32;
-		real32_t		real32;
-		real64_t		real64;
-		bool			boolean;
+		std::string 	str = "";
+		int32_t			int32 = 0;
+		uint32_t		uint32 = 0u;
+		real32_t		real32 = 0.0f;
+		real64_t		real64 = 0.0;
+		bool			boolean = false;
 	};
 
 	class Cvar {
@@ -33,13 +33,13 @@ namespace XS {
 		);
 		Cvar();
 
-		std::string				name;
-		std::string				defaultStr;
-		std::string				description; // short description of the cvar
-		std::string				fullString;
+		std::string				name = "";
+		std::string				defaultStr = "";
+		std::string				description = ""; // short description of the cvar
+		std::string				fullString = "";
 		std::vector<CvarValue>	values; // separated by whitespace
-		uint32_t				flags; // archive, read-only, etc
-		bool					modified; // has been modified after creation (by user or code)
+		uint32_t				flags = 0u; // archive, read-only, etc
+		bool					modified = false; // has been modified after creation (by user or code)
 
 	public:
 		// indicates whether the game has been initialised for cvars that may only be set on the command line

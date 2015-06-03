@@ -66,8 +66,7 @@ namespace XS {
 		}
 
 		static void SetupCamera( void ) {
-			camera = new FlyCamera();
-			camera->SetFlySpeed( 0.05f );
+			camera = new FlyCamera( 0.05f );
 
 			const glm::vec3 cameraPos( 0.0f, 0.0f, 0.0f );
 			const glm::vec3 lookAt( 0.0f, 0.0f, -1.0f ); // looking down -Z

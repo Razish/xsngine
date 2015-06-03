@@ -10,9 +10,9 @@ namespace XS {
 	class Logger {
 	private:
 		std::vector<std::string>	queue;
-		File						*f;
-		std::string					filename;
-		bool						timestamp;
+		File						*f = nullptr;
+		std::string					filename = "";
+		bool						timestamp = false;
 
 		// write queued messages out to file once we have one open
 		void PrintQueued(

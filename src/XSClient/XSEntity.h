@@ -13,12 +13,8 @@ namespace XS {
 		private:
 
 		public:
-			Renderer::Renderable	*renderObject;
+			Renderer::Renderable	*renderObject = nullptr;
 
-			Entity()
-			: renderObject( nullptr )
-			{
-			}
 			virtual ~Entity();
 
 			virtual void Update(

@@ -16,22 +16,22 @@ namespace XS {
 		class MenuElementSlider : public MenuElement {
 		private:
 			struct {
-				Renderer::Material	*thumb;
-				Renderer::Material	*bar;
+				Renderer::Material	*thumb = nullptr;
+				Renderer::Material	*bar = nullptr;
 			} assets;
 
 			vector2			size;
 			std::string		cvarName;
 			struct {
-				real32_t bottom, top;
+				real32_t bottom = 0.0, top = 1.0;
 			} range;
 			std::string		postExecCommand;
-			bool			updatingValue;
+			bool			updatingValue = false;
 
 			struct Properties {
-				bool			centered;
-				bool			vertical;
-				bool			integral;
+				bool			centered = false;
+				bool			vertical = false;
+				bool			integral = false;
 			} properties;
 
 			bool MouseWithinBounds(

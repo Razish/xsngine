@@ -28,23 +28,23 @@ namespace XS {
 			// the list of particles is sorted by alive/dead status to improve performance and avoid the overhead of
 			//	object construction/destruction and resizing the pool
 			std::vector<Renderer::Particle>	pool;
-			uint32_t						numParticles; // used as head
-			uint32_t						count;
-			uint32_t						life; // in milliseconds
-			real64_t						emitTime;
-			real64_t						emitRate;
+			uint32_t						numParticles = 0u; // used as head
+			uint32_t						count = 10u;
+			uint32_t						life = 1000u; // in milliseconds
+			real64_t						emitTime = 1.0;
+			real64_t						emitRate = 1.0;
 
 			struct Vertex {
 				glm::vec4	position;
 				glm::vec2	uv;
 				glm::vec4	colour;
 			};
-			Renderer::Backend::Buffer		*vertexBuffer;
-			Renderer::Backend::Buffer		*indexBuffer;
+			Renderer::Backend::Buffer		*vertexBuffer = nullptr;
+			Renderer::Backend::Buffer		*indexBuffer = nullptr;
 
-			Renderer::ShaderProgram			*shader;
-			Renderer::Texture				*texture;
-			Renderer::Material				*material;
+			Renderer::ShaderProgram			*shader = nullptr;
+			Renderer::Texture				*texture = nullptr;
+			Renderer::Material				*material = nullptr;
 
 #ifdef PARTICLE_SORT_ALL
 			// sorts the pool by alive status, then by texture

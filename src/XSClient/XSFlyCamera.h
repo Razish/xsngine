@@ -8,32 +8,29 @@ namespace XS {
 
 		class FlyCamera : public BaseCamera {
 		public:
-			FlyCamera()
-			: FlyCamera( 1.0f )
-			{
-				//viewButtonClicked = false;
-			}
-			FlyCamera( real32_t flySpeed )
-			: BaseCamera(), flySpeed( flySpeed )
+			inline FlyCamera( real32_t speed )
+			: BaseCamera( glm::vec3() ), flySpeed( speed )
 			{
 			}
-			~FlyCamera() {
-			};
 
-			virtual void Update( real64_t dt );
+			real32_t	flySpeed;
 
-			void SetFlySpeed( real32_t speed );
-			inline real32_t GetFlySpeed( void ) const {
-				return flySpeed;
-			}
+			void Update(
+				real64_t dt
+			);
 
 		protected:
-			void HandleKeyboardInput( real64_t dt );
-			void HandleMouseInput( real64_t dt );
-
-			void CalculateRotation( real64_t dt, real64_t xOffset, real64_t yOffset);
-
-			real32_t flySpeed;
+			void HandleKeyboardInput(
+				real64_t dt
+			);
+			void HandleMouseInput(
+				real64_t dt
+			);
+			void CalculateRotation(
+				real64_t dt,
+				real64_t xOffset,
+				real64_t yOffset
+			);
 		};
 
 	} // namespace ClientGame

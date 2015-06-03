@@ -16,15 +16,15 @@ namespace XS {
 		class MenuElementText : public MenuElement {
 		private:
 			struct {
-				Renderer::Font		*font;
+				Renderer::Font		*font = nullptr;
 			} assets;
 
 			std::string		text;
-			uint16_t		pointSize;
+			uint16_t		pointSize = 16u;
 
 			struct Properties {
-				bool			centered;
-				bool			vertical;
+				bool			centered = false;
+				bool			vertical = false;
 			} properties;
 
 			void ParseProperties(
