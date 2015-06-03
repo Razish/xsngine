@@ -169,7 +169,6 @@ namespace XS {
 			char key;
 			int avail = read( STDIN_FILENO, &key, 1 );
 			if ( avail != -1 ) {
-				size_t size = 0u;
 				//FIXME: what are these magic numbers?
 				if ( key == ec_erase || key == 127 || key == 8 ) {
 					if ( input.head > 0u ) {
@@ -188,8 +187,8 @@ namespace XS {
 						std::memset( input.buffer, 0, sizeof(input.buffer) );
 						input.head = 0u;
 
-						size = write( STDOUT_FILENO, &key, 1 );
-						size = write( STDOUT_FILENO, promptText, strlen( promptText ) );
+						write( STDOUT_FILENO, &key, 1 );
+						write( STDOUT_FILENO, promptText, strlen( promptText ) );
 
 						return text;
 					}
@@ -245,7 +244,7 @@ namespace XS {
 					input.head = sizeof(input.buffer) - 1;
 				}
 
-				size = write( STDOUT_FILENO, &key, 1 );
+				write( STDOUT_FILENO, &key, 1 );
 			}
 #elif defined(XS_OS_WINDOWS)
 			DWORD events = 0;
