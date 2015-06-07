@@ -1,5 +1,6 @@
-transparent SOCKSv5 support
-IPv6? not yet, but make it easy to add later
+pre-raknet:
+	transparent SOCKSv5 support
+	IPv6? not yet, but make it easy to add later
 
 CLIENT FRAME
 	Client creates input command
@@ -10,11 +11,32 @@ CLIENT FRAME
 		might buffer multiple commands into a packet, reduce udp overhead?
 		i recall carmack saying this is not necessary, especially today
 
+SERVER
+	on init, connect/game begin and if client requests it
+		generate baseline
+	on server tick
+		for each client
+			generate snapshot
+	baseline contains
+		current game state
+		for each entity
+			entity state
+	snapshot contains
+		delta from last baseline
+
+Server
+	Client (XSClient.h)
+ServerGame
+	Entity (XSEntity.h)
+	Baseline (XSNetCode.h)
+	NetworkState (XSNetCode.h)
+	GameState (XSServerGame.h)
+
+
 enum buttons_e {
 	BUTTON_ATTACK,
 	BUTTON_ALT_ATTACK,
 	BUTTON_USE,
-	// ...?!
 }
 
 struct inputCommand_t {

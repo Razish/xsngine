@@ -50,7 +50,7 @@ namespace XS {
 			while ( !events.empty() ) {
 				const XSEvent &ev = events.front();
 
-				switch( ev.type ) {
+				switch ( ev.type ) {
 				case EventType::Keyboard: {
 					Client::KeyboardEvent( ev.keyboard );
 				} break;

@@ -365,7 +365,7 @@ namespace XS {
 		}
 
 		void RenderCommand::Execute( void ) const {
-			switch( type ) {
+			switch ( type ) {
 
 			case CommandType::DrawQuad: {
 				DrawQuad( drawQuad );

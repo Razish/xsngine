@@ -214,6 +214,8 @@
     <File Name="XSCommon/XSCvar.cpp"/>
     <File Name="XSCommon/XSTokenParser.cpp"/>
     <File Name="XSCommon/XSTokenParser.h"/>
+    <File Name="XSCommon/XSByteBuffer.h"/>
+    <File Name="XSCommon/XSByteBuffer.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="XSCrypto">
     <File Name="XSCrypto/XSMD5.cpp"/>
@@ -588,6 +590,10 @@
     <File Name="XSServer/XSEntity.h"/>
     <File Name="XSServer/XSEntitySphere.cpp"/>
     <File Name="XSServer/XSEntitySphere.h"/>
+    <File Name="XSServer/XSClient.cpp"/>
+    <File Name="XSServer/XSClient.h"/>
+    <File Name="XSServer/XSNetcode.h"/>
+    <File Name="XSServer/XSNetcode.cpp"/>
   </VirtualDirectory>
   <Settings Type="Dynamic Library">
     <GlobalSettings>
@@ -605,7 +611,7 @@
       </Compiler>
       <Linker Options="" Required="yes"/>
       <ResourceCompiler Options="" Required="no"/>
-      <General OutputFile="" IntermediateDirectory="./Debug" Command="xsngine" CommandArguments="+set com_path &quot;../bin&quot; +set com_dedicated &quot;1&quot;" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="." PauseExecWhenProcTerminates="yes" IsGUIProgram="yes" IsEnabled="yes"/>
+      <General OutputFile="" IntermediateDirectory="./Debug" Command="xsngine" CommandArguments="+set com_path &quot;../bin&quot; +set com_dedicated &quot;0&quot;" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="." PauseExecWhenProcTerminates="yes" IsGUIProgram="yes" IsEnabled="yes"/>
       <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
         <![CDATA[]]>
       </Environment>
@@ -630,7 +636,7 @@
         <CustomPostBuild/>
         <CustomPreBuild/>
       </AdditionalRules>
-      <Completion EnableCpp11="no" EnableCpp14="no">
+      <Completion EnableCpp11="yes" EnableCpp14="no">
         <ClangCmpFlagsC/>
         <ClangCmpFlags/>
         <ClangPP/>
@@ -643,7 +649,7 @@
       </Compiler>
       <Linker Options="-O2" Required="yes"/>
       <ResourceCompiler Options="" Required="no"/>
-      <General OutputFile="" IntermediateDirectory="./Release" Command="xsngine" CommandArguments="+set com_path &quot;../bin&quot; +set com_dedicated &quot;1&quot;" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="." PauseExecWhenProcTerminates="yes" IsGUIProgram="yes" IsEnabled="yes"/>
+      <General OutputFile="" IntermediateDirectory="./Release" Command="xsngine" CommandArguments="+set com_path &quot;../bin&quot; +set com_dedicated &quot;0&quot;" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="." PauseExecWhenProcTerminates="yes" IsGUIProgram="yes" IsEnabled="yes"/>
       <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
         <![CDATA[]]>
       </Environment>

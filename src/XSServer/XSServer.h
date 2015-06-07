@@ -1,6 +1,12 @@
 #pragma once
 
+#include <vector>
+
 #include "XSCommon/XSTimer.h"
+
+namespace RakNet {
+	struct Packet;
+} // namespace RakNet
 
 namespace XS {
 
@@ -8,9 +14,11 @@ namespace XS {
 
 	namespace Server {
 
-		extern Cvar *sv_maxConnections;
+		struct Client;
 
-		extern uint64_t frameNum;
+		extern Cvar						*sv_maxConnections;
+		extern std::vector<Client *>	 clients;
+		extern uint64_t					 frameNum;
 
 		// initialise the Server object, loading related subsystems
 		void Init(
@@ -28,9 +36,24 @@ namespace XS {
 			void
 		);
 
+		// a network pump receieved a packet intended for the Server to receive
+		bool ReceivePacket(
+			const RakNet::Packet *packet
+		);
+
+		// ???
+		void IncomingConnection(
+			const RakNet::Packet *packet
+		);
+
 		// run a frame and pass control to the ServerGame
 		void RunFrame(
 			real64_t dt
+		);
+
+		// broadcast a message to all players
+		void BroadcastMessage(
+			const char *msg
 		);
 
 		// get the current elapsed time

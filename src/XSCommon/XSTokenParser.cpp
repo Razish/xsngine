@@ -90,7 +90,7 @@ namespace XS {
 			}
 		}
 
-		uint32_t len = 0u;
+		size_t len = 0u;
 		if ( c == '\"' || c == '\'' ) {
 			// handle quoted strings (both " and ')
 			const char quotechar = c;

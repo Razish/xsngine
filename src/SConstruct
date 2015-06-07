@@ -172,6 +172,7 @@ files = [
 	'XSCommon/XSCommon.cpp',
 	'XSCommon/XSConsole.cpp',
 	'XSCommon/XSCvar.cpp',
+	'XSCommon/XSByteBuffer.cpp',
 	'XSCommon/XSEvent.cpp',
 	'XSCommon/XSFile.cpp',
 	'XSCommon/XSLogger.cpp',

@@ -5,15 +5,13 @@
 #include "XSServer/XSServerGame.h"
 #include "XSServer/XSEntity.h"
 #include "XSServer/XSEntitySphere.h"
+#include "XSServer/XSServer.h"
 
 namespace XS {
 
 	namespace ServerGame {
 
 		GameState state = {};
-
-		static void RegisterCvars( void ) {
-		}
 
 		static void Cmd_SpawnEntity( const CommandContext * const context ) {
 			if ( context->size() != 3 ) {
@@ -38,21 +36,15 @@ namespace XS {
 		}
 
 		void Init( void ) {
-			RegisterCvars();
+			// reserve 1024 entities for now, test contiguity
+			state.entities.reserve( 1024u );
+
 			RegisterCommands();
 		}
 
 		void RunFrame( real64_t dt ) {
 			for ( auto &entity : state.entities ) {
 				entity->Update( dt );
-			}
-		}
-
-		void GenerateSnapshot( void ) {
-			//TODO: build a list of entity state changes
-			for ( auto &entity : state.entities ) {
-				size_t bufferSize = 0u;
-				uint8_t *buffer = entity->Serialise( &bufferSize );
 			}
 		}
 

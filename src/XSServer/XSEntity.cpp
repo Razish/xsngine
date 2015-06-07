@@ -29,11 +29,8 @@ namespace XS {
 			// ...
 		}
 
-		uint8_t *Entity::Serialise( size_t *outBufSize ) const {
-			if ( outBufSize ) {
-				*outBufSize = 0u;
-			}
-			return nullptr;
+		void Entity::Serialise( ByteBuffer *buffer ) const {
+			// ...
 		}
 
 	} // namespace ServerGame

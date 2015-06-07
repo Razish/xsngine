@@ -8,14 +8,7 @@ namespace XS {
 
 		class Entity;
 
-		enum GameType : uint32_t {
-			DM,
-			TeamDM,
-			CTF,
-		};
-
 		extern struct GameState {
-			GameType					gameType = GameType::DM;
 			std::vector<Entity *>		entities;
 			uint32_t					numEntities;
 		} state;
@@ -31,8 +24,9 @@ namespace XS {
 		);
 
 		// ???
-		void GenerateSnapshot(
-			void
+		void Connect(
+			const char *ip,
+			uint64_t guid
 		);
 
 	} // namespace ServerGame

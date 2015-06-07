@@ -1,3 +1,5 @@
+#include <RakNet/RakPeerInterface.h>
+
 #include <stack>
 
 #include "XSCommon/XSCommon.h"
@@ -9,6 +11,7 @@
 #include "XSCommon/XSTimer.h"
 #include "XSCommon/XSGlobals.h"
 #include "XSCommon/XSEvent.h"
+#include "XSCommon/XSByteBuffer.h"
 #include "XSClient/XSClient.h"
 #include "XSClient/XSClientGame.h"
 #include "XSClient/XSClientConsole.h"
@@ -59,45 +62,17 @@ namespace XS {
 			menu->OpenMenu( (*context)[0].c_str() );
 		}
 
-		static void Cmd_Ping( const CommandContext * const context ) {
-			if ( !Network::IsConnected() ) {
-				return;
-			}
-
-			Network::XSPacket packet( Network::ID_XS_PING );
-
-			packet.data = nullptr;
-			packet.dataLen = 0u;
-
-			Network::Send( &packet );
-		}
-
 		static void Cmd_ReloadMenu( const CommandContext * const context ) {
 			delete menu;
 			menu = new MenuManager();
 			menu->RegisterMenu( "menus/settings.xmenu" );
 		}
 
-		static void Cmd_Say( const CommandContext * const context ) {
-			if ( !Network::IsConnected() ) {
-				return;
-			}
-
-			Network::XSPacket packet( Network::ID_XS_TEXT_MESSAGE );
-
-			packet.data = static_cast<const void *>( (*context)[0].c_str() );
-			packet.dataLen = (*context)[0].length();
-
-			Network::Send( &packet );
-		}
-
 		static void RegisterCommands( void ) {
 			Command::AddCommand( "disconnect", Cmd_Disconnect );
 			Command::AddCommand( "connect", Cmd_Connect );
 			Command::AddCommand( "openMenu", Cmd_OpenMenu );
-			Command::AddCommand( "ping", Cmd_Ping );
 			Command::AddCommand( "reloadMenu", Cmd_ReloadMenu );
-			Command::AddCommand( "say", Cmd_Say );
 		}
 
 		bool MouseMotionEvent( const struct MouseMotionEvent &ev ) {
@@ -177,6 +152,40 @@ namespace XS {
 			Input::GenerateMovementCommand();
 		}
 
+		bool ReceivePacket( const RakNet::Packet *packet ) {
+			switch ( packet->data[0] ) {
+
+			case Network::ID_XS_SV2CL_GAMESTATE: {
+				uint8_t *buffer = packet->data;
+				size_t bufferLen = packet->length;
+				ByteBuffer bb( buffer, bufferLen );
+
+				struct SnapshotHeader {
+					uint32_t numEntities;
+				} snapshotHeader;
+				bb.ReadGeneric( &snapshotHeader, sizeof(snapshotHeader) );
+
+				for ( size_t i = 0u; i < snapshotHeader.numEntities; i++ ) {
+					const char *name = nullptr;
+					uint32_t nameLen = 0u;
+					bb.ReadString( &name, &nameLen );
+					if ( !String::CompareCase( name, "EntitySphere" ) ) {
+						console.Print( PrintLevel::Normal,
+							"Spawning sphere\n"
+						);
+					}
+				}
+			} break;
+
+			default: {
+				return false;
+			} break;
+
+			}
+
+			return true;
+		}
+
 		void RunFrame( real64_t dt ) {
 			static real64_t stepTime = 0.0;
 			frameNum++;
@@ -206,7 +215,7 @@ namespace XS {
 				timeSec = timeUsec * 0.000001;
 			}
 
-			switch( resolution ) {
+			switch ( resolution ) {
 
 				case TimerResolution::Seconds: {
 					return timeSec;

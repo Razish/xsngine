@@ -7,8 +7,12 @@ namespace XS {
 	namespace Network {
 
 		enum GameMessage {
-			ID_XS_PING = ID_USER_PACKET_ENUM + 1,
-			ID_XS_TEXT_MESSAGE,
+			// server --> client
+			ID_XS_SV2CL_GAMESTATE = ID_USER_PACKET_ENUM + 1,
+			ID_XS_SV2CL_PRINT,
+
+			// client --> server
+			ID_XS_CL2SV_DUMMY,
 		};
 
 		struct XSPacket {
@@ -65,6 +69,7 @@ namespace XS {
 
 		// ???
 		void Send(
+			uint64_t guid,
 			const XSPacket *packet
 		);
 

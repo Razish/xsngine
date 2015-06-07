@@ -1,5 +1,7 @@
 #pragma once
 
+#include "XSCommon/XSVector.h"
+
 namespace XS {
 
 	namespace Renderer {
@@ -13,6 +15,8 @@ namespace XS {
 		private:
 
 		public:
+			uint32_t				 id;
+			vector3					 position;
 			Renderer::Renderable	*renderObject = nullptr;
 
 			virtual ~Entity();

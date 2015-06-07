@@ -5,6 +5,10 @@
 #include "XSCommon/XSCommand.h"
 #include "XSCommon/XSTimer.h"
 
+namespace RakNet {
+	struct Packet;
+} // namespace RakNet
+
 namespace XS {
 
 	namespace Client {
@@ -25,6 +29,11 @@ namespace XS {
 		// pump any network events for the ClientGame
 		void NetworkPump(
 			void
+		);
+
+		// a network pump receieved a packet intended for the Server to receive
+		bool ReceivePacket(
+			const RakNet::Packet *packet
 		);
 
 		// run a frame and pass control to the ClientGame

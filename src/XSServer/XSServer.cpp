@@ -1,3 +1,5 @@
+#include <RakNet/RakPeerInterface.h>
+
 #include <cstdio>
 
 #include "XSCommon/XSCommon.h"
@@ -7,9 +9,12 @@
 #include "XSCommon/XSTimer.h"
 #include "XSCommon/XSGlobals.h"
 #include "XSCommon/XSString.h"
+#include "XSCommon/XSByteBuffer.h"
 #include "XSServer/XSServer.h"
 #include "XSServer/XSServerGame.h"
 #include "XSServer/XSServerConsole.h"
+#include "XSServer/XSClient.h"
+#include "XSServer/XSNetcode.h"
 #include "XSNetwork/XSNetwork.h"
 #include "XSSystem/XSOS.h"
 
@@ -18,6 +23,8 @@ namespace XS {
 	namespace Server {
 
 		Cvar *sv_maxConnections = nullptr;
+		std::vector<Client *> clients;
+
 		uint64_t frameNum = 0u;
 
 		ServerConsole *serverConsole = nullptr;
@@ -31,21 +38,8 @@ namespace XS {
 			);
 		}
 
-		static void Cmd_Ping( const CommandContext * const context ) {
-			if ( !Network::IsConnected() ) {
-				return;
-			}
-
-			Network::XSPacket packet( Network::ID_XS_PING );
-
-			packet.data = nullptr;
-			packet.dataLen = 0u;
-
-			Network::Send( &packet );
-		}
-
 		static void RegisterCommands( void ) {
-			Command::AddCommand( "ping", Cmd_Ping );
+			// ...
 		}
 
 		void Init( void ) {
@@ -63,8 +57,16 @@ namespace XS {
 			delete serverConsole;
 		}
 
-		static void BroadcastState( void ) {
-			ServerGame::GenerateSnapshot();
+		static void GenerateNetworkState( void ) {
+			Network::XSPacket snapshot( Network::ID_XS_SV2CL_GAMESTATE );
+
+			ByteBuffer buffer;
+			ServerGame::GenerateSnapshot( &buffer );
+			snapshot.data = buffer.GetMemory( &snapshot.dataLen );
+
+			for ( auto *client : clients ) {
+				Network::Send( client->guid, &snapshot );
+			}
 		}
 
 		void NetworkPump( void ) {
@@ -73,12 +75,38 @@ namespace XS {
 			}
 
 			// handle generic messages
+			// this will make a call to Server::ReceivePacket( Packet *p )
 			Network::Receive();
 
-			//TODO: simulate player input
+			//TODO: process player input
 
 			// issue a snapshot
-			BroadcastState();
+			//FIXME: stop sending the entire state
+			GenerateNetworkState();
+		}
+
+		bool ReceivePacket( const RakNet::Packet *packet ) {
+			switch ( packet->data[0] ) {
+
+			case Network::ID_XS_CL2SV_DUMMY: {
+				// ...
+			} break;
+
+			default: {
+				return false;
+			} break;
+
+			}
+
+			return true;
+		}
+
+		void IncomingConnection( const RakNet::Packet *packet ) {
+			Client *client = new Client( packet->guid.g );
+
+			client->state = Client::State::Connecting;
+
+			clients.push_back( client );
 		}
 
 		void RunFrame( real64_t dt ) {
@@ -100,6 +128,18 @@ namespace XS {
 			}
 		}
 
+		void BroadcastMessage( const char *msg ) {
+			size_t msgLen = strlen( msg );
+			for ( auto *client : clients ) {
+				Network::XSPacket packet( Network::ID_XS_SV2CL_PRINT );
+
+				packet.data = static_cast<const void *>( msg );
+				packet.dataLen = msgLen;
+
+				Network::Send( client->guid, &packet );
+			}
+		}
+
 		// lazy initialise on first request per frame
 		real64_t GetElapsedTime( TimerResolution resolution ) {
 			static uint64_t lastFrame = 0u;
@@ -113,7 +153,7 @@ namespace XS {
 				timeSec = timeUsec * 0.000001;
 			}
 
-			switch( resolution ) {
+			switch ( resolution ) {
 
 				case TimerResolution::Seconds: {
 					return timeSec;

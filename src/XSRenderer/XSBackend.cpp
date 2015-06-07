@@ -124,7 +124,7 @@ namespace XS {
 			void SetDepthFunction( DepthFunc func ) {
 				GLenum glFunc = GL_LEQUAL;
 
-				switch( func ) {
+				switch ( func ) {
 
 				case DepthFunc::LessOrEqual: {
 					glFunc = GL_LEQUAL;
@@ -151,7 +151,7 @@ namespace XS {
 			void SetStencilFunction( StencilFunc func ) {
 				GLenum glFunc = GL_ALWAYS;
 
-				switch( func ) {
+				switch ( func ) {
 
 				case StencilFunc::Never: {
 					glFunc = GL_NEVER;
@@ -192,7 +192,7 @@ namespace XS {
 
 			void SetStencilOp( StencilOp op ) {
 #if 0
-				switch( op ) {
+				switch ( op ) {
 
 				case StencilOp::Derp: {
 				} break;
@@ -213,7 +213,7 @@ namespace XS {
 			static GLenum GetGLBlendFunction( BlendFunc func ) {
 				GLenum result = GL_ONE;
 
-				switch( func ) {
+				switch ( func ) {
 
 				case BlendFunc::Zero: {
 					result = GL_ZERO;

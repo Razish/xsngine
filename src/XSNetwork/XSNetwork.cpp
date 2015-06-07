@@ -7,6 +7,7 @@
 #include "XSCommon/XSGlobals.h"
 #include "XSCommon/XSCvar.h"
 #include "XSCommon/XSCommand.h"
+#include "XSClient/XSClient.h"
 #include "XSNetwork/XSNetwork.h"
 #include "XSServer/XSServer.h"
 
@@ -159,13 +160,7 @@ namespace XS {
 
 			Packet *packet = nullptr;
 			while ( (packet = peer->Receive()) ) {
-
-				console.Print( PrintLevel::Debug,
-					"message ID: %i\n",
-					packet->data[0]
-				);
-
-				switch( packet->data[0] ) {
+				switch ( packet->data[0] ) {
 
 				case ID_REMOTE_DISCONNECTION_NOTIFICATION: {
 					// another client has disconnected gracefully
@@ -183,11 +178,17 @@ namespace XS {
 
 				case ID_NEW_INCOMING_CONNECTION: {
 					// another client has connected
-					console.Print( PrintLevel::Normal,
-						"client connecting with IP %s and GUID %s\n",
-						packet->systemAddress.ToString(),
-						packet->guid.ToString()
-					);
+					if ( Common::com_dedicated->GetBool() ) {
+						console.Print( PrintLevel::Normal,
+							"client connecting with IP %s and GUID %s\n",
+							packet->systemAddress.ToString(),
+							packet->guid.ToString()
+						);
+						Server::IncomingConnection( packet );
+					}
+					else {
+						SDL_assert( !"unexpected connection as client" );
+					}
 				} break;
 
 				case ID_REMOTE_NEW_INCOMING_CONNECTION: {
@@ -231,33 +232,20 @@ namespace XS {
 					connected = false;
 				} break;
 
-				case ID_XS_PING: {
-					// ingame ping
-					console.Print( PrintLevel::Normal,
-						"ping received from %s\n",
-						packet->systemAddress.ToString()
-					);
-					SDL_assert( packet->length == 0u );
-				} break;
-
-				case ID_XS_TEXT_MESSAGE: {
-					// text message
-					BitStream bs( packet->data, packet->length, false );
-					bs.IgnoreBytes( sizeof(MessageID) );
-
-					RakString str;
-					bs.Read( str );
-
-					console.Print( PrintLevel::Normal,
-						"message from %s: %s\n",
-						packet->systemAddress.ToString(),
-						str.C_String()
-					);
-				} break;
-
 				default: {
+					if ( Common::com_dedicated->GetBool() ) {
+						if ( Server::ReceivePacket( packet ) ) {
+							return;
+						}
+					}
+					else {
+						if ( Client::ReceivePacket( packet ) ) {
+							return;
+						}
+					}
+
 					console.Print( PrintLevel::Developer,
-						"Unknown message from %s (ID: %d)\n",
+						"Unknown message from %s (ID: %i)\n",
 						packet->systemAddress.ToString(),
 						packet->data[0]
 					);
@@ -269,19 +257,32 @@ namespace XS {
 			}
 		}
 
-		void Send( const XSPacket *packet ) {
-			SDL_assert( connected );
+		void Send( uint64_t guid, const XSPacket *packet ) {
+			if ( !isServer ) {
+				SDL_assert( connected );
+			}
 
 			BitStream bs;
-			bs.Write( static_cast<MessageID>( packet->msg ) );
-			bs.Write( static_cast<const char *>( packet->data ), static_cast<unsigned int>( packet->dataLen ) );
+
+			// write message ID
+			bs.Write(
+				static_cast<MessageID>( packet->msg )
+			);
+
+			// write message contents
+			bs.Write(
+				static_cast<const char *>( packet->data ),
+				static_cast<unsigned int>( packet->dataLen )
+			);
+
+			// send it to the correct peer
 			peer->Send(
 				&bs,
 				PacketPriority::MEDIUM_PRIORITY, // priority
 				PacketReliability::RELIABLE_ORDERED, // reliability
 				0, // orderingChannel
-				UNASSIGNED_SYSTEM_ADDRESS, // systemIdentifier
-				true // broadcast
+				peer->GetSystemAddressFromGuid( RakNetGUID( guid ) ), // systemIdentifier
+				guid == 0u // broadcast
 			);
 		}
 

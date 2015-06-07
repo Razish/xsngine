@@ -1,0 +1,28 @@
+#pragma once
+
+#include <unordered_map>
+
+#include "XSServer/XSServerGame.h"
+
+namespace XS {
+
+	class ByteBuffer;
+
+	namespace ServerGame {
+
+		struct Baseline {
+			GameState	state;
+		};
+
+		extern struct NetworkState {
+			std::unordered_map<uint64_t, Baseline *>	baseLines; // per Client, key is client's GUID
+		} net;
+
+		// ???
+		void GenerateSnapshot(
+			ByteBuffer *buffer
+		);
+
+	} // namespace ServerGame
+
+} // namespace XS

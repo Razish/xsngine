@@ -213,10 +213,7 @@ int main( int argc, char **argv ) {
 			accumulator += sliceMsec;
 
 			// input
-			if ( XS::Common::com_dedicated->GetBool() ) {
-				//TODO: tty input
-			}
-			else {
+			if ( !XS::Common::com_dedicated->GetBool() ) {
 				//TODO: run on another thread at 1000hz?
 				XS::Client::Input::Poll();
 			}

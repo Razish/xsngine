@@ -1,5 +1,6 @@
 #include "XSCommon/XSCommon.h"
 #include "XSCommon/XSConsole.h"
+#include "XSCommon/XSByteBuffer.h"
 #include "XSServer/XSEntitySphere.h"
 
 namespace XS {
@@ -17,11 +18,8 @@ namespace XS {
 			// ...
 		}
 
-		uint8_t *EntitySphere::Serialise( size_t *outBufSize ) const {
-			if ( outBufSize ) {
-				*outBufSize = 0u;
-			}
-			return nullptr;
+		void EntitySphere::Serialise( ByteBuffer *buffer ) const {
+			buffer->WriteString( "EntitySphere" );
 		}
 
 	} // namespace ServerGame

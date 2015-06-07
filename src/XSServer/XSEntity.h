@@ -4,6 +4,8 @@
 
 namespace XS {
 
+	class ByteBuffer;
+
 	namespace ServerGame {
 
 		class Entity {
@@ -11,8 +13,8 @@ namespace XS {
 			Entity();
 
 		public:
-			uint32_t						id;
-			vector3							position;
+			uint32_t	id;
+			vector3		position;
 
 			Entity( const Entity& ) = delete;
 			Entity& operator=( const Entity& ) = delete;
@@ -23,8 +25,8 @@ namespace XS {
 				const real64_t dt
 			);
 
-			virtual uint8_t *Serialise(
-				size_t *outBufSize
+			virtual void Serialise(
+				ByteBuffer *buffer
 			) const;
 		};
 

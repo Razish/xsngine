@@ -5,6 +5,8 @@
 
 namespace XS {
 
+	class ByteBuffer;
+
 	namespace ServerGame {
 
 		class EntitySphere : public Entity {
@@ -19,8 +21,8 @@ namespace XS {
 				const real64_t dt
 			);
 
-			uint8_t *Serialise(
-				size_t *outBufSize
+			void Serialise(
+				ByteBuffer *buffer
 			) const;
 		};
 
