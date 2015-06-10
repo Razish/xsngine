@@ -15,6 +15,7 @@
 #include "XSClient/XSEntity.h"
 #include "XSClient/XSTerrain.h"
 #include "XSClient/XSParticleEmitter.h"
+#include "XSClient/XSCheckersBoard.h"
 #include "XSInput/XSInput.h"
 #include "XSRenderer/XSView.h"
 #include "XSRenderer/XSModel.h"
@@ -26,9 +27,8 @@ namespace XS {
 		Cvar *cg_fov = nullptr;
 		Cvar *cg_numParticles = nullptr;;
 
-		static Renderer::View *sceneView = nullptr;
-		static Terrain *terrain = nullptr;
-		FlyCamera *camera = nullptr;
+		static Renderer::View *checkersView = nullptr;
+		static CheckersBoard *board = nullptr;
 
 		void AddObject( Entity *entity ) {
 			state.entities.push_back( entity );
@@ -52,89 +52,40 @@ namespace XS {
 			cg_terrainDimensions = Cvar::Create( "cg_terrainDimensions", "128", "Terrain resolution", CVAR_ARCHIVE );
 		}
 
-		static void Cmd_ReloadTerrain( const CommandContext * const context ) {
-			delete terrain;
-			terrain = new Terrain( nullptr );
-		}
-
 		static void RegisterCommands( void ) {
-			Command::AddCommand( "reloadTerrain", Cmd_ReloadTerrain );
+			// ...
 		}
 
 		static void RenderScene( real64_t dt ) {
-			sceneView->projectionMatrix = camera->GetProjectionView();
-		}
-
-		static void SetupCamera( void ) {
-			camera = new FlyCamera( 0.05f );
-
-			const glm::vec3 cameraPos( 0.0f, 0.0f, 0.0f );
-			const glm::vec3 lookAt( 0.0f, 0.0f, -1.0f ); // looking down -Z
-			const glm::vec3 up( 0.0f, 1.0f, 0.0f ); // Y is up
-
-			Cvar *r_zRange = Cvar::Get( "r_zRange" );
-			real32_t zNear = r_zRange->GetReal32( 0 );
-			real32_t zFar = r_zRange->GetReal32( 1 );
-
-			camera->SetupPerspective(
-				glm::radians( cg_fov->GetReal32() ),
-				Renderer::state.window.aspectRatio,
-				zNear,
-				zFar
-			);
-			camera->LookAt( cameraPos, lookAt, up );
-		}
-
-		static void AddObjects( void ) {
-			Entity *monkey = new Entity();
-			monkey->renderObject = Renderer::Model::Register( "models/monkey.xmf" );
-			AddObject( monkey );
-
-			Entity *torus = new Entity();
-			torus->renderObject = Renderer::Model::Register( "models/torus.xmf" );
-			AddObject( torus );
-
-			Entity *pe = new ParticleEmitter( cg_numParticles->GetInt32(), 1000u, "textures/fx/orb.png" );
-			AddObject( pe );
+			// no camera stuff to do
 		}
 
 		void Init( void ) {
 			RegisterCvars();
 			RegisterCommands();
 
-			sceneView = new Renderer::View( 0u, 0u, false, RenderScene );
-			SetupCamera();
-
-			terrain = new Terrain( "textures/terrain.raw" );
-
-			AddObjects();
+			checkersView = new Renderer::View( 0u, 0u, true, RenderScene );
+			board = new CheckersBoard();
 		}
 
 		void Shutdown( void ) {
 			for ( auto entity : state.entities ) {
 				delete entity;
 			}
-			delete terrain;
-			delete sceneView;
+			delete checkersView;
+			delete board;
 		}
 
 		void RunFrame( real64_t dt ) {
 			for ( auto &entity : state.entities ) {
 				entity->Update( dt );
 			}
+			board->Update( dt );
 		}
 
 		void DrawFrame( real64_t dt ) {
-			camera->Update( dt );
-
-			// add objects to scene
-			for ( const auto &entity : state.entities ) {
-				entity->AddToScene( sceneView );
-			}
-
-			// add lights to scene
-			static const vector3 lightPos( 0.0f, 32.0f, 0.0f );
-			sceneView->AddPointLight( lightPos );
+			checkersView->Bind();
+			board->Render( dt );
 
 			state.viewDelta.clear();
 		}

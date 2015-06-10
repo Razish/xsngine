@@ -171,6 +171,8 @@
     <File Name="XSClient/XSClientGameState.h"/>
     <File Name="XSClient/XSEntity.cpp"/>
     <File Name="XSCommon/XSCommand.cpp"/>
+    <File Name="XSClient/XSCheckersBoard.cpp"/>
+    <File Name="XSClient/XSCheckersBoard.h"/>
   </VirtualDirectory>
   <VirtualDirectory Name="XSInput">
     <File Name="XSInput/XSInputField.cpp"/>
@@ -605,7 +607,7 @@
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>
-    <Configuration Name="Debug" CompilerType="GCC" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+    <Configuration Name="Debug" CompilerType="GCC" DebuggerType="LLDB Debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-g" C_Options="-g" Assembler="" Required="no" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
         <IncludePath Value="."/>
       </Compiler>
