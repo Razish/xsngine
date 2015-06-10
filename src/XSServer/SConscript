@@ -7,8 +7,6 @@ server_env = env.Clone()
 # sources
 files = [
 	'XSServer/XSClient.cpp',
-	'XSServer/XSEntity.cpp',
-	'XSServer/XSEntitySphere.cpp',
 	'XSServer/XSNetcode.cpp',
 	'XSServer/XSServerGame.cpp',
 ]

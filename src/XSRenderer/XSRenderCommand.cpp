@@ -280,57 +280,6 @@ namespace XS {
 			}
 		}
 
-		//TODO: drive this with a generic VBO descriptor to avoid special case drawing like these particles
-		static void DrawParticles( const DrawParticlesCommand &cmd ) {
-			SDL_assert( cmd.material && "DrawParticles with invalid material" );
-
-			cmd.material->Bind();
-
-			bool setWireframe = false;
-			bool previousWireframe = false;
-			if ( r_wireframe->GetBool() || (cmd.material->flags & MF_WIREFRAME) ) {
-				setWireframe = true;
-				previousWireframe = GetWireframe();
-				ToggleWireframe( true );
-			}
-
-			if ( cmd.vbo ) {
-				cmd.vbo->Bind();
-
-				// position4, uv2, colour4
-				EnableVertexAttribs( VERTEX_ATTRIB_0 | VERTEX_ATTRIB_1 | VERTEX_ATTRIB_2 );
-
-				// calculate stride
-				GLsizei stride = sizeof(vector4) + sizeof(vector2) + sizeof(vector4);
-
-				// set the attribute pointers
-				size_t offset = 0u;
-				glVertexAttribPointer( 0, 4, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<const GLvoid *>( offset ) );
-				offset += sizeof(vector4);
-
-				glVertexAttribPointer( 1, 2, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<const GLvoid *>( offset ) );
-				offset += sizeof(vector2);
-
-				glVertexAttribPointer( 2, 4, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<const GLvoid *>( offset ) );
-				offset += sizeof(vector4);
-			}
-
-			if ( 1 ) {
-				cmd.ibo->Bind();
-				GLint size = 0;
-				glGetBufferParameteriv( GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &size );
-				glDrawElements( GL_TRIANGLES, size / sizeof(uint32_t), GL_UNSIGNED_INT, 0 );
-			}
-			else {
-				glDrawArrays( GL_TRIANGLES, 0, cmd.count );
-			}
-
-			// clean up state
-			if ( setWireframe ) {
-				ToggleWireframe( previousWireframe );
-			}
-		}
-
 		static void Screenshot( const ScreenshotCommand &cmd ) {
 			GLint signalled;
 
@@ -373,10 +322,6 @@ namespace XS {
 
 			case CommandType::DrawModel: {
 				DrawModel( drawModel );
-			} break;
-
-			case CommandType::DrawParticles: {
-				DrawParticles( drawParticles );
 			} break;
 
 			case CommandType::Screenshot: {

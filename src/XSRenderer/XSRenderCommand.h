@@ -17,7 +17,6 @@ namespace XS {
 		enum class CommandType {
 			DrawQuad,
 			DrawModel,
-			DrawParticles,
 			Screenshot
 		};
 
@@ -38,13 +37,6 @@ namespace XS {
 			const Model	*model;
 		};
 
-		struct DrawParticlesCommand {
-			const Backend::Buffer	*vbo;
-			const Backend::Buffer	*ibo;
-			const Material			*material;
-			size_t					 count;
-		};
-
 		struct ScreenshotCommand {
 			int32_t		 width;
 			int32_t		 height;
@@ -61,7 +53,6 @@ namespace XS {
 			union {
 				DrawQuadCommand			drawQuad;
 				DrawModelCommand		drawModel;
-				DrawParticlesCommand	drawParticles;
 				ScreenshotCommand		screenshot;
 			};
 

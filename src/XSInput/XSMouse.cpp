@@ -28,7 +28,7 @@ namespace XS {
 			static bool captureMouse = false;
 
 			void CaptureMouse( bool capture ) {
-				captureMouse = capture;
+				captureMouse = false;//capture;
 
 				SDL_SetRelativeMouseMode( captureMouse ? SDL_TRUE : SDL_FALSE );
 			}

@@ -20,66 +20,14 @@ namespace XS {
 
 		namespace Input {
 
-			PerFrameState perFrameState = {};
-
 			static Cvar *debug_input = nullptr;
-			Cvar *m_sensitivity = nullptr;
 
 			static void RegisterCvars( void ) {
 				debug_input = Cvar::Create( "debug_input", "0", "Show debugging information for input", CVAR_ARCHIVE );
-				m_sensitivity = Cvar::Create( "m_sensitivity", "1", "Sensitivity of mouse input", CVAR_ARCHIVE );
-			}
-
-			static void Cmd_MoveForward_Down( const CommandContext * const context ) {
-				Input::perFrameState.moveForward = true;
-			}
-			static void Cmd_MoveForward_Up( const CommandContext * const context ) {
-				Input::perFrameState.moveForward = false;
-			}
-			static void Cmd_MoveBack_Down( const CommandContext * const context ) {
-				Input::perFrameState.moveBack = true;
-			}
-			static void Cmd_MoveBack_Up( const CommandContext * const context ) {
-				Input::perFrameState.moveBack = false;
-			}
-			static void Cmd_MoveLeft_Down( const CommandContext * const context ) {
-				Input::perFrameState.moveLeft = true;
-			}
-			static void Cmd_MoveLeft_Up( const CommandContext * const context ) {
-				Input::perFrameState.moveLeft = false;
-			}
-			static void Cmd_MoveRight_Down( const CommandContext * const context ) {
-				Input::perFrameState.moveRight = true;
-			}
-			static void Cmd_MoveRight_Up( const CommandContext * const context ) {
-				Input::perFrameState.moveRight = false;
-			}
-			static void Cmd_MoveUp_Down( const CommandContext * const context ) {
-				Input::perFrameState.moveUp = true;
-			}
-			static void Cmd_MoveUp_Up( const CommandContext * const context ) {
-				Input::perFrameState.moveUp = false;
-			}
-			static void Cmd_MoveDown_Down( const CommandContext * const context ) {
-				Input::perFrameState.moveDown = true;
-			}
-			static void Cmd_MoveDown_Up( const CommandContext * const context ) {
-				Input::perFrameState.moveDown = false;
 			}
 
 			static void AddCommands( void ) {
-				Command::AddCommand( "+forward", Cmd_MoveForward_Down );
-				Command::AddCommand( "-forward", Cmd_MoveForward_Up );
-				Command::AddCommand( "+back", Cmd_MoveBack_Down );
-				Command::AddCommand( "-back", Cmd_MoveBack_Up );
-				Command::AddCommand( "+left", Cmd_MoveLeft_Down );
-				Command::AddCommand( "-left", Cmd_MoveLeft_Up );
-				Command::AddCommand( "+right", Cmd_MoveRight_Down );
-				Command::AddCommand( "-right", Cmd_MoveRight_Up );
-				Command::AddCommand( "+jump", Cmd_MoveUp_Down );
-				Command::AddCommand( "-jump", Cmd_MoveUp_Up );
-				Command::AddCommand( "+crouch", Cmd_MoveDown_Down );
-				Command::AddCommand( "-crouch", Cmd_MoveDown_Up );
+				// ...
 			}
 
 			void Init( void ) {
@@ -316,36 +264,6 @@ namespace XS {
 					} break;
 					}
 				}
-			}
-
-			static std::deque<MovementCommand> movementCmds;
-			static MovementCommand &AllocateMovementCommand( void ) {
-				//FIXME: calculate ~1s worth of input?
-				if ( movementCmds.size() >= 10 ) {
-					movementCmds.pop_front();
-					//FIXME: does this call destructor on pointer elements?
-				}
-
-				MovementCommand newCmd = {};
-				movementCmds.push_back( newCmd );
-
-				return movementCmds.back();
-			}
-
-			MovementCommand GenerateMovementCommand( void ) {
-				//TODO: keep a list of previously generated movement commands to resend
-				MovementCommand &cmd = AllocateMovementCommand();
-
-				//TODO: get button state etc
-				cmd.buttonState = 0u;
-
-				cmd.move.FB		= perFrameState.moveForward	+ (perFrameState.moveBack * -1);
-				cmd.move.RL		= perFrameState.moveRight	+ (perFrameState.moveLeft * -1);
-				cmd.move.UD		= perFrameState.moveUp		+ (perFrameState.moveDown * -1);
-
-				cmd.viewAngles = ClientGame::state.viewAngles;
-
-				return cmd;
 			}
 
 		} // namespace Input

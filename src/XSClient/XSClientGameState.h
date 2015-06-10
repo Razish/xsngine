@@ -8,12 +8,8 @@ namespace XS {
 
 	namespace ClientGame {
 
-		class Entity;
-
 		extern struct GameState {
-			vector3					viewAngles;
-			vector3					viewDelta;
-			std::vector<Entity *>	entities;	// always allocate with `new`
+			vector2					cursorPos;
 		} state;
 
 	} // namespace ClientGame

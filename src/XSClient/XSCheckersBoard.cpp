@@ -77,7 +77,8 @@ namespace XS {
 		}
 
 		void CheckersBoard::Update( real64_t dt ) {
-			// ...
+			//TODO: check for kings
+			//TODO: check end-game rules
 		}
 
 		void CheckersBoard::Render( real64_t dt ) {

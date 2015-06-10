@@ -41,6 +41,10 @@ namespace XS {
 			const struct MouseMotionEvent &ev
 		);
 
+		void MouseButtonEvent(
+			const struct MouseButtonEvent &ev
+		);
+
 	} // namespace ClientGame
 
 } // namespace XS

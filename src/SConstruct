@@ -199,7 +199,6 @@ files = [
 	'XSRenderer/XSModel.cpp',
 	'XSRenderer/XSModelObj.cpp',
 	'XSRenderer/XSModelXMF.cpp',
-	'XSRenderer/XSParticle.cpp',
 	'XSRenderer/XSRenderable.cpp',
 	'XSRenderer/XSRenderCommand.cpp',
 	'XSRenderer/XSRenderer.cpp',

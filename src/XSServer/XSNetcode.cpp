@@ -1,7 +1,6 @@
 #include "XSCommon/XSCommon.h"
 #include "XSCommon/XSByteBuffer.h"
 #include "XSServer/XSNetcode.h"
-#include "XSServer/XSEntity.h"
 
 namespace XS {
 
@@ -13,14 +12,9 @@ namespace XS {
 			//FIXME: delta etc, this is temporary
 
 			struct SnapshotHeader {
-				uint32_t numEntities;
+				uint32_t dummy = 1337u;
 			} snapshotHeader;
-			snapshotHeader.numEntities = state.entities.size();
 			buffer->WriteGeneric( &snapshotHeader, sizeof(snapshotHeader) );
-
-			for ( auto &entity : state.entities ) {
-				entity->Serialise( buffer );
-			}
 		}
 
 	} // namespace ServerGame

@@ -16,7 +16,6 @@
 #include "XSClient/XSClientGame.h"
 #include "XSClient/XSClientConsole.h"
 #include "XSClient/XSMenuManager.h"
-#include "XSClient/XSTerrain.h"
 #include "XSInput/XSInput.h"
 #include "XSInput/XSMouse.h"
 #include "XSInput/XSKeys.h"
@@ -91,6 +90,9 @@ namespace XS {
 				menu->MouseButtonEvent( ev );
 				return true;
 			}
+
+			ClientGame::MouseButtonEvent( ev );
+
 			return false;
 		}
 
@@ -147,9 +149,6 @@ namespace XS {
 
 			// handle generic messages
 			Network::Receive();
-
-			// generate this frame's movement command
-			Input::GenerateMovementCommand();
 		}
 
 		bool ReceivePacket( const RakNet::Packet *packet ) {
@@ -161,20 +160,9 @@ namespace XS {
 				ByteBuffer bb( buffer, bufferLen );
 
 				struct SnapshotHeader {
-					uint32_t numEntities;
+					uint32_t dummy;
 				} snapshotHeader;
 				bb.ReadGeneric( &snapshotHeader, sizeof(snapshotHeader) );
-
-				for ( size_t i = 0u; i < snapshotHeader.numEntities; i++ ) {
-					const char *name = nullptr;
-					uint32_t nameLen = 0u;
-					bb.ReadString( &name, &nameLen );
-					if ( !String::CompareCase( name, "EntitySphere" ) ) {
-						console.Print( PrintLevel::Normal,
-							"Spawning sphere\n"
-						);
-					}
-				}
 			} break;
 
 			default: {

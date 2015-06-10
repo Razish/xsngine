@@ -450,19 +450,6 @@ namespace XS {
 			currentView->renderCommands.push( cmd );
 		}
 
-		void DrawParticles( const Backend::Buffer *vbo, const Backend::Buffer *ibo, const Material *material,
-			size_t count )
-		{
-			AssertView();
-
-			RenderCommand cmd( CommandType::DrawParticles );
-			cmd.drawParticles.vbo = vbo;
-			cmd.drawParticles.ibo = ibo;
-			cmd.drawParticles.material = material;
-			cmd.drawParticles.count = count;
-			currentView->renderCommands.push( cmd );
-		}
-
 	} // namespace Renderer
 
 } // namespace XS

@@ -117,14 +117,6 @@ namespace XS {
 			const Model *model
 		);
 
-		// ???
-		void DrawParticles(
-			const Backend::Buffer *vbo,
-			const Backend::Buffer *ibo,
-			const Material *material,
-			size_t count
-		);
-
 	} // namespace Renderer
 
 } // namespace XS
