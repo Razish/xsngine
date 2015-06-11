@@ -22,6 +22,7 @@ namespace XS {
 			// for a given x,y let offset = (x * rowSize) + y
 			uint8_t		offset;
 			Colour		colour;
+			bool		valid = true;
 
 			void Move(
 				uint8_t toOffset

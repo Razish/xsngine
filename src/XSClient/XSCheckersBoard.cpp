@@ -20,7 +20,8 @@ namespace XS {
 	namespace ClientGame {
 
 		void CheckersPiece::Move( uint8_t toOffset ) {
-			SDL_assert( !"Unimplemented" );
+			offset = toOffset;
+			//TODO: send network event
 		}
 
 		CheckersBoard::CheckersBoard() {
@@ -100,6 +101,10 @@ namespace XS {
 
 			// render each piece
 			for ( const auto &piece : pieces ) {
+				if ( !piece.valid ) {
+					continue;
+				}
+
 				const real32_t x = static_cast<real32_t>( piece.offset % dimensions ) * tileWidth;
 				const real32_t y = static_cast<real32_t>( piece.offset / dimensions ) * tileHeight;
 				const vector4 *colour = nullptr;
@@ -191,7 +196,23 @@ namespace XS {
 			uint8_t offset = (row * dimensions) + col;
 			for ( auto &move : possibleMoves ) {
 				if ( offset == move ) {
-					selectedPiece->offset = move;
+					// check for capturing
+					const uint8_t fromCol = selectedPiece->offset % dimensions;
+					const uint8_t toCol = move % dimensions;
+
+					if ( std::abs( fromCol - toCol ) == 2 ) {
+						// jumped
+						const uint8_t jumpOffset = (selectedPiece->offset + move) / 2;
+						for ( auto &piece : pieces ) {
+							if ( piece.offset == jumpOffset ) {
+								piece.offset = 0xFFu;
+								piece.valid = false;
+								break;
+							}
+						}
+					}
+
+					selectedPiece->Move( move );
 					break;
 				}
 			}
@@ -217,14 +238,18 @@ namespace XS {
 					continue;
 				}
 
-				int8_t result = static_cast<int8_t>( selectedPiece->offset ) + *move;
-				uint8_t moveCol = result % dimensions;
-				uint8_t pieceCol = selectedPiece->offset % dimensions;
-				uint8_t moveRow = result / dimensions;
-				uint8_t pieceRow = selectedPiece->offset / dimensions;
+				const int8_t result = static_cast<int8_t>( selectedPiece->offset ) + *move;
+				const uint8_t moveCol = result % dimensions;
+				const uint8_t moveRow = result / dimensions;
+				const uint8_t pieceCol = selectedPiece->offset % dimensions;
+				const uint8_t pieceRow = selectedPiece->offset / dimensions;
+				const CheckersPiece::Colour pieceColour = selectedPiece->colour;
+
 				if ( result < 0 || result > size
 					|| (std::abs( pieceCol - moveCol ) > 1 && !jumped[i])
-					|| (std::abs( pieceRow - moveRow ) > 1 && !jumped[i]) )
+					|| (std::abs( pieceRow - moveRow ) > 1 && !jumped[i])
+					|| (pieceColour == CheckersPiece::Colour::Red && moveRow < pieceRow)
+					|| (pieceColour == CheckersPiece::Colour::Black && moveRow > pieceRow) )
 				{
 					*move = 0u; // mark it as invalid
 				}
@@ -232,9 +257,9 @@ namespace XS {
 					for ( const auto &piece : pieces ) {
 						if ( result == piece.offset ) {
 							// desired position is occupied, see if we can jump over it
-							bool canJump = !jumped[i] && piece.colour != selectedPiece->colour;
-							int8_t jumpOffset = static_cast<int8_t>( selectedPiece->offset ) + (*move * 2);
-							uint8_t jumpCol = jumpOffset % dimensions;
+							const bool canJump = !jumped[i] && piece.colour != selectedPiece->colour;
+							const int8_t jumpOffset = static_cast<int8_t>( selectedPiece->offset ) + (*move * 2);
+							const uint8_t jumpCol = jumpOffset % dimensions;
 							bool jumpOccupied = false;
 							for ( auto &jumpPiece : pieces ) {
 								if ( jumpPiece.offset == jumpOffset ) {
