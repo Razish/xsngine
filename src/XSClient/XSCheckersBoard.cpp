@@ -80,6 +80,20 @@ namespace XS {
 
 		void CheckersBoard::Update( real64_t dt ) {
 			//TODO: check for kings
+			for ( auto &piece : pieces ) {
+				if ( piece.colour == CheckersPiece::Colour::Red ) {
+					const uint8_t row = piece.offset / dimensions;
+					if ( row == dimensions - 1 ) {
+						piece.king = true;
+					}
+				}
+				else {
+					const uint8_t row = piece.offset / dimensions;
+					if ( row == 0u ) {
+						piece.king = true;
+					}
+				}
+			}
 			//TODO: check end-game rules
 		}
 
@@ -121,6 +135,16 @@ namespace XS {
 					colour,
 					nullptr
 				);
+
+				if ( piece.king ) {
+					Renderer::DrawQuad(
+						x + (tileWidth / 4.0f), y + (tileHeight / 4.0f),
+						tileWidth / 2.0f, tileHeight / 2.0f,
+						0.0f, 0.0f, 1.0f, 1.0f,
+						&colourTable[ColourIndex( COLOUR_CYAN )],
+						nullptr
+					);
+				}
 			}
 
 			// show the possible moves

@@ -23,6 +23,7 @@ namespace XS {
 			uint8_t		offset;
 			Colour		colour;
 			bool		valid = true;
+			bool		king = false;
 
 			void Move(
 				uint8_t toOffset
