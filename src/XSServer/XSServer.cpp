@@ -38,13 +38,8 @@ namespace XS {
 			);
 		}
 
-		static void RegisterCommands( void ) {
-			// ...
-		}
-
 		void Init( void ) {
 			RegisterCvars();
-			RegisterCommands();
 
 			Network::Init();
 

@@ -6,6 +6,8 @@
 #include "XSRenderer/XSBackend.h"
 #include "XSRenderer/XSScreenshot.h"
 
+//#define USE_FBO
+
 namespace XS {
 
 	namespace Renderer {

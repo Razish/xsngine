@@ -6,12 +6,6 @@ namespace XS {
 
 	namespace ClientGame {
 
-		class Entity;
-		class FlyCamera;
-
-		extern Cvar *cg_fov;
-		extern FlyCamera *camera;
-
 		// initialise the ClientGame, create a View and load all resources etc
 		void Init(
 			void
@@ -25,16 +19,6 @@ namespace XS {
 		// prepare the scene for rendering, adding renderable objects to the view
 		void DrawFrame(
 			real64_t dt
-		);
-
-		// add an object to the game
-		void AddObject(
-			Entity *obj
-		);
-
-		// remove an object from the game
-		void RemoveObject(
-			Entity *obj
 		);
 
 		void MouseMotionEvent(

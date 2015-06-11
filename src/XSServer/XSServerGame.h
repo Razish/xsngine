@@ -6,11 +6,8 @@ namespace XS {
 
 	namespace ServerGame {
 
-		class Entity;
-
 		extern struct GameState {
-			std::vector<Entity *>		entities;
-			uint32_t					numEntities;
+			uint32_t	dummy;
 		} state;
 
 		// initialise the ServerGame
@@ -18,7 +15,7 @@ namespace XS {
 			void
 		);
 
-		// run a frame, simulate entities
+		// run a frame
 		void RunFrame(
 			real64_t dt
 		);

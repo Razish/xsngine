@@ -26,14 +26,8 @@ namespace XS {
 				debug_input = Cvar::Create( "debug_input", "0", "Show debugging information for input", CVAR_ARCHIVE );
 			}
 
-			static void AddCommands( void ) {
-				// ...
-			}
-
 			void Init( void ) {
 				RegisterCvars();
-
-				AddCommands();
 
 				// raw input
 				// this is also set in ClientConsole upon (de)activation

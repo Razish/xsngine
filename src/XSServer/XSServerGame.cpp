@@ -11,12 +11,8 @@ namespace XS {
 
 		GameState state = {};
 
-		static void RegisterCommands( void ) {
-			// ...
-		}
-
 		void Init( void ) {
-			RegisterCommands();
+			// ...
 		}
 
 		void RunFrame( real64_t dt ) {

@@ -124,6 +124,9 @@ namespace XS {
 
 			Network::Init();
 
+			// client game module
+			ClientGame::Init();
+
 			// hud
 			hudView = new Renderer::View( 0u, 0u, true );
 			menu = new MenuManager();
@@ -132,9 +135,6 @@ namespace XS {
 
 			// console
 			clientConsole = new ClientConsole( &console );
-
-			// client game module
-			ClientGame::Init();
 		}
 
 		void Shutdown( void ) {

@@ -25,8 +25,8 @@
 //#include <OpenCL/cl_gl_ext.h>
 #endif
 
-#define USE_FBO
-#define FBO_COMPOSITE
+//#define USE_FBO
+//#define FBO_COMPOSITE
 
 namespace XS {
 

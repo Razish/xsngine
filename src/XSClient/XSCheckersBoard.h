@@ -11,9 +11,6 @@ namespace XS {
 
 	namespace ClientGame {
 
-		// there is no internal storage of the checkers board
-		// each piece maintains its 1D offset in the virtual board
-
 		class CheckersPiece {
 		public:
 			enum class Colour : uint8_t {
@@ -27,11 +24,15 @@ namespace XS {
 			Colour		colour;
 
 			void Move(
-				uint8_t x,
-				uint8_t y
+				uint8_t toOffset
 			);
 		};
 
+		// there is no internal storage of the checkers board
+		// each piece maintains its 1D offset in the virtual board and which player it belongs to
+		// this means the CheckersBoard is a miniscule 48 bytes!
+		//	projected network throughput: ~200 bytes/sec at 2hz without delta compression
+		//	48 bytes * 2hz + network overhead
 		class CheckersBoard {
 		private:
 			static const uint8_t dimensions = 8u;
@@ -44,6 +45,12 @@ namespace XS {
 			Renderer::Texture		*boardTexture = nullptr;
 			Renderer::Font			*font = nullptr;
 			CheckersPiece			 pieces[numPieces]; // these are stored red then black
+			CheckersPiece			*selectedPiece = nullptr;
+			std::vector<uint8_t>	 possibleMoves;
+
+			void CalculatePossibleMoves(
+				void
+			);
 
 		public:
 			CheckersBoard();
@@ -55,6 +62,11 @@ namespace XS {
 
 			void Render(
 				real64_t dt
+			) const;
+
+			void MouseButtonEvent(
+				real32_t cursorX,
+				real32_t cursorY
 			);
 		};
 

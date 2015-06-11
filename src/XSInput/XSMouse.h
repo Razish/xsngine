@@ -11,10 +11,6 @@ namespace XS {
 
 		namespace Input {
 
-			struct MovementCommand;
-
-			extern vector2 mouseDelta;
-
 			// lock mouse to screen and only recieve relative mouse movement, or behave like a regular window
 			void CaptureMouse(
 				bool capture
@@ -33,12 +29,6 @@ namespace XS {
 			// ???
 			void MouseMotionEvent(
 				const struct MouseMotionEvent &ev
-			);
-
-			// ???
-			void CalculateMouseMotion(
-				real64_t frameMsec,
-				MovementCommand &cmd
 			);
 
 		} // namespace Input

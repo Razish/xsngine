@@ -158,7 +158,6 @@
     <File Name="XSClient/XSMenuElementText.h"/>
     <File Name="XSClient/XSClientGameState.cpp"/>
     <File Name="XSClient/XSClientGameState.h"/>
-    <File Name="XSCommon/XSCommand.cpp"/>
     <File Name="XSClient/XSCheckersBoard.cpp"/>
     <File Name="XSClient/XSCheckersBoard.h"/>
   </VirtualDirectory>
@@ -206,6 +205,7 @@
     <File Name="XSCommon/XSTokenParser.h"/>
     <File Name="XSCommon/XSByteBuffer.h"/>
     <File Name="XSCommon/XSByteBuffer.cpp"/>
+    <File Name="XSCommon/XSCommand.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="XSCrypto">
     <File Name="XSCrypto/XSMD5.cpp"/>

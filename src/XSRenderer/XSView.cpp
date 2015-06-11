@@ -9,7 +9,7 @@
 #include "XSRenderer/XSRenderable.h"
 #include "XSRenderer/XSShaderProgram.h"
 
-#define USE_FBO
+//#define USE_FBO
 
 namespace XS {
 
