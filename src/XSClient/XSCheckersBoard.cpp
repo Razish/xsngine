@@ -272,8 +272,8 @@ namespace XS {
 				if ( result < 0 || result > size
 					|| (std::abs( pieceCol - moveCol ) > 1 && !jumped[i])
 					|| (std::abs( pieceRow - moveRow ) > 1 && !jumped[i])
-					|| (pieceColour == CheckersPiece::Colour::Red && moveRow < pieceRow)
-					|| (pieceColour == CheckersPiece::Colour::Black && moveRow > pieceRow) )
+					|| ((pieceColour == CheckersPiece::Colour::Red && !selectedPiece->king) && moveRow < pieceRow)
+					|| ((pieceColour == CheckersPiece::Colour::Black && !selectedPiece->king) && moveRow > pieceRow) )
 				{
 					*move = 0u; // mark it as invalid
 				}
