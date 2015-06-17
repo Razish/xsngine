@@ -25,7 +25,7 @@ namespace XS {
 			bool		valid = true;
 			bool		king = false;
 
-			void Move(
+			void SendMovePacket(
 				uint8_t toOffset
 			);
 		};
@@ -69,6 +69,12 @@ namespace XS {
 			void MouseButtonEvent(
 				real32_t cursorX,
 				real32_t cursorY
+			);
+
+			// triggered by network event
+			void UpdatePiece(
+				uint8_t offsetFrom,
+				uint8_t offsetTo
 			);
 		};
 

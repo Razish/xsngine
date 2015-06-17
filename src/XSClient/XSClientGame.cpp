@@ -22,7 +22,8 @@ namespace XS {
 	namespace ClientGame {
 
 		static Renderer::View *checkersView = nullptr;
-		static CheckersBoard *board = nullptr;
+		//FIXME: only non-static until network events are moved to ClientGame
+		/*static */CheckersBoard *board = nullptr;
 
 		static void RenderScene( real64_t dt ) {
 			// no camera stuff to do

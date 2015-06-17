@@ -6,6 +6,8 @@ namespace XS {
 
 	namespace ClientGame {
 
+		extern class CheckersBoard *board;
+
 		// initialise the ClientGame, create a View and load all resources etc
 		void Init(
 			void

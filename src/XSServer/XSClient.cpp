@@ -9,7 +9,6 @@ namespace XS {
 		Client::Client( uint64_t guid )
 		: guid( guid )
 		{
-			BroadcastMessage( "Connection from %s\n" );
 		}
 
 	} // namespace ServerGame

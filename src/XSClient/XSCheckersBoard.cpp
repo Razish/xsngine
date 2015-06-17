@@ -4,8 +4,11 @@
 #include "XSCommon/XSColours.h"
 #include "XSCommon/XSString.h"
 #include "XSCommon/XSGlobals.h"
+#include "XSCommon/XSByteBuffer.h"
 #include "XSClient/XSClientGame.h"
+#include "XSClient/XSClientGameState.h"
 #include "XSClient/XSCheckersBoard.h"
+#include "XSNetwork/XSNetwork.h"
 #include "XSRenderer/XSRenderer.h"
 #include "XSRenderer/XSVertexAttributes.h"
 #include "XSRenderer/XSShaderProgram.h"
@@ -19,9 +22,14 @@ namespace XS {
 
 	namespace ClientGame {
 
-		void CheckersPiece::Move( uint8_t toOffset ) {
-			offset = toOffset;
-			//TODO: send network event
+		void CheckersPiece::SendMovePacket( uint8_t toOffset ) {
+			ByteBuffer bb;
+			bb.WriteInt8( offset );
+			bb.WriteInt8( toOffset );
+
+			Network::XSPacket packet( Network::ID_XS_CL2SV_MOVE_PIECE );
+			packet.data = bb.GetMemory( &packet.dataLen );
+			Network::Send( 0u, &packet );
 		}
 
 		CheckersBoard::CheckersBoard() {
@@ -189,11 +197,18 @@ namespace XS {
 		}
 
 		void CheckersBoard::MouseButtonEvent( real32_t cursorX, real32_t cursorY ) {
+			if ( !state.playing ) {
+				return;
+			}
+
 			const real32_t pieceWidth = Renderer::state.window.width / 14.0f;
 			const real32_t pieceHeight = Renderer::state.window.height / 8.0f;
 
 			if ( !selectedPiece ) {
 				for ( auto &piece : pieces ) {
+					if ( piece.colour != state.currentPlayer ) {
+						continue;
+					}
 					const real32_t pieceX = static_cast<real32_t>( piece.offset % dimensions ) * pieceWidth;
 					const real32_t pieceY = static_cast<real32_t>( piece.offset / dimensions ) * pieceHeight;
 					if ( cursorX >= pieceX && cursorX < pieceX + pieceWidth
@@ -220,23 +235,7 @@ namespace XS {
 			uint8_t offset = (row * dimensions) + col;
 			for ( auto &move : possibleMoves ) {
 				if ( offset == move ) {
-					// check for capturing
-					const uint8_t fromCol = selectedPiece->offset % dimensions;
-					const uint8_t toCol = move % dimensions;
-
-					if ( std::abs( fromCol - toCol ) == 2 ) {
-						// jumped
-						const uint8_t jumpOffset = (selectedPiece->offset + move) / 2;
-						for ( auto &piece : pieces ) {
-							if ( piece.offset == jumpOffset ) {
-								piece.offset = 0xFFu;
-								piece.valid = false;
-								break;
-							}
-						}
-					}
-
-					selectedPiece->Move( move );
+					selectedPiece->SendMovePacket( move );
 					break;
 				}
 			}
@@ -272,8 +271,8 @@ namespace XS {
 				if ( result < 0 || result > size
 					|| (std::abs( pieceCol - moveCol ) > 1 && !jumped[i])
 					|| (std::abs( pieceRow - moveRow ) > 1 && !jumped[i])
-					|| ((pieceColour == CheckersPiece::Colour::Red && !selectedPiece->king) && moveRow < pieceRow)
-					|| ((pieceColour == CheckersPiece::Colour::Black && !selectedPiece->king) && moveRow > pieceRow) )
+					|| (pieceColour == CheckersPiece::Colour::Red && !selectedPiece->king && moveRow < pieceRow)
+					|| (pieceColour == CheckersPiece::Colour::Black && !selectedPiece->king && moveRow > pieceRow) )
 				{
 					*move = 0u; // mark it as invalid
 				}
@@ -315,6 +314,31 @@ namespace XS {
 			}
 			if ( possibleMoves.empty() ) {
 				selectedPiece = nullptr;
+			}
+		}
+
+		void CheckersBoard::UpdatePiece( uint8_t offsetFrom, uint8_t offsetTo ) {
+			for ( auto &piece : pieces ) {
+				if ( piece.offset == offsetFrom ) {
+					// check for capturing
+					const uint8_t fromCol = offsetFrom % dimensions;
+					const uint8_t toCol = offsetTo % dimensions;
+
+					if ( std::abs( fromCol - toCol ) == 2 ) {
+						// jumped
+						const uint8_t jumpOffset = (offsetFrom + offsetTo) / 2;
+						for ( auto &jumpPiece : pieces ) {
+							if ( jumpPiece.offset == jumpOffset ) {
+								//FIXME: just swap to end of list and track how many active pieces there are
+								jumpPiece.offset = 0xFFu;
+								jumpPiece.valid = false;
+								break;
+							}
+						}
+					}
+					piece.offset = offsetTo;
+					break;
+				}
 			}
 		}
 

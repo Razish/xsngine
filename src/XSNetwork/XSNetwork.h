@@ -9,10 +9,12 @@ namespace XS {
 		enum GameMessage {
 			// server --> client
 			ID_XS_SV2CL_GAMESTATE = ID_USER_PACKET_ENUM + 1,
+			ID_XS_SV2CL_SET_PLAYER,
+			ID_XS_SV2CL_MOVE_PIECE,
 			ID_XS_SV2CL_PRINT,
 
 			// client --> server
-			ID_XS_CL2SV_DUMMY,
+			ID_XS_CL2SV_MOVE_PIECE,
 		};
 
 		struct XSPacket {
@@ -51,10 +53,10 @@ namespace XS {
 			void
 		);
 
-		// ???
+		// specifying 0 for the port will use the default server port
 		bool Connect(
 			const char *hostname,
-			uint16_t port
+			uint16_t port = 0u
 		);
 
 		// ???

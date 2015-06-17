@@ -82,6 +82,8 @@ namespace XS {
 
 				// not init-only, only (re)set if it hasn't been modified
 				else if ( !cvar->modified ) {
+					// this will happen if the cvar was set via config or cmdline, and then we try to create it
+					// which means we don't want to overwrite the requested value with the initial value
 					cvar->Set( value, true );
 				}
 
@@ -97,6 +99,10 @@ namespace XS {
 		}
 
 		// new cvar, allocate and add to map
+		// this will only happen the first time it is requested:
+		//	first config load for archived cvars
+		//	set via cmdline
+		//	default value when registering cvars
 		return new Cvar( name, value, description, flags );
 	}
 
@@ -152,6 +158,13 @@ namespace XS {
 		if ( !initial && (flags & CVAR_READONLY) ) {
 			console.Print( PrintLevel::Normal, "Attempt to set read-only cvar \"%s\"\n", name.c_str() );
 			return false;
+		}
+
+		if ( !initial ) {
+			if ( !initialised && modified ) {
+				// loaded from config, but has been set before
+				return false;
+			}
 		}
 
 		// first, store the desired value as a string

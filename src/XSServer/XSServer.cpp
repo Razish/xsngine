@@ -32,7 +32,7 @@ namespace XS {
 		static void RegisterCvars( void ) {
 			sv_maxConnections = Cvar::Create(
 				"sv_maxConnections",
-				"16",
+				"2",
 				"Maximum number of client connections",
 				CVAR_ARCHIVE
 			);
@@ -53,6 +53,7 @@ namespace XS {
 		}
 
 		static void GenerateNetworkState( void ) {
+#if 0
 			Network::XSPacket snapshot( Network::ID_XS_SV2CL_GAMESTATE );
 
 			ByteBuffer buffer;
@@ -62,6 +63,7 @@ namespace XS {
 			for ( auto *client : clients ) {
 				Network::Send( client->guid, &snapshot );
 			}
+#endif
 		}
 
 		void NetworkPump( void ) {
@@ -83,8 +85,21 @@ namespace XS {
 		bool ReceivePacket( const RakNet::Packet *packet ) {
 			switch ( packet->data[0] ) {
 
-			case Network::ID_XS_CL2SV_DUMMY: {
-				// ...
+			case Network::ID_XS_CL2SV_MOVE_PIECE: {
+				uint8_t *buffer = packet->data + 1;
+				size_t bufferLen = packet->length - 1;
+				ByteBuffer bbIn( buffer, bufferLen );
+
+				uint8_t offsetFrom, offsetTo;
+				bbIn.ReadUInt8( &offsetFrom );
+				bbIn.ReadUInt8( &offsetTo );
+
+				Network::XSPacket outPacket( Network::ID_XS_SV2CL_MOVE_PIECE );
+				ByteBuffer bbOut;
+				bbOut.WriteInt8( offsetFrom );
+				bbOut.WriteInt8( offsetTo );
+				outPacket.data = bbOut.GetMemory( &outPacket.dataLen );
+				Network::Send( 0u, &outPacket );
 			} break;
 
 			default: {
@@ -100,6 +115,21 @@ namespace XS {
 			Client *client = new Client( packet->guid.g );
 
 			client->state = Client::State::Connecting;
+
+			Network::XSPacket spPacket( Network::ID_XS_SV2CL_SET_PLAYER );
+			ByteBuffer buffer;
+			const char *team = clients.size() == 0 ? "Red" : "Black";
+			buffer.WriteString( team );
+			spPacket.data = buffer.GetMemory( &spPacket.dataLen );
+			Network::Send( client->guid, &spPacket );
+
+			BroadcastMessage(
+				String::Format(
+					"Connection from %s, playing as %s\n",
+					packet->systemAddress.ToString(),
+					team
+				).c_str()
+			);
 
 			clients.push_back( client );
 		}
@@ -121,18 +151,23 @@ namespace XS {
 					Command::Append( p );
 				}
 			}
+
+			static real64_t lastMsgTime = 0.0;
+			real64_t currentTime = GetElapsedTime();
+			if ( currentTime - lastMsgTime >= 2500 ) {
+				lastMsgTime = currentTime;
+				BroadcastMessage( String::Format( "Automated message at %.5f\n", currentTime ).c_str() );
+			}
 		}
 
 		void BroadcastMessage( const char *msg ) {
-			size_t msgLen = strlen( msg );
-			for ( auto *client : clients ) {
-				Network::XSPacket packet( Network::ID_XS_SV2CL_PRINT );
+			Network::XSPacket packet( Network::ID_XS_SV2CL_PRINT );
 
-				packet.data = static_cast<const void *>( msg );
-				packet.dataLen = msgLen;
+			ByteBuffer bb;
+			bb.WriteString( msg );
+			packet.data = bb.GetMemory( &packet.dataLen );
 
-				Network::Send( client->guid, &packet );
-			}
+			Network::Send( 0u, &packet );
 		}
 
 		// lazy initialise on first request per frame

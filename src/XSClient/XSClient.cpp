@@ -16,6 +16,7 @@
 #include "XSClient/XSClientGame.h"
 #include "XSClient/XSClientConsole.h"
 #include "XSClient/XSMenuManager.h"
+#include "XSClient/XSClientGameState.h"
 #include "XSInput/XSInput.h"
 #include "XSInput/XSMouse.h"
 #include "XSInput/XSKeys.h"
@@ -154,15 +155,64 @@ namespace XS {
 		bool ReceivePacket( const RakNet::Packet *packet ) {
 			switch ( packet->data[0] ) {
 
+			case Network::ID_XS_SV2CL_PRINT: {
+				uint8_t *buffer = packet->data + 1;
+				size_t bufferLen = packet->length - 1;
+				ByteBuffer bb( buffer, bufferLen );
+
+				const char *msg = nullptr;
+				bb.ReadString( &msg, nullptr );
+				console.Print( PrintLevel::Normal,
+					"%s",
+					msg
+				);
+				delete[] msg;
+			} break;
+
 			case Network::ID_XS_SV2CL_GAMESTATE: {
-				uint8_t *buffer = packet->data;
-				size_t bufferLen = packet->length;
+				uint8_t *buffer = packet->data + 1;
+				size_t bufferLen = packet->length - 1;
 				ByteBuffer bb( buffer, bufferLen );
 
 				struct SnapshotHeader {
 					uint32_t dummy;
 				} snapshotHeader;
 				bb.ReadGeneric( &snapshotHeader, sizeof(snapshotHeader) );
+			} break;
+
+			case Network::ID_XS_SV2CL_SET_PLAYER: {
+				uint8_t *buffer = packet->data + 1;
+				size_t bufferLen = packet->length - 1;
+				ByteBuffer bb( buffer, bufferLen );
+				const char *str = nullptr;
+				bb.ReadString( &str, nullptr );
+				if ( !String::Compare( str, "Red" ) ) {
+					ClientGame::state.playing = true;
+					ClientGame::state.currentPlayer = ClientGame::CheckersPiece::Colour::Red;
+				}
+				else if ( !String::Compare( str, "Black" ) ) {
+					ClientGame::state.playing = true;
+					ClientGame::state.currentPlayer = ClientGame::CheckersPiece::Colour::Black;
+				}
+				else {
+					ClientGame::state.playing = false;
+				}
+				console.Print( PrintLevel::Normal,
+					"Playing as %s (%i)\n",
+					str,
+					ClientGame::state.currentPlayer
+				);
+				delete[] str;
+			} break;
+
+			case Network::ID_XS_SV2CL_MOVE_PIECE: {
+				uint8_t *buffer = packet->data + 1;
+				size_t bufferLen = packet->length - 1;
+				ByteBuffer bb( buffer, bufferLen );
+				uint8_t offsetFrom, offsetTo;
+				bb.ReadUInt8( &offsetFrom );
+				bb.ReadUInt8( &offsetTo );
+				ClientGame::board->UpdatePiece( offsetFrom, offsetTo );
 			} break;
 
 			default: {
