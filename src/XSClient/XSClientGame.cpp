@@ -44,7 +44,7 @@ namespace XS {
 		static void RegisterCvars( void ) {
 			//fov = degrees( pi * 0.75 ) / 1.25 because math
 			cg_fov = Cvar::Create( "cg_fov", "108", "Field of view", CVAR_ARCHIVE );
-			cg_numParticles = Cvar::Create( "cg_numParticles", "10", "Number of particles to display", CVAR_NONE );
+			cg_numParticles = Cvar::Create( "cg_numParticles", "10", "Number of particles to display", CVAR_ARCHIVE );
 			cg_terrainPersistence = Cvar::Create( "cg_terrainPersistence", "0.25", "Terrain roughness", CVAR_ARCHIVE );
 			cg_terrainFrequency = Cvar::Create( "cg_terrainFrequency", "0.075", "Terrain complexity", CVAR_ARCHIVE );
 			cg_terrainAmplitude = Cvar::Create( "cg_terrainAmplitude", "1.0", "Terrain max height", CVAR_ARCHIVE );
@@ -94,7 +94,7 @@ namespace XS {
 			torus->renderObject = Renderer::Model::Register( "models/torus.xmf" );
 			AddObject( torus );
 
-			Entity *pe = new ParticleEmitter( cg_numParticles->GetInt32(), 1000u, "textures/fx/orb.png" );
+			Entity *pe = new ParticleEmitter( cg_numParticles->GetInt32(), 4000u, "textures/fx/orb.png" );
 			AddObject( pe );
 		}
 

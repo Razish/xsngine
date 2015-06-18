@@ -196,19 +196,22 @@ int main( int argc, char **argv ) {
 
 		// frame
 		XS::Common::gameTimer = new XS::Timer(); // TODO: free
-		while ( 1 ) {
-			static real64_t currentTime = XS::Common::gameTimer->GetTiming( false, XS::TimerResolution::Milliseconds );
-			static real64_t accumulator = 0.0;
 
+		real64_t t = 0.0;
+		const real64_t dt = 1000.0 / XS::Common::com_framerate->GetReal64();
+		real64_t currentTime = XS::Common::gameTimer->GetTiming( false, XS::TimerResolution::Milliseconds );
+		real64_t accumulator = 0.0;
+
+		while ( 1 ) {
 			// calculate delta time for integrating this frame
 			const real64_t newTime = XS::Common::gameTimer->GetTiming( false, XS::TimerResolution::Milliseconds );
-			const real64_t dt = 1000.0 / XS::Common::com_framerate->GetReal64();
 			const real64_t frameTime = newTime - currentTime;
 			currentTime = newTime;
 
+			// avoid spiral of death
 			real64_t sliceMsec = frameTime;
 			if ( sliceMsec > 250.0 ) {
-				sliceMsec = 250.0; // avoid spiral of death, maximum 250mspf
+				sliceMsec = 250.0;
 			}
 			accumulator += sliceMsec;
 
@@ -222,34 +225,30 @@ int main( int argc, char **argv ) {
 			XS::Event::Pump();
 			XS::Command::ExecuteBuffer();
 
-			while ( accumulator >= dt ) {
-				// this is so we can still react to input events if we're hitching
+			if ( XS::Common::com_dedicated->GetBool() ) {
+				while ( accumulator >= dt ) {
+					XS::Command::ExecuteBuffer();
 
-				// event pump
-				XS::Event::Pump();
-				XS::Command::ExecuteBuffer();
-
-				if ( XS::Common::com_dedicated->GetBool() ) {
 					// server frame, then network (snapshot)
 					XS::Server::RunFrame( dt );
-					XS::Server::NetworkPump();
-				}
-				else {
-					// recieve server update
-					// create movement command and send it off
-					XS::Client::NetworkPump();
 
-					// run local prediction from latest server snapshot
-					XS::Client::RunFrame( dt );
+					accumulator -= dt;
+					t += dt;
 				}
-				accumulator -= dt;
+				XS::Server::NetworkPump();
 			}
+			else {
+				// recieve server update
+				// create movement command and send it off
+				XS::Client::NetworkPump();
 
-			if ( !XS::Common::com_dedicated->GetBool() ) {
+				// run local prediction from latest server snapshot
+				XS::Client::RunFrame( sliceMsec );
+
 				// alpha = accumulator / dt;
 				// lerp( previousState, alpha, currentState )
-				XS::Client::DrawFrame( frameTime );
-				XS::Renderer::Update( frameTime/*state*/ );
+				XS::Client::DrawFrame( sliceMsec );
+				XS::Renderer::Update( sliceMsec/*state*/ );
 			}
 
 			const real64_t frameRate = XS::Common::r_framerate->GetReal64();
@@ -279,6 +278,8 @@ int main( int argc, char **argv ) {
 			const real64_t runtime = globalTimer.GetTiming( true, XS::TimerResolution::Seconds );
 			XS::console.Print( XS::PrintLevel::Developer, "Run time: %.3f seconds\n", runtime );
 		}
+
+		delete XS::Common::gameTimer;
 
 		// indent the console for this scope
 		{
