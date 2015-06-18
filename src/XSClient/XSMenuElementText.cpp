@@ -221,11 +221,11 @@ namespace XS {
 			);
 		}
 
-		void MenuElementText::MouseButtonEvent( const struct MouseButtonEvent &ev, const vector2 &cursorPos ) {
+		void MenuElementText::MouseButtonEvent( const struct MouseButtonEvent &ev ) {
 			// ...
 		}
 
-		void MenuElementText::MouseMotionEvent( const vector2 &cursorPos ) {
+		void MenuElementText::MouseMotionEvent( void ) {
 			// ...
 		}
 

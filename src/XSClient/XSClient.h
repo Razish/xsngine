@@ -4,6 +4,7 @@
 
 #include "XSCommon/XSCommand.h"
 #include "XSCommon/XSTimer.h"
+#include "XSCommon/XSVector.h"
 
 namespace RakNet {
 	struct Packet;
@@ -13,7 +14,8 @@ namespace XS {
 
 	namespace Client {
 
-		extern uint64_t frameNum;
+		extern uint64_t	frameNum;
+		extern vector2	cursorPos;
 
 		// initialise the Client object, loading related subsystems
 		void Init(

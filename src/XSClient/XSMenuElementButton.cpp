@@ -302,8 +302,8 @@ namespace XS {
 			);
 		}
 
-		void MenuElementButton::MouseButtonEvent( const struct MouseButtonEvent &ev, const vector2 &cursorPos ) {
-			if ( !MouseWithinBounds( cursorPos ) ) {
+		void MenuElementButton::MouseButtonEvent( const struct MouseButtonEvent &ev ) {
+			if ( !MouseWithinBounds( Client::cursorPos ) ) {
 				return;
 			}
 
@@ -312,7 +312,7 @@ namespace XS {
 			}
 		}
 
-		void MenuElementButton::MouseMotionEvent( const vector2 &cursorPos ) {
+		void MenuElementButton::MouseMotionEvent( void ) {
 			// ...
 		}
 

@@ -211,7 +211,9 @@ namespace XS {
 		// add null terminator
 		str[len] = '\0';
 		*outStr = str;
-		*outLen = len;
+		if ( outLen ) {
+			*outLen = len;
+		}
 	}
 
 } // namespace XS

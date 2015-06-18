@@ -189,9 +189,9 @@ namespace XS {
 			}
 		}
 
-		bool Menu::MouseButtonEvent( const struct MouseButtonEvent &ev, const vector2 &cursorPos ) {
-			const real32_t cursorX = cursorPos.x;
-			const real32_t cursorY = cursorPos.y;
+		bool Menu::MouseButtonEvent( const struct MouseButtonEvent &ev ) {
+			const real32_t cursorX = Client::cursorPos.x;
+			const real32_t cursorY = Client::cursorPos.y;
 			const real32_t menuX = position.x;
 			const real32_t menuY = position.y;
 			const real32_t menuW = size.x;
@@ -202,7 +202,7 @@ namespace XS {
 				// pass it down the chain
 				for ( auto element : elements ) {
 					if ( !element->properties.decorative ) {
-						element->MouseButtonEvent( ev, cursorPos );
+						element->MouseButtonEvent( ev );
 					}
 				}
 				return true;
@@ -212,9 +212,9 @@ namespace XS {
 			}
 		}
 
-		bool Menu::MouseMotionEvent( const vector2 &cursorPos ) {
-			const real32_t cursorX = cursorPos.x;
-			const real32_t cursorY = cursorPos.y;
+		bool Menu::MouseMotionEvent( void ) {
+			const real32_t cursorX = Client::cursorPos.x;
+			const real32_t cursorY = Client::cursorPos.y;
 			const real32_t menuX = position.x;
 			const real32_t menuY = position.y;
 			const real32_t menuW = size.x;
@@ -225,7 +225,7 @@ namespace XS {
 				// pass it down the chain
 				for ( auto element : elements ) {
 					if ( !element->properties.decorative ) {
-						element->MouseMotionEvent( cursorPos );
+						element->MouseMotionEvent();
 					}
 				}
 				return true;

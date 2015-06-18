@@ -51,10 +51,10 @@ namespace XS {
 			void
 		);
 
-		// ???
+		// specifying 0 for the port will use the default server port
 		bool Connect(
 			const char *hostname,
-			uint16_t port
+			uint16_t port = 0u
 		);
 
 		// ???

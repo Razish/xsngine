@@ -333,8 +333,8 @@ namespace XS {
 			}
 		}
 
-		void MenuElementSlider::MouseButtonEvent( const struct MouseButtonEvent &ev, const vector2 &cursorPos ) {
-			if ( !MouseWithinBounds( cursorPos ) ) {
+		void MenuElementSlider::MouseButtonEvent( const struct MouseButtonEvent &ev ) {
+			if ( !MouseWithinBounds( Client::cursorPos ) ) {
 				return;
 			}
 			Cvar *cvar = Cvar::Get( cvarName );
@@ -344,7 +344,7 @@ namespace XS {
 
 			if ( ev.pressed && (ev.button == SDL_BUTTON_LEFT) ) {
 				// find the fractional point we clicked at
-				const real32_t cursorX = cursorPos.x;
+				const real32_t cursorX = Client::cursorPos.x;
 				const real32_t realPos = cursorX - position.x;
 				const real32_t f = realPos / size.x;
 
@@ -359,15 +359,15 @@ namespace XS {
 			}
 		}
 
-		void MenuElementSlider::MouseMotionEvent( const vector2 &cursorPos ) {
-			if ( MouseWithinBounds( cursorPos ) ) {
+		void MenuElementSlider::MouseMotionEvent( void ) {
+			if ( MouseWithinBounds( Client::cursorPos ) ) {
 				tooltip.mouseHovering = true;
-				tooltip.lastMousePos = cursorPos;
+				tooltip.lastMousePos = Client::cursorPos;
 			}
 			else {
 				tooltip.mouseHovering = false;
 				if ( updatingValue ) {
-					const real32_t cursorX = cursorPos.x;
+					const real32_t cursorX = Client::cursorPos.x;
 					const real32_t realPos = cursorX - position.x;
 					const real32_t f = realPos / size.x;
 					UpdateValue( f );
@@ -381,7 +381,7 @@ namespace XS {
 
 			if ( updatingValue ) {
 				// find the fractional point we clicked at
-				const real32_t cursorX = cursorPos.x;
+				const real32_t cursorX = Client::cursorPos.x;
 				const real32_t realPos = cursorX - position.x;
 				const real32_t f = realPos / size.x;
 

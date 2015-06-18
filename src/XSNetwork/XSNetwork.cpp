@@ -15,15 +15,14 @@ namespace XS {
 
 	namespace Network {
 
-		//FIXME: naughty "using namespace RakNet"
-		using namespace RakNet;
-
-		static RakPeerInterface *peer = nullptr;
+		//FIXME: wrap up in a class
+		static RakNet::RakPeerInterface *peer = nullptr;
 		static bool connected = false;
 		static uint32_t maxConnections = 1u;
 		static bool	isServer = false;
+		static uint64_t myGUID = 0u;
 
-		static const uint16_t defaultPort = 1337;
+		static Cvar *net_port = nullptr;
 
 		static void Cmd_NetStat( const CommandContext * const context ) {
 			PrintStatus();
@@ -34,7 +33,7 @@ namespace XS {
 		}
 
 		static void RegisterCvars( void ) {
-			// ...
+			net_port = Cvar::Create( "net_port", "1337", "Network port to listen on", CVAR_ARCHIVE );
 		}
 
 		void Init( void ) {
@@ -42,26 +41,26 @@ namespace XS {
 			RegisterCvars();
 
 			isServer = Common::com_dedicated->GetBool();
-			peer = RakPeerInterface::GetInstance();
+			peer = RakNet::RakPeerInterface::GetInstance();
+			uint16_t port = static_cast<uint16_t>( net_port->GetInt32() );
 
-			SocketDescriptor socketDescriptors[] = {
-				SocketDescriptor( defaultPort + isServer, nullptr ) // primary network card
+			RakNet::SocketDescriptor socketDescriptors[] = {
+				RakNet::SocketDescriptor( port + isServer, nullptr ) // primary network card
 			};
 
 			if ( isServer ) {
 				maxConnections = Server::sv_maxConnections->GetUInt32();
-				peer->Startup( maxConnections, socketDescriptors, ARRAY_LEN( socketDescriptors ) );
-				peer->SetMaximumIncomingConnections( maxConnections );
-				peer->SetOccasionalPing( true );
-				peer->SetUnreliableTimeout( 1000 );
 			}
 			else {
-				peer->Startup( 1, socketDescriptors, ARRAY_LEN( socketDescriptors ) );
-				peer->SetMaximumIncomingConnections( 1 );
+				maxConnections = 1u;
 			}
-
+			peer->Startup( maxConnections, socketDescriptors, ARRAY_LEN( socketDescriptors ) );
+			peer->SetMaximumIncomingConnections( maxConnections );
+		//	peer->SetOccasionalPing( true );
+			peer->SetUnreliableTimeout( 1000 );
 			peer->AllowConnectionResponseIPMigration( false );
 
+			myGUID = peer->GetGuidFromSystemAddress( RakNet::UNASSIGNED_SYSTEM_ADDRESS ).g;
 			PrintStatus();
 		}
 
@@ -70,7 +69,7 @@ namespace XS {
 
 			//FIXME: peer->CloseConnection( ... )?
 			peer->Shutdown( 500, 0, PacketPriority::LOW_PRIORITY );
-			RakPeerInterface::DestroyInstance( peer );
+			RakNet::RakPeerInterface::DestroyInstance( peer );
 			peer = nullptr;
 		}
 
@@ -107,7 +106,7 @@ namespace XS {
 			}
 
 			if ( !port ) {
-				port = defaultPort + !isServer;
+				port = net_port->GetInt32() + !isServer;
 			}
 
 			if ( isServer ) {
@@ -123,8 +122,8 @@ namespace XS {
 				hostname, port
 			);
 
-			ConnectionAttemptResult result = peer->Connect( hostname, port, nullptr, 0 );
-			if ( result != CONNECTION_ATTEMPT_STARTED ) {
+			RakNet::ConnectionAttemptResult result = peer->Connect( hostname, port, nullptr, 0 );
+			if ( result != RakNet::CONNECTION_ATTEMPT_STARTED ) {
 				console.Print( PrintLevel::Normal,
 					"Failed to connect: %s\n",
 					connectionAttemptResultMessages[result]
@@ -158,14 +157,29 @@ namespace XS {
 		void Receive( void ) {
 			SDL_assert( peer );
 
-			Packet *packet = nullptr;
+			RakNet::Packet *packet = nullptr;
 			while ( (packet = peer->Receive()) ) {
+#if 0
+				console.Print( PrintLevel::Debug,
+					"Receive: %i (%i)\n",
+					packet->data[0],
+					ID_USER_PACKET_ENUM
+				);
+#endif
 				switch ( packet->data[0] ) {
 
 				case ID_REMOTE_DISCONNECTION_NOTIFICATION: {
 					// another client has disconnected gracefully
 					console.Print( PrintLevel::Normal,
 						"another client disconnected\n"
+					);
+				} break;
+
+				case ID_CONNECTION_ATTEMPT_FAILED: {
+					// connection attempt failed
+					console.Print( PrintLevel::Normal,
+						"connection attempt failed (%s)\n",
+						packet->systemAddress.ToString()
 					);
 				} break;
 
@@ -245,9 +259,10 @@ namespace XS {
 					}
 
 					console.Print( PrintLevel::Developer,
-						"Unknown message from %s (ID: %i)\n",
+						"Unknown message from %s (ID: %i, base: %i)\n",
 						packet->systemAddress.ToString(),
-						packet->data[0]
+						packet->data[0],
+						ID_USER_PACKET_ENUM
 					);
 				} break;
 
@@ -258,15 +273,23 @@ namespace XS {
 		}
 
 		void Send( uint64_t guid, const XSPacket *packet ) {
+#if 0
+			console.Print( PrintLevel::Debug,
+				"Send: %i (%i)\n",
+				packet->msg,
+				ID_USER_PACKET_ENUM
+			);
+#endif
+
 			if ( !isServer ) {
 				SDL_assert( connected );
 			}
 
-			BitStream bs;
+			RakNet::BitStream bs;
 
 			// write message ID
 			bs.Write(
-				static_cast<MessageID>( packet->msg )
+				static_cast<RakNet::MessageID>( packet->msg )
 			);
 
 			// write message contents
@@ -276,13 +299,29 @@ namespace XS {
 			);
 
 			// send it to the correct peer
+			RakNet::SystemAddress systemIdentifier;
+			if ( isServer ) {
+				if ( guid == 0u ) {
+					systemIdentifier = RakNet::UNASSIGNED_SYSTEM_ADDRESS;
+				}
+				else {
+					systemIdentifier = peer->GetSystemAddressFromGuid( RakNet::RakNetGUID( guid ) );
+				}
+			}
+			else {
+				//FIXME: retrieve from connection packet?
+				systemIdentifier = peer->GetSystemAddressFromIndex( 0 );
+			}
+
 			peer->Send(
-				&bs,
+				&bs, // bitStream
 				PacketPriority::MEDIUM_PRIORITY, // priority
-				PacketReliability::RELIABLE_ORDERED, // reliability
+				PacketReliability::RELIABLE, // reliability
 				0, // orderingChannel
-				peer->GetSystemAddressFromGuid( RakNetGUID( guid ) ), // systemIdentifier
-				guid == 0u // broadcast
+				systemIdentifier, // systemIdentifier
+				isServer // broadcast
+					? guid == 0u
+					: false
 			);
 		}
 
@@ -309,14 +348,14 @@ namespace XS {
 				);
 			}
 			console.Print( PrintLevel::Normal,
-				"GUID: %s\n",
-				peer->GetGuidFromSystemAddress( UNASSIGNED_SYSTEM_ADDRESS ).ToString()
+				"GUID: %X\n",
+				myGUID
 			);
 
 			// get a list of remote connections
 			uint16_t numRemoteSystems;
 			peer->GetConnectionList( nullptr, &numRemoteSystems );
-			SystemAddress *remoteSystems = new SystemAddress[numRemoteSystems];
+			RakNet::SystemAddress *remoteSystems = new RakNet::SystemAddress[numRemoteSystems];
 			peer->GetConnectionList( remoteSystems, &numRemoteSystems );
 
 			console.Print( PrintLevel::Normal,
@@ -329,7 +368,7 @@ namespace XS {
 					"Listing active connections...\n"
 				);
 				for ( size_t i = 0u; i < numRemoteSystems; i++ ) {
-					SystemAddress *sa = &remoteSystems[i];
+					RakNet::SystemAddress *sa = &remoteSystems[i];
 					Indent indent( 1u );
 
 					std::string type;

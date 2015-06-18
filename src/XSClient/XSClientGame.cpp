@@ -148,6 +148,10 @@ namespace XS {
 			state.viewDelta += delta;
 		}
 
+		void MouseButtonEvent( const struct MouseButtonEvent &ev ) {
+			// ...
+		}
+
 	} // namespace ClientGame
 
 } // namespace XS

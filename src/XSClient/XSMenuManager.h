@@ -22,7 +22,6 @@ namespace XS {
 			std::unordered_map<std::string, Menu *>	menus;
 
 			bool	privateIsOpen = false;
-			vector2	cursorPos; // [0.0, 1.0]
 
 			struct {
 				Renderer::Material	*cursor = nullptr;

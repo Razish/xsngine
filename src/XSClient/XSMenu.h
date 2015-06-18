@@ -35,12 +35,11 @@ namespace XS {
 			);
 
 			bool MouseButtonEvent(
-				const struct MouseButtonEvent &ev,
-				const vector2 &cursorPos
+				const struct MouseButtonEvent &ev
 			);
 
 			bool MouseMotionEvent(
-				const vector2 &cursorPos
+				void
 			);
 		};
 

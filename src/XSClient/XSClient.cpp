@@ -36,6 +36,11 @@ namespace XS {
 		// menus
 		MenuManager *menu = nullptr;
 
+		//FIXME: move this to local client storage, not ClientGame
+		//	kind of related to menus, but we also want it available for 2d games. it belongs in neither, so it should
+		//	live in the Client namespace
+		vector2		cursorPos( 0.5f, 0.5f );	// used for menus and 2d games
+
 		// console input
 		ClientConsole *clientConsole = nullptr;
 
@@ -76,6 +81,23 @@ namespace XS {
 		}
 
 		bool MouseMotionEvent( const struct MouseMotionEvent &ev ) {
+			cursorPos.x += ev.x / static_cast<real32_t>( Renderer::state.window.width );
+			cursorPos.y += ev.y / static_cast<real32_t>( Renderer::state.window.height );
+
+			// clamp the cursor coordinates to screen-space
+			if ( cursorPos.x < 0.0f ) {
+				cursorPos.x = 0.0f;
+			}
+			else if ( cursorPos.x > 1.0f ) {
+				cursorPos.x = 1.0f;
+			}
+			if ( cursorPos.y < 0.0f ) {
+				cursorPos.y = 0.0f;
+			}
+			else if ( cursorPos.y > 1.0f ) {
+				cursorPos.y = 1.0f;
+			}
+
 			if ( menu->isOpen ) {
 				menu->MouseMotionEvent( ev );
 				return true;
@@ -91,6 +113,9 @@ namespace XS {
 				menu->MouseButtonEvent( ev );
 				return true;
 			}
+
+			ClientGame::MouseButtonEvent( ev );
+
 			return false;
 		}
 
@@ -122,6 +147,9 @@ namespace XS {
 
 			Network::Init();
 
+			// client game module
+			ClientGame::Init();
+
 			// hud
 			hudView = new Renderer::View( 0u, 0u, true );
 			menu = new MenuManager();
@@ -130,9 +158,6 @@ namespace XS {
 
 			// console
 			clientConsole = new ClientConsole( &console );
-
-			// client game module
-			ClientGame::Init();
 		}
 
 		void Shutdown( void ) {
@@ -156,8 +181,8 @@ namespace XS {
 			switch ( packet->data[0] ) {
 
 			case Network::ID_XS_SV2CL_GAMESTATE: {
-				uint8_t *buffer = packet->data;
-				size_t bufferLen = packet->length;
+				uint8_t *buffer = packet->data + 1;
+				size_t bufferLen = packet->length - 1;
 				ByteBuffer bb( buffer, bufferLen );
 
 				struct SnapshotHeader {
@@ -175,6 +200,22 @@ namespace XS {
 						);
 					}
 				}
+			} break;
+
+			case Network::ID_XS_SV2CL_PRINT: {
+				uint8_t *buffer = packet->data + 1;
+				size_t bufferLen = packet->length - 1;
+				ByteBuffer bb( buffer, bufferLen );
+
+				const char *msg = nullptr;
+				bb.ReadString( &msg );
+
+				console.Print( PrintLevel::Normal,
+					"%s\n", // avoid printf format attacks
+					msg
+				);
+
+				delete[] msg;
 			} break;
 
 			default: {

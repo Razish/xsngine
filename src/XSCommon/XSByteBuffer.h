@@ -146,7 +146,7 @@ namespace XS {
 		//NOTE: caller must free the string contents
 		void ReadString(
 			const char ** outStr,
-			uint32_t *outLen
+			uint32_t *outLen = nullptr // sometimes we don't care about the size
 		);
 	};
 

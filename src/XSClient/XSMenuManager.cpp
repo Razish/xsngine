@@ -38,8 +38,6 @@ namespace XS {
 
 			assets.cursor = material;
 			delete cursorData;
-
-			cursorPos = vector2( 0.5f, 0.5f );
 		}
 
 		// load a menu from disk
@@ -93,8 +91,8 @@ namespace XS {
 
 		void MenuManager::DrawCursor( void ) {
 			vector2 realPos(
-				cursorPos.x * Renderer::state.window.width,
-				cursorPos.y * Renderer::state.window.height
+				Client::cursorPos.x * Renderer::state.window.width,
+				Client::cursorPos.y * Renderer::state.window.height
 			);
 			Renderer::DrawQuad(
 				realPos.x, realPos.y,
@@ -128,26 +126,9 @@ namespace XS {
 
 		// pass a mouse motion event to the menu
 		void MenuManager::MouseMotionEvent( const struct MouseMotionEvent &ev ) {
-			cursorPos.x += ev.x / static_cast<real32_t>( Renderer::state.window.width );
-			cursorPos.y += ev.y / static_cast<real32_t>( Renderer::state.window.height );
-
-			// clamp the cursor coordinates to screen-space
-			if ( cursorPos.x < 0.0f ) {
-				cursorPos.x = 0.0f;
-			}
-			else if ( cursorPos.x > 1.0f ) {
-				cursorPos.x = 1.0f;
-			}
-			if ( cursorPos.y < 0.0f ) {
-				cursorPos.y = 0.0f;
-			}
-			else if ( cursorPos.y > 1.0f ) {
-				cursorPos.y = 1.0f;
-			}
-
 			for ( auto it = stack.rbegin(); it != stack.rend(); ++it ) {
 				Menu *menu = *it;
-				if ( menu->MouseMotionEvent( cursorPos ) ) {
+				if ( menu->MouseMotionEvent() ) {
 					break;
 				}
 			}
@@ -157,7 +138,7 @@ namespace XS {
 		void MenuManager::MouseButtonEvent( const struct MouseButtonEvent &ev ) {
 			for ( auto it = stack.rbegin(); it != stack.rend(); ++it ) {
 				Menu *menu = *it;
-				if ( menu->MouseButtonEvent( ev, cursorPos ) ) {
+				if ( menu->MouseButtonEvent( ev ) ) {
 					break;
 				}
 			}

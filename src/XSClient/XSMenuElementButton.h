@@ -57,13 +57,12 @@ namespace XS {
 
 			// handle a mouse button event
 			void MouseButtonEvent(
-				const struct MouseButtonEvent &ev,
-				const vector2 &cursorPos
+				const struct MouseButtonEvent &ev
 			);
 
 			// handle a mouse motion event
 			void MouseMotionEvent(
-				const vector2 &cursorPos
+				void
 			);
 		};
 

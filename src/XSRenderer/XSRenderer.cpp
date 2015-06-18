@@ -243,6 +243,9 @@ namespace XS {
 			if ( Common::com_developer->GetBool() ) {
 				contextFlags |= SDL_GL_CONTEXT_DEBUG_FLAG;
 			}
+#ifdef _DEBUG
+			contextFlags |= SDL_GL_CONTEXT_DEBUG_FLAG;
+#endif
 			SDL_GL_SetAttribute( SDL_GL_CONTEXT_FLAGS, contextFlags );
 
 			int multisample = r_multisample->GetInt32();
@@ -255,13 +258,8 @@ namespace XS {
 				SDL_GL_SetAttribute( SDL_GL_MULTISAMPLEBUFFERS, 0 );
 			}
 
-		#ifdef _DEBUG
-			// request debug context
-			SDL_GL_SetAttribute( SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG );
-		#endif
-
-			const int32_t width = vid_width->GetInt32();
-			const int32_t height = vid_height->GetInt32();
+			int32_t width = vid_width->GetInt32();
+			int32_t height = vid_height->GetInt32();
 			window = SDL_CreateWindow(
 				WINDOW_TITLE,
 				SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
@@ -269,6 +267,13 @@ namespace XS {
 				windowFlags
 			);
 			SDL_assert( window && "Failed to create window" );
+
+			// when creating a fullscreen window, the actual width/height may not be what was requested
+			// certain drawing code relies on knowing the width/height of the display, so we'll update it with the
+			//      proper values
+			SDL_GetWindowSize( window, &width, &height );
+			vid_width->Set( width );
+			vid_height->Set( height );
 
 			context = SDL_GL_CreateContext( window );
 			SDL_assert( context && "Failed to create OpenGL context on window" );

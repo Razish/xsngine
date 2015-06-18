@@ -129,15 +129,13 @@ namespace XS {
 		}
 
 		void BroadcastMessage( const char *msg ) {
-			size_t msgLen = strlen( msg );
-			for ( auto *client : clients ) {
-				Network::XSPacket packet( Network::ID_XS_SV2CL_PRINT );
+			Network::XSPacket packet( Network::ID_XS_SV2CL_PRINT );
 
-				packet.data = static_cast<const void *>( msg );
-				packet.dataLen = msgLen;
+			ByteBuffer bb;
+			bb.WriteString( msg );
+			packet.data = bb.GetMemory( &packet.dataLen );
 
-				Network::Send( client->guid, &packet );
-			}
+			Network::Send( 0u, &packet );
 		}
 
 		// lazy initialise on first request per frame
