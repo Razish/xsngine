@@ -11,16 +11,14 @@ namespace XS {
 		Entity::Entity()
 		: id( state.numEntities++ )
 		{
-			console.Print( PrintLevel::Normal,
-				"%s\n",
+			console.Print( PrintLevel::Normal, "%s\n",
 				XS_FUNCTION_VERBOSE
 			);
 			state.entities.push_back( this );
 		}
 
 		Entity::~Entity() {
-			console.Print( PrintLevel::Normal,
-				"%s\n",
+			console.Print( PrintLevel::Normal, "%s\n",
 				XS_FUNCTION_VERBOSE
 			);
 		};

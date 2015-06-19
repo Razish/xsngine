@@ -81,7 +81,9 @@ namespace XS {
 		ClientConsole::ClientConsole( Console *consoleInstance )
 		: console( consoleInstance ), visible( false ), scrollAmount( 0 ), lineCount( 24u ), font( nullptr )
 		{
-			con_fontSize = Cvar::Create( "con_fontSize", "16", "Size of the console font", CVAR_ARCHIVE );
+			con_fontSize = Cvar::Create( "con_fontSize", "16",
+				"Size of the console font", CVAR_ARCHIVE
+			);
 			input = new InputField( InputCallback, InputAutoComplete );
 			view = new Renderer::View( 0u, 0u, true );
 			font = Renderer::Font::Register( "console" );

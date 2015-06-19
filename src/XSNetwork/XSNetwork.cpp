@@ -33,7 +33,9 @@ namespace XS {
 		}
 
 		static void RegisterCvars( void ) {
-			net_port = Cvar::Create( "net_port", "1337", "Network port to listen on", CVAR_ARCHIVE );
+			net_port = Cvar::Create( "net_port", "1337",
+				"Network port to listen on", CVAR_ARCHIVE
+			);
 		}
 
 		void Init( void ) {
@@ -110,22 +112,19 @@ namespace XS {
 			}
 
 			if ( isServer ) {
-				console.Print( PrintLevel::Normal,
-					"Can't connect to a host as the server\n"
-				);
+				console.Print( PrintLevel::Normal, "Can't connect to a host as the server\n" );
 
 				return false;
 			}
 
-			console.Print( PrintLevel::Normal,
-				"Connecting to %s:%hd...\n",
-				hostname, port
+			console.Print( PrintLevel::Normal, "Connecting to %s:%hd...\n",
+				hostname,
+				port
 			);
 
 			RakNet::ConnectionAttemptResult result = peer->Connect( hostname, port, nullptr, 0 );
 			if ( result != RakNet::CONNECTION_ATTEMPT_STARTED ) {
-				console.Print( PrintLevel::Normal,
-					"Failed to connect: %s\n",
+				console.Print( PrintLevel::Normal, "Failed to connect: %s\n",
 					connectionAttemptResultMessages[result]
 				);
 				return false;
@@ -136,18 +135,14 @@ namespace XS {
 
 		void Disconnect( void ) {
 			if ( connected ) {
-				console.Print( PrintLevel::Normal,
-					"Not connected to a server\n"
-				);
+				console.Print( PrintLevel::Normal, "Not connected to a server\n" );
 				return;
 			}
 
 			if ( isServer ) {
 			}
 			else {
-				console.Print( PrintLevel::Normal,
-					"Closing network connection.\n"
-				);
+				console.Print( PrintLevel::Normal, "Closing network connection.\n" );
 				peer->CloseConnection( peer->GetSystemAddressFromIndex( 0 ), true );
 			}
 
@@ -160,8 +155,7 @@ namespace XS {
 			RakNet::Packet *packet = nullptr;
 			while ( (packet = peer->Receive()) ) {
 #if 0
-				console.Print( PrintLevel::Debug,
-					"Receive: %i (%i)\n",
+				console.Print( PrintLevel::Debug, "Receive: %i (%i)\n",
 					packet->data[0],
 					ID_USER_PACKET_ENUM
 				);
@@ -170,31 +164,25 @@ namespace XS {
 
 				case ID_REMOTE_DISCONNECTION_NOTIFICATION: {
 					// another client has disconnected gracefully
-					console.Print( PrintLevel::Normal,
-						"another client disconnected\n"
-					);
+					console.Print( PrintLevel::Normal, "another client disconnected\n" );
 				} break;
 
 				case ID_CONNECTION_ATTEMPT_FAILED: {
 					// connection attempt failed
-					console.Print( PrintLevel::Normal,
-						"connection attempt failed (%s)\n",
+					console.Print( PrintLevel::Normal, "connection attempt failed (%s)\n",
 						packet->systemAddress.ToString()
 					);
 				} break;
 
 				case ID_REMOTE_CONNECTION_LOST: {
 					// another client has lost connection
-					console.Print( PrintLevel::Normal,
-						"another client lost connection\n"
-					);
+					console.Print( PrintLevel::Normal, "another client lost connection\n" );
 				} break;
 
 				case ID_NEW_INCOMING_CONNECTION: {
 					// another client has connected
 					if ( Common::com_dedicated->GetBool() ) {
-						console.Print( PrintLevel::Normal,
-							"client connecting with IP %s and GUID %s\n",
+						console.Print( PrintLevel::Normal, "client connecting with IP %s and GUID %s\n",
 							packet->systemAddress.ToString(),
 							packet->guid.ToString()
 						);
@@ -207,8 +195,7 @@ namespace XS {
 
 				case ID_REMOTE_NEW_INCOMING_CONNECTION: {
 					// another client has connected
-					console.Print( PrintLevel::Normal,
-						"client connecting with IP %s and GUID %s\n",
+					console.Print( PrintLevel::Normal, "client connecting with IP %s and GUID %s\n",
 						packet->systemAddress.ToString(),
 						packet->guid.ToString()
 					);
@@ -216,33 +203,25 @@ namespace XS {
 
 				case ID_CONNECTION_REQUEST_ACCEPTED: {
 					// out connection request has been accepted
-					console.Print( PrintLevel::Normal,
-						"connection accepted\n"
-					);
+					console.Print( PrintLevel::Normal, "connection accepted\n" );
 					connected = true;
 				} break;
 
 				case ID_NO_FREE_INCOMING_CONNECTIONS: {
 					// the server is full
-					console.Print( PrintLevel::Normal,
-						"server is full\n"
-					);
+					console.Print( PrintLevel::Normal, "server is full\n" );
 					connected = false;
 				} break;
 
 				case ID_DISCONNECTION_NOTIFICATION: {
 					// we have been disconnected - server shutdown
-					console.Print( PrintLevel::Normal,
-						"we have been disconnected - server shutdown\n"
-					);
+					console.Print( PrintLevel::Normal, "server shutdown\n" );
 					connected = false;
 				} break;
 
 				case ID_CONNECTION_LOST: {
 					// our connection was lost
-					console.Print( PrintLevel::Normal,
-						"connection lost\n"
-					);
+					console.Print( PrintLevel::Normal, "connection lost\n" );
 					connected = false;
 				} break;
 
@@ -258,8 +237,7 @@ namespace XS {
 						}
 					}
 
-					console.Print( PrintLevel::Developer,
-						"Unknown message from %s (ID: %i, base: %i)\n",
+					console.Print( PrintLevel::Developer, "Unknown message from %s (ID: %i, base: %i)\n",
 						packet->systemAddress.ToString(),
 						packet->data[0],
 						ID_USER_PACKET_ENUM
@@ -274,8 +252,7 @@ namespace XS {
 
 		void Send( uint64_t guid, const XSPacket *packet ) {
 #if 0
-			console.Print( PrintLevel::Debug,
-				"Send: %i (%i)\n",
+			console.Print( PrintLevel::Debug, "Send: %i (%i)\n",
 				packet->msg,
 				ID_USER_PACKET_ENUM
 			);
@@ -329,26 +306,21 @@ namespace XS {
 			// enumerate local addresses
 			size_t numAddresses = peer->GetNumberOfAddresses();
 			if ( numAddresses ) {
-				console.Print( PrintLevel::Normal,
-					"Network primed on:\n"
-				);
+				console.Print( PrintLevel::Normal, "Network primed on:\n" );
 				for ( size_t i = 0u; i < numAddresses; i++ ) {
 					Indent indent( 1u );
-					console.Print( PrintLevel::Normal,
-						"%i. %s\n",
+					console.Print( PrintLevel::Normal, "%i. %s\n",
 						i + 1,
 						peer->GetLocalIP( i )
 					);
 				}
 			}
 			else {
-				console.Print( PrintLevel::Normal,
-					"Network primed on %s\n",
+				console.Print( PrintLevel::Normal, "Network primed on %s\n",
 					peer->GetMyBoundAddress().ToString()
 				);
 			}
-			console.Print( PrintLevel::Normal,
-				"GUID: %X\n",
+			console.Print( PrintLevel::Normal, "GUID: %X\n",
 				myGUID
 			);
 
@@ -358,15 +330,12 @@ namespace XS {
 			RakNet::SystemAddress *remoteSystems = new RakNet::SystemAddress[numRemoteSystems];
 			peer->GetConnectionList( remoteSystems, &numRemoteSystems );
 
-			console.Print( PrintLevel::Normal,
-				"%i connections (max: %i)\n",
+			console.Print( PrintLevel::Normal, "%i connections (max: %i)\n",
 				numRemoteSystems,
 				peer->GetMaximumIncomingConnections()
 			);
 			if ( numRemoteSystems ) {
-				console.Print( PrintLevel::Normal,
-					"Listing active connections...\n"
-				);
+				console.Print( PrintLevel::Normal, "Listing active connections...\n" );
 				for ( size_t i = 0u; i < numRemoteSystems; i++ ) {
 					RakNet::SystemAddress *sa = &remoteSystems[i];
 					Indent indent( 1u );
@@ -382,8 +351,7 @@ namespace XS {
 						type = "INET";
 					}
 
-					console.Print( PrintLevel::Normal,
-						"%s: %s - %s\n",
+					console.Print( PrintLevel::Normal, "%s: %s - %s\n",
 						type.c_str(),
 						sa->ToString(),
 						connectionStateMessages[peer->GetConnectionState( *sa )]

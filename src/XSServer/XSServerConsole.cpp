@@ -230,8 +230,7 @@ namespace XS {
 						}
 					}
 
-					console.Print( PrintLevel::Debug,
-						"Dropping ISCTL sequence: %d, TTY_erase: %d\n",
+					console.Print( PrintLevel::Debug, "Dropping ISCTL sequence: %d, TTY_erase: %d\n",
 						key,
 						ec_erase
 					);

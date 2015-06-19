@@ -170,7 +170,6 @@
     <File Name="XSClient/XSClientGameState.cpp"/>
     <File Name="XSClient/XSClientGameState.h"/>
     <File Name="XSClient/XSEntity.cpp"/>
-    <File Name="XSCommon/XSCommand.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="XSInput">
     <File Name="XSInput/XSInputField.cpp"/>
@@ -216,6 +215,7 @@
     <File Name="XSCommon/XSTokenParser.h"/>
     <File Name="XSCommon/XSByteBuffer.h"/>
     <File Name="XSCommon/XSByteBuffer.cpp"/>
+    <File Name="XSCommon/XSCommand.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="XSCrypto">
     <File Name="XSCrypto/XSMD5.cpp"/>

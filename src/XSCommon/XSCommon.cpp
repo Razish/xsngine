@@ -25,21 +25,33 @@ namespace XS {
 		#define DEFAULT_CONFIG			"cfg/xsn.cfg"
 		#define DEFAULT_CONFIG_SERVER	"cfg/xsn_server.cfg"
 
-		Cvar *com_dedicated;
-		Cvar *com_developer;
-		static Cvar *com_framerate;
-		static Cvar *r_framerate;
+		static Cvar *com_busyWait = nullptr;
+		Cvar *com_dedicated = nullptr;
+		Cvar *com_developer = nullptr;
+		static Cvar *com_framerate = nullptr;
+		static Cvar *com_profile = nullptr;
+		static Cvar *r_framerate = nullptr;
 
 		static void RegisterCvars( void ) {
 			Cvar::Create( "com_date", __DATE__, "Compilation date", CVAR_READONLY );
-			com_dedicated = Cvar::Create( "com_dedicated", "0", "True if running a dedicated server", CVAR_INIT );
-		#ifdef _DEBUG
-			com_developer = Cvar::Create( "com_developer", "1", "Developer mode", CVAR_NONE );
-		#else
-			com_developer = Cvar::Create( "com_developer", "0", "Developer mode", CVAR_NONE );
-		#endif // _DEBUG
-			com_framerate = Cvar::Create( "com_framerate", "50", "Game tick rate", CVAR_ARCHIVE );
-			r_framerate = Cvar::Create( "r_framerate", "120", "Render framerate", CVAR_ARCHIVE );
+			com_busyWait = Cvar::Create( "com_busyWait", "0",
+				"Regulate FPS by spinning in a loop", CVAR_ARCHIVE
+			);
+			com_dedicated = Cvar::Create( "com_dedicated", "0",
+				"True if running a dedicated server", CVAR_INIT
+			);
+			com_developer = Cvar::Create( "com_developer", XS_DEBUG_BUILD ? "1" : "0",
+				"Developer mode", CVAR_NONE
+			);
+			com_framerate = Cvar::Create( "com_framerate", "50",
+				"Game tick rate", CVAR_ARCHIVE
+			);
+			com_profile = Cvar::Create( "com_profile", "0",
+				"Print timing statistics", CVAR_NONE
+			);
+			r_framerate = Cvar::Create( "r_framerate", "120",
+				"Render framerate", CVAR_ARCHIVE
+			);
 		}
 
 		static void ParseCommandLine( int32_t argc, char **argv ) {
@@ -185,9 +197,9 @@ int main( int argc, char **argv ) {
 			XS::Client::Init();
 		}
 
-		if ( XS::Common::com_developer->GetBool() ) {
+		if ( XS::Common::com_profile->GetBool() ) {
 			real64_t t = globalTimer.GetTiming( true, XS::TimerResolution::Milliseconds );
-			XS::console.Print( XS::PrintLevel::Developer, "Init time: %.0f milliseconds\n", t );
+			XS::console.Print( XS::PrintLevel::Normal, "Init time: %.0fmsec\n", t );
 		}
 
 		// post-init stuff
@@ -204,9 +216,9 @@ int main( int argc, char **argv ) {
 
 		while ( 1 ) {
 			// calculate delta time for integrating this frame
-			const real64_t newTime = XS::Common::gameTimer->GetTiming( false, XS::TimerResolution::Milliseconds );
-			const real64_t frameTime = newTime - currentTime;
-			currentTime = newTime;
+			const real64_t frameStartTime = XS::Common::gameTimer->GetTiming( false, XS::TimerResolution::Milliseconds );
+			const real64_t frameTime = frameStartTime - currentTime;
+			currentTime = frameStartTime;
 
 			// avoid spiral of death
 			real64_t sliceMsec = frameTime;
@@ -225,43 +237,106 @@ int main( int argc, char **argv ) {
 			XS::Event::Pump();
 			XS::Command::ExecuteBuffer();
 
+			XS::Timer perf;
+
 			if ( XS::Common::com_dedicated->GetBool() ) {
 				while ( accumulator >= dt ) {
 					XS::Command::ExecuteBuffer();
 
 					// server frame, then network (snapshot)
 					XS::Server::RunFrame( dt );
+					if ( XS::Common::com_profile->GetBool() ) {
+						XS::console.Print( XS::PrintLevel::Developer, "time: server frame took %.3fmsec\n",
+							perf.GetTiming( true, XS::TimerResolution::Milliseconds )
+						);
+					}
 
 					accumulator -= dt;
 					t += dt;
 				}
 				XS::Server::NetworkPump();
+				if ( XS::Common::com_profile->GetBool() ) {
+					XS::console.Print( XS::PrintLevel::Developer, "time: server network pump took %.3fmsec\n",
+						perf.GetTiming( true, XS::TimerResolution::Milliseconds )
+					);
+				}
 			}
 			else {
 				// recieve server update
 				// create movement command and send it off
 				XS::Client::NetworkPump();
+				if ( XS::Common::com_profile->GetBool() ) {
+					XS::console.Print( XS::PrintLevel::Developer, "time: client network pump took %.3fmsec\n",
+						perf.GetTiming( true, XS::TimerResolution::Milliseconds )
+					);
+				}
 
 				// run local prediction from latest server snapshot
 				XS::Client::RunFrame( sliceMsec );
+				if ( XS::Common::com_profile->GetBool() ) {
+					XS::console.Print( XS::PrintLevel::Developer, "time: client frame took %.3fmsec\n",
+						perf.GetTiming( true, XS::TimerResolution::Milliseconds )
+					);
+				}
 
 				// alpha = accumulator / dt;
 				// lerp( previousState, alpha, currentState )
 				XS::Client::DrawFrame( sliceMsec );
+				if ( XS::Common::com_profile->GetBool() ) {
+					XS::console.Print( XS::PrintLevel::Developer, "time: client render took %.3fmsec\n",
+						perf.GetTiming( true, XS::TimerResolution::Milliseconds )
+					);
+				}
 				XS::Renderer::Update( sliceMsec/*state*/ );
+				if ( XS::Common::com_profile->GetBool() ) {
+					XS::console.Print( XS::PrintLevel::Developer, "time: render update took %.3fmsec\n",
+						perf.GetTiming( true, XS::TimerResolution::Milliseconds )
+					);
+				}
 			}
 
 			const real64_t frameRate = XS::Common::r_framerate->GetReal64();
-			const real64_t renderMsec = 1000.0 / frameRate;
-			if ( frameTime < renderMsec ) {
-				//TODO: busy-wait?
-				//FIXME: retrieve scheduler granularity
-				SDL_Delay( static_cast<uint32_t>( renderMsec - frameTime ) );
+			const real64_t targetMsec = 1000.0 / frameRate; // target mspf
+			const real64_t realFT = XS::Common::gameTimer->GetTiming( false, XS::TimerResolution::Milliseconds )
+				- frameStartTime;
+			const real64_t delayMsec = targetMsec - realFT;
+			if ( XS::Common::com_profile->GetBool() ) {
+				XS::console.Print( XS::PrintLevel::Debug, "frame took %.5f, target %.2f, delay for: %i ? 0.000 : %.3f\n",
+					realFT,
+					targetMsec,
+					!!(realFT < targetMsec),
+					delayMsec
+				);
+			}
+			if ( realFT < targetMsec ) {
+				if ( XS::Common::com_busyWait->GetBool() ) {
+					real64_t startTime = XS::Common::gameTimer->GetTiming( false, XS::TimerResolution::Milliseconds );
+					real64_t delayAccum = 0.0;
+					while ( delayAccum < delayMsec ) {
+						XS::Indent indent( 1u );
+
+						// if targetMsec is 8msec and realFT is 6msec
+						// then wait for 2msec (targetMsec(8) - realFT(6) = 2)
+						const real64_t nowTime = XS::Common::gameTimer->GetTiming(
+							false,
+							XS::TimerResolution::Milliseconds
+						);
+						delayAccum = nowTime - startTime;
+
+						// force the OS to reschedule tasks
+						SDL_Delay( 0u );
+					}
+				}
+				else {
+					// scheduler granularity is ~10ms, so it's not ideal to use for regulating framerate, but users may
+					//	wish to save power (i.e. portable or low-power devices)
+					SDL_Delay( static_cast<uint32_t>( delayMsec ) );
+				}
 			}
 		}
 	}
 	catch( const XS::XSError &e ) {
-		const bool developer = XS::Common::com_developer->GetBool();
+		const bool profile = XS::Common::com_profile->GetBool();
 
 		if ( !e.intended ) {
 			SDL_assert( !"A fatal error has occurred. Please check your console.log.\nPress \"ignore\" to proceed with "
@@ -274,9 +349,9 @@ int main( int argc, char **argv ) {
 		}
 		XS::console.Print( XS::PrintLevel::Normal, "\n" );
 
-		if ( developer ) {
+		if ( profile ) {
 			const real64_t runtime = globalTimer.GetTiming( true, XS::TimerResolution::Seconds );
-			XS::console.Print( XS::PrintLevel::Developer, "Run time: %.3f seconds\n", runtime );
+			XS::console.Print( XS::PrintLevel::Normal, "Run time: %.3fsec\n", runtime );
 		}
 
 		delete XS::Common::gameTimer;
@@ -297,9 +372,9 @@ int main( int argc, char **argv ) {
 			}
 		}
 
-		if ( developer ) {
+		if ( profile ) {
 			const real64_t shutdownTime = globalTimer.GetTiming( false, XS::TimerResolution::Milliseconds );
-			XS::console.Print( XS::PrintLevel::Normal, "Shutdown time: %.3f msec\n\n\n", shutdownTime );
+			XS::console.Print( XS::PrintLevel::Normal, "Shutdown time: %.3fmsec\n\n\n", shutdownTime );
 		}
 
 		return EXIT_SUCCESS;

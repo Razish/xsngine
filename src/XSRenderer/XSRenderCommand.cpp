@@ -332,36 +332,38 @@ namespace XS {
 		}
 
 		static void Screenshot( const ScreenshotCommand &cmd ) {
-			GLint signalled;
+			//NOTE: glGetSynciv never returns GL_SIGNALED on Mac
+			// see also: chromium src/ui/gl/gl_fence.cc revision 213908 -> 213907
+			//	https://src.chromium.org/viewvc/chrome/trunk/src/ui/gl/gl_fence.cc?r1=213908&r2=213907
+			// device details: Yosemite 10.10.3, Intel HD Graphics 5000
+#if defined(XS_OS_MAC)
+			GLint res = glClientWaitSync( cmd.sync, GL_SYNC_FLUSH_COMMANDS_BIT, GL_TIMEOUT_IGNORED );
+			SDL_assert( res != GL_TIMEOUT_EXPIRED );
+#else
+			GLint signalled = GL_UNSIGNALED;
+			do {
+				glGetSynciv( cmd.sync, GL_SYNC_STATUS, 1, nullptr, &signalled );
+			} while ( signalled != GL_SIGNALED );
+#endif
 
-			glGetSynciv( cmd.sync, GL_SYNC_STATUS, 1, NULL, &signalled );
-			//TODO: remove this when we wait until next frame
-			while ( signalled != GL_SIGNALED ) {
-				SDL_Delay( 100 );
-				glGetSynciv( cmd.sync, GL_SYNC_STATUS, 1, NULL, &signalled );
-			}
+			glDeleteSync( cmd.sync );
+			glBindBuffer( GL_PIXEL_PACK_BUFFER, cmd.pbo );
+			void *data = glMapBuffer( GL_PIXEL_PACK_BUFFER, GL_READ_ONLY );
+				console.Print( PrintLevel::Normal, "Writing screenshot %s (%ix%i)...\n",
+					cmd.name,
+					cmd.width,
+					cmd.height
+				);
 
-			if ( signalled == GL_SIGNALED ) {
-				glDeleteSync( cmd.sync );
-				glBindBuffer( GL_PIXEL_PACK_BUFFER, cmd.pbo );
-				void *data = glMapBuffer( GL_PIXEL_PACK_BUFFER, GL_READ_ONLY );
-					console.Print( PrintLevel::Normal,
-						"Writing screenshot %s (%ix%i)...\n",
-						cmd.name,
-						cmd.width,
-						cmd.height
-					);
-
-					//TODO: strip alpha?
-					WritePNG(
-						cmd.name,
-						reinterpret_cast<uint8_t *>( data ),
-						cmd.width,
-						cmd.height,
-						4
-					);
-				glUnmapBuffer( GL_PIXEL_PACK_BUFFER );
-			}
+				//TODO: strip alpha?
+				WritePNG(
+					cmd.name,
+					reinterpret_cast<uint8_t *>( data ),
+					cmd.width,
+					cmd.height,
+					4
+				);
+			glUnmapBuffer( GL_PIXEL_PACK_BUFFER );
 		}
 
 		void RenderCommand::Execute( void ) const {

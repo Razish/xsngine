@@ -41,11 +41,15 @@ namespace XS {
 		int Texture::lastUsedTextureUnit = 0;
 
 		void Texture::Init( void ) {
-			r_textureAnisotropy = Cvar::Create( "r_textureAnisotropy", "1", "Enable anisotropic filtering", CVAR_ARCHIVE );
-			r_textureAnisotropyMax = Cvar::Create( "r_textureAnisotropyMax", "16.0", "Anisotropic filtering level",
-				CVAR_ARCHIVE );
-			r_textureFilter = Cvar::Create( "r_textureFilter", "GL_LINEAR_MIPMAP_LINEAR", "Texture filtering mode",
-				CVAR_ARCHIVE );
+			r_textureAnisotropy = Cvar::Create( "r_textureAnisotropy", "1",
+				"Enable anisotropic filtering", CVAR_ARCHIVE
+			);
+			r_textureAnisotropyMax = Cvar::Create( "r_textureAnisotropyMax", "16.0",
+				"Anisotropic filtering level", CVAR_ARCHIVE
+			);
+			r_textureFilter = Cvar::Create( "r_textureFilter", "GL_LINEAR_MIPMAP_LINEAR",
+				"Texture filtering mode", CVAR_ARCHIVE
+			);
 
 			// get anisotropic filtering settings
 			if ( GLEW_EXT_texture_filter_anisotropic ) {

@@ -8,8 +8,7 @@ namespace XS {
 	namespace ServerGame {
 
 		EntitySphere::EntitySphere() {
-			console.Print( PrintLevel::Normal,
-				"%s\n",
+			console.Print( PrintLevel::Normal, "%s\n",
 				XS_FUNCTION_VERBOSE
 			);
 		}

@@ -145,8 +145,7 @@ namespace XS {
 				return;
 			}
 
-			console.Print( PrintLevel::Normal,
-				"[%s] [%s] %s: %s\n",
+			console.Print( PrintLevel::Normal, "[%s] [%s] %s: %s\n",
 				GLErrSeverityToString( severity ),
 				GLErrSourceToString( source ),
 				GLErrTypeToString( type ),
@@ -168,13 +167,11 @@ namespace XS {
 					glewGetErrorString( error ) ).c_str() ) );
 			}
 
-#if 0
 			// this causes a driver bug on Nvidia GTX 680 driver version 350.12 targeting OpenGL 3.1 core profile
 			if ( GLEW_ARB_debug_output ) {
 				glEnable( GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB );
 				glDebugMessageCallbackARB( OnGLError, nullptr );
 			}
-#endif
 
 			Backend::Init();
 
@@ -212,16 +209,30 @@ namespace XS {
 		}
 
 		void RegisterCvars( void ) {
-			r_clear = Cvar::Create( "r_clear", "0.1607 0.1921 0.2039 1.0", "Colour of the backbuffer", CVAR_ARCHIVE );
-			r_debug = Cvar::Create( "r_debug", "0", "Enable debugging information", CVAR_ARCHIVE );
-			r_multisample = Cvar::Create( "r_multisample", "2", "Multisample Anti-Aliasing (MSAA) level",
-				CVAR_ARCHIVE );
-			r_skipRender = Cvar::Create( "r_skipRender", "0", "1 - skip 3D views, 2 - skip 2D views, 3 - skip all "
-				"views", CVAR_ARCHIVE );
-			r_swapInterval = Cvar::Create( "r_swapInterval", "0", "Enable vertical sync", CVAR_ARCHIVE );
-			vid_height = Cvar::Create( "vid_height", "720", "Window height", CVAR_ARCHIVE );
-			vid_noBorder = Cvar::Create( "vid_noBorder", "0", "Disable window border", CVAR_ARCHIVE );
-			vid_width = Cvar::Create( "vid_width", "1280", "Window width", CVAR_ARCHIVE );
+			r_clear = Cvar::Create( "r_clear", "0.1607 0.1921 0.2039 1.0",
+				"Colour of the backbuffer", CVAR_ARCHIVE
+			);
+			r_debug = Cvar::Create( "r_debug", "0",
+				"Enable debugging information", CVAR_ARCHIVE
+			);
+			r_multisample = Cvar::Create( "r_multisample", "2",
+				"Multisample Anti-Aliasing (MSAA) level", CVAR_ARCHIVE
+			);
+			r_skipRender = Cvar::Create( "r_skipRender", "0",
+				"1 - skip 3D views, 2 - skip 2D views, 3 - skip all views", CVAR_ARCHIVE
+			);
+			r_swapInterval = Cvar::Create( "r_swapInterval", "0",
+				"Enable vertical sync", CVAR_ARCHIVE
+			);
+			vid_height = Cvar::Create( "vid_height", "720",
+				"Window height", CVAR_ARCHIVE
+			);
+			vid_noBorder = Cvar::Create( "vid_noBorder", "0",
+				"Disable window border", CVAR_ARCHIVE
+			);
+			vid_width = Cvar::Create( "vid_width", "1280",
+				"Window width", CVAR_ARCHIVE
+			);
 		}
 
 		void CreateDisplay( void ) {
@@ -300,13 +311,11 @@ namespace XS {
 			state.driver.coreVersion = reinterpret_cast<const char *>( glGetString( GL_VERSION ) );
 			state.driver.shaderVersion = reinterpret_cast<const char *>( glGetString( GL_SHADING_LANGUAGE_VERSION ) );
 
-			console.Print( PrintLevel::Normal,
-				"OpenGL device: %s %s\n",
+			console.Print( PrintLevel::Normal, "OpenGL device: %s %s\n",
 				state.driver.vendor,
 				state.driver.renderer
 			);
-			console.Print( PrintLevel::Normal,
-				"OpenGL version: %s with GLSL %s\n",
+			console.Print( PrintLevel::Normal, "OpenGL version: %s with GLSL %s\n",
 				state.driver.coreVersion,
 				state.driver.shaderVersion
 			);

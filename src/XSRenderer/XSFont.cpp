@@ -323,7 +323,9 @@ namespace XS {
 				return font;
 			}
 
-			console.Print( PrintLevel::Developer, "Generating new font '%s'\n", name );
+			console.Print( PrintLevel::Developer, "Generating new font '%s'\n",
+				name
+			);
 			font = fonts[name] = new Font( name );
 			//TODO: load cached font data
 			return font;

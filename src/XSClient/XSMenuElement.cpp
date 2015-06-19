@@ -29,8 +29,7 @@ namespace XS {
 			if ( String::CompareCase( tok, "{" ) ) {
 				//TODO: show which element the tooltip belongs to
 				//	...which we may not have parsed out yet
-				console.Print( PrintLevel::Normal,
-					"%s missing opening brace when parsing tooltip from %s:%i\n",
+				console.Print( PrintLevel::Normal, "%s missing opening brace when parsing tooltip from %s:%i\n",
 					XS_FUNCTION,
 					fileName,
 					parser->GetCurrentLine()

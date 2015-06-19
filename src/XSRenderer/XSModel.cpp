@@ -48,8 +48,7 @@ namespace XS {
 			Model *model = models[path];
 
 			if ( model ) {
-				console.Print( PrintLevel::Debug,
-					"%s for '%s' using existing model (loaded %i times)\n",
+				console.Print( PrintLevel::Debug, "%s for '%s' using existing model (loaded %i times)\n",
 					XS_FUNCTION,
 					path,
 					model->refCount
@@ -60,8 +59,7 @@ namespace XS {
 
 			char extension[XS_MAX_FILENAME];
 			if ( !File::GetExtension( path, extension, sizeof(extension) ) ) {
-				console.Print( PrintLevel::Normal,
-					"%s for '%s' unable to determine model format\n",
+				console.Print( PrintLevel::Normal, "%s for '%s' unable to determine model format\n",
 					XS_FUNCTION,
 					path
 				);
@@ -94,8 +92,7 @@ namespace XS {
 			if ( model ) {
 				model->refCount--;
 				if ( !model->refCount ) {
-					console.Print( PrintLevel::Normal,
-						"%s removed last model for '%s'\n",
+					console.Print( PrintLevel::Normal, "%s removed last model for '%s'\n",
 						XS_FUNCTION,
 						modelPath.c_str()
 					);
@@ -107,8 +104,7 @@ namespace XS {
 			}
 			else if ( !modelPath.empty() ) {
 				SDL_assert( !"could not find model" );
-				console.Print( PrintLevel::Normal,
-					"%s could not find model for '%s'\n",
+				console.Print( PrintLevel::Normal, "%s could not find model for '%s'\n",
 					XS_FUNCTION,
 					modelPath.c_str()
 				);

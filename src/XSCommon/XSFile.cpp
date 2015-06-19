@@ -40,7 +40,9 @@ namespace XS {
 		// set com_path to current working directory, can be overridden later
 		char cwd[FILENAME_MAX] = {};
 		OS::GetCurrentWorkingDirectory( cwd, sizeof(cwd) );
-		com_path = Cvar::Create( "com_path", cwd, "Base directory to load assets from", CVAR_INIT );
+		com_path = Cvar::Create( "com_path", cwd,
+			"Base directory to load assets from", CVAR_INIT
+		);
 	}
 
 	// finalise the basepath

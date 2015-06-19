@@ -58,8 +58,7 @@ namespace XS {
 			SDL_assert( outPath && inPath && "OS::ResolvePath called with invalid parameters" );
 
 			if ( !Stat( inPath ) || !realpath( inPath, outPath ) ) {
-				console.Print( PrintLevel::Developer,
-					"Could not resolve path: \"%s\" (%s)\n",
+				console.Print( PrintLevel::Developer, "Could not resolve path: \"%s\" (%s)\n",
 					inPath,
 					strerror( errno )
 				);

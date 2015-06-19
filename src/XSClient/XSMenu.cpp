@@ -25,8 +25,7 @@ namespace XS {
 				return;
 			}
 
-			console.Print( PrintLevel::Developer,
-				"Loading menu \"%s\"\n",
+			console.Print( PrintLevel::Developer, "Loading menu \"%s\"\n",
 				fileName
 			);
 			Indent indent( 1 );
@@ -52,8 +51,7 @@ namespace XS {
 					}
 				}
 				else {
-					console.Print( PrintLevel::Normal,
-						"%s invalid xmenu file '%s' missing version identifier!\n",
+					console.Print( PrintLevel::Normal, "%s invalid xmenu file '%s' missing version identifier!\n",
 						XS_FUNCTION,
 						fileName
 					);

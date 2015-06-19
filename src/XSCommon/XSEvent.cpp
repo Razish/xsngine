@@ -30,13 +30,14 @@ namespace XS {
 		};
 
 		void Init( void ) {
-			debug_events = Cvar::Create( "debug_events", "0", "Print debug messages for input events", CVAR_INIT );
+			debug_events = Cvar::Create( "debug_events", "0",
+				"Print debug messages for input events", CVAR_INIT
+			);
 		}
 
 		void Queue( const XSEvent *ev ) {
 			if ( debug_events->GetBool() ) {
-				console.Print( PrintLevel::Normal,
-					"%s %s (%i)\n",
+				console.Print( PrintLevel::Normal, "%s %s (%i)\n",
 					XS_FUNCTION,
 					eventNames[static_cast<int32_t>( ev->type )],
 					ev->type

@@ -15,9 +15,7 @@ namespace XS {
 
 		static void Cmd_SpawnEntity( const CommandContext * const context ) {
 			if ( context->size() != 3 ) {
-				console.Print( PrintLevel::Normal,
-					"usage: spawnentity <x> <y> <z>\n"
-				);
+				console.Print( PrintLevel::Normal, "usage: spawnentity <x> <y> <z>\n" );
 				return;
 			}
 			vector3 pos(

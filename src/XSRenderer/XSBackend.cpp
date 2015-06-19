@@ -25,8 +25,12 @@ namespace XS {
 			} state = {};
 
 			static void RegisterCvars( void ) {
-				r_zRange = Cvar::Create( "r_zRange", "0.1 4000.0", "Clipping plane range", CVAR_ARCHIVE );
-				r_wireframe = Cvar::Create( "r_wireframe", "0", "Enable wireframe rendering mode", CVAR_ARCHIVE );
+				r_zRange = Cvar::Create( "r_zRange", "0.1 4000.0",
+					"Clipping plane range", CVAR_ARCHIVE
+				);
+				r_wireframe = Cvar::Create( "r_wireframe", "0",
+					"Enable wireframe rendering mode", CVAR_ARCHIVE
+				);
 			}
 
 			void Init( void ) {

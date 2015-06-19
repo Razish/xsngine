@@ -195,9 +195,7 @@ namespace XS {
 					uint32_t nameLen = 0u;
 					bb.ReadString( &name, &nameLen );
 					if ( !String::CompareCase( name, "EntitySphere" ) ) {
-						console.Print( PrintLevel::Normal,
-							"Spawning sphere\n"
-						);
+						console.Print( PrintLevel::Normal, "Spawning sphere\n" );
 					}
 				}
 			} break;
@@ -210,8 +208,8 @@ namespace XS {
 				const char *msg = nullptr;
 				bb.ReadString( &msg );
 
-				console.Print( PrintLevel::Normal,
-					"%s\n", // avoid printf format attacks
+				// avoid printf format attacks
+				console.Print( PrintLevel::Normal, "%s\n",
 					msg
 				);
 

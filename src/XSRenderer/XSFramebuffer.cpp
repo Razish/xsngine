@@ -81,8 +81,8 @@ namespace XS {
 		void Framebuffer::AttachColourTexture( const Texture *texture, unsigned int slot ) {
 			// make sure it's bound
 			if ( currentReadFramebuffer != this || currentWriteFramebuffer != this ) {
-				console.Print( PrintLevel::Normal, "Attaching colour texture to FBO without it being bound, "
-					"binding now\n"
+				console.Print( PrintLevel::Normal,
+					"Attaching colour texture to FBO without it being bound, binding now\n"
 				);
 				Bind();
 			}
@@ -102,8 +102,8 @@ namespace XS {
 		void Framebuffer::AttachDepthTexture( const Texture *texture ) {
 			// make sure it's bound
 			if ( currentReadFramebuffer != this || currentWriteFramebuffer != this ) {
-				console.Print( PrintLevel::Normal, "Attaching depth texture to FBO without it being bound, "
-					"binding now\n"
+				console.Print( PrintLevel::Normal,
+					"Attaching depth texture to FBO without it being bound, binding now\n"
 				);
 				Bind();
 			}

@@ -19,8 +19,7 @@ namespace XS {
 
 		void user_read_data( png_structp png_ptr, png_bytep data, png_size_t length );
 		void png_print_error( png_structp png_ptr, png_const_charp msg ) {
-			console.Print( PrintLevel::Developer,
-				"%s\n",
+			console.Print( PrintLevel::Developer, "%s\n",
 				msg
 			);
 		}
@@ -186,8 +185,7 @@ namespace XS {
 				return nullptr;
 			}
 
-			console.Print( PrintLevel::Developer,
-				"Loading \"%s\"...\n",
+			console.Print( PrintLevel::Developer, "Loading \"%s\"...\n",
 				filename
 			);
 

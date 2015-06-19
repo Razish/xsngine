@@ -48,9 +48,7 @@ namespace XS {
 			mesh->material->shaderProgram = mesh->shader;
 
 			if ( mesh->normals.empty() ) {
-				console.Print( PrintLevel::Developer,
-					"Calculating surface normals using Newell's method\n"
-				);
+				console.Print( PrintLevel::Developer, "Calculating surface normals using Newell's method\n" );
 
 				std::vector<vector3> surfaceNormals;
 				surfaceNormals.resize( mesh->indices.size() / 3 );
@@ -111,8 +109,7 @@ namespace XS {
 				}
 			}
 			else {
-				console.Print( PrintLevel::Normal,
-					"%s invalid XMF file '%s' missing version identifier!\n",
+				console.Print( PrintLevel::Normal, "%s invalid XMF file '%s' missing version identifier!\n",
 					XS_FUNCTION,
 					modelPath.c_str()
 				);
@@ -141,8 +138,7 @@ namespace XS {
 						Process( mesh );
 					}
 					mesh = new Mesh();
-					console.Print( PrintLevel::Debug,
-						"%s loading new mesh for '%s' at 0x%" PRIXPTR "\n",
+					console.Print( PrintLevel::Debug, "%s loading new mesh for '%s' at 0x%" PRIXPTR "\n",
 						XS_FUNCTION,
 						modelPath.c_str(),
 						mesh

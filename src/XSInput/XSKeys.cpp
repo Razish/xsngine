@@ -218,8 +218,7 @@ namespace XS {
 
 			if ( cmd.empty() ) {
 				if ( ev.down ) {
-					console.Print( PrintLevel::Developer,
-						"ExecuteBind: \"%s\" (%d) is not bound\n",
+					console.Print( PrintLevel::Developer, "ExecuteBind: \"%s\" (%d) is not bound\n",
 						GetNameForKeycode( ev.key ),
 						ev.key
 					);

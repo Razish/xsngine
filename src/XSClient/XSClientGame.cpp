@@ -42,14 +42,27 @@ namespace XS {
 		}
 
 		static void RegisterCvars( void ) {
-			//fov = degrees( pi * 0.75 ) / 1.25 because math
-			cg_fov = Cvar::Create( "cg_fov", "108", "Field of view", CVAR_ARCHIVE );
-			cg_numParticles = Cvar::Create( "cg_numParticles", "10", "Number of particles to display", CVAR_ARCHIVE );
-			cg_terrainPersistence = Cvar::Create( "cg_terrainPersistence", "0.25", "Terrain roughness", CVAR_ARCHIVE );
-			cg_terrainFrequency = Cvar::Create( "cg_terrainFrequency", "0.075", "Terrain complexity", CVAR_ARCHIVE );
-			cg_terrainAmplitude = Cvar::Create( "cg_terrainAmplitude", "1.0", "Terrain max height", CVAR_ARCHIVE );
-			cg_terrainOctaves = Cvar::Create( "cg_terrainOctaves", "4", "Terrain detail", CVAR_ARCHIVE );
-			cg_terrainDimensions = Cvar::Create( "cg_terrainDimensions", "128", "Terrain resolution", CVAR_ARCHIVE );
+			cg_fov = Cvar::Create( "cg_fov", "108", // fov = degrees( pi * 0.75 ) / 1.25 because math
+				"Field of view", CVAR_ARCHIVE
+			);
+			cg_numParticles = Cvar::Create( "cg_numParticles", "10",
+				"Number of particles to display", CVAR_ARCHIVE
+			);
+			cg_terrainPersistence = Cvar::Create( "cg_terrainPersistence", "0.25",
+				"Terrain roughness", CVAR_ARCHIVE
+			);
+			cg_terrainFrequency = Cvar::Create( "cg_terrainFrequency", "0.075",
+				"Terrain complexity", CVAR_ARCHIVE
+			);
+			cg_terrainAmplitude = Cvar::Create( "cg_terrainAmplitude", "1.0",
+				"Terrain max height", CVAR_ARCHIVE
+			);
+			cg_terrainOctaves = Cvar::Create( "cg_terrainOctaves", "4",
+				"Terrain detail", CVAR_ARCHIVE
+			);
+			cg_terrainDimensions = Cvar::Create( "cg_terrainDimensions", "128",
+				"Terrain resolution", CVAR_ARCHIVE
+			);
 		}
 
 		static void Cmd_ReloadTerrain( const CommandContext * const context ) {

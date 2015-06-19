@@ -30,7 +30,9 @@ namespace XS {
 
 			std::map<std::string, CommandFunc> sorted( commandTable.begin(), commandTable.end() );
 			for ( const auto &cmd : sorted ) {
-				console.Print( PrintLevel::Normal, "%s\n", cmd.first.c_str() );
+				console.Print( PrintLevel::Normal, "%s\n",
+					cmd.first.c_str()
+				);
 			}
 		}
 
@@ -47,16 +49,27 @@ namespace XS {
 			for ( const auto &it : *context ) {
 				const Cvar *cv = Cvar::Get( it );
 				if ( cv ) {
-					console.Print( PrintLevel::Normal, "%s: \"%s\"\n", it.c_str(), cv->GetFullCString() );
+					console.Print( PrintLevel::Normal, "%s: \"%s\"\n",
+						it.c_str(),
+						cv->GetFullCString()
+					);
 				}
 				else {
-					console.Print( PrintLevel::Normal, "%s: does not exist\n", it.c_str() );
+					console.Print( PrintLevel::Normal, "%s: does not exist\n",
+						it.c_str()
+					);
 				}
 			}
 		}
 
 		static void Cmd_ResetCvar( const CommandContext * const context ) {
 			Cvar *cv = Cvar::Get( (*context)[0] );
+
+			if ( !cv ) {
+				console.Print( PrintLevel::Normal, "%s: does not exist\n",
+					(*context)[0].c_str()
+				);
+			}
 
 			cv->Set( cv->GetDefaultString() );
 		}
@@ -141,7 +154,9 @@ namespace XS {
 					}
 				}
 				else {
-					console.Print( PrintLevel::Normal, "Unknown command \"%s\"\n", cmd.c_str()  );
+					console.Print( PrintLevel::Normal, "Unknown command \"%s\"\n",
+						cmd.c_str()
+					);
 				}
 
 				buffer.pop();
@@ -153,7 +168,9 @@ namespace XS {
 		bool AddCommand( const char *name, CommandFunc cmd ) {
 			CommandFunc &func = commandTable[name];
 			if ( func ) {
-				console.Print( PrintLevel::Normal, "Tried to register command \"%s\" twice\n", name );
+				console.Print( PrintLevel::Normal, "Tried to register command \"%s\" twice\n",
+					name
+				);
 				return false;
 			}
 
@@ -164,14 +181,18 @@ namespace XS {
 		bool AddButton( const char *name, CommandFunc down, CommandFunc up ) {
 			CommandFunc &downFunc = commandTable[String::Format( "+%s", name ).c_str()];
 			if ( downFunc ) {
-				console.Print( PrintLevel::Normal, "Tried to register command \"%s\" twice\n", name );
+				console.Print( PrintLevel::Normal, "Tried to register command \"%s\" twice\n",
+					name
+				);
 				return false;
 			}
 			downFunc = down;
 
 			CommandFunc &upFunc = commandTable[String::Format( "-%s", name ).c_str()];
 			if ( upFunc ) {
-				console.Print( PrintLevel::Normal, "Tried to register command \"%s\" twice\n", name );
+				console.Print( PrintLevel::Normal, "Tried to register command \"%s\" twice\n",
+					name
+				);
 				return false;
 			}
 			upFunc = up;

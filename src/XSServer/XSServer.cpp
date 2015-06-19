@@ -30,11 +30,8 @@ namespace XS {
 		ServerConsole *serverConsole = nullptr;
 
 		static void RegisterCvars( void ) {
-			sv_maxConnections = Cvar::Create(
-				"sv_maxConnections",
-				"16",
-				"Maximum number of client connections",
-				CVAR_ARCHIVE
+			sv_maxConnections = Cvar::Create( "sv_maxConnections", "16",
+				"Maximum number of client connections", CVAR_ARCHIVE
 			);
 		}
 

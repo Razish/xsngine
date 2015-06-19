@@ -26,8 +26,12 @@ namespace XS {
 			Cvar *m_sensitivity = nullptr;
 
 			static void RegisterCvars( void ) {
-				debug_input = Cvar::Create( "debug_input", "0", "Show debugging information for input", CVAR_ARCHIVE );
-				m_sensitivity = Cvar::Create( "m_sensitivity", "1", "Sensitivity of mouse input", CVAR_ARCHIVE );
+				debug_input = Cvar::Create( "debug_input", "0",
+					"Show debugging information for input", CVAR_ARCHIVE
+				);
+				m_sensitivity = Cvar::Create( "m_sensitivity", "1.0",
+					"Sensitivity of mouse input", CVAR_ARCHIVE
+				);
 			}
 
 			static void Cmd_MoveForward_Down( const CommandContext * const context ) {
