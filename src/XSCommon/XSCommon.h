@@ -15,9 +15,11 @@
 
 #include "XSSystem/XSPlatform.h"
 
+// slight hack to allow compile-time ternary on debug builds, i.e. bool doSomethingIfDebug = XS_DEBUG_BUILD;
 #if defined(_DEBUG)
-	// slight hack to allow compile-time ternary on debug builds, i.e. bool doSomethingIfDebug = XS_DEBUG_BUILD;
 	#define XS_DEBUG_BUILD 1
+#else
+	#define XS_DEBUG_BUILD 0
 #endif
 
 //TODO: determine max filepath for current filesystem at runtime (NTFS, ext4, HFS+)
