@@ -30,6 +30,11 @@ namespace XS {
 			Network::XSPacket packet( Network::ID_XS_CL2SV_MOVE_PIECE );
 			packet.data = bb.GetMemory( &packet.dataLen );
 			Network::Send( 0u, &packet );
+
+			console.Print( PrintLevel::Debug, "Send ID_XS_CL2SV_MOVE_PIECE: %i to %i\n",
+				offset,
+				toOffset
+			);
 		}
 
 		CheckersBoard::CheckersBoard() {
@@ -194,10 +199,55 @@ namespace XS {
 					font->Draw( pos, posText, posTextSize, &colourTable[ColourIndex( COLOUR_PURPLE )] );
 				}
 			}
+
+			vector2 pos( boardWidth, 20.0f );
+
+			// are we playing?
+			const std::string playingText = String::Format(
+				"playing: %i",
+				ClientGame::state.playing
+			);
+			const uint16_t playingTextSize = 14u;
+			real32_t textWidth = 0.0f;
+			for ( const char *p = playingText.c_str(); *p; p++ ) {
+				textWidth += font->GetGlyphWidth( *p, playingTextSize );
+			}
+			font->Draw( pos, playingText, playingTextSize, &colourTable[ColourIndex( COLOUR_RED )] );
+			pos.y += font->lineHeight[playingTextSize];
+
+			// which colour do we control?
+			const std::string infoText = String::Format(
+				"currentPlayer: %s",
+				(ClientGame::state.currentPlayer == CheckersPiece::Colour::Black)
+					? "Black"
+					: "Red"
+			);
+			const uint16_t infoTextSize = 14u;
+			textWidth = 0.0f;
+			for ( const char *p = infoText.c_str(); *p; p++ ) {
+				textWidth += font->GetGlyphWidth( *p, infoTextSize );
+			}
+			font->Draw( pos, infoText, infoTextSize, &colourTable[ColourIndex( COLOUR_RED )] );
+			pos.y += font->lineHeight[infoTextSize];
+
+			// which player's move is it?
+			const std::string currentMoveText = String::Format(
+				"currentMove: %s",
+				(ClientGame::state.currentMove == CheckersPiece::Colour::Black)
+					? "Black"
+					: "Red"
+			);
+			const uint16_t currentMoveTextSize = 14u;
+			textWidth = 0.0f;
+			for ( const char *p = currentMoveText.c_str(); *p; p++ ) {
+				textWidth += font->GetGlyphWidth( *p, currentMoveTextSize );
+			}
+			font->Draw( pos, currentMoveText, currentMoveTextSize, &colourTable[ColourIndex( COLOUR_RED )] );
+			pos.y += font->lineHeight[currentMoveTextSize];
 		}
 
 		void CheckersBoard::MouseButtonEvent( real32_t cursorX, real32_t cursorY ) {
-			if ( !state.playing ) {
+			if ( !state.playing || state.currentPlayer != state.currentMove ) {
 				return;
 			}
 

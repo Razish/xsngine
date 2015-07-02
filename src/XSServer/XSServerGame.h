@@ -2,12 +2,14 @@
 
 #include <vector>
 
+#include "XSServer/XSCheckersBoard.h"
+
 namespace XS {
 
 	namespace ServerGame {
 
 		extern struct GameState {
-			uint32_t	dummy;
+			CheckersPiece::Colour	currentMove;
 		} state;
 
 		// initialise the ServerGame
@@ -15,9 +17,24 @@ namespace XS {
 			void
 		);
 
+		void Shutdown(
+			void
+		);
+
 		// run a frame
 		void RunFrame(
 			real64_t dt
+		);
+
+		// ???
+		void UpdatePiece(
+			uint8_t offsetFrom,
+			uint8_t offsetTo
+		);
+
+		// ???
+		void SetCurrentPlayer(
+			CheckersPiece::Colour colour
 		);
 
 		// ???

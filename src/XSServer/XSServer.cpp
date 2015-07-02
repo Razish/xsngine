@@ -49,21 +49,9 @@ namespace XS {
 		}
 
 		void Shutdown( void ) {
+			ServerGame::Shutdown();
+
 			delete serverConsole;
-		}
-
-		static void GenerateNetworkState( void ) {
-#if 0
-			Network::XSPacket snapshot( Network::ID_XS_SV2CL_GAMESTATE );
-
-			ByteBuffer buffer;
-			ServerGame::GenerateSnapshot( &buffer );
-			snapshot.data = buffer.GetMemory( &snapshot.dataLen );
-
-			for ( auto *client : clients ) {
-				Network::Send( client->guid, &snapshot );
-			}
-#endif
 		}
 
 		void NetworkPump( void ) {
@@ -74,15 +62,10 @@ namespace XS {
 			// handle generic messages
 			// this will make a call to Server::ReceivePacket( Packet *p )
 			Network::Receive();
-
-			//TODO: process player input
-
-			// issue a snapshot
-			//FIXME: stop sending the entire state
-			GenerateNetworkState();
 		}
 
 		bool ReceivePacket( const RakNet::Packet *packet ) {
+
 			switch ( packet->data[0] ) {
 
 			case Network::ID_XS_CL2SV_MOVE_PIECE: {
@@ -94,12 +77,12 @@ namespace XS {
 				bbIn.ReadUInt8( &offsetFrom );
 				bbIn.ReadUInt8( &offsetTo );
 
-				Network::XSPacket outPacket( Network::ID_XS_SV2CL_MOVE_PIECE );
-				ByteBuffer bbOut;
-				bbOut.WriteInt8( offsetFrom );
-				bbOut.WriteInt8( offsetTo );
-				outPacket.data = bbOut.GetMemory( &outPacket.dataLen );
-				Network::Send( 0u, &outPacket );
+				console.Print( PrintLevel::Debug, "Receive ID_XS_CL2SV_MOVE_PIECE: %i to %i\n",
+					offsetFrom,
+					offsetTo
+				);
+
+				ServerGame::UpdatePiece( offsetFrom, offsetTo );
 			} break;
 
 			default: {
@@ -122,6 +105,10 @@ namespace XS {
 			buffer.WriteString( team );
 			spPacket.data = buffer.GetMemory( &spPacket.dataLen );
 			Network::Send( client->guid, &spPacket );
+
+			console.Print( PrintLevel::Debug, "Send ID_XS_SV2CL_SET_PLAYER: %s\n",
+				team
+			);
 
 			BroadcastMessage(
 				String::Format(
@@ -151,13 +138,6 @@ namespace XS {
 					Command::Append( p );
 				}
 			}
-
-			static real64_t lastMsgTime = 0.0;
-			real64_t currentTime = GetElapsedTime();
-			if ( currentTime - lastMsgTime >= 2500 ) {
-				lastMsgTime = currentTime;
-				BroadcastMessage( String::Format( "Automated message at %.5f\n", currentTime ).c_str() );
-			}
 		}
 
 		void BroadcastMessage( const char *msg ) {
@@ -166,6 +146,10 @@ namespace XS {
 			ByteBuffer bb;
 			bb.WriteString( msg );
 			packet.data = bb.GetMemory( &packet.dataLen );
+
+			console.Print( PrintLevel::Debug, "Send ID_XS_SV2CL_PRINT: %s\n",
+				msg
+			);
 
 			Network::Send( 0u, &packet );
 		}

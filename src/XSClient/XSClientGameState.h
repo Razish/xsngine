@@ -13,6 +13,7 @@ namespace XS {
 			vector2					cursorPos;
 			bool					playing;
 			CheckersPiece::Colour	currentPlayer;
+			CheckersPiece::Colour	currentMove;
 		} state;
 
 	} // namespace ClientGame

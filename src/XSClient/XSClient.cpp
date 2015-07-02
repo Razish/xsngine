@@ -17,6 +17,7 @@
 #include "XSClient/XSClientConsole.h"
 #include "XSClient/XSMenuManager.h"
 #include "XSClient/XSClientGameState.h"
+#include "XSClient/XSCheckersBoard.h"
 #include "XSInput/XSInput.h"
 #include "XSInput/XSMouse.h"
 #include "XSInput/XSKeys.h"
@@ -166,18 +167,12 @@ namespace XS {
 					"%s",
 					msg
 				);
+
+				console.Print( PrintLevel::Debug, "Receive ID_XS_SV2CL_PRINT: %s\n",
+					msg
+				);
+
 				delete[] msg;
-			} break;
-
-			case Network::ID_XS_SV2CL_GAMESTATE: {
-				uint8_t *buffer = packet->data + 1;
-				size_t bufferLen = packet->length - 1;
-				ByteBuffer bb( buffer, bufferLen );
-
-				struct SnapshotHeader {
-					uint32_t dummy;
-				} snapshotHeader;
-				bb.ReadGeneric( &snapshotHeader, sizeof(snapshotHeader) );
 			} break;
 
 			case Network::ID_XS_SV2CL_SET_PLAYER: {
@@ -197,12 +192,32 @@ namespace XS {
 				else {
 					ClientGame::state.playing = false;
 				}
+
+				console.Print( PrintLevel::Debug, "Receive ID_XS_SV2CL_SET_PLAYER: %s\n",
+					str
+				);
+
 				console.Print( PrintLevel::Normal,
 					"Playing as %s (%i)\n",
 					str,
 					ClientGame::state.currentPlayer
 				);
 				delete[] str;
+			} break;
+
+			case Network::ID_XS_SV2CL_SET_CURRENT_PLAYER: {
+				uint8_t *buffer = packet->data + 1;
+				size_t bufferLen = packet->length - 1;
+				ByteBuffer bb( buffer, bufferLen );
+				uint8_t player;
+				bb.ReadUInt8( &player );
+				ClientGame::state.currentMove = static_cast<ClientGame::CheckersPiece::Colour>( player );
+
+				console.Print( PrintLevel::Debug, "Receive ID_XS_SV2CL_SET_CURRENT_PLAYER: %s\n",
+					(ClientGame::state.currentMove == ClientGame::CheckersPiece::Colour::Black)
+						? "Black"
+						: "Red"
+				);
 			} break;
 
 			case Network::ID_XS_SV2CL_MOVE_PIECE: {
@@ -212,6 +227,12 @@ namespace XS {
 				uint8_t offsetFrom, offsetTo;
 				bb.ReadUInt8( &offsetFrom );
 				bb.ReadUInt8( &offsetTo );
+
+				console.Print( PrintLevel::Debug, "Receive ID_XS_SV2CL_MOVE_PIECE: %i to %i\n",
+					offsetFrom,
+					offsetTo
+				);
+
 				ClientGame::board->UpdatePiece( offsetFrom, offsetTo );
 			} break;
 
