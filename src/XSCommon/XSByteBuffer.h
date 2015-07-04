@@ -39,16 +39,32 @@ namespace XS {
 			size_t dataLen
 		);
 
+		// calculate a checksum of data written so far
+		uint64_t GetChecksum(
+			void
+		) const;
+
 		// get a pointer to buffer memory
 		//NOTE: invalidated after any future writes
 		const void *GetMemory(
-			size_t *outLen
+			size_t *outLen,
+			bool encode = false // RLE
 		) const;
 
 		// write generic data to the buffer
 		void WriteGeneric(
 			const void *data,
 			size_t dataLen
+		);
+
+		// write a signed 64 bit integer to the buffer
+		void WriteInt64(
+			int64_t data
+		);
+
+		// write an unsigned 64 bit integer to the buffer
+		void WriteUInt64(
+			uint64_t data
 		);
 
 		// write a signed 32 bit integer to the buffer
@@ -100,6 +116,16 @@ namespace XS {
 		void ReadGeneric(
 			void *outData,
 			size_t dataLen
+		);
+
+		// write a signed 64 bit integer to the buffer
+		void ReadInt64(
+			int64_t *outData
+		);
+
+		// write an unsigned 64 bit integer to the buffer
+		void ReadUInt64(
+			uint64_t *outData
 		);
 
 		// write a signed 32 bit integer to the buffer

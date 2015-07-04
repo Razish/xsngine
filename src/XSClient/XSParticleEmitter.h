@@ -22,7 +22,7 @@ namespace XS {
 
 	namespace ClientGame {
 
-		class ParticleEmitter : public Entity, public Renderer::Renderable {
+		class ParticleEmitter : public Renderer::Renderable {
 		private:
 			// only iterate via index (up to numParticles) and treat pool as contiguous memory
 			// the list of particles is sorted by alive/dead status to improve performance and avoid the overhead of
@@ -64,13 +64,14 @@ namespace XS {
 			ParticleEmitter& operator=( const ParticleEmitter& ) = delete;
 
 			ParticleEmitter( uint32_t count, uint32_t life, const char *textureName );
+			~ParticleEmitter();
 
 			void Update(
 				real64_t dt
 			);
 
 			void Draw(
-				void
+				const Renderer::RenderInfo &info
 			) const;
 		};
 

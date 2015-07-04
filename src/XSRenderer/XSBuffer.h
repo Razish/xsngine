@@ -10,8 +10,7 @@ namespace XS {
 			Uniform
 		};
 
-		struct BufferMemory
-		{
+		struct BufferMemory {
 			size_t offset;
 			size_t size;
 			void *devicePtr;
@@ -21,13 +20,15 @@ namespace XS {
 
 			class Buffer {
 			private:
-				GLuint	id;
+				GLuint	privateID;
 				GLenum	type;
 				size_t	offset;
 				size_t	size;
 				size_t	alignment;
 
 			public:
+				const GLuint &id;
+
 				// don't allow default instantiation
 				Buffer() = delete;
 				Buffer( const Buffer& ) = delete;
@@ -55,11 +56,6 @@ namespace XS {
 				void Unmap(
 					void
 				);
-
-				// ???
-				GLuint GetID(
-					void
-				) const;
 
 				// ???
 				void Bind(

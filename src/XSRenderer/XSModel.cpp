@@ -114,8 +114,8 @@ namespace XS {
 			}
 		}
 
-		void Model::Draw( void ) const {
-			Renderer::DrawModel( this );
+		void Model::Draw( const RenderInfo &info ) const {
+			Renderer::DrawModel( this, info );
 		}
 
 	} // namespace Renderer

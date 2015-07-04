@@ -2,16 +2,20 @@
 
 #include <GL/glew.h>
 
+#include "XSRenderer/XSRenderable.h"
+
 namespace XS {
 
 	// front-end renderer access
 
 	class Cvar;
+	struct vector3;
 	struct vector4;
 
 	namespace Renderer {
 
 		extern Cvar *r_debug;
+		extern Cvar *r_fastPath;
 
 		namespace Backend {
 			class Buffer;
@@ -114,7 +118,8 @@ namespace XS {
 
 		// ???
 		void DrawModel(
-			const Model *model
+			const Model *model,
+			const RenderInfo &info
 		);
 
 		// ???

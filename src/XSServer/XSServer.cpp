@@ -1,7 +1,5 @@
 #include <RakNet/RakPeerInterface.h>
 
-#include <cstdio>
-
 #include "XSCommon/XSCommon.h"
 #include "XSCommon/XSCvar.h"
 #include "XSCommon/XSCommand.h"
@@ -57,12 +55,16 @@ namespace XS {
 		static void GenerateNetworkState( void ) {
 			Network::XSPacket snapshot( Network::ID_XS_SV2CL_GAMESTATE );
 
-			ByteBuffer buffer;
-			ServerGame::GenerateSnapshot( &buffer );
-			snapshot.data = buffer.GetMemory( &snapshot.dataLen );
+			ByteBuffer bb;
+			ServerGame::GenerateSnapshot( &bb );
+			uint64_t checksum = bb.GetChecksum();
+			bb.WriteUInt64( checksum );
+			snapshot.data = bb.GetMemory( &snapshot.dataLen );
 
 			for ( auto *client : clients ) {
-				Network::Send( client->guid, &snapshot );
+				if ( checksum != client->lastSnapshotAcked ) {
+					Network::Send( client->guid, &snapshot );
+				}
 			}
 		}
 
@@ -72,7 +74,7 @@ namespace XS {
 			}
 
 			// handle generic messages
-			// this will make a call to Server::ReceivePacket( Packet *p )
+			// this will make a call to Server::ReceivePacket( RakNet::Packet *packet )
 			Network::Receive();
 
 			//TODO: process player input
@@ -85,8 +87,14 @@ namespace XS {
 		bool ReceivePacket( const RakNet::Packet *packet ) {
 			switch ( packet->data[0] ) {
 
-			case Network::ID_XS_CL2SV_DUMMY: {
-				// ...
+			case Network::ID_XS_CL2SV_GAMESTATE_ACK: {
+				Client *client = GetClient( packet->guid.g );
+				if ( client ) {
+					uint8_t *buffer = packet->data + 1;
+					size_t bufferLen = packet->length - 1;
+					ByteBuffer bb( buffer, bufferLen );
+					bb.ReadUInt64( &client->lastSnapshotAcked );
+				}
 			} break;
 
 			default: {
@@ -101,7 +109,7 @@ namespace XS {
 		void IncomingConnection( const RakNet::Packet *packet ) {
 			Client *client = new Client( packet->guid.g );
 
-			client->state = Client::State::Connecting;
+			client->connectionState = Client::ConnectionState::Connecting;
 
 			clients.push_back( client );
 		}

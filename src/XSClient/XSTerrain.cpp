@@ -49,7 +49,7 @@ namespace XS {
 			}
 
 			entity = new Entity();
-			entity->renderObject = Renderer::Model::Register( nullptr );
+			entity->renderInfo.renderable = Renderer::Model::Register( nullptr );
 			Renderer::Mesh *mesh = new Renderer::Mesh();
 			const real32_t scale = 64.0f;
 
@@ -111,8 +111,8 @@ namespace XS {
 
 			mesh->Upload();
 
-			dynamic_cast<Renderer::Model *>( entity->renderObject )->meshes.push_back( mesh );
-			AddObject( entity );
+			dynamic_cast<Renderer::Model *>( entity->renderInfo.renderable )->meshes.push_back( mesh );
+			AddEntity( entity );
 
 			// create shader program
 			static const Renderer::VertexAttribute attributes[] = {
@@ -177,7 +177,7 @@ namespace XS {
 		}
 
 		Terrain::~Terrain() {
-			RemoveObject( entity );
+			RemoveEntity( entity );
 			delete program;
 			delete dirtTexture;
 			delete grassTexture;

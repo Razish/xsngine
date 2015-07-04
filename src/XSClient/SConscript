@@ -11,6 +11,8 @@ files = [
 	'XSClient/XSClientGameState.cpp',
 	'XSClient/XSFlyCamera.cpp',
 	'XSClient/XSEntity.cpp',
+	'XSClient/XSEntityFXRunner.cpp',
+	'XSClient/XSEntityModel.cpp',
 	'XSClient/XSMenu.cpp',
 	'XSClient/XSMenuElement.cpp',
 	'XSClient/XSMenuElementButton.cpp',

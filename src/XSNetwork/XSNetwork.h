@@ -9,10 +9,11 @@ namespace XS {
 		enum GameMessage {
 			// server --> client
 			ID_XS_SV2CL_GAMESTATE = ID_USER_PACKET_ENUM + 1,
+			ID_XS_SV2CL_REMOVE_ENTITY,
 			ID_XS_SV2CL_PRINT,
 
 			// client --> server
-			ID_XS_CL2SV_DUMMY,
+			ID_XS_CL2SV_GAMESTATE_ACK,
 		};
 
 		struct XSPacket {

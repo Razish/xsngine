@@ -9,6 +9,10 @@ namespace XS {
 			// ...
 		}
 
+		void Renderable::Update( real64_t dt ) {
+			// ...
+		}
+
 	} // namespace Renderer
 
 } // namespace XS

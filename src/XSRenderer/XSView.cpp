@@ -89,7 +89,10 @@ namespace XS {
 			while ( !renderObjects.empty() ) {
 				const auto &object = renderObjects.front();
 
-				object->Draw();
+				SDL_assert( object.renderable );
+
+				//FIXME: this design seems ass-backwards
+				object.renderable->Draw( object );
 
 				renderObjects.pop();
 			}
@@ -112,8 +115,8 @@ namespace XS {
 			}
 		}
 
-		void View::AddObject( const Renderable *renderObject ) {
-			renderObjects.push( renderObject );
+		void View::AddObject( const RenderInfo &renderInfo ) {
+			renderObjects.push( renderInfo );
 		}
 
 		void View::AddPointLight( const vector3 &lightPos ) {

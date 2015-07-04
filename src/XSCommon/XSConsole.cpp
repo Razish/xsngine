@@ -28,9 +28,9 @@ namespace XS {
 
 	void Console::Print( PrintLevel printLevel, const char *fmt, ... ) {
 		if ( printLevel == PrintLevel::Debug ) {
-			#if !defined(_DEBUG)
+			if ( !XS_DEBUG_BUILD ) {
 				return;
-			#endif
+			}
 		}
 		else if ( printLevel == PrintLevel::Developer ) {
 			if ( Common::com_developer->GetBool() == false ) {

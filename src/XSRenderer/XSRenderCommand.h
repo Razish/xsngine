@@ -22,20 +22,16 @@ namespace XS {
 		};
 
 		struct DrawQuadCommand {
-			real32_t		 x;
-			real32_t		 y;
-			real32_t		 w;
-			real32_t		 h;
-			real32_t		 s1;
-			real32_t		 t1;
-			real32_t		 s2;
-			real32_t		 t2;
+			vector2 pos;
+			vector2 size;
+			vector2 st1, st2;
 			const vector4	*colour;
 			const Material	*material;
 		};
 
 		struct DrawModelCommand {
-			const Model	*model;
+			const Model			*model;
+			RenderInfo			 info;
 		};
 
 		struct DrawParticlesCommand {

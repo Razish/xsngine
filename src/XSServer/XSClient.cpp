@@ -13,6 +13,18 @@ namespace XS {
 			BroadcastMessage( String::Format( "Connection from %X", guid ).c_str() );
 		}
 
+		Client *GetClient( uint64_t guid ) {
+			// linear search
+			//FIXME: use guid as key?
+			for ( Client *client : clients ) {
+				if ( client->guid == guid ) {
+					return client;
+				}
+			}
+
+			return nullptr;
+		}
+
 	} // namespace ServerGame
 
 } // namespace XS

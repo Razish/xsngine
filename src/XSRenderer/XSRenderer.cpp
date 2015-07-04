@@ -39,6 +39,7 @@ namespace XS {
 
 		static Cvar *r_clear = nullptr;
 		Cvar *r_debug = nullptr;
+		Cvar *r_fastPath = nullptr;
 		static Cvar *r_multisample = nullptr;
 		static Cvar *r_skipRender = nullptr;
 		static Cvar *r_swapInterval = nullptr;
@@ -215,6 +216,9 @@ namespace XS {
 			r_debug = Cvar::Create( "r_debug", "0",
 				"Enable debugging information", CVAR_ARCHIVE
 			);
+			r_fastPath = Cvar::Create( "r_fastPath", XS_DEBUG_BUILD ? "0" : "1",
+				"Use stable but slow, or unstable but fast render paths", CVAR_ARCHIVE
+			);
 			r_multisample = Cvar::Create( "r_multisample", "2",
 				"Multisample Anti-Aliasing (MSAA) level", CVAR_ARCHIVE
 			);
@@ -386,14 +390,14 @@ namespace XS {
 				compositeMaterial.samplerBindings.push_back( colourBinding );
 
 				DrawQuadCommand cmd = {};
-					cmd.x = -1.0f;
-					cmd.y = 1.0f;
-					cmd.s1 = 0.0f;
-					cmd.t1 = 1.0f;
-					cmd.s2 = 1.0f;
-					cmd.t2 = 0.0f;
-					cmd.w = 2.0f;
-					cmd.h = -2.0f;
+					cmd.pos.x = -1.0f;
+					cmd.pos.y = 1.0f;
+					cmd.size.w = 2.0f;
+					cmd.size.h = -2.0f;
+					cmd.st1.x = 0.0f;
+					cmd.st1.y = 1.0f;
+					cmd.st2.x = 1.0f;
+					cmd.st2.y = 0.0f;
 					cmd.material = &compositeMaterial;
 					cmd.colour = nullptr;
 				DrawQuad( cmd );
@@ -435,25 +439,26 @@ namespace XS {
 			AssertView();
 
 			RenderCommand cmd( CommandType::DrawQuad );
-			cmd.drawQuad.x = x;
-			cmd.drawQuad.y = y;
-			cmd.drawQuad.w = w;
-			cmd.drawQuad.h = h;
-			cmd.drawQuad.s1 = s1;
-			cmd.drawQuad.t1 = t1;
-			cmd.drawQuad.s2 = s2;
-			cmd.drawQuad.t2 = t2;
+			cmd.drawQuad.pos.x = x;
+			cmd.drawQuad.pos.y = y;
+			cmd.drawQuad.size.w = w;
+			cmd.drawQuad.size.h = h;
+			cmd.drawQuad.st1.x = s1;
+			cmd.drawQuad.st1.y = t1;
+			cmd.drawQuad.st2.x = s2;
+			cmd.drawQuad.st2.y = t2;
 			cmd.drawQuad.colour = colour;
 			cmd.drawQuad.material = material;
 
 			currentView->renderCommands.push( cmd );
 		}
 
-		void DrawModel( const Model *model ) {
+		void DrawModel( const Model *model, const RenderInfo &info ) {
 			AssertView();
 
 			RenderCommand cmd( CommandType::DrawModel );
 			cmd.drawModel.model = model;
+			cmd.drawModel.info = info;
 			currentView->renderCommands.push( cmd );
 		}
 

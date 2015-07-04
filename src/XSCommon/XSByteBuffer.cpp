@@ -22,7 +22,15 @@ namespace XS {
 		size += addSize;
 	}
 
-	const void *ByteBuffer::GetMemory( size_t *outLen ) const {
+	uint64_t ByteBuffer::GetChecksum( void ) const {
+		uint64_t accum = 0u;
+		for ( size_t i = 0u; i < size; i++ ) {
+			accum += static_cast<uint64_t>( buffer[i] * 32768.0f );
+		}
+		return accum;
+	}
+
+	const void *ByteBuffer::GetMemory( size_t *outLen, bool encode ) const {
 		*outLen = size;
 		return static_cast<const void *>( &buffer[0] );
 	}
@@ -34,6 +42,28 @@ namespace XS {
 		Resize( dataLen );
 		std::memcpy( &buffer[offset], data, dataLen );
 		offset += dataLen;
+	}
+
+	void ByteBuffer::WriteInt64( int64_t data ) {
+		SDL_assert( !reading );
+
+		size_t writeSize = sizeof(int64_t);
+
+		Resize( writeSize );
+		*(int64_t *)&buffer[offset] = data;
+
+		offset += writeSize;
+	}
+
+	void ByteBuffer::WriteUInt64( uint64_t data ) {
+		SDL_assert( !reading );
+
+		size_t writeSize = sizeof(uint64_t);
+
+		Resize( writeSize );
+		*(uint64_t *)&buffer[offset] = data;
+
+		offset += writeSize;
 	}
 
 	void ByteBuffer::WriteInt32( int32_t data ) {
@@ -137,6 +167,20 @@ namespace XS {
 
 		std::memcpy( outData, &buffer[offset], dataLen );
 		offset += dataLen;
+	}
+
+	void ByteBuffer::ReadInt64( int64_t *outData ) {
+		SDL_assert( reading );
+
+		*outData = *reinterpret_cast<int64_t *>( &buffer[offset] );
+		offset += sizeof(int64_t);
+	}
+
+	void ByteBuffer::ReadUInt64( uint64_t *outData ) {
+		SDL_assert( reading );
+
+		*outData = *reinterpret_cast<uint64_t *>( &buffer[offset] );
+		offset += sizeof(uint64_t);
 	}
 
 	void ByteBuffer::ReadInt32( int32_t *outData ) {

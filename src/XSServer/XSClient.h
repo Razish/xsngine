@@ -5,7 +5,7 @@ namespace XS {
 	namespace Server {
 
 		struct Client {
-			enum class State {
+			enum class ConnectionState {
 				Connecting,
 				Limbo,
 				Playing
@@ -18,9 +18,14 @@ namespace XS {
 			Client( const Client& ) = delete;
 			Client& operator=( const Client& ) = delete;
 
-			uint64_t	guid;
-			State		state;
+			uint64_t		guid;
+			ConnectionState	connectionState;
+			uint64_t		lastSnapshotAcked = 0u;
 		};
+
+		Client *GetClient(
+			uint64_t guid
+		);
 
 	} // namespace ServerGame
 

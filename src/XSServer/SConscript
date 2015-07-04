@@ -8,9 +8,11 @@ server_env = env.Clone()
 files = [
 	'XSServer/XSClient.cpp',
 	'XSServer/XSEntity.cpp',
-	'XSServer/XSEntitySphere.cpp',
+	'XSServer/XSEntityFXRunner.cpp',
+	'XSServer/XSEntityModel.cpp',
 	'XSServer/XSNetcode.cpp',
 	'XSServer/XSServerGame.cpp',
+	'XSServer/XSResources.cpp',
 ]
 files = [build_dir + f for f in files]
 

@@ -54,9 +54,9 @@ namespace XS {
 
 				// activate the default vertex array object
 				SDL_assert( glGenVertexArrays && "glBindVertexArray unavailable" );
-				glGenVertexArrays(1, &defaultVao);
+				glGenVertexArrays( 1, &defaultVao );
 				SDL_assert( glBindVertexArray && "glBindVertexArray unavailable" );
-				glBindVertexArray(defaultVao);
+				glBindVertexArray( defaultVao );
 
 				glGenBuffers( 1, &defaultPbo );
 				glBindBuffer( GL_PIXEL_PACK_BUFFER, defaultPbo );
@@ -128,6 +128,7 @@ namespace XS {
 			}
 
 			void SetDepthFunction( DepthFunc func ) {
+				static GLenum lastFunc = GL_LEQUAL;
 				GLenum glFunc = GL_LEQUAL;
 
 				switch ( func ) {
@@ -142,19 +143,28 @@ namespace XS {
 
 				}
 
-				glDepthFunc( glFunc );
+				if ( lastFunc != glFunc ) {
+					glDepthFunc( glFunc );
+					lastFunc = glFunc;
+				}
 			}
 
 			void ToggleStencilTest( bool enabled ) {
-				if ( enabled ) {
-					glEnable( GL_STENCIL_TEST );
-				}
-				else {
-					glDisable( GL_STENCIL_TEST );
+				static bool lastTest = false;
+				if ( lastTest != enabled ) {
+					if ( enabled ) {
+						glEnable( GL_STENCIL_TEST );
+					}
+					else {
+						glDisable( GL_STENCIL_TEST );
+					}
+
+					lastTest = enabled;
 				}
 			}
 
 			void SetStencilFunction( StencilFunc func ) {
+				static GLenum lastFunc = GL_ALWAYS;
 				GLenum glFunc = GL_ALWAYS;
 
 				switch ( func ) {
@@ -193,7 +203,11 @@ namespace XS {
 
 				}
 
-				glStencilFunc( glFunc, 1, 0xFF );
+				if ( lastFunc != glFunc ) {
+					glStencilFunc( glFunc, 1, 0xFF );
+
+					lastFunc = glFunc;
+				}
 			}
 
 			void SetStencilOp( StencilOp op ) {
@@ -208,11 +222,17 @@ namespace XS {
 			}
 
 			void ToggleAlphaBlending( bool enabled ) {
-				if ( enabled ) {
-					glEnable( GL_BLEND );
-				}
-				else {
-					glDisable( GL_BLEND );
+				static bool lastBlend = false;
+
+				if ( lastBlend != enabled ) {
+					if ( enabled ) {
+						glEnable( GL_BLEND );
+					}
+					else {
+						glDisable( GL_BLEND );
+					}
+
+					lastBlend = enabled;
 				}
 			}
 
@@ -291,10 +311,17 @@ namespace XS {
 			}
 
 			void SetBlendFunction( BlendFunc sourceFunc, BlendFunc destFunc ) {
+				static GLenum lastSourceFunc = GL_ONE;
+				static GLenum lastDestFunc = GL_ZERO;
 				GLenum glSourceFunc = GetGLBlendFunction( sourceFunc );
 				GLenum glDestFunc = GetGLBlendFunction( destFunc );
 
-				glBlendFunc( glSourceFunc, glDestFunc );
+				if ( lastSourceFunc != glSourceFunc || lastDestFunc != glDestFunc ) {
+					glBlendFunc( glSourceFunc, glDestFunc );
+
+					lastSourceFunc = glSourceFunc;
+					lastDestFunc = glDestFunc;
+				}
 			}
 
 		} // namespace Backend

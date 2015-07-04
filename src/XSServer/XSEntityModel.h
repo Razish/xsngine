@@ -1,6 +1,5 @@
 #pragma once
 
-#include <tuple>
 #include "XSServer/XSEntity.h"
 
 namespace XS {
@@ -9,16 +8,14 @@ namespace XS {
 
 	namespace ServerGame {
 
-		class EntitySphere : public Entity {
+		class EntityModel : public Entity {
 		private:
 
 		public:
-			EntitySphere();
-			EntitySphere( const EntitySphere& ) = delete;
-			EntitySphere& operator=( const EntitySphere& ) = delete;
+			EntityModel();
 
 			void Update(
-				const real64_t dt
+				real64_t dt
 			);
 
 			void Serialise(

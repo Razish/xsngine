@@ -29,15 +29,11 @@ namespace XS {
 				}
 			}
 
-			GLuint Buffer::GetID( void ) const {
-				return id;
-			}
-
 			Buffer::Buffer( BufferType bufferType, const void *data, size_t size )
-			: type( GetGLBufferType( bufferType ) ), offset( 0 ), size( size )
+			: type( GetGLBufferType( bufferType ) ), offset( 0 ), size( size ), id( privateID )
 			{
-				glGenBuffers( 1, &id );
-				glBindBuffer( type, id );
+				glGenBuffers( 1, &privateID );
+				glBindBuffer( type, privateID );
 				glBufferData( type, size, data, GL_STREAM_DRAW );
 
 				if ( bufferType == BufferType::Uniform ) {
@@ -49,7 +45,7 @@ namespace XS {
 			}
 
 			Buffer::~Buffer() {
-				glDeleteBuffers( 1, &id );
+				glDeleteBuffers( 1, &privateID );
 			}
 
 			void *Buffer::Map( void ) {
@@ -89,11 +85,16 @@ namespace XS {
 					rangeSize = size - rangeOffset;
 				}
 
-				glBindBufferRange( type, index, id, rangeOffset, rangeSize );
+				glBindBufferRange( type, index, privateID, rangeOffset, rangeSize );
 			}
 
 			void Buffer::Bind( void ) const {
-				glBindBuffer( type, id );
+				static GLenum lastType = GL_NONE;
+				static GLuint lastID = -1;
+
+				if ( type != lastType || privateID != lastID ) {
+					glBindBuffer( type, privateID );
+				}
 			}
 
 		} // namespace Backend

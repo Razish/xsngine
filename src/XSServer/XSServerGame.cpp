@@ -1,17 +1,42 @@
+#include <algorithm>
+
 #include "XSCommon/XSCommon.h"
 #include "XSCommon/XSConsole.h"
 #include "XSCommon/XSCommand.h"
 #include "XSCommon/XSVector.h"
 #include "XSServer/XSServerGame.h"
 #include "XSServer/XSEntity.h"
-#include "XSServer/XSEntitySphere.h"
+#include "XSServer/XSEntityFXRunner.h"
+#include "XSServer/XSEntityModel.h"
 #include "XSServer/XSServer.h"
+#include "XSServer/XSResources.h"
 
 namespace XS {
 
 	namespace ServerGame {
 
 		GameState state = {};
+
+		void AddEntity( Entity *entity ) {
+			auto it = std::find( state.entities.begin(), state.entities.end(), entity );
+			if ( it == state.entities.end() ) {
+				// not found
+				state.entities.push_back( entity );
+			}
+			else {
+				// already exists, this should not happen
+				SDL_assert( !"Tried to add entity twice" );
+				console.Print( PrintLevel::Normal, "Tried to add entity twice: %i\n",
+					entity->id
+				);
+				return;
+			}
+		}
+
+		void RemoveEntity( Entity *entity ) {
+			auto it = std::find( state.entities.begin(), state.entities.end(), entity );
+			state.entities.erase( it );
+		}
 
 		static void Cmd_SpawnEntity( const CommandContext * const context ) {
 			if ( context->size() != 3 ) {
@@ -24,9 +49,14 @@ namespace XS {
 				std::atof( (*context)[2].c_str() )
 			);
 
-			EntitySphere *ent = new EntitySphere();
-
+#if 0
+			EntityFXRunner *ent = new EntityFXRunner();
+#else
+			EntityModel *ent = new EntityModel();
+#endif
 			ent->position = pos;
+			ent->runPhysics = true;
+			AddEntity( ent );
 		}
 
 		static void RegisterCommands( void ) {
@@ -34,9 +64,6 @@ namespace XS {
 		}
 
 		void Init( void ) {
-			// reserve 1024 entities for now, test contiguity
-			state.entities.reserve( 1024u );
-
 			RegisterCommands();
 		}
 

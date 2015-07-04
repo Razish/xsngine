@@ -52,12 +52,24 @@ namespace XS {
 
 		class ShaderProgram {
 		private:
+			static const ShaderProgram	*tmpBindProgram;
+
 			uint32_t						id;
 			std::vector<ProgramVariable>	uniforms;
 
 			// ???
 			ProgramVariable &GetUniform(
 				const char *name
+			);
+
+			// ???
+			void CheckBind(
+				void
+			);
+
+			// ???
+			void CheckUnbind(
+				void
 			);
 
 		public:

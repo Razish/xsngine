@@ -201,6 +201,14 @@ namespace XS {
 					);
 				} break;
 
+				case ID_ALREADY_CONNECTED: {
+					// a client with our GUID is already connected, wait for timeout because we probably disconnected
+					//	ungracefully
+					//TODO: filter for server/client?
+					console.Print( PrintLevel::Normal, "already connected, wait for timeout\n" );
+					connected = false;
+				} break;
+
 				case ID_CONNECTION_REQUEST_ACCEPTED: {
 					// out connection request has been accepted
 					console.Print( PrintLevel::Normal, "connection accepted\n" );
@@ -293,7 +301,7 @@ namespace XS {
 			peer->Send(
 				&bs, // bitStream
 				PacketPriority::MEDIUM_PRIORITY, // priority
-				PacketReliability::RELIABLE, // reliability
+				PacketReliability::UNRELIABLE_SEQUENCED, // reliability
 				0, // orderingChannel
 				systemIdentifier, // systemIdentifier
 				isServer // broadcast

@@ -28,8 +28,9 @@ namespace XS {
 		ParticleEmitter::ParticleEmitter( uint32_t count, uint32_t life, const char *textureName )
 		: pool( count ), numParticles( 0u ), count( count ), life( life ), emitTime( 0.0 )
 		{
-			// this must be nulled at the start of the function, see note at end of function
-			renderObject = nullptr;
+			console.Print( PrintLevel::Normal, "%s\n",
+				XS_FUNCTION_VERBOSE
+			);
 
 			emitRate = static_cast<real32_t>( life ) / static_cast<real32_t>( count );
 
@@ -70,10 +71,12 @@ namespace XS {
 			};
 			shader = new Renderer::ShaderProgram( "particle", "particle", attributes, ARRAY_LEN( attributes ) );
 			material->shaderProgram = shader;
+		}
 
-			// this must come last because if the constructor for ParticleEmitter fails, the destructor for GameObject
-			//	will delete its renderObject (i.e. this ParticleEmitter)
-			renderObject = this;
+		ParticleEmitter::~ParticleEmitter() {
+			console.Print( PrintLevel::Normal, "%s\n",
+				XS_FUNCTION_VERBOSE
+			);
 		}
 
 #ifdef PARTICLE_SORT_ALL
@@ -158,9 +161,9 @@ namespace XS {
 			emitTime += dt;
 		}
 
-		void ParticleEmitter::Draw( void ) const {
-			uint32_t *indexMem = new uint32_t[count * 6];
-			Vertex *vertexMem = new Vertex[count * 4];
+		void ParticleEmitter::Draw( const Renderer::RenderInfo &info ) const {
+			uint32_t *indexMem = new uint32_t[count * 6]();
+			Vertex *vertexMem = new Vertex[count * 4]();
 			for ( size_t i = 0u; i < numParticles; i++ ) {
 				auto &p = pool[i];
 
@@ -217,10 +220,12 @@ namespace XS {
 			Vertex *vertexData = reinterpret_cast<Vertex *>( vertexBuffer->Map() );
 			std::memcpy( vertexData, vertexMem, count * 4 * sizeof(Vertex) );
 			vertexBuffer->Unmap();
+			delete[] vertexMem;
 
 			uint32_t *indexData = reinterpret_cast<uint32_t *>( indexBuffer->Map() );
 			std::memcpy( indexData, indexMem, count * 6 * sizeof(uint32_t) );
 			indexBuffer->Unmap();
+			delete[] indexMem;
 
 			Renderer::DrawParticles( vertexBuffer, indexBuffer, material, numParticles * 6 );
 		}

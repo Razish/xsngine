@@ -44,7 +44,7 @@ namespace XS {
 
 			// issue draw command to renderer
 			void Draw(
-				void
+				const RenderInfo &info
 			) const;
 		};
 

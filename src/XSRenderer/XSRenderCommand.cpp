@@ -131,28 +131,28 @@ namespace XS {
 			}
 
 			// Top-left
-			vertices[0].x	= cmd.x;
-			vertices[0].y	= cmd.y;
-			texcoords[0].x	= cmd.s1;
-			texcoords[0].y	= cmd.t1;
+			vertices[0].x	= cmd.pos.x;
+			vertices[0].y	= cmd.pos.y;
+			texcoords[0].x	= cmd.st1.x;
+			texcoords[0].y	= cmd.st1.y;
 
 			// Top-right
-			vertices[1].x	= cmd.x + cmd.w;
-			vertices[1].y	= cmd.y;
-			texcoords[1].x	= cmd.s2;
-			texcoords[1].y	= cmd.t1;
+			vertices[1].x	= cmd.pos.x + cmd.size.w;
+			vertices[1].y	= cmd.pos.y;
+			texcoords[1].x	= cmd.st2.x;
+			texcoords[1].y	= cmd.st1.y;
 
 			// Bottom-left
-			vertices[2].x	= cmd.x;
-			vertices[2].y	= cmd.y + cmd.h;
-			texcoords[2].x	= cmd.s1;
-			texcoords[2].y	= cmd.t2;
+			vertices[2].x	= cmd.pos.x;
+			vertices[2].y	= cmd.pos.y + cmd.size.h;
+			texcoords[2].x	= cmd.st1.x;
+			texcoords[2].y	= cmd.st2.y;
 
 			// Bottom-right
-			vertices[3].x	= cmd.x + cmd.w;
-			vertices[3].y	= cmd.y + cmd.h;
-			texcoords[3].x	= cmd.s2;
-			texcoords[3].y	= cmd.t2;
+			vertices[3].x	= cmd.pos.x + cmd.size.w;
+			vertices[3].y	= cmd.pos.y + cmd.size.h;
+			texcoords[3].x	= cmd.st2.x;
+			texcoords[3].y	= cmd.st2.y;
 
 			BufferMemory bufferMem = quadsVertexBuffer->MapDiscard( 4 * sizeof( real32_t ) * 8 );
 			real32_t *vertexBuffer = static_cast<real32_t *>( bufferMem.devicePtr );
@@ -194,8 +194,6 @@ namespace XS {
 
 		static void DrawMesh( const Mesh *mesh ) {
 			SDL_assert( mesh->material && "DrawMesh with invalid material" );
-
-			mesh->material->Bind();
 
 			bool setWireframe = false;
 			bool previousWireframe = false;
@@ -276,6 +274,13 @@ namespace XS {
 
 		static void DrawModel( const DrawModelCommand &cmd ) {
 			for ( const auto &mesh : cmd.model->meshes ) {
+				SDL_assert( mesh->material && "DrawMesh with invalid material" );
+
+				mesh->material->shaderProgram->SetUniform3( "u_Position",
+					cmd.info.worldPos.x,
+					cmd.info.worldPos.y,
+					cmd.info.worldPos.z
+				);
 				DrawMesh( mesh );
 			}
 		}

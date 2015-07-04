@@ -1,5 +1,6 @@
 #pragma once
 
+#include <list>
 #include <vector>
 
 namespace XS {
@@ -9,8 +10,11 @@ namespace XS {
 		class Entity;
 
 		extern struct GameState {
-			std::vector<Entity *>		entities;
-			uint32_t					numEntities;
+			std::list<Entity *>		entities;
+
+			struct NetworkState {
+				std::vector<uint32_t>	removedEntities; // removed this frame, notify client
+			} net;
 		} state;
 
 		// initialise the ServerGame

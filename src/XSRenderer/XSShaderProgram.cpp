@@ -3,6 +3,7 @@
 #include "XSCommon/XSString.h"
 #include "XSCommon/XSFile.h"
 #include "XSCommon/XSError.h"
+#include "XSCommon/XSCvar.h"
 #include "XSRenderer/XSRenderer.h"
 #include "XSRenderer/XSShaderProgram.h"
 #include "XSRenderer/XSVertexAttributes.h"
@@ -13,10 +14,12 @@ namespace XS {
 
 		#define MAX_SHADER_LENGTH (1024*32) // 32kb
 
+		const ShaderProgram *ShaderProgram::tmpBindProgram = nullptr;
 		const ShaderProgram *ShaderProgram::lastProgramUsed = nullptr;
 
 		void ShaderProgram::Init( void ) {
 			lastProgramUsed = nullptr;
+			tmpBindProgram = nullptr;
 		}
 
 		static void OutputProgramInfoLog( int program ) {
@@ -254,28 +257,62 @@ namespace XS {
 			return lastProgramUsed->id;
 		}
 
+		void ShaderProgram::CheckBind( void ) {
+			if ( !r_fastPath->GetBool() ) {
+				if ( lastProgramUsed != this ) {
+					console.Print( PrintLevel::Developer, "Temporarily binding shader %02i to set uniform variable\n",
+						id
+					);
+					tmpBindProgram = lastProgramUsed;
+					Bind();
+				}
+			}
+		};
+
+		void ShaderProgram::CheckUnbind( void ) {
+			if ( !r_fastPath->GetBool() ) {
+				if ( tmpBindProgram ) {
+					tmpBindProgram->Bind();
+					tmpBindProgram = nullptr;
+				}
+			}
+		};
+
+		//TODO: debug assert that this is the currently bound shader
 		void ShaderProgram::SetUniform1( const char *name, int i ) {
+			CheckBind();
 			glUniform1i( GetUniform( name ).location, i );
+			CheckUnbind();
 		}
 
 		void ShaderProgram::SetUniform1( const char *name, real32_t f ) {
+			CheckBind();
 			glUniform1f( GetUniform( name ).location, f );
+			CheckUnbind();
 		}
 
 		void ShaderProgram::SetUniform1( const char *name, const real32_t *m  ) {
+			CheckBind();
 			glUniformMatrix4fv( GetUniform( name ).location, 1, GL_FALSE, m );
+			CheckUnbind();
 		}
 
 		void ShaderProgram::SetUniform2( const char *name, real32_t f1, real32_t f2 ) {
+			CheckBind();
 			glUniform2f( GetUniform( name ).location, f1, f2 );
+			CheckUnbind();
 		}
 
 		void ShaderProgram::SetUniform3( const char *name, real32_t f1, real32_t f2, real32_t f3 ) {
+			CheckBind();
 			glUniform3f( GetUniform( name ).location, f1, f2, f3 );
+			CheckUnbind();
 		}
 
 		void ShaderProgram::SetUniform4( const char *name, real32_t f1, real32_t f2, real32_t f3, real32_t f4 ) {
+			CheckBind();
 			glUniform4f( GetUniform( name ).location, f1, f2, f3, f4 );
+			CheckUnbind();
 		}
 
 	} // namespace Renderer

@@ -33,9 +33,11 @@ namespace XS {
 
 		out += message;
 
-		if ( !f ) {
+		if ( f ) {
+			f->AppendString( out.c_str() );
+		}
+		else {
 			// haven't opened the file yet, see if filesystem is available
-
 			f = new File( filename.c_str(), FileMode::Append );
 			if ( f->open ) {
 				// success, print what we've missed so far
@@ -49,9 +51,6 @@ namespace XS {
 				Queue( out );
 				return;
 			}
-		}
-		else {
-			f->AppendString( out.c_str() );
 		}
 	}
 

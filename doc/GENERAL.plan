@@ -3,6 +3,16 @@ networking: RakNet, client/server architecture. see NETWORKING.plan
 video - bother at all? theora+vorbis
 scripting - necessary? just use native code. if anything, JIT
 
+execution overview:
+	primarily a many-to-one client->server architecture
+	each server frame will run multiple discrete time steps (see: Fix Your Timestep by Glenn Fielder)
+	at the end of each server frame, it will generate a snapshot/state of the world which is networked to clients)
+		if you wish to run a local game, the server will skip its networking step for you and copy it to an intermediate
+		buffer that the client can treat as a network stream
+	client receives gamestate, and lerps between the last-known 2 states, producing a frame to render
+		extrapolation/prediction is avoided due to errors; state is non-deterministic
+		this approach incurs rendering latency of at-least serverFramerate + ping
+
 MAIN LOOP
 	input poll
 		queue events
@@ -17,7 +27,7 @@ MAIN LOOP
 	execute buffer (server frame may have appended commands)
 
 	pump client networking (movement commands)
-		1 movement command per client frame. look into semi-fixed timestep integration (gafferongames)
+		1 movement command per client frame
 
 	run client frame (following client-as-terminal ideology - inspect one frame lag issues)
 		process server updates
@@ -31,6 +41,9 @@ MAIN LOOP
 			set up console view, or hijack hud/overlay view?
 			queue render commands
 
-	execute render commands
-		foreach view
-			foreach command
+	foreach view
+		bind framebuffer
+		pre-render (camera transform etc)
+		foreach command
+			execute
+		post-render (post effects)

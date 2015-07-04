@@ -15,7 +15,7 @@ namespace XS {
 			struct SnapshotHeader {
 				uint32_t numEntities;
 			} snapshotHeader;
-			snapshotHeader.numEntities = state.entities.size();
+			snapshotHeader.numEntities = Entity::numEntities;
 			buffer->WriteGeneric( &snapshotHeader, sizeof(snapshotHeader) );
 
 			for ( auto &entity : state.entities ) {

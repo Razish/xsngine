@@ -1,5 +1,7 @@
 #include <algorithm>
 
+#include <RakNet/RakPeerInterface.h>
+
 #include "XSCommon/XSCommon.h"
 #include "XSCommon/XSConsole.h"
 #include "XSCommon/XSCvar.h"
@@ -8,14 +10,18 @@
 #include "XSCommon/XSMatrix.h"
 #include "XSCommon/XSCommand.h"
 #include "XSCommon/XSEvent.h"
+#include "XSCommon/XSByteBuffer.h"
 #include "XSClient/XSClientGame.h"
 #include "XSClient/XSClientGameState.h"
 #include "XSClient/XSBaseCamera.h"
 #include "XSClient/XSFlyCamera.h"
 #include "XSClient/XSEntity.h"
+#include "XSClient/XSEntityFXRunner.h"
+#include "XSClient/XSEntityModel.h"
 #include "XSClient/XSTerrain.h"
 #include "XSClient/XSParticleEmitter.h"
 #include "XSInput/XSInput.h"
+#include "XSNetwork/XSNetwork.h"
 #include "XSRenderer/XSView.h"
 #include "XSRenderer/XSModel.h"
 
@@ -24,22 +30,10 @@ namespace XS {
 	namespace ClientGame {
 
 		Cvar *cg_fov = nullptr;
-		Cvar *cg_numParticles = nullptr;;
+		Cvar *cg_numParticles = nullptr;
 
 		static Renderer::View *sceneView = nullptr;
-		static Terrain *terrain = nullptr;
 		FlyCamera *camera = nullptr;
-
-		void AddObject( Entity *entity ) {
-			state.entities.push_back( entity );
-		}
-
-		void RemoveObject( Entity *obj ) {
-			auto it = std::find( state.entities.begin(), state.entities.end(), obj );
-			if ( it != state.entities.end() ) {
-				state.entities.erase( it );
-			}
-		}
 
 		static void RegisterCvars( void ) {
 			cg_fov = Cvar::Create( "cg_fov", "108", // fov = degrees( pi * 0.75 ) / 1.25 because math
@@ -65,13 +59,8 @@ namespace XS {
 			);
 		}
 
-		static void Cmd_ReloadTerrain( const CommandContext * const context ) {
-			delete terrain;
-			terrain = new Terrain( nullptr );
-		}
-
 		static void RegisterCommands( void ) {
-			Command::AddCommand( "reloadTerrain", Cmd_ReloadTerrain );
+			// ...
 		}
 
 		static void RenderScene( real64_t dt ) {
@@ -98,42 +87,24 @@ namespace XS {
 			camera->LookAt( cameraPos, lookAt, up );
 		}
 
-		static void AddObjects( void ) {
-			Entity *monkey = new Entity();
-			monkey->renderObject = Renderer::Model::Register( "models/monkey.xmf" );
-			AddObject( monkey );
-
-			Entity *torus = new Entity();
-			torus->renderObject = Renderer::Model::Register( "models/torus.xmf" );
-			AddObject( torus );
-
-			Entity *pe = new ParticleEmitter( cg_numParticles->GetInt32(), 4000u, "textures/fx/orb.png" );
-			AddObject( pe );
-		}
-
 		void Init( void ) {
 			RegisterCvars();
 			RegisterCommands();
 
 			sceneView = new Renderer::View( 0u, 0u, false, RenderScene );
 			SetupCamera();
-
-			terrain = new Terrain( "textures/terrain.raw" );
-
-			AddObjects();
 		}
 
 		void Shutdown( void ) {
 			for ( auto entity : state.entities ) {
-				delete entity;
+				RemoveEntity( entity.second );
 			}
-			delete terrain;
 			delete sceneView;
 		}
 
 		void RunFrame( real64_t dt ) {
 			for ( auto &entity : state.entities ) {
-				entity->Update( dt );
+				entity.second->Update( dt );
 			}
 		}
 
@@ -142,7 +113,7 @@ namespace XS {
 
 			// add objects to scene
 			for ( const auto &entity : state.entities ) {
-				entity->AddToScene( sceneView );
+				entity.second->AddToScene( sceneView );
 			}
 
 			// add lights to scene
@@ -150,6 +121,116 @@ namespace XS {
 			sceneView->AddPointLight( lightPos );
 
 			state.viewDelta.clear();
+		}
+
+		bool ReceivePacket( const RakNet::Packet *packet ) {
+			switch ( packet->data[0] ) {
+
+			case Network::ID_XS_SV2CL_GAMESTATE: {
+				uint8_t *buffer = packet->data + 1;
+				size_t bufferLen = packet->length - 1;
+				ByteBuffer bb( buffer, bufferLen );
+
+				struct SnapshotHeader {
+					uint32_t numEntities;
+				} snapshotHeader;
+				bb.ReadGeneric( &snapshotHeader, sizeof(snapshotHeader) );
+
+				for ( size_t i = 0u; i < snapshotHeader.numEntities; i++ ) {
+					uint32_t entityID = 0xFFFFFFFFu;
+					bb.ReadUInt32( &entityID );
+
+					EntityType entityType = EntityType::Generic;
+					bb.ReadUInt32( reinterpret_cast<uint32_t *>( &entityType ) );
+
+					Entity *entity = GetEntity( entityID );
+
+					if ( entity ) {
+						//TODO: delta update of entity
+						// must be specialised
+					}
+					else {
+						vector3 tmpPos = {};
+
+						bb.ReadReal32( &tmpPos.x );
+						bb.ReadReal32( &tmpPos.y );
+						bb.ReadReal32( &tmpPos.z );
+
+						//TODO: spawn factory?
+						switch ( entityType ) {
+
+						default:
+						case EntityType::Generic: {
+							entity = new Entity();
+						} break;
+
+						case EntityType::FXRunner: {
+							entity = new EntityFXRunner();
+
+							EntityFXRunner *fxEnt = reinterpret_cast<EntityFXRunner*>( entity );
+							bb.ReadUInt32( &fxEnt->count );
+							bb.ReadUInt32( &fxEnt->life );
+							fxEnt->renderInfo.renderable = new ParticleEmitter(
+								fxEnt->count,
+								fxEnt->life,
+								"textures/fx/orb.png"
+							);
+						} break;
+
+						case EntityType::Model: {
+							entity = new EntityModel();
+
+							EntityModel *modelEnt = reinterpret_cast<EntityModel*>( entity );
+							modelEnt->renderInfo.renderable = Renderer::Model::Register( "models/torus.xmf" );
+						} break;
+
+						}
+
+						entity->id = entityID;
+						console.Print( PrintLevel::Normal, "entity pos: %.2f, %.2f, %.2f\n",
+							tmpPos.x,
+							tmpPos.y,
+							tmpPos.z
+						);
+						entity->position = tmpPos;
+						AddEntity( entity );
+					}
+				}
+				bb.ReadUInt64( &state.net.lastChecksum );
+
+				// send an ack
+				Network::XSPacket ack( Network::ID_XS_CL2SV_GAMESTATE_ACK );
+
+				ByteBuffer ackBuffer;
+				ackBuffer.WriteUInt64( state.net.lastChecksum );
+				ack.data = ackBuffer.GetMemory( &ack.dataLen );
+
+				Network::Send( 0u, &ack );
+			} break;
+
+			case Network::ID_XS_SV2CL_PRINT: {
+				uint8_t *buffer = packet->data + 1;
+				size_t bufferLen = packet->length - 1;
+				ByteBuffer bb( buffer, bufferLen );
+
+				const char *msg = nullptr;
+				bb.ReadString( &msg );
+
+				// avoid printf format attacks
+				console.Print( PrintLevel::Normal, "%s\n",
+					msg
+				);
+
+				delete[] msg;
+			} break;
+
+			default: {
+				return false;
+			} break;
+
+			}
+
+			return true;
 		}
 
 		void MouseMotionEvent( const struct MouseMotionEvent &ev ) {

@@ -45,7 +45,7 @@ namespace XS {
 			com_developer = Cvar::Create( "com_developer", XS_DEBUG_BUILD ? "1" : "0",
 				"Developer mode", CVAR_NONE
 			);
-			com_framerate = Cvar::Create( "com_framerate", "50",
+			com_framerate = Cvar::Create( "com_framerate", "10",
 				"Game tick rate", CVAR_ARCHIVE
 			);
 			com_profile = Cvar::Create( "com_profile", "0",
@@ -165,6 +165,7 @@ namespace XS {
 
 static XS::Timer globalTimer;
 
+//FIXME: function try block
 int main( int argc, char **argv ) {
 	try {
 		srand( time( nullptr ) );
@@ -215,7 +216,9 @@ int main( int argc, char **argv ) {
 		XS::Common::gameTimer = new XS::Timer(); // TODO: free
 
 		real64_t t = 0.0;
-		const real64_t dt = 1000.0 / XS::Common::com_framerate->GetReal64();
+		const real64_t dt = XS::Common::com_dedicated->GetBool()
+			? 1000.0 / XS::Common::com_framerate->GetReal64()
+			: 1000.0 / XS::Common::r_framerate->GetReal64();
 		real64_t currentTime = XS::Common::gameTimer->GetTiming( false, XS::TimerResolution::Milliseconds );
 		real64_t accumulator = 0.0;
 
@@ -300,8 +303,7 @@ int main( int argc, char **argv ) {
 				}
 			}
 
-			const real64_t frameRate = XS::Common::r_framerate->GetReal64();
-			const real64_t targetMsec = 1000.0 / frameRate; // target mspf
+			const real64_t targetMsec = dt; // target mspf
 			const real64_t realFT = XS::Common::gameTimer->GetTiming( false, XS::TimerResolution::Milliseconds )
 				- frameStartTime;
 			const real64_t delayMsec = targetMsec - realFT;

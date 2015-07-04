@@ -17,7 +17,7 @@ namespace XS {
 	namespace Renderer {
 
 		// forward declarations
-		class Renderable;
+		struct RenderInfo;
 		class Framebuffer;
 		class Texture;
 
@@ -29,7 +29,7 @@ namespace XS {
 			Texture							*colourTexture;
 			Texture							*depthTexture;
 
-			std::queue<const Renderable *>	renderObjects;
+			std::queue<const RenderInfo>	renderObjects;
 			std::queue<vector3>				pointLights;
 
 			renderCallback_t				callbackPreRender, callbackPostRender;
@@ -75,7 +75,7 @@ namespace XS {
 
 			// add a renderable object to the view for this frame
 			void AddObject(
-				const Renderable *renderObject
+				const RenderInfo &renderInfo
 			);
 
 			// add a point light to the view for this frame

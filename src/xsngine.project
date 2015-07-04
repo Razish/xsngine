@@ -170,6 +170,10 @@
     <File Name="XSClient/XSClientGameState.cpp"/>
     <File Name="XSClient/XSClientGameState.h"/>
     <File Name="XSClient/XSEntity.cpp"/>
+    <File Name="XSClient/XSEntityFXRunner.h"/>
+    <File Name="XSClient/XSEntityFXRunner.cpp"/>
+    <File Name="XSClient/XSEntityModel.h"/>
+    <File Name="XSClient/XSEntityModel.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="XSInput">
     <File Name="XSInput/XSInputField.cpp"/>
@@ -588,12 +592,19 @@
     <File Name="XSServer/XSServerConsole.h"/>
     <File Name="XSServer/XSEntity.cpp"/>
     <File Name="XSServer/XSEntity.h"/>
-    <File Name="XSServer/XSEntitySphere.cpp"/>
-    <File Name="XSServer/XSEntitySphere.h"/>
     <File Name="XSServer/XSClient.cpp"/>
     <File Name="XSServer/XSClient.h"/>
     <File Name="XSServer/XSNetcode.h"/>
     <File Name="XSServer/XSNetcode.cpp"/>
+    <File Name="XSServer/XSResources.h"/>
+    <File Name="XSServer/XSResources.cpp"/>
+    <File Name="XSServer/XSEntityFXRunner.cpp"/>
+    <File Name="XSServer/XSEntityFXRunner.h"/>
+    <File Name="XSServer/XSEntityModel.h"/>
+    <File Name="XSServer/XSEntityModel.cpp"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="XSShared">
+    <File Name="XSShared/XSEntityTypes.h"/>
   </VirtualDirectory>
   <Settings Type="Dynamic Library">
     <GlobalSettings>

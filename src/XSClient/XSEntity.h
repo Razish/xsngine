@@ -1,11 +1,12 @@
 #pragma once
 
 #include "XSCommon/XSVector.h"
+#include "XSShared/XSEntityTypes.h"
+#include "XSRenderer/XSRenderable.h"
 
 namespace XS {
 
 	namespace Renderer {
-		class Renderable;
 		struct View;
 	}
 
@@ -15,20 +16,44 @@ namespace XS {
 		private:
 
 		public:
-			uint32_t				 id;
+			uint32_t				 id = 0xFFFFFFFFu;
+			EntityType				 type = EntityType::Generic;
 			vector3					 position;
-			Renderer::Renderable	*renderObject = nullptr;
+
+			Renderer::RenderInfo	 renderInfo;
 
 			virtual ~Entity();
 
 			virtual void Update(
-				const real64_t dt
+				real64_t dt
 			);
 
 			void AddToScene(
 				Renderer::View *view
-			) const;
+			);
 		};
+
+		//TODO: move to EntityManager?
+
+		// add an entity to the game
+		void AddEntity(
+			Entity *entity
+		);
+
+		// see if an entity with this ID already exists
+		bool EntityExists(
+			uint32_t id
+		);
+
+		// retrieve an entity by ID
+		Entity *GetEntity(
+			uint32_t id
+		);
+
+		// remove an entity from the game
+		void RemoveEntity(
+			Entity *entity
+		);
 
 	} // namespace ClientGame
 

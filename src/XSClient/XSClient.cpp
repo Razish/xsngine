@@ -11,7 +11,6 @@
 #include "XSCommon/XSTimer.h"
 #include "XSCommon/XSGlobals.h"
 #include "XSCommon/XSEvent.h"
-#include "XSCommon/XSByteBuffer.h"
 #include "XSClient/XSClient.h"
 #include "XSClient/XSClientGame.h"
 #include "XSClient/XSClientConsole.h"
@@ -178,51 +177,12 @@ namespace XS {
 		}
 
 		bool ReceivePacket( const RakNet::Packet *packet ) {
-			switch ( packet->data[0] ) {
-
-			case Network::ID_XS_SV2CL_GAMESTATE: {
-				uint8_t *buffer = packet->data + 1;
-				size_t bufferLen = packet->length - 1;
-				ByteBuffer bb( buffer, bufferLen );
-
-				struct SnapshotHeader {
-					uint32_t numEntities;
-				} snapshotHeader;
-				bb.ReadGeneric( &snapshotHeader, sizeof(snapshotHeader) );
-
-				for ( size_t i = 0u; i < snapshotHeader.numEntities; i++ ) {
-					const char *name = nullptr;
-					uint32_t nameLen = 0u;
-					bb.ReadString( &name, &nameLen );
-					if ( !String::CompareCase( name, "EntitySphere" ) ) {
-						console.Print( PrintLevel::Normal, "Spawning sphere\n" );
-					}
-				}
-			} break;
-
-			case Network::ID_XS_SV2CL_PRINT: {
-				uint8_t *buffer = packet->data + 1;
-				size_t bufferLen = packet->length - 1;
-				ByteBuffer bb( buffer, bufferLen );
-
-				const char *msg = nullptr;
-				bb.ReadString( &msg );
-
-				// avoid printf format attacks
-				console.Print( PrintLevel::Normal, "%s\n",
-					msg
-				);
-
-				delete[] msg;
-			} break;
-
-			default: {
-				return false;
-			} break;
-
+			if ( Network::IsConnected() ) {
+				return ClientGame::ReceivePacket( packet );
 			}
-
-			return true;
+			else {
+				return false;
+			}
 		}
 
 		void RunFrame( real64_t dt ) {

@@ -1,5 +1,9 @@
 #pragma once
 
+namespace RakNet {
+	struct Packet;
+} // namespace RakNet
+
 namespace XS {
 
 	class Cvar;
@@ -27,14 +31,9 @@ namespace XS {
 			real64_t dt
 		);
 
-		// add an object to the game
-		void AddObject(
-			Entity *obj
-		);
-
-		// remove an object from the game
-		void RemoveObject(
-			Entity *obj
+		// received a network packet
+		bool ReceivePacket(
+			const RakNet::Packet *packet
 		);
 
 		void MouseMotionEvent(
