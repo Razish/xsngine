@@ -69,6 +69,7 @@ namespace XS {
 				console.Print( PrintLevel::Normal, "%s: does not exist\n",
 					(*context)[0].c_str()
 				);
+				return;
 			}
 
 			cv->Set( cv->GetDefaultString() );
