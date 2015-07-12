@@ -14,7 +14,7 @@ namespace XS {
 		}
 
 		void EntityFXRunner::Update( real64_t dt ) {
-			// ...
+			Entity::Update( dt );
 		}
 
 		void EntityFXRunner::Serialise( ByteBuffer *buffer ) const {

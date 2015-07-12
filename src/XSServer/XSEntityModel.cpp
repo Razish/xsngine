@@ -12,7 +12,7 @@ namespace XS {
 		}
 
 		void EntityModel::Update( real64_t dt ) {
-			// ...
+			Entity::Update( dt );
 		}
 
 		void EntityModel::Serialise( ByteBuffer *buffer ) const {
