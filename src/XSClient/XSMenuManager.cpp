@@ -90,12 +90,12 @@ namespace XS {
 		}
 
 		void MenuManager::DrawCursor( void ) {
-			vector2 realPos(
-				Client::cursorPos.x * Renderer::state.window.width,
-				Client::cursorPos.y * Renderer::state.window.height
-			);
+			vector2 realPos = {
+				Client::cursorPos[0] * Renderer::state.window.width,
+				Client::cursorPos[1] * Renderer::state.window.height
+			};
 			Renderer::DrawQuad(
-				realPos.x, realPos.y,
+				realPos[0], realPos[1],
 				cursorWidth / 4.0f, cursorHeight / 4.0f,
 				0.0f, 0.0f, 1.0f, 1.0f,
 				&colourTable[ColourIndex( COLOUR_WHITE )],

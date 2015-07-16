@@ -307,17 +307,17 @@ namespace XS {
 
 			matrix4 m;
 
-			m.at( 0, 0 ) =  s.x;
-			m.at( 1, 0 ) =  s.y;
-			m.at( 2, 0 ) =  s.z;
+			m.at( 0, 0 ) =  s[0];
+			m.at( 1, 0 ) =  s[1];
+			m.at( 2, 0 ) =  s[2];
 
-			m.at( 0, 1 ) =  u.x;
-			m.at( 1, 1 ) =  u.y;
-			m.at( 2, 1 ) =  u.z;
+			m.at( 0, 1 ) =  u[0];
+			m.at( 1, 1 ) =  u[1];
+			m.at( 2, 1 ) =  u[2];
 
-			m.at( 0, 2 ) = -f.x;
-			m.at( 1, 2 ) = -f.y;
-			m.at( 2, 2 ) = -f.z;
+			m.at( 0, 2 ) = -f[0];
+			m.at( 1, 2 ) = -f[1];
+			m.at( 2, 2 ) = -f[2];
 
 			m.at( 3, 0 ) = -vector3::dot( s, eye );
 			m.at( 3, 1 ) = -vector3::dot( u, eye );
@@ -362,7 +362,7 @@ namespace XS {
 
 	inline matrix4 ortho( real32_t left, real32_t right, real32_t top, real32_t bottom, real32_t zNear, real32_t zFar )
 	{
-		matrix4 m = {};
+		matrix4 m;
 		m.identity();
 
 		m.at( 0, 0 ) = 2.0f / (right - left);

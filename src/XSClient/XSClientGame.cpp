@@ -117,7 +117,7 @@ namespace XS {
 			}
 
 			// add lights to scene
-			static const vector3 lightPos( 0.0f, 32.0f, 0.0f );
+			static const vector3 lightPos = { 0.0f, 32.0f, 0.0f };
 			sceneView->AddPointLight( lightPos );
 
 			state.viewDelta.clear();
@@ -129,6 +129,7 @@ namespace XS {
 			case Network::ID_XS_SV2CL_GAMESTATE: {
 				uint8_t *buffer = packet->data + 1;
 				size_t bufferLen = packet->length - 1;
+
 				ByteBuffer bb( buffer, bufferLen );
 
 				struct SnapshotHeader {
@@ -139,22 +140,29 @@ namespace XS {
 				for ( size_t i = 0u; i < snapshotHeader.numEntities; i++ ) {
 					uint32_t entityID = 0xFFFFFFFFu;
 					bb.ReadUInt32( &entityID );
-
-					EntityType entityType = EntityType::Generic;
-					bb.ReadUInt32( reinterpret_cast<uint32_t *>( &entityType ) );
+					SDL_assert( entityID != 0xFFFFFFFFu );
 
 					Entity *entity = GetEntity( entityID );
 
 					if ( entity ) {
 						//TODO: delta update of entity
 						// must be specialised
+						// skip type
+						bb.Skip( sizeof(uint32_t) );
+
+						// read position
+						bb.ReadReal32( &entity->position[0] );
+						bb.ReadReal32( &entity->position[1] );
+						bb.ReadReal32( &entity->position[2] );
 					}
 					else {
-						vector3 tmpPos = {};
+						EntityType entityType = EntityType::Generic;
+						bb.ReadUInt32( reinterpret_cast<uint32_t *>( &entityType ) );
 
-						bb.ReadReal32( &tmpPos.x );
-						bb.ReadReal32( &tmpPos.y );
-						bb.ReadReal32( &tmpPos.z );
+						vector3 tmpPos = {};
+						bb.ReadReal32( &tmpPos[0] );
+						bb.ReadReal32( &tmpPos[1] );
+						bb.ReadReal32( &tmpPos[2] );
 
 						//TODO: spawn factory?
 						switch ( entityType ) {
@@ -187,25 +195,10 @@ namespace XS {
 						}
 
 						entity->id = entityID;
-						console.Print( PrintLevel::Normal, "entity pos: %.2f, %.2f, %.2f\n",
-							tmpPos.x,
-							tmpPos.y,
-							tmpPos.z
-						);
 						entity->position = tmpPos;
 						AddEntity( entity );
 					}
 				}
-				bb.ReadUInt64( &state.net.lastChecksum );
-
-				// send an ack
-				Network::XSPacket ack( Network::ID_XS_CL2SV_GAMESTATE_ACK );
-
-				ByteBuffer ackBuffer;
-				ackBuffer.WriteUInt64( state.net.lastChecksum );
-				ack.data = ackBuffer.GetMemory( &ack.dataLen );
-
-				Network::Send( 0u, &ack );
 			} break;
 
 			case Network::ID_XS_SV2CL_PRINT: {
@@ -234,7 +227,7 @@ namespace XS {
 		}
 
 		void MouseMotionEvent( const struct MouseMotionEvent &ev ) {
-			vector3 delta( ev.y, ev.x, 0.0f );
+			vector3 delta = { static_cast<real32_t>( ev.y ), static_cast<real32_t>( ev.x ), 0.0f };
 
 			delta *= Client::Input::m_sensitivity->GetReal32();
 

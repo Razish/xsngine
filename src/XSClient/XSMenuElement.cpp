@@ -101,13 +101,14 @@ namespace XS {
 			}
 			const real64_t fadeTime = 333.0;
 			if ( /*!updatingValue &&*/ tooltip.lastMouseTime > currentTime - fadeTime ) {
-				const real64_t alpha = 1.0 - ((currentTime - tooltip.lastMouseTime) / fadeTime);
-				static vector4 colour( 1.0f, 1.0f, 1.0f, 1.0f );
-				colour.a = alpha;
-				const vector2 pos(
-					(tooltip.lastMousePos.x + 0.03333f) * Renderer::state.window.width,
-					tooltip.lastMousePos.y * Renderer::state.window.height
+				const real32_t alpha = static_cast<real32_t>(
+					1.0 - ((currentTime - tooltip.lastMouseTime) / fadeTime)
 				);
+				static const vector4 colour = { 1.0f, 1.0f, 1.0f, alpha };
+				const vector2 pos = {
+					(tooltip.lastMousePos[0] + 0.03333f) * Renderer::state.window.width,
+					tooltip.lastMousePos[1] * Renderer::state.window.height
+				};
 				tooltip.font->Draw(
 					pos,
 					tooltip.text,

@@ -37,7 +37,7 @@ namespace XS {
 				RegisterCvars();
 				Command::AddCommand( "screenshot", Cmd_Screenshot );
 
-				ClearBuffer( true, true, vector4( 0.0f, 0.0f, 0.0f, 1.0f ) );
+				ClearBuffer( true, true, vector4{ 0.0f, 0.0f, 0.0f, 1.0f } );
 
 				// state changes
 				ToggleDepthTest( true );
@@ -98,7 +98,7 @@ namespace XS {
 #endif
 
 				if ( clearColour ) {
-					glClearColor( colour.r, colour.g, colour.b, colour.a );
+					glClearColor( colour[0], colour[1], colour[2], colour[3] );
 				}
 
 				if ( clearDepth ) {
@@ -128,7 +128,6 @@ namespace XS {
 			}
 
 			void SetDepthFunction( DepthFunc func ) {
-				static GLenum lastFunc = GL_LEQUAL;
 				GLenum glFunc = GL_LEQUAL;
 
 				switch ( func ) {
@@ -143,28 +142,19 @@ namespace XS {
 
 				}
 
-				if ( lastFunc != glFunc ) {
-					glDepthFunc( glFunc );
-					lastFunc = glFunc;
-				}
+				glDepthFunc( glFunc );
 			}
 
 			void ToggleStencilTest( bool enabled ) {
-				static bool lastTest = false;
-				if ( lastTest != enabled ) {
-					if ( enabled ) {
-						glEnable( GL_STENCIL_TEST );
-					}
-					else {
-						glDisable( GL_STENCIL_TEST );
-					}
-
-					lastTest = enabled;
+				if ( enabled ) {
+					glEnable( GL_STENCIL_TEST );
+				}
+				else {
+					glDisable( GL_STENCIL_TEST );
 				}
 			}
 
 			void SetStencilFunction( StencilFunc func ) {
-				static GLenum lastFunc = GL_ALWAYS;
 				GLenum glFunc = GL_ALWAYS;
 
 				switch ( func ) {
@@ -203,11 +193,7 @@ namespace XS {
 
 				}
 
-				if ( lastFunc != glFunc ) {
-					glStencilFunc( glFunc, 1, 0xFF );
-
-					lastFunc = glFunc;
-				}
+				glStencilFunc( glFunc, 1, 0xFF );
 			}
 
 			void SetStencilOp( StencilOp op ) {
@@ -222,17 +208,11 @@ namespace XS {
 			}
 
 			void ToggleAlphaBlending( bool enabled ) {
-				static bool lastBlend = false;
-
-				if ( lastBlend != enabled ) {
-					if ( enabled ) {
-						glEnable( GL_BLEND );
-					}
-					else {
-						glDisable( GL_BLEND );
-					}
-
-					lastBlend = enabled;
+				if ( enabled ) {
+					glEnable( GL_BLEND );
+				}
+				else {
+					glDisable( GL_BLEND );
 				}
 			}
 
@@ -311,17 +291,10 @@ namespace XS {
 			}
 
 			void SetBlendFunction( BlendFunc sourceFunc, BlendFunc destFunc ) {
-				static GLenum lastSourceFunc = GL_ONE;
-				static GLenum lastDestFunc = GL_ZERO;
 				GLenum glSourceFunc = GetGLBlendFunction( sourceFunc );
 				GLenum glDestFunc = GetGLBlendFunction( destFunc );
 
-				if ( lastSourceFunc != glSourceFunc || lastDestFunc != glDestFunc ) {
-					glBlendFunc( glSourceFunc, glDestFunc );
-
-					lastSourceFunc = glSourceFunc;
-					lastDestFunc = glDestFunc;
-				}
+				glBlendFunc( glSourceFunc, glDestFunc );
 			}
 
 		} // namespace Backend

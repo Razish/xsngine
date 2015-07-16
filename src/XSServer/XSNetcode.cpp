@@ -11,11 +11,14 @@ namespace XS {
 
 		void GenerateSnapshot( ByteBuffer *buffer ) {
 			//FIXME: delta etc, this is temporary
+			//TODO: bit-pack based on last ACKed state (states should have an accumulative id)
 
 			struct SnapshotHeader {
+				//uint32_t sequence;
 				uint32_t numEntities;
-			} snapshotHeader;
-			snapshotHeader.numEntities = Entity::numEntities;
+			} snapshotHeader = {
+				.numEntities = Entity::numEntities
+			};
 			buffer->WriteGeneric( &snapshotHeader, sizeof(snapshotHeader) );
 
 			for ( auto &entity : state.entities ) {

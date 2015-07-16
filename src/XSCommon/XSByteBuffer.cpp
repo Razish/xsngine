@@ -1,6 +1,24 @@
 #include "XSCommon/XSCommon.h"
 #include "XSCommon/XSByteBuffer.h"
 
+#define BYTE_SWAP
+
+#if !defined(BYTE_SWAP)
+#undef htonll
+#define htonll(x) x
+#undef htonl
+#define htonl(x) x
+#undef htons
+#define htons(x) x
+
+#undef ntohll
+#define ntohll(x) x
+#undef ntohl
+#define ntohl(x) x
+#undef ntohs
+#define ntohs(x) x
+#endif
+
 namespace XS {
 
 	// write-only buffer
@@ -18,21 +36,19 @@ namespace XS {
 	}
 
 	void ByteBuffer::Resize( size_t addSize ) {
-		buffer.resize( buffer.size() + addSize );
+		buffer.resize( buffer.size() + addSize, 0 );
 		size += addSize;
-	}
-
-	uint64_t ByteBuffer::GetChecksum( void ) const {
-		uint64_t accum = 0u;
-		for ( size_t i = 0u; i < size; i++ ) {
-			accum += static_cast<uint64_t>( buffer[i] * 32768.0f );
-		}
-		return accum;
 	}
 
 	const void *ByteBuffer::GetMemory( size_t *outLen, bool encode ) const {
 		*outLen = size;
 		return static_cast<const void *>( &buffer[0] );
+	}
+
+	void ByteBuffer::Skip( size_t count ) {
+		SDL_assert( reading );
+		offset += count;
+		SDL_assert( count < size );
 	}
 
 	void ByteBuffer::WriteGeneric( const void *data, size_t dataLen ) {
@@ -50,7 +66,7 @@ namespace XS {
 		size_t writeSize = sizeof(int64_t);
 
 		Resize( writeSize );
-		*(int64_t *)&buffer[offset] = data;
+		*reinterpret_cast<int64_t *>( &buffer[offset] ) = htonll( data );
 
 		offset += writeSize;
 	}
@@ -61,7 +77,7 @@ namespace XS {
 		size_t writeSize = sizeof(uint64_t);
 
 		Resize( writeSize );
-		*(uint64_t *)&buffer[offset] = data;
+		*reinterpret_cast<uint64_t *>( &buffer[offset] ) = htonll( data );
 
 		offset += writeSize;
 	}
@@ -72,7 +88,7 @@ namespace XS {
 		size_t writeSize = sizeof(int32_t);
 
 		Resize( writeSize );
-		*(int32_t *)&buffer[offset] = data;
+		*reinterpret_cast<int32_t *>( &buffer[offset] ) = htonl( data );
 
 		offset += writeSize;
 	}
@@ -83,7 +99,7 @@ namespace XS {
 		size_t writeSize = sizeof(uint32_t);
 
 		Resize( writeSize );
-		*(uint32_t *)&buffer[offset] = data;
+		*reinterpret_cast<uint32_t *>( &buffer[offset] ) = htonl( data );
 
 		offset += writeSize;
 	}
@@ -94,7 +110,7 @@ namespace XS {
 		size_t writeSize = sizeof(int16_t);
 
 		Resize( writeSize );
-		*(int16_t *)&buffer[offset] = data;
+		*reinterpret_cast<int16_t *>( &buffer[offset] ) = htons( data );
 
 		offset += writeSize;
 	}
@@ -105,7 +121,7 @@ namespace XS {
 		size_t writeSize = sizeof(uint16_t);
 
 		Resize( writeSize );
-		*(uint16_t *)&buffer[offset] = data;
+		*reinterpret_cast<uint16_t *>( &buffer[offset] ) = htons( data );
 
 		offset += writeSize;
 	}
@@ -116,7 +132,7 @@ namespace XS {
 		size_t writeSize = sizeof(int8_t);
 
 		Resize( writeSize );
-		*(int8_t *)&buffer[offset] = data;
+		*reinterpret_cast<int8_t *>( &buffer[offset] ) = data;
 
 		offset += writeSize;
 	}
@@ -127,7 +143,7 @@ namespace XS {
 		size_t writeSize = sizeof(uint8_t);
 
 		Resize( writeSize );
-		*(uint8_t *)&buffer[offset] = data;
+		*reinterpret_cast<uint8_t *>( &buffer[offset] ) = data;
 
 		offset += writeSize;
 	}
@@ -138,7 +154,7 @@ namespace XS {
 		size_t writeSize = sizeof(real64_t);
 
 		Resize( writeSize );
-		*(real64_t *)&buffer[offset] = data;
+		*reinterpret_cast<real64_t *>( &buffer[offset] ) = data;
 
 		offset += writeSize;
 	}
@@ -149,7 +165,7 @@ namespace XS {
 		size_t writeSize = sizeof(real32_t);
 
 		Resize( writeSize );
-		*(real32_t *)&buffer[offset] = data;
+		*reinterpret_cast<real32_t *>( &buffer[offset] ) = data;
 
 		offset += writeSize;
 	}
@@ -172,42 +188,42 @@ namespace XS {
 	void ByteBuffer::ReadInt64( int64_t *outData ) {
 		SDL_assert( reading );
 
-		*outData = *reinterpret_cast<int64_t *>( &buffer[offset] );
+		*outData = ntohll( *reinterpret_cast<int64_t *>( &buffer[offset] ) );
 		offset += sizeof(int64_t);
 	}
 
 	void ByteBuffer::ReadUInt64( uint64_t *outData ) {
 		SDL_assert( reading );
 
-		*outData = *reinterpret_cast<uint64_t *>( &buffer[offset] );
+		*outData = ntohll( *reinterpret_cast<uint64_t *>( &buffer[offset] ) );
 		offset += sizeof(uint64_t);
 	}
 
 	void ByteBuffer::ReadInt32( int32_t *outData ) {
 		SDL_assert( reading );
 
-		*outData = *reinterpret_cast<int32_t *>( &buffer[offset] );
+		*outData = ntohl( *reinterpret_cast<int32_t *>( &buffer[offset] ) );
 		offset += sizeof(int32_t);
 	}
 
 	void ByteBuffer::ReadUInt32( uint32_t *outData ) {
 		SDL_assert( reading );
 
-		*outData = *reinterpret_cast<uint32_t *>( &buffer[offset] );
+		*outData = ntohl( *reinterpret_cast<uint32_t *>( &buffer[offset] ) );
 		offset += sizeof(uint32_t);
 	}
 
 	void ByteBuffer::ReadInt16( int16_t *outData ) {
 		SDL_assert( reading );
 
-		*outData = *reinterpret_cast<int16_t *>( &buffer[offset] );
+		*outData = ntohs( *reinterpret_cast<int16_t *>( &buffer[offset] ) );
 		offset += sizeof(int16_t);
 	}
 
 	void ByteBuffer::ReadUInt16( uint16_t *outData ) {
 		SDL_assert( reading );
 
-		*outData = *reinterpret_cast<uint16_t *>( &buffer[offset] );
+		*outData = ntohs( *reinterpret_cast<uint16_t *>( &buffer[offset] ) );
 		offset += sizeof(uint16_t);
 	}
 

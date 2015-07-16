@@ -120,8 +120,8 @@ namespace XS {
 						);
 					}
 					else {
-						position.x = x;
-						position.y = y;
+						position[0] = x;
+						position[1] = y;
 					}
 					parser->SkipLine();
 				}
@@ -183,10 +183,10 @@ namespace XS {
 				return;
 			}
 
-			const vector2 topLeft(
-				position.x * Renderer::state.window.width,
-				position.y * Renderer::state.window.height
-			);
+			const vector2 topLeft = {
+				position[0] * Renderer::state.window.width,
+				position[1] * Renderer::state.window.height
+			};
 
 			std::string displayText;
 			if ( text[0] == '$' ) {
@@ -205,10 +205,10 @@ namespace XS {
 			for ( size_t i = 0u; i < textLen; i++ ) {
 				textWidth += assets.font->GetGlyphWidth( displayText[i], pointSize );
 			}
-			const vector2 textSize(
+			const vector2 textSize = {
 				textWidth,
 				assets.font->lineHeight[pointSize]
-			);
+			};
 
 			// draw the text
 			assets.font->Draw(

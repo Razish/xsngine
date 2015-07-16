@@ -60,17 +60,17 @@ namespace XS {
 				for ( int col = 0; col < dimensions; col++ ) {
 					const float fCol = static_cast<real32_t>( col );
 					const real32_t *sample = &heightmap[(row * dimensions) + col];
-					vector3 pos(
+					vector3 pos = {
 						fRow - (dimensions / 2.0f),
 						(*sample * scale) - (scale / 1.5f),
 						fCol - (dimensions / 2.0f)
-					);
+					};
 					mesh->vertices.push_back( pos );
 
-					vector2 uv(
+					vector2 uv {
 						fCol / dimensions,
 						fRow / dimensions
-					);
+					};
 					mesh->UVs.push_back( uv );
 				}
 			}
@@ -161,9 +161,9 @@ namespace XS {
 			real32_t averagePoint = 0.0f;
 			real32_t highestPoint = 0.0f;
 			for ( const auto &v : mesh->vertices ) {
-				averagePoint += v.y;
-				if ( v.y > highestPoint ) {
-					highestPoint = v.y;
+				averagePoint += v[1];
+				if ( v[1] > highestPoint ) {
+					highestPoint = v[1];
 				}
 			}
 			averagePoint /= static_cast<real32_t>( mesh->vertices.size() );

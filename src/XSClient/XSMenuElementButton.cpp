@@ -51,7 +51,7 @@ namespace XS {
 		}
 
 		MenuElementButton::MenuElementButton( TokenParser *parser, const char *fileName )
-		: size( 0.0f, 0.0f ), texture( "" ), cmd( "" ), text( "" ), pointSize( 0u )
+		: size{ 0.0f, 0.0f }, texture( "" ), cmd( "" ), text( "" ), pointSize( 0u )
 		{
 			std::memset( &properties, 0, sizeof(properties) );
 			std::memset( &assets, 0, sizeof(assets) );
@@ -111,8 +111,8 @@ namespace XS {
 						);
 					}
 					else {
-						position.x = x;
-						position.y = y;
+						position[0] = x;
+						position[1] = y;
 					}
 					parser->SkipLine();
 				}
@@ -129,8 +129,8 @@ namespace XS {
 						);
 					}
 					else {
-						size.w = w;
-						size.h = h;
+						size[0] = w;
+						size[1] = h;
 					}
 					parser->SkipLine();
 				}
@@ -231,8 +231,8 @@ namespace XS {
 			if ( properties.centered ) {
 				topLeft -= size / 2.0f;
 			}
-			if ( mousePos.x > topLeft.x && mousePos.x < (topLeft.x + size.x)
-				&& mousePos.y > topLeft.y && mousePos.y < (topLeft.y + size.y) )
+			if ( mousePos[0] > topLeft[0] && mousePos[0] < (topLeft[0] + size[0])
+				&& mousePos[1] > topLeft[1] && mousePos[1] < (topLeft[1] + size[1]) )
 			{
 				return true;
 			}
@@ -264,15 +264,15 @@ namespace XS {
 				delete bgData;
 			}
 
-			const real32_t bgWidth = size.x * Renderer::state.window.width;
-			const real32_t bgHeight = size.y * Renderer::state.window.height;
-			const vector2 topLeft(
-				(position.x * Renderer::state.window.width) - (bgWidth / 2.0f),
-				(position.y * Renderer::state.window.height) - (bgHeight / 2.0f)
-			);
+			const real32_t bgWidth = size[0] * Renderer::state.window.width;
+			const real32_t bgHeight = size[1] * Renderer::state.window.height;
+			const vector2 topLeft = {
+				(position[0] * Renderer::state.window.width) - (bgWidth / 2.0f),
+				(position[1] * Renderer::state.window.height) - (bgHeight / 2.0f)
+			};
 
 			Renderer::DrawQuad(
-				topLeft.x, topLeft.y,
+				topLeft[0], topLeft[1],
 				bgWidth, bgHeight,
 				0.0f, 0.0f, 1.0f, 1.0f,
 				&colourTable[ColourIndex( COLOUR_WHITE )],
@@ -284,14 +284,14 @@ namespace XS {
 			for ( size_t i = 0u; i < textLen; i++ ) {
 				textWidth += assets.font->GetGlyphWidth( text[i], pointSize );
 			}
-			const vector2 textSize(
+			const vector2 textSize = {
 				textWidth,
 				assets.font->lineHeight[pointSize]
-			);
-			const vector2 bgMidPoint(
-				topLeft.x + ((size.x * Renderer::state.window.width) / 2.0f),
-				topLeft.y + ((size.y * Renderer::state.window.height) / 2.0f)
-			);
+			};
+			const vector2 bgMidPoint = {
+				topLeft[0] + ((size[0] * Renderer::state.window.width) / 2.0f),
+				topLeft[1] + ((size[1] * Renderer::state.window.height) / 2.0f)
+			};
 
 			// draw the text in the middle of the button
 			assets.font->Draw(

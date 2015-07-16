@@ -41,18 +41,18 @@ namespace XS {
 			if ( indices.size() > 0 ) {
 				for ( const auto &index : indices ) {
 					if ( hasVertices ) {
-						*buffer++ = vertices[index].x;
-						*buffer++ = vertices[index].y;
-						*buffer++ = vertices[index].z;
+						*buffer++ = vertices[index][0];
+						*buffer++ = vertices[index][1];
+						*buffer++ = vertices[index][2];
 					}
 					if ( hasNormals ) {
-						*buffer++ = normals[index].x;
-						*buffer++ = normals[index].y;
-						*buffer++ = normals[index].z;
+						*buffer++ = normals[index][0];
+						*buffer++ = normals[index][1];
+						*buffer++ = normals[index][2];
 					}
 					if ( hasUVs ) {
-						*buffer++ = UVs[index].x;
-						*buffer++ = UVs[index].y;
+						*buffer++ = UVs[index][0];
+						*buffer++ = UVs[index][1];
 					}
 				}
 			}

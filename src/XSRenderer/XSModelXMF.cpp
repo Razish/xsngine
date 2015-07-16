@@ -65,7 +65,7 @@ namespace XS {
 
 				// then for each vertex, sum all the neighbouring surface normals to obtain the vertex normal
 				for ( size_t iV = 0u; iV < mesh->vertices.size(); iV++ ) {
-					vector3 normal( 0.0f );
+					vector3 normal = {};
 					for ( size_t iN = 0u; iN < mesh->indices.size(); iN += 3 ) {
 						for ( size_t f = 0u; f < 3; f++ ) {
 							if ( mesh->indices[iN + f] == iV ) {
@@ -170,7 +170,7 @@ namespace XS {
 
 					vector3 vertex;
 					for ( int i = 0; i < 3; i++ ) {
-						parser.ParseReal32( &vertex.raw[i] );
+						parser.ParseReal32( &vertex[i] );
 					}
 					mesh->vertices.push_back( vertex );
 					parser.SkipLine();
@@ -190,7 +190,7 @@ namespace XS {
 
 					vector3 normal;
 					for ( int i = 0; i < 3; i++ ) {
-						parser.ParseReal32( &normal.raw[i] );
+						parser.ParseReal32( &normal[i] );
 					}
 					mesh->normals.push_back( normal );
 					parser.SkipLine();
@@ -208,13 +208,14 @@ namespace XS {
 						break;
 					}
 
-					vector2 uv;
+					vector2 uv{};
 					for ( int i = 0; i < 2; i++ ) {
-						parser.ParseReal32( &uv.raw[i] );
+						parser.ParseReal32( &uv[i] );
 					}
-					real32_t tmp = uv.x;
-					uv.x = uv.y;
-					uv.y = tmp;
+					//FIXME: why flip the UVs?
+					real32_t tmp = uv[0];
+					uv[0] = uv[1];
+					uv[1] = tmp;
 					mesh->UVs.push_back( uv );
 					parser.SkipLine();
 				}

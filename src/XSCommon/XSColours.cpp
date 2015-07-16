@@ -23,22 +23,22 @@ namespace XS {
 	*/
 
 	const vector4 colourTable[COLOUR_BITS + 1] = {
-		vector4( 0.0f, 0.0f, 0.0f, 1.0f ), // black
-		vector4( 0.5f, 0.5f, 0.5f, 1.0f ), // grey
-		vector4( 1.0f, 1.0f, 1.0f, 1.0f ), // white
-		vector4( 1.0f, 0.0f, 0.0f, 1.0f ), // red
-		vector4( 1.0f, 0.5f, 0.0f, 1.0f ), // orange
-		vector4( 1.0f, 1.0f, 0.0f, 1.0f ), // yellow
-		vector4( 0.5f, 1.0f, 0.0f, 1.0f ), // lime
-		vector4( 0.0f, 1.0f, 0.0f, 1.0f ), // green
-		vector4( 0.0f, 1.0f, 0.5f, 1.0f ), // aqua
-		vector4( 0.0f, 1.0f, 1.0f, 1.0f ), // cyan
-		vector4( 0.0f, 0.5f, 1.0f, 1.0f ), // light blue
-		vector4( 0.0f, 0.0f, 1.0f, 1.0f ), // blue
-		vector4( 0.5f, 0.0f, 1.0f, 1.0f ), // violet
-		vector4( 1.0f, 0.0f, 1.0f, 1.0f ), // purple
-		vector4( 1.0f, 0.0f, 0.5f, 1.0f ), // pink
-		vector4( 1.0f, 1.0f, 1.0f, 1.0f ), // *white
+		{ 0.0f, 0.0f, 0.0f, 1.0f }, // black
+		{ 0.5f, 0.5f, 0.5f, 1.0f }, // grey
+		{ 1.0f, 1.0f, 1.0f, 1.0f }, // white
+		{ 1.0f, 0.0f, 0.0f, 1.0f }, // red
+		{ 1.0f, 0.5f, 0.0f, 1.0f }, // orange
+		{ 1.0f, 1.0f, 0.0f, 1.0f }, // yellow
+		{ 0.5f, 1.0f, 0.0f, 1.0f }, // lime
+		{ 0.0f, 1.0f, 0.0f, 1.0f }, // green
+		{ 0.0f, 1.0f, 0.5f, 1.0f }, // aqua
+		{ 0.0f, 1.0f, 1.0f, 1.0f }, // cyan
+		{ 0.0f, 0.5f, 1.0f, 1.0f }, // light blue
+		{ 0.0f, 0.0f, 1.0f, 1.0f }, // blue
+		{ 0.5f, 0.0f, 1.0f, 1.0f }, // violet
+		{ 1.0f, 0.0f, 1.0f, 1.0f }, // purple
+		{ 1.0f, 0.0f, 0.5f, 1.0f }, // pink
+		{ 1.0f, 1.0f, 1.0f, 1.0f }, // *white
 	};
 
 	bool IsColourString( const char *s ) {

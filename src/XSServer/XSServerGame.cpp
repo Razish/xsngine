@@ -43,11 +43,11 @@ namespace XS {
 				console.Print( PrintLevel::Normal, "usage: spawnentity <x> <y> <z>\n" );
 				return;
 			}
-			vector3 pos(
-				std::atof( (*context)[0].c_str() ),
-				std::atof( (*context)[1].c_str() ),
-				std::atof( (*context)[2].c_str() )
-			);
+			vector3 pos = {
+				static_cast<real32_t>( std::atof( (*context)[0].c_str() ) ),
+				static_cast<real32_t>( std::atof( (*context)[1].c_str() ) ),
+				static_cast<real32_t>( std::atof( (*context)[2].c_str() ) )
+			};
 
 #if 0
 			EntityFXRunner *ent = new EntityFXRunner();

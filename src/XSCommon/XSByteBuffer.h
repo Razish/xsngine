@@ -39,17 +39,16 @@ namespace XS {
 			size_t dataLen
 		);
 
-		// calculate a checksum of data written so far
-		uint64_t GetChecksum(
-			void
-		) const;
-
 		// get a pointer to buffer memory
 		//NOTE: invalidated after any future writes
 		const void *GetMemory(
 			size_t *outLen,
 			bool encode = false // RLE
 		) const;
+
+		void Skip(
+			size_t count
+		);
 
 		// write generic data to the buffer
 		void WriteGeneric(

@@ -2,11 +2,6 @@
 
 #include <string>
 
-#ifdef _MSC_VER
-	#pragma warning( push )
-	#pragma warning( disable : 4201 ) // nonstandard extension used : nameless struct/union
-#endif // _MSC_VER
-
 namespace XS {
 
 	//TODO: unit test precision at different ranges (and double conversion/promotion?)
@@ -22,23 +17,7 @@ namespace XS {
 	}
 
 	struct vector2 {
-		union {
-			struct {
-				real32_t x;
-				real32_t y;
-			};
-			struct {
-				real32_t w;
-				real32_t h;
-			};
-			real32_t raw[2];
-		};
-
-		// xtors
-		vector2( real32_t x = 0.0f, real32_t y = 0.0f )
-		: x( x ), y( y )
-		{
-		}
+		real32_t data[2];
 
 		// string representation of the vector
 		std::string tostring(
@@ -46,23 +25,27 @@ namespace XS {
 		) const;
 
 		// access operators
+		inline const real32_t& operator[]( const size_t idx ) const {
+			return data[idx];
+		}
 		inline real32_t& operator[]( const size_t idx ) {
-			return raw[idx];
+			return data[idx];
 		}
 
 		// clear
 		inline void clear( void ) {
-			x = y = 0.0f;
+			data[0] = 0.0f;
+			data[1] = 0.0f;
 		}
 
 		// compare
 		static inline bool compare( const vector2 &lhs, const vector2 &rhs ) {
-			return (flcmp( lhs.x, rhs.x ) && flcmp( lhs.y, rhs.y ));
+			return (flcmp( lhs[0], rhs[0] ) && flcmp( lhs[1], rhs[1] ));
 		}
 
 		// ???
 		inline bool compare( const vector2 &rhs ) const {
-			return (flcmp( x, rhs.x ) && flcmp( y, rhs.y ));
+			return (flcmp( data[0], rhs[0] ) && flcmp( data[1], rhs[1] ));
 		}
 
 		// ???
@@ -72,96 +55,103 @@ namespace XS {
 
 		// addition
 		inline vector2 operator+( const vector2 &rhs ) const {
-			return vector2( x + rhs.x, y + rhs.y );
+			vector2 result = { data[0] + rhs[0], data[1] + rhs[1] };
+			return result;
 		}
 
 		// ???
         inline vector2& operator+=( const vector2& rhs ) {
-			x += rhs.x;
-			y += rhs.y;
+			data[0] += rhs[0];
+			data[1] += rhs[1];
 			return *this;
 		}
 
 		// subtraction
 		inline vector2 operator-( const vector2 &rhs ) const {
-			return vector2( x - rhs.x, y - rhs.y );
+			vector2 result = { data[0] - rhs[0], data[1] - rhs[1] };
+			return result;
 		}
 
 		// ???
         inline vector2& operator-=( const vector2& rhs ) {
-			x -= rhs.x;
-			y -= rhs.y;
+			data[0] -= rhs[0];
+			data[1] -= rhs[1];
 			return *this;
 		}
 
 		// increment
 		inline void increment( void ) {
-			x += 1.0f;
-			y += 1.0f;
+			data[0] += 1.0f;
+			data[1] += 1.0f;
 		}
 
 		// decrement
 		inline void decrement( void ) {
-			x -= 1.0f;
-			y -= 1.0f;
+			data[0] -= 1.0f;
+			data[1] -= 1.0f;
 		}
 
 		// inverse
 		inline void inverse( void ) {
-			x = -x;
-			y = -y;
+			data[0] = -data[0];
+			data[1] = -data[1];
 		}
 
 		// ???
 		static inline vector2 inverse( const vector2 &in ) {
-			return vector2( -in.x, -in.y );
+			vector2 result = { -in[0], -in[1] };
+			return result;
 		}
 
 		// scalar multiplication
 		inline vector2 operator*( const real32_t scalar ) const {
-			return vector2( x * scalar, y * scalar );
+			vector2 result = { data[0] * scalar, data[1] * scalar };
+			return result;
 		}
 
 		// ???
 		inline vector2& operator*=( const real32_t scalar ) {
-			x *= scalar;
-			y *= scalar;
+			data[0] *= scalar;
+			data[1] *= scalar;
 			return *this;
 		}
 
 		// vector multiplication
 		inline vector2 operator*( const vector2 &rhs ) const {
-			return vector2( x * rhs.x, y * rhs.y );
+			vector2 result = { data[0] * rhs[0], data[1] * rhs[1] };
+			return result;
 		}
 
 		// ???
 		inline vector2& operator*=( const vector2 &rhs ) {
-			x *= rhs.x;
-			y *= rhs.y;
+			data[0] *= rhs[0];
+			data[1] *= rhs[1];
 			return *this;
 		}
 
 		// scalar division
 		inline vector2 operator/( const real32_t divisor ) const {
-			return vector2( x / divisor, y / divisor );
+			vector2 result = { data[0] / divisor, data[1] / divisor };
+			return result;
 		}
 
 		// ???
 		inline vector2& operator/=( const real32_t divisor ) {
-			x /= divisor;
-			y /= divisor;
+			data[0] /= divisor;
+			data[1] /= divisor;
 			return *this;
 		}
 
 		// vector division
 		inline vector2 operator/( const vector2 &rhs ) const {
-			return vector2( x / rhs.x, y / rhs.y );
+			vector2 result = { data[0] / rhs[0], data[1] / rhs[1] };
+			return result;
 		}
 
 		// ???
 		inline vector2& operator/=( const vector2 &rhs ) {
-			x /= rhs.x;
-			y /= rhs.y;
+			data[0] /= rhs[0];
+			data[1] /= rhs[1];
 			return *this;
 		}
 
@@ -177,23 +167,7 @@ namespace XS {
 	};
 
 	struct pvector2 {
-		union {
-			struct {
-				real64_t x;
-				real64_t y;
-			};
-			struct {
-				real64_t w;
-				real64_t h;
-			};
-			real64_t raw[2];
-		};
-
-		// xtors
-		pvector2( real64_t x = 0.0, real64_t y = 0.0 )
-		: x( x ), y( y )
-		{
-		}
+		real64_t data[2];
 
 		// string representation of the vector
 		std::string tostring(
@@ -201,23 +175,27 @@ namespace XS {
 		) const;
 
 		// access operators
+		inline const real64_t& operator[]( const size_t idx ) const {
+			return data[idx];
+		}
 		inline real64_t& operator[]( const size_t idx ) {
-			return raw[idx];
+			return data[idx];
 		}
 
 		// clear
 		inline void clear( void ) {
-			x = y = 0.0;
+			data[0] = 0.0;
+			data[1] = 0.0;
 		}
 
 		// compare
 		static inline bool compare( const pvector2 &lhs, const pvector2 &rhs ) {
-			return (dblcmp( lhs.x, rhs.x ) && dblcmp( lhs.y, rhs.y ));
+			return (dblcmp( lhs[0], rhs[0] ) && dblcmp( lhs[1], rhs[1] ));
 		}
 
 		// ???
 		inline bool compare( const pvector2 &rhs ) const {
-			return (dblcmp( x, rhs.x ) && dblcmp( y, rhs.y ));
+			return (dblcmp( data[0], rhs[0] ) && dblcmp( data[1], rhs[1] ));
 		}
 
 		// ???
@@ -227,96 +205,103 @@ namespace XS {
 
 		// addition
 		inline pvector2 operator+( const pvector2 &rhs ) const {
-			return pvector2( x + rhs.x, y + rhs.y );
+			pvector2 result = { data[0] + rhs[0], data[1] + rhs[1] };
+			return result;
 		}
 
 		// ???
         inline pvector2& operator+=( const pvector2& rhs ) {
-			x += rhs.x;
-			y += rhs.y;
+			data[0] += rhs[0];
+			data[1] += rhs[1];
 			return *this;
 		}
 
 		// subtraction
 		inline pvector2 operator-( const pvector2 &rhs ) const {
-			return pvector2( x - rhs.x, y - rhs.y );
+			pvector2 result = { data[0] - rhs[0], data[1] - rhs[1] };
+			return result;
 		}
 
 		// ???
         inline pvector2& operator-=( const pvector2& rhs ) {
-			x -= rhs.x;
-			y -= rhs.y;
+			data[0] -= rhs[0];
+			data[1] -= rhs[1];
 			return *this;
 		}
 
 		// increment
 		inline void increment( void ) {
-			x += 1.0;
-			y += 1.0;
+			data[0] += 1.0;
+			data[1] += 1.0;
 		}
 
 		// decrement
 		inline void decrement( void ) {
-			x -= 1.0;
-			y -= 1.0;
+			data[0] -= 1.0;
+			data[1] -= 1.0;
 		}
 
 		// inverse
 		inline void inverse( void ) {
-			x = -x;
-			y = -y;
+			data[0] = -data[0];
+			data[1] = -data[1];
 		}
 
 		// ???
 		static inline pvector2 inverse( const pvector2 &in ) {
-			return pvector2( -in.x, -in.y );
+			pvector2 result = { -in[0], -in[1] };
+			return result;
 		}
 
 		// scalar multiplication
 		inline pvector2 operator*( const real64_t scalar ) const {
-			return pvector2( x * scalar, y * scalar );
+			pvector2 result = { data[0] * scalar, data[1] * scalar };
+			return result;
 		}
 
 		// ???
 		inline pvector2& operator*=( const real64_t scalar ) {
-			x *= scalar;
-			y *= scalar;
+			data[0] *= scalar;
+			data[1] *= scalar;
 			return *this;
 		}
 
 		// vector multiplication
 		inline pvector2 operator*( const pvector2 &rhs ) const {
-			return pvector2( x * rhs.x, y * rhs.y );
+			pvector2 result = { data[0] * rhs[0], data[1] * rhs[1] };
+			return result;
 		}
 
 		// ???
 		inline pvector2& operator*=( const pvector2 &rhs ) {
-			x *= rhs.x;
-			y *= rhs.y;
+			data[0] *= rhs[0];
+			data[1] *= rhs[1];
 			return *this;
 		}
 
 		// scalar division
 		inline pvector2 operator/( const real64_t divisor ) const {
-			return pvector2( x / divisor, y / divisor );
+			pvector2 result = { data[0] / divisor, data[1] / divisor };
+			return result;
 		}
 
 		// ???
 		inline pvector2& operator/=( const real64_t divisor ) {
-			x /= divisor;
-			y /= divisor;
+			data[0] /= divisor;
+			data[1] /= divisor;
 			return *this;
 		}
 
 		// vector division
 		inline pvector2 operator/( const pvector2 &rhs ) const {
-			return pvector2( x / rhs.x, y / rhs.y );
+			pvector2 result = { data[0] / rhs[0], data[1] / rhs[1] };
+			return result;
 		}
 
 		// ???
 		inline pvector2& operator/=( const pvector2 &rhs ) {
-			x /= rhs.x;
-			y /= rhs.y;
+			data[0] /= rhs[0];
+			data[1] /= rhs[1];
 			return *this;
 		}
 
@@ -332,30 +317,7 @@ namespace XS {
 	};
 
 	struct vector3 {
-		union {
-			struct {
-				real32_t x;
-				real32_t y;
-				real32_t z;
-			};
-			struct {
-				real32_t r;
-				real32_t g;
-				real32_t b;
-			};
-			struct {
-				real32_t pitch;
-				real32_t yaw;
-				real32_t roll;
-			};
-			real32_t raw[3];
-		};
-
-		// xtors
-		vector3( real32_t x = 0.0f, real32_t y = 0.0f, real32_t z = 0.0f )
-		: x( x ), y( y ), z( z )
-		{
-		}
+		real32_t data[3];
 
 		// string representation of the vector
 		std::string tostring(
@@ -363,23 +325,28 @@ namespace XS {
 		) const;
 
 		// access operators
+		inline const real32_t& operator[]( const size_t idx ) const {
+			return data[idx];
+		}
 		inline real32_t& operator[]( const size_t idx ) {
-			return raw[idx];
+			return data[idx];
 		}
 
 		// clear
 		inline void clear( void ) {
-			x = y = z = 0.0f;
+			data[0] = 0.0f;
+			data[1] = 0.0f;
+			data[2] = 0.0f;
 		}
 
 		// compare
 		static inline bool compare( const vector3 &lhs, const vector3 &rhs ) {
-			return (flcmp( lhs.x, rhs.x ) && flcmp( lhs.y, rhs.y ) && flcmp( lhs.z, rhs.z ));
+			return (flcmp( lhs[0], rhs[0] ) && flcmp( lhs[1], rhs[1] ) && flcmp( lhs[2], rhs[2] ));
 		}
 
 		// ???
 		inline bool compare( const vector3 &rhs ) const {
-			return (flcmp( x, rhs.x ) && flcmp( y, rhs.y ) && flcmp( z, rhs.z ));
+			return (flcmp( data[0], rhs[0] ) && flcmp( data[1], rhs[1] ) && flcmp( data[2], rhs[2] ));
 		}
 
 		// ???
@@ -389,105 +356,112 @@ namespace XS {
 
 		// addition
 		inline vector3 operator+( const vector3 &rhs ) const {
-			return vector3( x + rhs.x, y + rhs.y, z + rhs.z );
+			vector3 result = { data[0] + rhs[0], data[1] + rhs[1], data[2] + rhs[2] };
+			return result;
 		}
 
 		// ???
         inline vector3& operator+=( const vector3& rhs ) {
-			x += rhs.x;
-			y += rhs.y;
-			z += rhs.z;
+			data[0] += rhs[0];
+			data[1] += rhs[1];
+			data[2] += rhs[2];
 			return *this;
 		}
 
 		// subtraction
 		inline vector3 operator-( const vector3 &rhs ) const {
-			return vector3( x - rhs.x, y - rhs.y, z - rhs.z );
+			vector3 result = { data[0] - rhs[0], data[1] - rhs[1], data[2] - rhs[2] };
+			return result;
 		}
 
 		// ???
         inline vector3& operator-=( const vector3& rhs ) {
-			x -= rhs.x;
-			y -= rhs.y;
-			z -= rhs.z;
+			data[0] -= rhs[0];
+			data[1] -= rhs[1];
+			data[2] -= rhs[2];
 			return *this;
 		}
 
 		// increment
 		inline void increment( void ) {
-			x += 1.0f;
-			y += 1.0f;
-			z += 1.0f;
+			data[0] += 1.0f;
+			data[1] += 1.0f;
+			data[2] += 1.0f;
 		}
 
 		// decrement
 		inline void decrement( void ) {
-			x -= 1.0f;
-			y -= 1.0f;
-			z -= 1.0f;
+			data[0] -= 1.0f;
+			data[1] -= 1.0f;
+			data[2] -= 1.0f;
 		}
 
 		// inverse
 		inline void inverse( void ) {
-			x = -x;
-			y = -y;
-			z = -z;
+			data[0] = -data[0];
+			data[1] = -data[1];
+			data[2] = -data[2];
 		}
 
 		// ???
 		static inline vector3 inverse( const vector3 &in ) {
-			return vector3( -in.x, -in.y, -in.z );
+			vector3 result = { -in[0], -in[1], -in[2] };
+			return result;
 		}
 
 		// scalar multiplication
 		inline vector3 operator*( const real32_t scalar ) const {
-			return vector3( x * scalar, y * scalar, z * scalar );
+			vector3 result = { data[0] * scalar, data[1] * scalar, data[1] * scalar };
+			return result;
 		}
 
 		// ???
 		inline vector3& operator*=( const real32_t scalar ) {
-			x *= scalar;
-			y *= scalar;
-			z *= scalar;
+			data[0] *= scalar;
+			data[1] *= scalar;
+			data[2] *= scalar;
 			return *this;
 		}
 
 		// vector multiplication
 		inline vector3 operator*( const vector3 &rhs ) const {
-			return vector3( x * rhs.x, y * rhs.y, z * rhs.z );
+			vector3 result = { data[0] * rhs[0], data[1] * rhs[1], data[2] * rhs[2] };
+			return result;
 		}
 
 		// ???
 		inline vector3& operator*=( const vector3 &rhs ) {
-			x *= rhs.x;
-			y *= rhs.y;
-			z *= rhs.z;
+			data[0] *= rhs[0];
+			data[1] *= rhs[1];
+			data[2] *= rhs[2];
 			return *this;
 		}
 
 		// scalar division
 		inline vector3 operator/( const real32_t divisor ) const {
-			return vector3( x / divisor, y / divisor, z / divisor );
+			vector3 result = { data[0] / divisor, data[1] / divisor, data[2] / divisor };
+			return result;
 		}
 
 		// ???
 		inline vector3& operator/=( const real32_t divisor ) {
-			x /= divisor;
-			y /= divisor;
-			z /= divisor;
+			data[0] /= divisor;
+			data[1] /= divisor;
+			data[2] /= divisor;
 			return *this;
 		}
 
 		// vector division
 		inline vector3 operator/( const vector3 &rhs ) const {
-			return vector3( x / rhs.x, y / rhs.y, z / rhs.z );
+			vector3 result = { data[0] / rhs[0], data[1] / rhs[1], data[2] / rhs[2] };
+			return result;
 		}
 
 		// ???
 		inline vector3& operator/=( const vector3 &rhs ) {
-			x /= rhs.x;
-			y /= rhs.y;
-			z /= rhs.z;
+			data[0] /= rhs[0];
+			data[1] /= rhs[1];
+			data[2] /= rhs[2];
 			return *this;
 		}
 
@@ -503,22 +477,18 @@ namespace XS {
 
 		// length
 		inline real32_t length( void ) const {
-			return sqrtf( x*x + y*y + z*z );
+			return sqrtf( data[0]*data[0] + data[1]*data[1] + data[2]*data[2] );
 		}
-
-		// ???
 		static inline real32_t length( const vector3 &vec ) {
-			return vec.length();
+			return sqrtf( vec[0]*vec[0] + vec[1]*vec[1] + vec[2]*vec[2] );
 		}
 
-		// ???
+		// length squared
 		inline real32_t lengthSquared( void ) const {
-			return x*x + y*y + z*z;
+			return data[0]*data[0] + data[1]*data[1] + data[2]*data[2];
 		}
-
-		// ???
 		static inline real32_t lengthSquared( const vector3 &vec ) {
-			return vec.lengthSquared();
+			return vec[0]*vec[0] + vec[1]*vec[1] + vec[2]*vec[2];
 		}
 
 		// distance
@@ -542,6 +512,8 @@ namespace XS {
 		inline real32_t normalise( void ) {
 			real32_t length = this->length();
 
+			//TODO: validate this form improves gcc's ability to optimise
+			//	alternatively
 			if ( length ) {
 				real32_t iLength = 1.0f / length;
 				*this *= iLength;
@@ -566,21 +538,21 @@ namespace XS {
 
 		// dot
 		static inline real32_t dot( const vector3 &a, const vector3 &b ) {
-			return a.x*b.x + a.y*b.y + a.z*b.z;
+			return a[0]*b[0] + a[1]*b[1] + a[2]*b[2];
 		}
 
 		// ???
 		inline real32_t dot( const vector3 &vec ) const {
-			return x*vec.x + y*vec.y + z*vec.z;
+			return data[0]*vec[0] + data[1]*vec[1] + data[2]*vec[2];
 		}
 
 		// cross
 		static inline vector3 cross( const vector3 &a, const vector3 &b ) {
-			vector3 result;
-
-			result.x = (a.y*b.z) - (a.z*b.y);
-			result.y = (a.z*b.x) - (a.x*b.z);
-			result.z = (a.x*b.y) - (a.y*b.x);
+			vector3 result = {
+				(a[1]*b[2]) - (a[2]*b[1]),
+				(a[2]*b[0]) - (a[0]*b[2]),
+				(a[0]*b[1]) - (a[1]*b[0])
+			};
 
 			return result;
 		}
@@ -594,30 +566,7 @@ namespace XS {
 	};
 
 	struct pvector3 {
-		union {
-			struct {
-				real64_t x;
-				real64_t y;
-				real64_t z;
-			};
-			struct {
-				real64_t r;
-				real64_t g;
-				real64_t b;
-			};
-			struct {
-				real64_t pitch;
-				real64_t yaw;
-				real64_t roll;
-			};
-			real64_t raw[3];
-		};
-
-		// xtors
-		pvector3( real64_t x = 0.0, real64_t y = 0.0, real64_t z = 0.0 )
-		: x( x ), y( y ), z( z )
-		{
-		}
+		real64_t data[3];
 
 		// string representation of the vector
 		std::string tostring(
@@ -625,23 +574,28 @@ namespace XS {
 		) const;
 
 		// access operators
+		inline const real64_t& operator[]( const size_t idx ) const {
+			return data[idx];
+		}
 		inline real64_t& operator[]( const size_t idx ) {
-			return raw[idx];
+			return data[idx];
 		}
 
 		// clear
 		inline void clear( void ) {
-			x = y = z = 0.0;
+			data[0] = 0.0;
+			data[1] = 0.0;
+			data[2] = 0.0;
 		}
 
 		// compare
 		static inline bool compare( const pvector3 &lhs, const pvector3 &rhs ) {
-			return (dblcmp( lhs.x, rhs.x ) && flcmp( lhs.y, rhs.y ) && flcmp( lhs.z, rhs.z ));
+			return (dblcmp( lhs[0], rhs[0] ) && flcmp( lhs[1], rhs[1] ) && flcmp( lhs[2], rhs[2] ));
 		}
 
 		// ???
 		inline bool compare( const pvector3 &rhs ) const {
-			return (dblcmp( x, rhs.x ) && flcmp( y, rhs.y ) && flcmp( z, rhs.z ));
+			return (dblcmp( data[0], rhs[0] ) && flcmp( data[1], rhs[1] ) && flcmp( data[2], rhs[2] ));
 		}
 
 		// ???
@@ -651,101 +605,108 @@ namespace XS {
 
 		// addition
 		inline pvector3 operator+( const pvector3 &rhs ) const {
-			return pvector3( x + rhs.x, y + rhs.y, z + rhs.z );
+			pvector3 result = { data[0] + rhs[0], data[1] + rhs[1], data[2] + rhs[2] };
+			return result;
 		}
 
 		// ???
         inline pvector3& operator+=( const pvector3 &rhs ) {
-			x += rhs.x;
-			y += rhs.y;
-			z += rhs.z;
+			data[0] += rhs[0];
+			data[1] += rhs[1];
+			data[2] += rhs[2];
 			return *this;
 		}
 
 		// subtraction
 		inline pvector3 operator-( const pvector3 &rhs ) const {
-			return pvector3( x - rhs.x, y - rhs.y, z - rhs.z );
+			pvector3 result = { data[0] - rhs[0], data[1] - rhs[1], data[2] - rhs[2] };
+			return result;
 		}
 
 		// ???
         inline pvector3& operator-=( const pvector3& rhs ) {
-			x -= rhs.x;
-			y -= rhs.y;
-			z -= rhs.z;
+			data[0] -= rhs[0];
+			data[1] -= rhs[1];
+			data[2] -= rhs[2];
 			return *this;
 		}
 
 		// increment
 		inline void increment( void ) {
-			x += 1.0;
-			y += 1.0;
-			z += 1.0;
+			data[0] += 1.0;
+			data[1] += 1.0;
+			data[2] += 1.0;
 		}
 
 		// decrement
 		inline void decrement( void ) {
-			x -= 1.0;
-			y -= 1.0;
-			z -= 1.0;
+			data[0] -= 1.0;
+			data[1] -= 1.0;
+			data[2] -= 1.0;
 		}
 
 		// inverse
 		inline void inverse( void ) {
-			x = -x;
-			y = -y;
-			z = -z;
+			data[0] = -data[0];
+			data[1] = -data[1];
+			data[2] = -data[2];
 		}
 
 		// ???
 		static inline pvector3 inverse( const pvector3 &in ) {
-			return pvector3( -in.x, -in.y, -in.z );
+			pvector3 result = { -in[0], -in[1], -in[2] };
+			return result;
 		}
 
 		// scalar multiplication
 		inline pvector3 operator*( const real64_t scalar ) const {
-			return pvector3( x * scalar, y * scalar, z * scalar );
+			pvector3 result = { data[0] * scalar, data[1] * scalar, data[2] * scalar };
+			return result;
 		}
 
 		// ???
 		inline pvector3& operator*=( const real64_t scalar ) {
-			x *= scalar;
-			y *= scalar;
-			z *= scalar;
+			data[0] *= scalar;
+			data[1] *= scalar;
+			data[2] *= scalar;
 			return *this;
 		}
 
 		// vector multiplication
 		inline pvector3 operator*( const pvector3 &rhs ) const {
-			return pvector3( x * rhs.x, y * rhs.y, z * rhs.z );
+			pvector3 result = { data[0] * rhs[0], data[1] * rhs[1], data[2] * rhs[2] };
+			return result;
 		}
 
 		// ???
 		inline pvector3& operator*=( const pvector3 &rhs ) {
-			x *= rhs.x;
-			y *= rhs.y;
-			z *= rhs.z;
+			data[0] *= rhs[0];
+			data[1] *= rhs[1];
+			data[2] *= rhs[2];
 			return *this;
 		}
 
 		// scalar division
 		inline pvector3 operator/( const real64_t divisor ) const {
-			return pvector3( x / divisor, y / divisor, z / divisor );
+			pvector3 result = { data[0] / divisor, data[1] / divisor, data[2] / divisor };
+			return result;
 		}
 		inline pvector3& operator/=( const real64_t divisor ) {
-			x /= divisor;
-			y /= divisor;
-			z /= divisor;
+			data[0] /= divisor;
+			data[1] /= divisor;
+			data[2] /= divisor;
 			return *this;
 		}
 
 		// vector division
 		inline pvector3 operator/( const pvector3 &rhs ) const {
-			return pvector3( x / rhs.x, y / rhs.y, z / rhs.z );
+			pvector3 result = { data[0] / rhs[0], data[1] / rhs[1], data[2] / rhs[2] };
+			return result;
 		}
 		inline pvector3& operator/=( const pvector3 &rhs ) {
-			x /= rhs.x;
-			y /= rhs.y;
-			z /= rhs.z;
+			data[0] /= rhs[0];
+			data[1] /= rhs[1];
+			data[2] /= rhs[2];
 			return *this;
 		}
 
@@ -761,13 +722,15 @@ namespace XS {
 
 		// length
 		inline real64_t length( void ) const {
-			return sqrt( x*x + y*y + z*z );
+			return sqrt( data[0]*data[0] + data[1]*data[1] + data[2]*data[2] );
 		}
 		static inline real64_t length( const pvector3 &vec ) {
 			return vec.length();
 		}
+
+		// length squared
 		inline real64_t lengthSquared( void ) const {
-			return x*x + y*y + z*z;
+			return data[0]*data[0] + data[1]*data[1] + data[2]*data[2];
 		}
 		static inline real64_t lengthSquared( const pvector3 &vec ) {
 			return vec.lengthSquared();
@@ -811,17 +774,16 @@ namespace XS {
 
 		// dot
 		inline real64_t dot( const pvector3 &vec ) const {
-			return x*vec.x + y*vec.y + z*vec.z;
+			return data[0]*vec[0] + data[1]*vec[1] + data[1]*vec[2];
 		}
 
 		// cross
 		static inline pvector3 cross( const pvector3 &a, const pvector3 &b ) {
-			pvector3 result;
-
-			result.x = (a.y*b.z) - (a.z*b.y);
-			result.y = (a.z*b.x) - (a.x*b.z);
-			result.z = (a.x*b.y) - (a.y*b.x);
-
+			pvector3 result = {
+				(a[1]*b[2]) - (a[2]*b[1]),
+				(a[2]*b[0]) - (a[0]*b[2]),
+				(a[0]*b[1]) - (a[1]*b[0])
+			};
 			return result;
 		}
 		inline pvector3 cross( const pvector3 &v ) const {
@@ -832,27 +794,7 @@ namespace XS {
 	};
 
 	struct vector4 {
-		union {
-			struct {
-				real32_t x;
-				real32_t y;
-				real32_t z;
-				real32_t w;
-			};
-			struct {
-				real32_t r;
-				real32_t g;
-				real32_t b;
-				real32_t a;
-			};
-			real32_t raw[4];
-		};
-
-		// xtors
-		vector4( real32_t x = 0.0f, real32_t y = 0.0f, real32_t z = 0.0f, real32_t w = 0.0f )
-		: x( x ), y( y ), z( z ), w( w )
-		{
-		}
+		real32_t data[4];
 
 		// string representation of the vector
 		std::string tostring(
@@ -860,21 +802,27 @@ namespace XS {
 		) const;
 
 		// access operators
+		inline const real32_t& operator[]( const size_t idx ) const {
+			return data[idx];
+		}
 		inline real32_t& operator[]( const size_t idx ) {
-			return raw[idx];
+			return data[idx];
 		}
 
 		// clear
 		inline void clear( void ) {
-			x = y = z = w = 0.0f;
+			data[0] = 0.0f;
+			data[1] = 0.0f;
+			data[2] = 0.0f;
+			data[3] = 0.0f;
 		}
 
 		// compare
 		static inline bool compare( const vector4 &lhs, const vector4 &rhs ) {
-			return (flcmp( lhs.x, rhs.x ) && flcmp( lhs.y, rhs.y ) && flcmp( lhs.z, rhs.z ) && flcmp( lhs.w, rhs.w ));
+			return (flcmp( lhs[0], rhs[0] ) && flcmp( lhs[1], rhs[1] ) && flcmp( lhs[2], rhs[2] ) && flcmp( lhs[3], rhs[3] ));
 		}
 		inline bool compare( const vector4 &rhs ) const {
-			return (flcmp( x, rhs.x ) && flcmp( y, rhs.y ) && flcmp( z, rhs.z ) && flcmp( w, rhs.w ));
+			return (flcmp( data[0], rhs[0] ) && flcmp( data[1], rhs[1] ) && flcmp( data[2], rhs[2] ) && flcmp( data[3], rhs[3] ));
 		}
 		inline bool operator==( const vector4 &rhs ) const {
 			return compare( rhs );
@@ -882,100 +830,107 @@ namespace XS {
 
 		// addition
 		inline vector4 operator+( const vector4 &rhs ) const {
-			return vector4( this->x + rhs.x, this->y + rhs.y, this->z + rhs.z, this->w + rhs.w );
+			vector4 result = { data[0] + rhs[0], data[1] + rhs[1], data[2] + rhs[2], data[3] + rhs[3] };
+			return result;
 		}
         inline vector4& operator+=( const vector4& rhs ) {
-			this->x += rhs.x;
-			this->y += rhs.y;
-			this->z += rhs.z;
-			this->w += rhs.w;
+			data[0] += rhs[0];
+			data[1] += rhs[1];
+			data[2] += rhs[2];
+			data[3] += rhs[3];
 			return *this;
 		}
 
 		// subtraction
 		inline vector4 operator-( const vector4 &rhs ) const {
-			return vector4( this->x - rhs.x, this->y - rhs.y, this->z - rhs.z, this->w - rhs.w );
+			vector4 result = { data[0] - rhs[0], data[1] - rhs[1], data[2] - rhs[2], data[3] - rhs[3] };
+			return result;
 		}
         inline vector4& operator-=( const vector4& rhs ) {
-			this->x -= rhs.x;
-			this->y -= rhs.y;
-			this->z -= rhs.z;
-			this->w -= rhs.w;
+			data[0] -= rhs[0];
+			data[1] -= rhs[1];
+			data[2] -= rhs[2];
+			data[3] -= rhs[3];
 			return *this;
 		}
 
 		// increment
 		inline void increment( void ) {
-			this->x += 1.0f;
-			this->y += 1.0f;
-			this->z += 1.0f;
-			this->w += 1.0f;
+			data[0] += 1.0f;
+			data[1] += 1.0f;
+			data[2] += 1.0f;
+			data[3] += 1.0f;
 		}
 
 		// decrement
 		inline void decrement( void ) {
-			this->x -= 1.0f;
-			this->y -= 1.0f;
-			this->z -= 1.0f;
-			this->w -= 1.0f;
+			data[0] -= 1.0f;
+			data[1] -= 1.0f;
+			data[2] -= 1.0f;
+			data[3] -= 1.0f;
 		}
 
 		// inverse
 		inline void inverse( void ) {
-			x = -x;
-			y = -y;
-			z = -z;
-			w = -w;
+			data[0] = -data[0];
+			data[1] = -data[1];
+			data[2] = -data[2];
+			data[3] = -data[3];
 		}
 		static inline vector4 inverse( const vector4 &in ) {
-			return vector4( -in.x, -in.y, -in.z, -in.w );
+			vector4 result = { -in[0], -in[1], -in[2], -in[3] };
+			return result;
 		}
 
 		// scalar multiplication
 		inline vector4 operator*( const real32_t scalar ) const {
-			return vector4( x * scalar, y * scalar, z * scalar, w * scalar );
+			vector4 result = { data[0] * scalar, data[1] * scalar, data[2] * scalar, data[3] * scalar };
+			return result;
 		}
 		inline vector4& operator*=( const real32_t scalar ) {
-			x *= scalar;
-			y *= scalar;
-			z *= scalar;
-			w *= scalar;
+			data[0] *= scalar;
+			data[1] *= scalar;
+			data[2] *= scalar;
+			data[3] *= scalar;
 			return *this;
 		}
 
 		// vector multiplication
 		inline vector4 operator*( const vector4 &rhs ) const {
-			return vector4( x * rhs.x, y * rhs.y, z * rhs.z, w * rhs.w );
+			vector4 result = { data[0] * rhs[0], data[1] * rhs[1], data[2] * rhs[2], data[3] * rhs[3] };
+			return result;
 		}
 		inline vector4& operator*=( const vector4 &rhs ) {
-			x *= rhs.x;
-			y *= rhs.y;
-			z *= rhs.z;
-			w *= rhs.w;
+			data[0] *= rhs[0];
+			data[1] *= rhs[1];
+			data[2] *= rhs[2];
+			data[3] *= rhs[3];
 			return *this;
 		}
 
 		// scalar division
 		inline vector4 operator/( const real32_t divisor ) const {
-			return vector4( x / divisor, y / divisor, z / divisor, w / divisor );
+			vector4 result = { data[0] / divisor, data[1] / divisor, data[2] / divisor, data[3] / divisor };
+			return result;
 		}
 		inline vector4& operator/=( const real32_t divisor ) {
-			x /= divisor;
-			y /= divisor;
-			z /= divisor;
-			w /= divisor;
+			data[0] /= divisor;
+			data[1] /= divisor;
+			data[2] /= divisor;
+			data[3] /= divisor;
 			return *this;
 		}
 
 		// vector division
 		inline vector4 operator/( const vector4 &rhs ) const {
-			return vector4( x / rhs.x, y / rhs.y, z / rhs.z, w / rhs.w );
+			vector4 result = { data[0] / rhs[0], data[1] / rhs[1], data[2] / rhs[2], data[3] / rhs[3] };
+			return result;
 		}
 		inline vector4& operator/=( const vector4 &rhs ) {
-			x /= rhs.x;
-			y /= rhs.y;
-			z /= rhs.z;
-			w /= rhs.w;
+			data[0] /= rhs[0];
+			data[1] /= rhs[1];
+			data[2] /= rhs[2];
+			data[3] /= rhs[3];
 			return *this;
 		}
 
@@ -991,7 +946,3 @@ namespace XS {
 	};
 
 } // namespace XS
-
-#ifdef _MSC_VER
-	#pragma warning( pop )
-#endif // _MSC_VER

@@ -337,12 +337,12 @@ namespace XS {
 		}
 
 		void Update( real64_t dt ) {
-			const vector4 clearColour(
+			const vector4 clearColour = {
 				r_clear->GetReal32( 0 ),
 				r_clear->GetReal32( 1 ),
 				r_clear->GetReal32( 2 ),
 				r_clear->GetReal32( 3 )
-			);
+			};
 
 #ifdef USE_FBO
 			Backend::SetBlendFunction( Backend::BlendFunc::SourceAlpha, Backend::BlendFunc::OneMinusSourceAlpha );
@@ -359,7 +359,7 @@ namespace XS {
 				view->Bind();
 
 #ifdef USE_FBO
-				Backend::ClearBuffer( true, true, vector4( 0.0f, 0.0f, 0.0f, 1.0f ) );
+				Backend::ClearBuffer( true, true, vector4{ 0.0f, 0.0f, 0.0f, 1.0f } );
 #endif
 
 				view->PreRender( dt );
@@ -390,14 +390,14 @@ namespace XS {
 				compositeMaterial.samplerBindings.push_back( colourBinding );
 
 				DrawQuadCommand cmd = {};
-					cmd.pos.x = -1.0f;
-					cmd.pos.y = 1.0f;
-					cmd.size.w = 2.0f;
-					cmd.size.h = -2.0f;
-					cmd.st1.x = 0.0f;
-					cmd.st1.y = 1.0f;
-					cmd.st2.x = 1.0f;
-					cmd.st2.y = 0.0f;
+					cmd.pos[0] = -1.0f;
+					cmd.pos[1] = 1.0f;
+					cmd.size[0] = 2.0f;
+					cmd.size[1] = -2.0f;
+					cmd.st1[0] = 0.0f;
+					cmd.st1[1] = 1.0f;
+					cmd.st2[0] = 1.0f;
+					cmd.st2[1] = 0.0f;
 					cmd.material = &compositeMaterial;
 					cmd.colour = nullptr;
 				DrawQuad( cmd );
@@ -439,14 +439,14 @@ namespace XS {
 			AssertView();
 
 			RenderCommand cmd( CommandType::DrawQuad );
-			cmd.drawQuad.pos.x = x;
-			cmd.drawQuad.pos.y = y;
-			cmd.drawQuad.size.w = w;
-			cmd.drawQuad.size.h = h;
-			cmd.drawQuad.st1.x = s1;
-			cmd.drawQuad.st1.y = t1;
-			cmd.drawQuad.st2.x = s2;
-			cmd.drawQuad.st2.y = t2;
+			cmd.drawQuad.pos[0] = x;
+			cmd.drawQuad.pos[1] = y;
+			cmd.drawQuad.size[0] = w;
+			cmd.drawQuad.size[1] = h;
+			cmd.drawQuad.st1[0] = s1;
+			cmd.drawQuad.st1[1] = t1;
+			cmd.drawQuad.st2[0] = s2;
+			cmd.drawQuad.st2[1] = t2;
 			cmd.drawQuad.colour = colour;
 			cmd.drawQuad.material = material;
 

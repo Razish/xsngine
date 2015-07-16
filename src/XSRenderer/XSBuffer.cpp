@@ -1,4 +1,5 @@
 #include "XSCommon/XSCommon.h"
+#include "XSCommon/XSCvar.h"
 #include "XSCommon/XSConsole.h"
 #include "XSRenderer/XSRenderer.h"
 #include "XSRenderer/XSBuffer.h"
@@ -89,12 +90,7 @@ namespace XS {
 			}
 
 			void Buffer::Bind( void ) const {
-				static GLenum lastType = GL_NONE;
-				static GLuint lastID = -1;
-
-				if ( type != lastType || privateID != lastID ) {
-					glBindBuffer( type, privateID );
-				}
+				glBindBuffer( type, privateID );
 			}
 
 		} // namespace Backend

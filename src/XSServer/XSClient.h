@@ -20,7 +20,6 @@ namespace XS {
 
 			uint64_t		guid;
 			ConnectionState	connectionState;
-			uint64_t		lastSnapshotAcked = 0u;
 		};
 
 		Client *GetClient(

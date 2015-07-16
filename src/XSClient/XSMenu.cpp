@@ -87,8 +87,8 @@ namespace XS {
 							parser->SkipLine();
 						}
 						else {
-							position.x = x;
-							position.y = y;
+							position[0] = x;
+							position[1] = y;
 						}
 					}
 					// size
@@ -104,8 +104,8 @@ namespace XS {
 							parser->SkipLine();
 						}
 						else {
-							size.w = w;
-							size.h = h;
+							size[0] = w;
+							size[1] = h;
 						}
 					}
 					else if ( !String::Compare( token, "button" ) ) {
@@ -188,12 +188,12 @@ namespace XS {
 		}
 
 		bool Menu::MouseButtonEvent( const struct MouseButtonEvent &ev ) {
-			const real32_t cursorX = Client::cursorPos.x;
-			const real32_t cursorY = Client::cursorPos.y;
-			const real32_t menuX = position.x;
-			const real32_t menuY = position.y;
-			const real32_t menuW = size.x;
-			const real32_t menuH = size.y;
+			const real32_t cursorX = Client::cursorPos[0];
+			const real32_t cursorY = Client::cursorPos[1];
+			const real32_t menuX = position[0];
+			const real32_t menuY = position[1];
+			const real32_t menuW = size[0];
+			const real32_t menuH = size[1];
 			if ( cursorX > menuX && cursorX < (menuX + menuW)
 				&& cursorY > menuY && cursorY < (menuY + menuH) )
 			{
@@ -211,12 +211,12 @@ namespace XS {
 		}
 
 		bool Menu::MouseMotionEvent( void ) {
-			const real32_t cursorX = Client::cursorPos.x;
-			const real32_t cursorY = Client::cursorPos.y;
-			const real32_t menuX = position.x;
-			const real32_t menuY = position.y;
-			const real32_t menuW = size.x;
-			const real32_t menuH = size.y;
+			const real32_t cursorX = Client::cursorPos[0];
+			const real32_t cursorY = Client::cursorPos[1];
+			const real32_t menuX = position[0];
+			const real32_t menuY = position[1];
+			const real32_t menuW = size[0];
+			const real32_t menuH = size[1];
 			if ( cursorX > menuX && cursorX < (menuX + menuW)
 				&& cursorY > menuY && cursorY < (menuY + menuH) )
 			{

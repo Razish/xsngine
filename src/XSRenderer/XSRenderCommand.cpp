@@ -123,48 +123,48 @@ namespace XS {
 				quadMaterial->Bind();
 			}
 
-			vector2 vertices[4];
-			vector2 texcoords[4];
+			vector2 vertices[4] = {};
+			vector2 texcoords[4] = {};
 			vector4 colour = colourTable[ColourIndex( COLOUR_WHITE )];
 			if ( cmd.colour ) {
 				colour = *cmd.colour;
 			}
 
 			// Top-left
-			vertices[0].x	= cmd.pos.x;
-			vertices[0].y	= cmd.pos.y;
-			texcoords[0].x	= cmd.st1.x;
-			texcoords[0].y	= cmd.st1.y;
+			vertices[0][0]	= cmd.pos[0];
+			vertices[0][1]	= cmd.pos[1];
+			texcoords[0][0]	= cmd.st1[0];
+			texcoords[0][1]	= cmd.st1[1];
 
 			// Top-right
-			vertices[1].x	= cmd.pos.x + cmd.size.w;
-			vertices[1].y	= cmd.pos.y;
-			texcoords[1].x	= cmd.st2.x;
-			texcoords[1].y	= cmd.st1.y;
+			vertices[1][0]	= cmd.pos[0] + cmd.size[0];
+			vertices[1][1]	= cmd.pos[1];
+			texcoords[1][0]	= cmd.st2[0];
+			texcoords[1][1]	= cmd.st1[1];
 
 			// Bottom-left
-			vertices[2].x	= cmd.pos.x;
-			vertices[2].y	= cmd.pos.y + cmd.size.h;
-			texcoords[2].x	= cmd.st1.x;
-			texcoords[2].y	= cmd.st2.y;
+			vertices[2][0]	= cmd.pos[0];
+			vertices[2][1]	= cmd.pos[1] + cmd.size[1];
+			texcoords[2][0]	= cmd.st1[0];
+			texcoords[2][1]	= cmd.st2[1];
 
 			// Bottom-right
-			vertices[3].x	= cmd.pos.x + cmd.size.w;
-			vertices[3].y	= cmd.pos.y + cmd.size.h;
-			texcoords[3].x	= cmd.st2.x;
-			texcoords[3].y	= cmd.st2.y;
+			vertices[3][0]	= cmd.pos[0] + cmd.size[0];
+			vertices[3][1]	= cmd.pos[1] + cmd.size[1];
+			texcoords[3][0]	= cmd.st2[0];
+			texcoords[3][1]	= cmd.st2[1];
 
 			BufferMemory bufferMem = quadsVertexBuffer->MapDiscard( 4 * sizeof( real32_t ) * 8 );
 			real32_t *vertexBuffer = static_cast<real32_t *>( bufferMem.devicePtr );
 			for ( size_t i = 0u; i < 4; i++ ) {
-				*vertexBuffer++ = vertices[i].x;
-				*vertexBuffer++ = vertices[i].y;
-				*vertexBuffer++ = texcoords[i].x;
-				*vertexBuffer++ = texcoords[i].y;
-				*vertexBuffer++ = colour.r;
-				*vertexBuffer++ = colour.g;
-				*vertexBuffer++ = colour.b;
-				*vertexBuffer++ = colour.a;
+				*vertexBuffer++ = vertices[i][0];
+				*vertexBuffer++ = vertices[i][1];
+				*vertexBuffer++ = texcoords[i][0];
+				*vertexBuffer++ = texcoords[i][1];
+				*vertexBuffer++ = colour[0];
+				*vertexBuffer++ = colour[1];
+				*vertexBuffer++ = colour[2];
+				*vertexBuffer++ = colour[3];
 			}
 			quadsVertexBuffer->Unmap();
 
@@ -276,10 +276,11 @@ namespace XS {
 			for ( const auto &mesh : cmd.model->meshes ) {
 				SDL_assert( mesh->material && "DrawMesh with invalid material" );
 
+				mesh->material->Bind();
 				mesh->material->shaderProgram->SetUniform3( "u_Position",
-					cmd.info.worldPos.x,
-					cmd.info.worldPos.y,
-					cmd.info.worldPos.z
+					cmd.info.worldPos[0],
+					cmd.info.worldPos[1],
+					cmd.info.worldPos[2]
 				);
 				DrawMesh( mesh );
 			}

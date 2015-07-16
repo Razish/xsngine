@@ -3,6 +3,7 @@
 #include "XSCommon/XSByteBuffer.h"
 #include "XSServer/XSEntity.h"
 #include "XSServer/XSServerGame.h"
+#include "XSServer/XSServer.h"
 
 namespace XS {
 
@@ -24,6 +25,8 @@ namespace XS {
 		};
 
 		void Entity::Update( real64_t dt ) {
+			position[0] = std::sin( Server::GetElapsedTime() / 250.0 );
+			position[2] = std::cos( Server::GetElapsedTime() / 500.0 );
 			if ( runPhysics ) {
 				//TODO: physics
 			}
@@ -34,9 +37,9 @@ namespace XS {
 			buffer->WriteUInt32( id );
 			buffer->WriteUInt32( type );
 
-			buffer->WriteReal32( position.x );
-			buffer->WriteReal32( position.y );
-			buffer->WriteReal32( position.z );
+			buffer->WriteReal32( position[0] );
+			buffer->WriteReal32( position[1] );
+			buffer->WriteReal32( position[2] );
 		}
 
 	} // namespace ServerGame

@@ -38,7 +38,7 @@ namespace XS {
 		//FIXME: move this to local client storage, not ClientGame
 		//	kind of related to menus, but we also want it available for 2d games. it belongs in neither, so it should
 		//	live in the Client namespace
-		vector2		cursorPos( 0.5f, 0.5f );	// used for menus and 2d games
+		vector2 cursorPos = { 0.5f, 0.5f };	// used for menus and 2d games
 
 		// console input
 		ClientConsole *clientConsole = nullptr;
@@ -80,21 +80,21 @@ namespace XS {
 		}
 
 		bool MouseMotionEvent( const struct MouseMotionEvent &ev ) {
-			cursorPos.x += ev.x / static_cast<real32_t>( Renderer::state.window.width );
-			cursorPos.y += ev.y / static_cast<real32_t>( Renderer::state.window.height );
+			cursorPos[0] += ev.x / static_cast<real32_t>( Renderer::state.window.width );
+			cursorPos[1] += ev.y / static_cast<real32_t>( Renderer::state.window.height );
 
 			// clamp the cursor coordinates to screen-space
-			if ( cursorPos.x < 0.0f ) {
-				cursorPos.x = 0.0f;
+			if ( cursorPos[0] < 0.0f ) {
+				cursorPos[0] = 0.0f;
 			}
-			else if ( cursorPos.x > 1.0f ) {
-				cursorPos.x = 1.0f;
+			else if ( cursorPos[0] > 1.0f ) {
+				cursorPos[0] = 1.0f;
 			}
-			if ( cursorPos.y < 0.0f ) {
-				cursorPos.y = 0.0f;
+			if ( cursorPos[1] < 0.0f ) {
+				cursorPos[1] = 0.0f;
 			}
-			else if ( cursorPos.y > 1.0f ) {
-				cursorPos.y = 1.0f;
+			else if ( cursorPos[1] > 1.0f ) {
+				cursorPos[1] = 1.0f;
 			}
 
 			if ( menu->isOpen ) {
@@ -255,10 +255,10 @@ namespace XS {
 				textWidth += font->GetGlyphWidth( *p, fpsTextSize );
 			}
 
-			vector2 pos(
+			vector2 pos = {
 				Renderer::state.window.width - textWidth,
 				0.0f
-			);
+			};
 			font->Draw( pos, fpsText, fpsTextSize );
 		}
 

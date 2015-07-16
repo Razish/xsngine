@@ -15,9 +15,6 @@ namespace XS {
 			vector3			viewAngles;
 			vector3			viewDelta;
 			EntityContainer	entities;
-			struct NetworkState {
-				uint64_t lastChecksum = 0u;
-			} net;
 		} state;
 
 	} // namespace ClientGame

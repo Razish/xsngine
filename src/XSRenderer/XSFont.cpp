@@ -124,13 +124,13 @@ namespace XS {
 
 				// calculate glyph metrics
 				FontData &fd = data[c][pointSize];
-				fd.pixelSize = vector2( glyphWidth, glyphHeight );
+				fd.pixelSize = vector2{ static_cast<real32_t>( glyphWidth ), static_cast<real32_t>( glyphHeight ) };
 				const real32_t stScale = 16.0f * maxCellSize;
-				fd.s = vector2( colPos, colPos + (static_cast<real32_t>( glyphWidth ) / stScale) );
-				fd.t = vector2( rowPos, rowPos + (static_cast<real32_t>( glyphHeight ) / stScale) );
+				fd.s = vector2{ colPos, colPos + (static_cast<real32_t>( glyphWidth ) / stScale) };
+				fd.t = vector2{ rowPos, rowPos + (static_cast<real32_t>( glyphHeight ) / stScale) };
 				fd.advance = static_cast<real32_t>( slot->advance.x ) / 64.0f;
-				fd.offset.x = static_cast<real32_t>( slot->metrics.horiBearingX ) / 64.0f;
-				fd.offset.y = lineHeight[pointSize] + -(static_cast<real32_t>( slot->metrics.horiBearingY ) / 64.0f);
+				fd.offset[0] = static_cast<real32_t>( slot->metrics.horiBearingX ) / 64.0f;
+				fd.offset[1] = lineHeight[pointSize] + -(static_cast<real32_t>( slot->metrics.horiBearingY ) / 64.0f);
 
 				if ( !bitmap.buffer ) {
 					FT_Done_Glyph( glyph );
@@ -204,32 +204,32 @@ namespace XS {
 				const FontData &fd = data[c][pointSize];
 
 				// check for overflow
-				if ( currentPos.x + fd.advance >= state.window.width ) {
-					currentPos.x = pos.x;
-					currentPos.y += lineHeight[pointSize];
+				if ( currentPos[0] + fd.advance >= state.window.width ) {
+					currentPos[0] = pos[0];
+					currentPos[1] += lineHeight[pointSize];
 				}
 
 				// render the glyph
 				DrawQuad(
-					currentPos.x + fd.offset.x, // x
-					currentPos.y + fd.offset.y, // y
-					fd.pixelSize.x, // width
-					fd.pixelSize.y, // height
-					fd.s.x, // s0
-					fd.t.x, // t0
-					fd.s.y, // s1
-					fd.t.y, // t1
+					currentPos[0] + fd.offset[0], // x
+					currentPos[1] + fd.offset[1], // y
+					fd.pixelSize[0], // width
+					fd.pixelSize[1], // height
+					fd.s[0], // s0
+					fd.t[0], // t0
+					fd.s[1], // s1
+					fd.t[1], // t1
 					colour,
 					material[pointSize]
 				);
 
 				// increase by glyph width
-				currentPos.x += fd.advance;
+				currentPos[0] += fd.advance;
 
 				// check for line-feeds
 				if ( c == '\n' ) {
-					currentPos.x = pos.x;
-					currentPos.y += lineHeight[pointSize];
+					currentPos[0] = pos[0];
+					currentPos[1] += lineHeight[pointSize];
 				}
 				//TODO: handle \r? do we just write on top of the previous characters?
 				//TODO: handle tabs correctly with tab-stops aligned to 4 spaces - from the window's position, or the
@@ -255,18 +255,18 @@ namespace XS {
 				const FontData &fd = data[c][pointSize];
 
 				// check for overflow
-				if ( currentPos.x + fd.advance >= state.window.width ) {
-					currentPos.x = pos.x;
-					currentPos.y += lineHeight[pointSize];
+				if ( currentPos[0] + fd.advance >= state.window.width ) {
+					currentPos[0] = pos[0];
+					currentPos[1] += lineHeight[pointSize];
 					numLines++;
 				}
 
-				currentPos.x += fd.advance;
+				currentPos[0] += fd.advance;
 
 				// check for line-feeds
 				if ( c == '\n' ) {
-					currentPos.x = pos.x;
-					currentPos.y += lineHeight[pointSize];
+					currentPos[0] = pos[0];
+					currentPos[1] += lineHeight[pointSize];
 					numLines++;
 				}
 			}

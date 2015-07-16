@@ -65,7 +65,7 @@ namespace XS {
 		}
 
 		MenuElementSlider::MenuElementSlider( TokenParser *parser, const char *fileName )
-		: size( 0.0f, 0.0f ), cvarName( "" ), postExecCommand( "" ), updatingValue( false )
+		: size{ 0.0f, 0.0f }, cvarName( "" ), postExecCommand( "" ), updatingValue( false )
 		{
 			std::memset( &assets, 0, sizeof(assets) );
 			std::memset( &range, 0, sizeof(range) );
@@ -132,8 +132,8 @@ namespace XS {
 						);
 					}
 					else {
-						position.x = x;
-						position.y = y;
+						position[0] = x;
+						position[1] = y;
 					}
 					parser->SkipLine();
 				}
@@ -150,8 +150,8 @@ namespace XS {
 						);
 					}
 					else {
-						size.w = w;
-						size.h = h;
+						size[0] = w;
+						size[1] = h;
 					}
 					parser->SkipLine();
 				}
@@ -216,8 +216,8 @@ namespace XS {
 			if ( properties.centered ) {
 				topLeft -= size / 2.0f;
 			}
-			if ( mousePos.x > topLeft.x && mousePos.x < (topLeft.x + size.x)
-				&& mousePos.y > topLeft.y && mousePos.y < (topLeft.y + size.y) )
+			if ( mousePos[0] > topLeft[0] && mousePos[0] < (topLeft[0] + size[0])
+				&& mousePos[1] > topLeft[1] && mousePos[1] < (topLeft[1] + size[1]) )
 			{
 				return true;
 			}
@@ -269,16 +269,16 @@ namespace XS {
 				delete barData;
 			}
 
-			const vector2 topLeft(
-				position.x * Renderer::state.window.width,
-				position.y * Renderer::state.window.height
-			);
-			const real32_t barWidth = size.x * Renderer::state.window.width;
-			const real32_t barHeight = size.y * Renderer::state.window.height;
+			const vector2 topLeft {
+				position[0] * Renderer::state.window.width,
+				position[1] * Renderer::state.window.height
+			};
+			const real32_t barWidth = size[0] * Renderer::state.window.width;
+			const real32_t barHeight = size[1] * Renderer::state.window.height;
 			const real32_t thumbSize = std::min( barWidth, barHeight );
 
 			Renderer::DrawQuad(
-				topLeft.x, topLeft.y,
+				topLeft[0], topLeft[1],
 				barWidth, barHeight,
 				0.0f, 0.0f, 1.0f, 1.0f,
 				&colourTable[ColourIndex( COLOUR_WHITE )],
@@ -293,7 +293,7 @@ namespace XS {
 				real32_t d = range.top - range.bottom;
 				real32_t f = (v - range.bottom) / d;
 				Renderer::DrawQuad(
-					topLeft.x + (barWidth * f) - (thumbSize / 2.0f), topLeft.y,
+					topLeft[0] + (barWidth * f) - (thumbSize / 2.0f), topLeft[1],
 					thumbSize, thumbSize,
 					0.0f, 0.0f, 1.0f, 1.0f,
 					&colourTable[ColourIndex( COLOUR_GREY )],
@@ -306,7 +306,7 @@ namespace XS {
 				d = range.top - range.bottom;
 				f = (v - range.bottom) / d;
 				Renderer::DrawQuad(
-					topLeft.x + (barWidth * f) - (thumbSize / 2.0f), topLeft.y,
+					topLeft[0] + (barWidth * f) - (thumbSize / 2.0f), topLeft[1],
 					thumbSize, thumbSize,
 					0.0f, 0.0f, 1.0f, 1.0f,
 					&colourTable[ColourIndex( COLOUR_WHITE )],
@@ -344,9 +344,9 @@ namespace XS {
 
 			if ( ev.pressed && (ev.button == SDL_BUTTON_LEFT) ) {
 				// find the fractional point we clicked at
-				const real32_t cursorX = Client::cursorPos.x;
-				const real32_t realPos = cursorX - position.x;
-				const real32_t f = realPos / size.x;
+				const real32_t cursorX = Client::cursorPos[0];
+				const real32_t realPos = cursorX - position[0];
+				const real32_t f = realPos / size[0];
 
 				UpdateValue( f );
 				updatingValue = true;
@@ -367,9 +367,9 @@ namespace XS {
 			else {
 				tooltip.mouseHovering = false;
 				if ( updatingValue ) {
-					const real32_t cursorX = Client::cursorPos.x;
-					const real32_t realPos = cursorX - position.x;
-					const real32_t f = realPos / size.x;
+					const real32_t cursorX = Client::cursorPos[0];
+					const real32_t realPos = cursorX - position[0];
+					const real32_t f = realPos / size[0];
 					UpdateValue( f );
 					if ( !postExecCommand.empty() ) {
 						Command::Append( postExecCommand.c_str() );
@@ -381,9 +381,9 @@ namespace XS {
 
 			if ( updatingValue ) {
 				// find the fractional point we clicked at
-				const real32_t cursorX = Client::cursorPos.x;
-				const real32_t realPos = cursorX - position.x;
-				const real32_t f = realPos / size.x;
+				const real32_t cursorX = Client::cursorPos[0];
+				const real32_t realPos = cursorX - position[0];
+				const real32_t f = realPos / size[0];
 
 				UpdateValue( f );
 			}

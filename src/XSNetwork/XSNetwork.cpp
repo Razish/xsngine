@@ -22,6 +22,7 @@ namespace XS {
 		static bool	isServer = false;
 		static uint64_t myGUID = 0u;
 
+		static Cvar *net_debug = nullptr;
 		static Cvar *net_port = nullptr;
 
 		static void Cmd_NetStat( const CommandContext * const context ) {
@@ -33,6 +34,9 @@ namespace XS {
 		}
 
 		static void RegisterCvars( void ) {
+			net_debug = Cvar::Create( "net_debug", "0",
+				"Print debug messages of network activity", CVAR_ARCHIVE
+			);
 			net_port = Cvar::Create( "net_port", "1337",
 				"Network port to listen on", CVAR_ARCHIVE
 			);
@@ -154,12 +158,13 @@ namespace XS {
 
 			RakNet::Packet *packet = nullptr;
 			while ( (packet = peer->Receive()) ) {
-#if 0
-				console.Print( PrintLevel::Debug, "Receive: %i (%i)\n",
-					packet->data[0],
-					ID_USER_PACKET_ENUM
-				);
-#endif
+				if ( net_debug->GetUInt32() & 0x2u ) {
+					console.Print( PrintLevel::Normal, "Receive: %i (%i)\n",
+						packet->data[0],
+						ID_USER_PACKET_ENUM
+					);
+				}
+
 				switch ( packet->data[0] ) {
 
 				case ID_REMOTE_DISCONNECTION_NOTIFICATION: {
@@ -259,12 +264,12 @@ namespace XS {
 		}
 
 		void Send( uint64_t guid, const XSPacket *packet ) {
-#if 0
-			console.Print( PrintLevel::Debug, "Send: %i (%i)\n",
-				packet->msg,
-				ID_USER_PACKET_ENUM
-			);
-#endif
+			if ( net_debug->GetUInt32() & 0x1u ) {
+				console.Print( PrintLevel::Normal, "Send: %i (%i)\n",
+					packet->msg,
+					ID_USER_PACKET_ENUM
+				);
+			}
 
 			if ( !isServer ) {
 				SDL_assert( connected );
@@ -300,8 +305,8 @@ namespace XS {
 
 			peer->Send(
 				&bs, // bitStream
-				PacketPriority::MEDIUM_PRIORITY, // priority
-				PacketReliability::UNRELIABLE_SEQUENCED, // reliability
+				PacketPriority::IMMEDIATE_PRIORITY, // priority
+				PacketReliability::RELIABLE_ORDERED, // reliability
 				0, // orderingChannel
 				systemIdentifier, // systemIdentifier
 				isServer // broadcast

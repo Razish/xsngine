@@ -57,14 +57,10 @@ namespace XS {
 
 			ByteBuffer bb;
 			ServerGame::GenerateSnapshot( &bb );
-			uint64_t checksum = bb.GetChecksum();
-			bb.WriteUInt64( checksum );
 			snapshot.data = bb.GetMemory( &snapshot.dataLen );
 
 			for ( auto *client : clients ) {
-				if ( checksum != client->lastSnapshotAcked ) {
-					Network::Send( client->guid, &snapshot );
-				}
+				Network::Send( client->guid, &snapshot );
 			}
 		}
 
@@ -87,14 +83,8 @@ namespace XS {
 		bool ReceivePacket( const RakNet::Packet *packet ) {
 			switch ( packet->data[0] ) {
 
-			case Network::ID_XS_CL2SV_GAMESTATE_ACK: {
-				Client *client = GetClient( packet->guid.g );
-				if ( client ) {
-					uint8_t *buffer = packet->data + 1;
-					size_t bufferLen = packet->length - 1;
-					ByteBuffer bb( buffer, bufferLen );
-					bb.ReadUInt64( &client->lastSnapshotAcked );
-				}
+			case Network::ID_XS_CL2SV_DUMMY: {
+				// ...
 			} break;
 
 			default: {

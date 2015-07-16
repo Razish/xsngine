@@ -128,7 +128,7 @@ namespace XS {
 			// TODO: might have to draw lines in reverse to compensate for one buffer element spanning multiple
 			//	lines
 			const real32_t x = 0.0f;
-			vector2 pos( x, 0.0f );
+			vector2 pos = { x, 0.0f };
 			uint32_t drawn = 0u;
 			const uint16_t fontSize = static_cast<uint16_t>( con_fontSize->GetInt32() );
 			for ( const auto &it : lines ) {
@@ -138,7 +138,7 @@ namespace XS {
 					break;
 				}
 				font->Draw( pos, it, fontSize, &colourTable[ColourIndex( COLOUR_WHITE )] );
-				pos.y += linesToDraw * font->lineHeight[fontSize];
+				pos[1] += linesToDraw * font->lineHeight[fontSize];
 			}
 
 			// draw the input line
@@ -146,12 +146,12 @@ namespace XS {
 
 			// and now the cursor
 			const char *line = input->GetLine();
-			pos.x = font->GetGlyphWidth( '>', fontSize );
+			pos[0] = font->GetGlyphWidth( '>', fontSize );
 			for ( const char *p = line; *p; p++ ) {
 				if ( p - line >= static_cast<int32_t>( input->GetCursorPos() ) ) {
 					break;
 				}
-				pos.x += font->GetGlyphWidth( *p, fontSize );
+				pos[0] += font->GetGlyphWidth( *p, fontSize );
 			}
 			//TODO: overstrike mode
 			if ( static_cast<uint32_t>( GetElapsedTime() ) & 256 ) {
@@ -165,15 +165,15 @@ namespace XS {
 			for ( const char *p = versionText; *p; p++ ) {
 				versionWidth += font->GetGlyphWidth( *p, 12u );
 			}
-			vector2 versionPos(
+			vector2 versionPos = {
 				Renderer::state.window.width - versionWidth,
 				(Renderer::state.window.height / 2) - font->lineHeight[12u] - 4u
-			);
+			};
 			font->Draw( versionPos, versionText, 12u );
 
 			// adjust for next line
-			pos.x = x;
-			pos.y += font->lineHeight[fontSize];
+			pos[0] = x;
+			pos[1] += font->lineHeight[fontSize];
 		}
 
 	} // namespace Client

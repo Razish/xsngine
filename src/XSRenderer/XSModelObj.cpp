@@ -20,7 +20,7 @@ namespace XS {
 	namespace Renderer {
 
 		void Obj::Process( Mesh *mesh ) {
-			mesh->normals.resize( mesh->vertices.size(), vector3( 0.0f, 0.0f, 0.0f ) );
+			mesh->normals.resize( mesh->vertices.size(), vector3{} );
 			size_t numIndices = mesh->indices.size();
 			for ( size_t i = 0; i < numIndices; i += 3 ) {
 				uint32_t ia = mesh->indices[i + 0];
@@ -135,7 +135,7 @@ namespace XS {
 
 					vector3 vertex;
 					for ( int i = 0; i < 3; i++ ) {
-						parser.ParseReal32( &vertex.raw[i] );
+						parser.ParseReal32( &vertex[i] );
 					}
 					mesh->vertices.push_back( vertex );
 					parser.SkipLine();
@@ -155,7 +155,7 @@ namespace XS {
 
 					vector3 normal;
 					for ( int i = 0; i < 3; i++ ) {
-						parser.ParseReal32( &normal.raw[i] );
+						parser.ParseReal32( &normal[i] );
 					}
 					mesh->normals.push_back( normal );
 					parser.SkipLine();

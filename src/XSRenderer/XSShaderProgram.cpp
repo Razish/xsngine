@@ -258,6 +258,7 @@ namespace XS {
 		}
 
 		void ShaderProgram::CheckBind( void ) {
+			#if 0
 			if ( !r_fastPath->GetBool() ) {
 				if ( lastProgramUsed != this ) {
 					console.Print( PrintLevel::Developer, "Temporarily binding shader %02i to set uniform variable\n",
@@ -267,15 +268,18 @@ namespace XS {
 					Bind();
 				}
 			}
+			#endif
 		};
 
 		void ShaderProgram::CheckUnbind( void ) {
+			#if 0
 			if ( !r_fastPath->GetBool() ) {
 				if ( tmpBindProgram ) {
 					tmpBindProgram->Bind();
 					tmpBindProgram = nullptr;
 				}
 			}
+			#endif
 		};
 
 		//TODO: debug assert that this is the currently bound shader

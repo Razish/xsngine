@@ -77,8 +77,8 @@ namespace XS {
 		}
 
 		void FlyCamera::HandleMouseInput( real64_t dt ) {
-			real64_t xOffset = state.viewDelta.yaw / 360.0;
-			real64_t yOffset = state.viewDelta.pitch / 360.0;
+			real64_t xOffset = state.viewDelta[1] / 360.0;
+			real64_t yOffset = state.viewDelta[0] / 360.0;
 			CalculateRotation( dt, xOffset, yOffset );
 		}
 

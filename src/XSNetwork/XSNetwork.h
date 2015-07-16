@@ -13,7 +13,7 @@ namespace XS {
 			ID_XS_SV2CL_PRINT,
 
 			// client --> server
-			ID_XS_CL2SV_GAMESTATE_ACK,
+			ID_XS_CL2SV_DUMMY,
 		};
 
 		struct XSPacket {
