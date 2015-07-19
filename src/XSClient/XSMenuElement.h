@@ -34,10 +34,10 @@ namespace XS {
 			struct Tooltip {
 				Renderer::Font	*font = nullptr;
 				uint16_t		 pointSize = 16u;
-				std::string		 text;
+				std::string		 text = "";
 				bool			 mouseHovering = false;
 				real64_t		 lastMouseTime = 0.0;
-				vector2			 lastMousePos;
+				vector2			 lastMousePos = {};
 			} tooltip;
 
 		public:

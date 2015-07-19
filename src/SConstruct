@@ -315,11 +315,6 @@ if realcc == 'gcc' or realcc == 'clang':
 			]
 
 	# gcc-specific warnings
-	if realcc == 'gcc' and cmp_version( ccversion, '4.9' ) >= 0:
-		env['CCFLAGS'] += [
-			'-fdiagnostics-color',
-		]
-
 	if realcc == 'gcc' and cmp_version( ccversion, '4.6' ) >= 0 and arch != 'arm':
 		env['CCFLAGS'] += [
 			'-Wlogical-op',
@@ -376,6 +371,13 @@ if realcc == 'gcc' or realcc == 'clang':
 		'-fvisibility=hidden',
 		'-fomit-frame-pointer',
 	]
+
+	# misc settings
+	#if realcc == 'gcc' and cmp_version( ccversion, '4.9' ) >= 0:
+	#	env['CCFLAGS'] += [
+	#		'-fdiagnostics-color',
+	#	]
+
 
 	# c flags
 	env['CFLAGS'] += [

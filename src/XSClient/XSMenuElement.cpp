@@ -19,7 +19,6 @@ namespace XS {
 
 		MenuElement::MenuElement() {
 			std::memset( &properties, 0, sizeof(properties) );
-			std::memset( &tooltip, 0, sizeof(tooltip) );
 		}
 
 		void MenuElement::ParseTooltip( TokenParser *parser, const char *fileName ) {

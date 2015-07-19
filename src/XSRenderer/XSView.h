@@ -26,13 +26,12 @@ namespace XS {
 
 		struct View {
 		private:
-			Texture							*colourTexture;
-			Texture							*depthTexture;
-
-			std::queue<const RenderInfo>	renderObjects;
-			std::queue<vector3>				pointLights;
-
-			renderCallback_t				callbackPreRender, callbackPostRender;
+			Texture					*colourTexture;
+			Texture					*depthTexture;
+			std::queue<RenderInfo>	 renderObjects;
+			std::queue<vector3>		 pointLights;
+			renderCallback_t		 callbackPreRender;
+			renderCallback_t		 callbackPostRender;
 
 		public:
 			bool						 is2D;
