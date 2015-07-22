@@ -21,6 +21,7 @@ files = [
 	'XSClient/XSMenuManager.cpp',
 	'XSClient/XSParticleEmitter.cpp',
 	'XSClient/XSPerlin.cpp',
+	'XSClient/XSResources.cpp',
 	'XSClient/XSTerrain.cpp'
 ]
 files = [build_dir + f for f in files]

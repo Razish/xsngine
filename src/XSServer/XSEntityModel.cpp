@@ -17,6 +17,7 @@ namespace XS {
 
 		void EntityModel::Serialise( ByteBuffer *buffer ) const {
 			Entity::Serialise( buffer );
+			buffer->WriteUInt32( modelIndex );
 		}
 
 	} // namespace ServerGame

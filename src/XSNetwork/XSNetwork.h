@@ -9,7 +9,7 @@ namespace XS {
 		enum GameMessage {
 			// server --> client
 			ID_XS_SV2CL_GAMESTATE = ID_USER_PACKET_ENUM + 1,
-			ID_XS_SV2CL_REMOVE_ENTITY,
+			ID_XS_SV2CL_RESOURCES,
 			ID_XS_SV2CL_PRINT,
 
 			// client --> server

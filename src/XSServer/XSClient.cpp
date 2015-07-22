@@ -1,5 +1,10 @@
+#include <unordered_map>
+
+#include <RakNet/RakPeerInterface.h>
+
 #include "XSCommon/XSCommon.h"
 #include "XSCommon/XSString.h"
+#include "XSCommon/XSConsole.h"
 #include "XSServer/XSClient.h"
 #include "XSServer/XSServer.h"
 
@@ -7,22 +12,28 @@ namespace XS {
 
 	namespace Server {
 
-		Client::Client( uint64_t guid )
-		: guid( guid )
-		{
-			BroadcastMessage( String::Format( "Connection from %X", guid ).c_str() );
-		}
+		std::unordered_map<uint64_t, Client *>	clients;
 
-		Client *GetClient( uint64_t guid ) {
-			// linear search
-			//FIXME: use guid as key?
-			for ( Client *client : clients ) {
-				if ( client->guid == guid ) {
-					return client;
-				}
+		void IncomingConnection( const RakNet::Packet *packet ) {
+			const uint64_t guid = packet->guid.g;
+
+			// see if client is already connected - should not happen
+			if ( clients[guid] ) {
+				console.Print( PrintLevel::Normal, "Incoming connection from already-connected client (guid: %X)\n",
+					guid
+				);
+				delete clients[guid];
 			}
 
-			return nullptr;
+			Client *client = new Client();
+			BroadcastMessage( String::Format( "Connection from %X", guid ).c_str() );
+
+			// initialise
+			client->guid = packet->guid.g;
+			client->connectionState = Client::ConnectionState::Connecting;
+
+			// store
+			clients[guid] = client;
 		}
 
 	} // namespace ServerGame

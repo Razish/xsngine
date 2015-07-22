@@ -37,24 +37,25 @@ namespace XS {
 		}
 
 		Entity::~Entity() {
-			if ( renderInfo.renderable ) {
-				delete renderInfo.renderable;
-				renderInfo.renderable = nullptr;
+			//FIXME: this isn't right...?
+			if ( renderInfo.handle != Renderer::Renderable::invalidHandle ) {
+				renderInfo.handle = Renderer::Renderable::invalidHandle;
 			}
 
 			RemoveEntity( this );
 		};
 
 		void Entity::Update( real64_t dt ) {
-			if ( renderInfo.renderable ) {
-				renderInfo.renderable->Update( dt );
+			if ( renderInfo.handle != Renderer::Renderable::invalidHandle ) {
+				Renderer::Renderable::Get( renderInfo.handle )->Update( dt );
 			}
 		}
 
 		void Entity::AddToScene( Renderer::View *view ) {
-			renderInfo.worldPos = position;
+			if ( renderInfo.handle != Renderer::Renderable::invalidHandle ) {
+				SDL_assert( view );
 
-			if ( renderInfo.renderable ) {
+				renderInfo.worldPos = position;
 				view->AddObject( renderInfo );
 			}
 		}

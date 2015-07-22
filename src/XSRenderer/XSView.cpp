@@ -89,10 +89,10 @@ namespace XS {
 			while ( !renderObjects.empty() ) {
 				const auto &object = renderObjects.front();
 
-				SDL_assert( object.renderable );
-
-				//FIXME: this design seems ass-backwards
-				object.renderable->Draw( object );
+				if ( object.handle != Renderable::invalidHandle ) {
+					//FIXME: this design seems ass-backwards WRT RenderInfo.handle -> Renderable::Draw( RenderInfo )
+					Renderable::Get( object.handle )->Draw( object );
+				}
 
 				renderObjects.pop();
 			}

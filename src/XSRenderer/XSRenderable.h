@@ -9,22 +9,37 @@ namespace XS {
 		class Renderable;
 
 		struct RenderInfo {
-			Renderable	*renderable = nullptr;
+			uint32_t	 handle;
 			vector3		 worldPos;
 		};
 
-		// abstract base class implemented by e.g. Model, Particle
+		// base class implemented by e.g. Model, Particle
 		class Renderable {
 		public:
-			virtual ~Renderable() = 0;
+			static uint32_t			numRegistered;
+			static const uint32_t	invalidHandle;
+
+			uint32_t			handle;
+
+			Renderable();
+			~Renderable();
+
+			static Renderable *Get(
+				uint32_t handle
+			);
+
+			// register a renderable
+			uint32_t Register(
+				const char *path
+			);
 
 			// issue draw command to renderer
 			virtual void Draw(
 				const RenderInfo &info
-			) const = 0;
+			) const;
 
 			// generic update e.g. for particle emitters
-			virtual void Update(
+			void Update(
 				real64_t dt
 			);
 		};

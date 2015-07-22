@@ -20,6 +20,7 @@
 #include "XSClient/XSEntityModel.h"
 #include "XSClient/XSTerrain.h"
 #include "XSClient/XSParticleEmitter.h"
+#include "XSClient/XSResources.h"
 #include "XSInput/XSInput.h"
 #include "XSNetwork/XSNetwork.h"
 #include "XSRenderer/XSView.h"
@@ -127,6 +128,7 @@ namespace XS {
 			switch ( packet->data[0] ) {
 
 			case Network::ID_XS_SV2CL_GAMESTATE: {
+				//TODO: store a large history of snapshots, with entity states so we can interpolate between them
 				uint8_t *buffer = packet->data + 1;
 				size_t bufferLen = packet->length - 1;
 
@@ -154,6 +156,10 @@ namespace XS {
 						bb.ReadReal32( &entity->position[0] );
 						bb.ReadReal32( &entity->position[1] );
 						bb.ReadReal32( &entity->position[2] );
+
+						if ( entity->type == EntityType::Model ) {
+							bb.Skip( sizeof(uint32_t) );
+						}
 					}
 					else {
 						EntityType entityType = EntityType::Generic;
@@ -178,18 +184,30 @@ namespace XS {
 							EntityFXRunner *fxEnt = reinterpret_cast<EntityFXRunner*>( entity );
 							bb.ReadUInt32( &fxEnt->count );
 							bb.ReadUInt32( &fxEnt->life );
-							fxEnt->renderInfo.renderable = new ParticleEmitter(
+							//TODO: refactor ParticleEmitter to not be a Renderable, or implement a
+							//	ParticleEmitter::Register() ala Renderer::Model::Register
+							/*
+							fxEnt->renderInfo.handle = new ParticleEmitter(
 								fxEnt->count,
 								fxEnt->life,
 								"textures/fx/orb.png"
 							);
+							*/
 						} break;
 
 						case EntityType::Model: {
 							entity = new EntityModel();
 
+							// read model ID
+							uint32_t resourceID;
+							bb.ReadUInt32( &resourceID );
+
 							EntityModel *modelEnt = reinterpret_cast<EntityModel*>( entity );
-							modelEnt->renderInfo.renderable = Renderer::Model::Register( "models/torus.xmf" );
+						#if 0
+							modelEnt->renderInfo.renderable = Renderer::Model::Register( GetResource( resourceID ) );
+						#else
+							modelEnt->renderInfo.handle = Renderer::Model::Register( "models/torus.xmf" );
+						#endif
 						} break;
 
 						}

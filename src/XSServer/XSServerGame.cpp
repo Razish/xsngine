@@ -4,6 +4,7 @@
 #include "XSCommon/XSConsole.h"
 #include "XSCommon/XSCommand.h"
 #include "XSCommon/XSVector.h"
+#include "XSPhysics/XSPhysicsActor.h"
 #include "XSServer/XSServerGame.h"
 #include "XSServer/XSEntity.h"
 #include "XSServer/XSEntityFXRunner.h"
@@ -55,7 +56,10 @@ namespace XS {
 			EntityModel *ent = new EntityModel();
 #endif
 			ent->position = pos;
-			ent->runPhysics = true;
+			ent->physics.enabled = true;
+			Physics::RigidActor *actor = new Physics::RigidActor( Physics::VolumeType::Sphere );
+			actor->volume.sphere.radius = 2.0f;
+			ent->physics.actor = actor;
 			AddEntity( ent );
 		}
 

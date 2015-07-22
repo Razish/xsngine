@@ -16,17 +16,25 @@ namespace XS {
 		} // namespace Backend
 
 		struct Mesh {
+			bool					 uploaded = false;
+			bool					 materialCreated = false;
+
 			std::vector<vector3>	 vertices;
 			std::vector<vector3>	 normals;
 			std::vector<vector2>	 UVs;
-			Backend::Buffer			*vertexBuffer = nullptr;
-
 			std::vector<uint32_t>	 indices;
+
+			Backend::Buffer			*vertexBuffer = nullptr;
 			Backend::Buffer			*indexBuffer = nullptr;
 
 			ShaderProgram			*shader = nullptr;
 			Material				*material = nullptr;
 			Texture					*texture = nullptr;
+
+			// create material before uploading
+			void CreateMaterial(
+				void
+			);
 
 			// upload mesh to GPU
 			void Upload(

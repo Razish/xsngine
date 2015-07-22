@@ -12,8 +12,8 @@ namespace XS {
 		);
 
 		// ???
-		void Serialise(
-			ByteBuffer *buffer
+		void NetworkResources(
+			void
 		);
 
 	} // namespace ServerGame

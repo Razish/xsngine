@@ -6,6 +6,7 @@
 #include "XSRenderer/XSMaterial.h"
 #include "XSRenderer/XSShaderProgram.h"
 #include "XSRenderer/XSTexture.h"
+#include "XSRenderer/XSVertexAttributes.h"
 
 namespace XS {
 
@@ -21,7 +22,43 @@ namespace XS {
 			delete indexBuffer;
 		}
 
+		void Mesh::CreateMaterial( void ) {
+			if ( materialCreated ) {
+				return;
+			}
+
+			// create texture
+			if ( !texture ) {
+				uint8_t *textureBuffer = new uint8_t[128 * 128 * 4];
+				std::memset( textureBuffer, 255, sizeof(*textureBuffer) );
+				texture = new Texture( 128, 128, InternalFormat::RGBA8, textureBuffer );
+				delete[] textureBuffer;
+			}
+
+			// create shader program
+			static const VertexAttribute attributes[] = {
+				{ 0, "in_Position" },
+				{ 1, "in_Normal" },
+				{ 2, "in_TexCoord" },
+			};
+			shader = new ShaderProgram( "model", "model", attributes, ARRAY_LEN( attributes ) );
+
+			// create material
+			material = new Material();
+			Material::SamplerBinding samplerBinding;
+			samplerBinding.unit = 0;
+			samplerBinding.texture = texture;
+			material->samplerBindings.push_back( samplerBinding );
+			material->shaderProgram = shader;
+
+			materialCreated = true;
+		}
+
 		void Mesh::Upload( void ) {
+			if ( uploaded ) {
+				return;
+			}
+
 			size_t size = 0u;
 			if ( indices.size() ) {
 				size += sizeof(vector3) * indices.size();
@@ -66,6 +103,8 @@ namespace XS {
 				}
 				indexBuffer->Unmap();
 			}
+
+			uploaded = true;
 		}
 
 	} // namespace Renderer

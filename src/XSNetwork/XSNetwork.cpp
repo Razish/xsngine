@@ -187,9 +187,9 @@ namespace XS {
 				case ID_NEW_INCOMING_CONNECTION: {
 					// another client has connected
 					if ( Common::com_dedicated->GetBool() ) {
-						console.Print( PrintLevel::Normal, "client connecting with IP %s and GUID %s\n",
+						console.Print( PrintLevel::Normal, "client connecting with IP %s and GUID %X\n",
 							packet->systemAddress.ToString(),
-							packet->guid.ToString()
+							packet->guid.g
 						);
 						Server::IncomingConnection( packet );
 					}
@@ -371,7 +371,7 @@ namespace XS {
 					);
 				}
 			}
-			delete remoteSystems;
+			delete[] remoteSystems;
 		}
 
 	} // namespace Network

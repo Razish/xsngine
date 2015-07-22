@@ -14,10 +14,7 @@ namespace XS {
 
 	namespace Server {
 
-		struct Client;
-
 		extern Cvar						*sv_maxConnections;
-		extern std::vector<Client *>	 clients;
 		extern uint64_t					 frameNum;
 
 		// initialise the Server object, loading related subsystems

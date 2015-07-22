@@ -26,7 +26,7 @@ namespace XS {
 		Cvar *cg_terrainDimensions = nullptr;
 
 		Terrain::Terrain( const char *path ) {
-
+#if 0
 			const size_t dimensions = cg_terrainDimensions->GetUInt32();
 
 			//FIXME: seeds > 32k break the generator
@@ -109,9 +109,7 @@ namespace XS {
 				}
 			}
 
-			mesh->Upload();
-
-			dynamic_cast<Renderer::Model *>( entity->renderInfo.renderable )->meshes.push_back( mesh );
+			dynamic_cast<Renderer::Model *>( entity->renderInfo.renderable )->AddMesh( mesh );
 			AddEntity( entity );
 
 			// create shader program
@@ -174,14 +172,17 @@ namespace XS {
 			//terrainMaterial->flags |= Renderer::MF_WIREFRAME;
 
 			mesh->material = material;
+#endif
 		}
 
 		Terrain::~Terrain() {
+#if 0
 			RemoveEntity( entity );
 			delete program;
 			delete dirtTexture;
 			delete grassTexture;
 			delete snowTexture;
+#endif
 		}
 
 	} // namespace ClientGame

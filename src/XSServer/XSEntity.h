@@ -2,6 +2,7 @@
 
 #include "XSCommon/XSVector.h"
 #include "XSShared/XSEntityTypes.h"
+#include "XSPhysics/XSPhysicsActor.h"
 
 namespace XS {
 
@@ -22,8 +23,11 @@ namespace XS {
 			uint32_t	id = 0xFFFFFFFFu;
 			EntityType	type = EntityType::Generic;
 			vector3		position;
-			uint32_t	modelIndex = 0xFFFFFFFFu;
-			bool		runPhysics = false;
+
+			struct PhysicsProperties {
+				bool			enabled;
+				Physics::Actor	*actor;
+			} physics = {};
 
 			Entity( const Entity& ) = delete;
 			Entity& operator=( const Entity& ) = delete;

@@ -4,9 +4,8 @@
 #include "XSCommon/XSConsole.h"
 #include "XSCommon/XSString.h"
 #include "XSCommon/XSFile.h"
+#include "XSCommon/XSFileXMF.h"
 #include "XSRenderer/XSModel.h"
-#include "XSRenderer/XSModelObj.h"
-#include "XSRenderer/XSModelXMF.h"
 #include "XSRenderer/XSRenderer.h"
 #include "XSRenderer/XSMesh.h"
 
@@ -17,30 +16,13 @@ namespace XS {
 		// list of registered models
 		static std::unordered_map<std::string, Model*> models;
 
-		// map file extensions to internal model formats
-		static const struct {
-			const char	*name;
-			ModelType	 type;
-		} extensionTable[] = {
-			{ "obj", ModelType::OBJ },
-			{ "xmf", ModelType::XMF },
-		};
-		static ModelType GetTypeForExtension( const char *string ) {
-			for ( auto &extension : extensionTable ) {
-				if ( !String::Compare( string, extension.name ) ) {
-					return extension.type;
-				}
-			}
-			return ModelType::Invalid;
-		}
-
 		// public, static
-		Model *Model::Register( const char *path ) {
+		uint32_t Model::Register( const char *path ) {
 			//HACK: assume null path means raw model data
 			if ( !path ) {
-				Model *model = new Raw();
-				model->type = ModelType::RAW;
-				return model;
+				Model *model = new Model();
+				model->handle = numRegistered++;
+				return model->handle;
 			}
 
 			//TODO: check for duplicates? or only for mesh info etc?
@@ -48,43 +30,63 @@ namespace XS {
 			Model *model = models[path];
 
 			if ( model ) {
-				console.Print( PrintLevel::Debug, "%s for '%s' using existing model (loaded %i times)\n",
+				console.Print( PrintLevel::Debug, "Loading model \"%s\" using existing model (loaded %i times)\n",
 					XS_FUNCTION,
 					path,
 					model->refCount
 				);
 				model->refCount++;
-				return model;
+				return model->handle;
 			}
 
-			char extension[XS_MAX_FILENAME];
-			if ( !File::GetExtension( path, extension, sizeof(extension) ) ) {
-				console.Print( PrintLevel::Normal, "%s for '%s' unable to determine model format\n",
-					XS_FUNCTION,
-					path
-				);
-				return NULL;
-			}
+			model = models[path] = new Model();
 
-			//TODO: factory?
-			ModelType type = GetTypeForExtension( extension );
-			if ( type == ModelType::OBJ ) {
-				model = models[path] = new Obj();
-			}
-			else if ( type == ModelType::XMF ) {
-				model = models[path] = new XMF();
-			}
-			else {
-				SDL_assert( !"tried to instantiate invalid model type. Should not happen!" );
-				return NULL;
-			}
-
-			console.Print( PrintLevel::Debug, "%s loaded '%s' for the first time\n", XS_FUNCTION, path );
-			model->type = type;
+			console.Print( PrintLevel::Debug, "%s loaded '%s' for the first time\n",
+				XS_FUNCTION,
+				path
+			);
 			model->modelPath = path;
-			model->LoadMeshes();
+			model->handle = numRegistered++;
 
-			return model;
+			const File f( path, FileMode::ReadBinary );
+			if ( !f.open ) {
+				console.Print( PrintLevel::Normal, "Failed to load model '%s', returning invalid handle\n",
+					model->modelPath.c_str()
+				);
+				return invalidHandle;
+			}
+
+			char *buffer = new char[f.length];
+			{
+				f.Read( reinterpret_cast<uint8_t *>( buffer ) );
+				//FIXME: dispatch to correct file reader based on extension
+				Common::FileXMF xmf( buffer, f.length );
+				size_t numMeshes = xmf.GetMeshCount();
+				SDL_assert( numMeshes > 0u );
+				for ( size_t i = 0u; i < numMeshes; i++ ) {
+					Common::XMFMesh *xmfMesh = xmf.GetMeshFromIndex( i );
+					if ( !xmfMesh ) {
+						break;
+					}
+					/*bool computedNormals = */xmfMesh->ValidateNormals();
+					Mesh *rdMesh = new Mesh();
+
+					//TODO: profile copying, optimise
+					rdMesh->vertices = xmfMesh->vertices;
+					rdMesh->normals = xmfMesh->normals;
+					rdMesh->UVs = xmfMesh->UVs;
+					rdMesh->indices = xmfMesh->indices;
+
+					rdMesh->CreateMaterial();
+
+					model->AddMesh( rdMesh );
+				}
+			}
+			delete[] buffer;
+
+			//model->LoadMeshes();
+
+			return model->handle;
 		}
 
 		Model::~Model() {
@@ -99,7 +101,10 @@ namespace XS {
 					models[modelPath] = nullptr;
 				}
 				else {
-					console.Print( PrintLevel::Normal, "%s removing model '%s'\n", XS_FUNCTION, modelPath.c_str() );
+					console.Print( PrintLevel::Normal, "%s removing model '%s'\n",
+						XS_FUNCTION,
+						modelPath.c_str()
+					);
 				}
 			}
 			else if ( !modelPath.empty() ) {
@@ -109,13 +114,18 @@ namespace XS {
 					modelPath.c_str()
 				);
 			}
-			for ( auto mesh : meshes ) {
-				delete mesh;
-			}
+
+			meshes.clear();
 		}
 
 		void Model::Draw( const RenderInfo &info ) const {
 			Renderer::DrawModel( this, info );
+		}
+
+		void Model::AddMesh( Mesh *mesh ) {
+			SDL_assert( mesh );
+			mesh->Upload();
+			meshes.push_back( mesh );
 		}
 
 	} // namespace Renderer

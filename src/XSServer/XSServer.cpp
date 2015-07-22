@@ -13,6 +13,7 @@
 #include "XSServer/XSServerConsole.h"
 #include "XSServer/XSClient.h"
 #include "XSServer/XSNetcode.h"
+#include "XSServer/XSResources.h"
 #include "XSNetwork/XSNetwork.h"
 #include "XSSystem/XSOS.h"
 
@@ -21,7 +22,6 @@ namespace XS {
 	namespace Server {
 
 		Cvar *sv_maxConnections = nullptr;
-		std::vector<Client *> clients;
 
 		uint64_t frameNum = 0u;
 
@@ -53,14 +53,18 @@ namespace XS {
 		}
 
 		static void GenerateNetworkState( void ) {
-			Network::XSPacket snapshot( Network::ID_XS_SV2CL_GAMESTATE );
+			// make sure resource list is in sync
+			ServerGame::NetworkResources();
 
-			ByteBuffer bb;
-			ServerGame::GenerateSnapshot( &bb );
-			snapshot.data = bb.GetMemory( &snapshot.dataLen );
+			// send snapshot of gamestate
+			Network::XSPacket snapshotPacket( Network::ID_XS_SV2CL_GAMESTATE );
 
-			for ( auto *client : clients ) {
-				Network::Send( client->guid, &snapshot );
+			ByteBuffer snapshotBuffer;
+			ServerGame::GenerateSnapshot( &snapshotBuffer );
+			snapshotPacket.data = snapshotBuffer.GetMemory( &snapshotPacket.dataLen );
+
+			for ( auto &client : clients ) {
+				Network::Send( client.second->guid, &snapshotPacket );
 			}
 		}
 
@@ -94,14 +98,6 @@ namespace XS {
 			}
 
 			return true;
-		}
-
-		void IncomingConnection( const RakNet::Packet *packet ) {
-			Client *client = new Client( packet->guid.g );
-
-			client->connectionState = Client::ConnectionState::Connecting;
-
-			clients.push_back( client );
 		}
 
 		void RunFrame( real64_t dt ) {

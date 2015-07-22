@@ -273,7 +273,8 @@ namespace XS {
 		}
 
 		static void DrawModel( const DrawModelCommand &cmd ) {
-			for ( const auto &mesh : cmd.model->meshes ) {
+			for ( const auto *mesh : cmd.model->meshes ) {
+				SDL_assert( mesh ); // this should never happen, surely
 				SDL_assert( mesh->material && "DrawMesh with invalid material" );
 
 				mesh->material->Bind();

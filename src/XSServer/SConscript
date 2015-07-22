@@ -11,8 +11,8 @@ files = [
 	'XSServer/XSEntityFXRunner.cpp',
 	'XSServer/XSEntityModel.cpp',
 	'XSServer/XSNetcode.cpp',
-	'XSServer/XSServerGame.cpp',
 	'XSServer/XSResources.cpp',
+	'XSServer/XSServerGame.cpp',
 ]
 files = [build_dir + f for f in files]
 

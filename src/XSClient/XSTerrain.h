@@ -22,12 +22,14 @@ namespace XS {
 
 		class Terrain {
 		private:
+#if 0
 			Renderer::ShaderProgram	*program = nullptr;
 			Renderer::Material		*material = nullptr;
 			Renderer::Texture		*dirtTexture = nullptr;
 			Renderer::Texture		*grassTexture = nullptr;
 			Renderer::Texture		*snowTexture = nullptr;
 			Entity					*entity = nullptr;
+#endif
 
 		public:
 			// don't allow default instantiation

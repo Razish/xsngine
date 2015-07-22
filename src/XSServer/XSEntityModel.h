@@ -10,6 +10,8 @@ namespace XS {
 
 		class EntityModel : public Entity {
 		private:
+			uint32_t	modelIndex = 0xFFFFFFFFu;
+			std::string	modelPath;
 
 		public:
 			EntityModel();
