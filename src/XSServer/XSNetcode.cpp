@@ -17,7 +17,7 @@ namespace XS {
 				//uint32_t sequence;
 				uint32_t numEntities;
 			} snapshotHeader = {
-				.numEntities = Entity::numEntities
+				Entity::numEntities
 			};
 			buffer->WriteGeneric( &snapshotHeader, sizeof(snapshotHeader) );
 
