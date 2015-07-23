@@ -64,7 +64,7 @@ namespace XS {
 				// should be a valid menu, try parsing it out
 				MenuElement *element = nullptr;
 				while ( true ) {
-					const char *token = parser->ParseToken();
+					token = parser->ParseToken();
 					if ( !token[0] || !String::Compare( token, "}" ) ) {
 						// end of file
 						element = nullptr;

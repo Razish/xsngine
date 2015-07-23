@@ -51,8 +51,9 @@ namespace XS {
 		}
 
 		MenuElementButton::MenuElementButton( TokenParser *parser, const char *fileName )
-		: size{ 0.0f, 0.0f }, texture( "" ), cmd( "" ), text( "" ), pointSize( 0u )
+		: texture( "" ), cmd( "" ), text( "" ), pointSize( 0u )
 		{
+			size = { 0.0f, 0.0f };
 			std::memset( &properties, 0, sizeof(properties) );
 			std::memset( &assets, 0, sizeof(assets) );
 

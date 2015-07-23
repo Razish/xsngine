@@ -1,15 +1,13 @@
 #pragma once
 
-#define PRODUCT_NAME "xsngine"
-
-#ifndef REVISION
-	#define REVISION "unavailable"
+#ifndef XS_REVISION
+	#define XS_REVISION "unavailable"
 #endif
 
-#ifdef _DEBUG
-	#define PRODUCT_VERSION "development debug - rev " REVISION
+#if _DEBUG == 1
+	#define PRODUCT_VERSION "development debug - rev " XS_REVISION
 #else
-	#define PRODUCT_VERSION "development - rev " REVISION
+	#define PRODUCT_VERSION "development - rev " XS_REVISION
 #endif
 
 #ifndef ARCH_STRING

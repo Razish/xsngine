@@ -16,6 +16,8 @@
 #	MORE_WARNINGS	enable additional warnings
 #
 
+product_name = 'xsngine'
+
 debug = int( ARGUMENTS.get( 'debug', 0 ) )
 force32 = int( ARGUMENTS.get( 'force32', 0 ) )
 
@@ -50,6 +52,8 @@ if bits == 32:
 			arch = 'i386'
 	elif plat == 'Darwin':
 		arch = 'i386'
+	else:
+		raise Exception( 'unexpected platform: ' + plat )
 elif bits == 64:
 	if plat == 'Windows':
 		arch = 'x64'
@@ -57,12 +61,15 @@ elif bits == 64:
 		arch = 'x86_64'
 	elif plat == 'Darwin':
 		arch = 'x86_64'
+	else:
+		raise Exception( 'unexpected platform: ' + plat )
+else:
+	raise Exception( 'could not determine architecture width: ' + str(bits) )
 
 # fatal error if the cpu architecture can't be detected
 if arch is None:
 	raise Exception( 'could not determine architecture' )
-if bits is None:
-	raise Exception( 'could not determine architecture width' )
+
 
 # create the build environment
 import os
@@ -89,6 +96,7 @@ if 'CC' in os.environ:
 elif realcc is None and realcxx is None:
 	realcc = env['CC']
 	realcxx = env['CXX']
+	#FIXME: realcxx is "$CC" on Windows
 
 env['ENV'].update( x for x in os.environ.items() if x[0].startswith( 'CCC_' ) )
 
@@ -216,7 +224,7 @@ if plat == 'Windows':
 elif plat == 'Linux' or plat == 'Darwin':
 	files += [ 'XSSystem/XSUnix.cpp' ]
 else:
-	raise Exception( 'Missing xsngine backend for your platform!')
+	raise Exception( 'Missing ' + product_name + ' backend for your platform!')
 
 # set up libraries to link with
 if plat == 'Linux':
@@ -258,7 +266,7 @@ elif plat == 'Windows':
 		'zlib',
 		'libpng16',
 	]
-	libs += [lib + 'd' for lib in dlibs]
+	libs += [lib + ('d' if debug == 1 else '') for lib in dlibs]
 
 # compiler switches
 if realcc == 'gcc' or realcc == 'clang':
@@ -444,13 +452,12 @@ elif realcc == 'cl':
 
 	# strict c/cpp warnings
 	if 'LESS_WARNINGS' in os.environ:
-		env['CPPDEFINES'] += [
+		env['CCFLAGS'] += [
 			'/W2',
 		]
 	else:
-		env['CPPDEFINES'] += [
+		env['CCFLAGS'] += [
 			'/W4',
-			'/Wall',
 			'/we 4013',
 			'/we 4024',
 			'/we 4026',
@@ -465,8 +472,12 @@ elif realcc == 'cl':
 			'/we 4305',
 			'/we 4700',
 		]
-	if 'MORE_WARNINGS' not in os.environ:
-		env['CPPDEFINES'] += [
+	if 'MORE_WARNINGS' in os.environ:
+		env['CCFLAGS'] += [
+			'/Wall',
+		]
+	else:
+		env['CCFLAGS'] += [
 			'/wd 4100',
 			'/wd 4127',
 			'/wd 4244',
@@ -475,9 +486,6 @@ elif realcc == 'cl':
 			'/wd 4996',
 		]
 
-	env['CCFLAGS'] += [
-		'/MTd',	# multi-threaded debug DLL
-	]
 	env['LINKFLAGS'] += [
 		'/NODEFAULTLIB:LIBCMTD',
 		'/NODEFAULTLIB:msvcrt',
@@ -496,6 +504,7 @@ if debug == 0 or debug == 2:
 	elif realcc == 'cl':
 		env['CCFLAGS'] += [
 			'/O2',	# maximise speed
+			'/MT',	# multi-threaded runtime
 		]
 		env['LINKFLAGS'] += [
 			'/OPT:REF',			# remove unreferenced functions/data
@@ -516,11 +525,12 @@ if debug:
 		env['CCFLAGS'] += [
 			'/Od',		# disable optimisations
 			'/Z7',		# emit debug information
+			'/MTd',		# multi-threaded debug runtime
 		]
 		env['LINKFLAGS'] += [
 			'/DEBUG',		# generate debug info
 		]
-		env['PDB'] = 'xsngine.pdb'
+		env['PDB'] = product_name + '.pdb'
 
 	env['CPPDEFINES'] += [
 		'_DEBUG',
@@ -528,12 +538,12 @@ if debug:
 
 if revision:
 	env['CPPDEFINES'] += [
-		'REVISION=\\"' + revision + '\\"',
+		'XS_REVISION=\\"' + revision + '\\"',
 	]
 
 env['CPPDEFINES'] += [
+	'PRODUCT_NAME=\\"' + product_name + '\\"',
 	'GLEW_STATIC',
-	'SCONS_BUILD',
 ]
 env['CPPDEFINES'] += [ {
 		'Windows': lambda x: 'XS_OS_WINDOWS',
@@ -541,6 +551,12 @@ env['CPPDEFINES'] += [ {
 		'Darwin': lambda x: 'XS_OS_MAC'
 	}[plat](plat)
 ]
+
+# build-time settings
+env['CPPDEFINES'] += [
+	'XS_COMPILER=\\"' + realcc + ' ' + ccversion + '\\"'
+]
+
 env['CPPPATH'] = [
 	'#',
 	'#/freetype',
@@ -586,5 +602,5 @@ env['LIBPREFIX'] = ''
 binaryName = 'xsn' + '.' + arch + env['PROGSUFFIX']
 env.Program( binaryName, files )
 
-if not env.GetOption( 'clean' ) and not os.path.lexists( './xsngine' ):
-	print( 'Suggest creating a symlink: "ln -s ' + binaryName + ' xsngine"' )
+if not env.GetOption( 'clean' ) and not os.path.lexists( './' + product_name ):
+	print( 'Suggest creating a symlink: "ln -s ' + binaryName + ' ' + product_name + '"' )

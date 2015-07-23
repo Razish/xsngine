@@ -65,8 +65,9 @@ namespace XS {
 		}
 
 		MenuElementSlider::MenuElementSlider( TokenParser *parser, const char *fileName )
-		: size{ 0.0f, 0.0f }, cvarName( "" ), postExecCommand( "" ), updatingValue( false )
+		: cvarName( "" ), postExecCommand( "" ), updatingValue( false )
 		{
+			size = { 0.0f, 0.0f };
 			std::memset( &assets, 0, sizeof(assets) );
 			std::memset( &range, 0, sizeof(range) );
 			std::memset( &properties, 0, sizeof(properties) );

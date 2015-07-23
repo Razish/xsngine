@@ -37,7 +37,7 @@ namespace XS {
 				std::string		 text = "";
 				bool			 mouseHovering = false;
 				real64_t		 lastMouseTime = 0.0;
-				vector2			 lastMousePos = {};
+				vector2			 lastMousePos;
 			} tooltip;
 
 		public:

@@ -51,7 +51,7 @@ namespace XS {
 			com_profile = Cvar::Create( "com_profile", "0",
 				"Print timing statistics", CVAR_NONE
 			);
-			Cvar::Create( "com_revision", REVISION,
+			Cvar::Create( "com_revision", XS_REVISION,
 				"git revision", CVAR_READONLY
 			);
 			r_framerate = Cvar::Create( "r_framerate", "120",
@@ -188,7 +188,7 @@ int main( int argc, char **argv ) try {
 	//
 
 	console.Print( PrintLevel::Normal,
-		WINDOW_TITLE " (" XSTR( ARCH_WIDTH ) " bits) built on " __DATE__ "\n"
+		WINDOW_TITLE " (" XSTR( ARCH_WIDTH ) " bits) built on " __DATE__ " with " XS_COMPILER "\n"
 	);
 
 	if ( !Common::com_dedicated->GetBool() ) {
