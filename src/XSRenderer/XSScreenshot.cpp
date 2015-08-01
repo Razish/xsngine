@@ -18,14 +18,18 @@ namespace XS {
 
 			static const char *GetScreenshotName( void ) {
 				static char timestamp[numScreenshotsPerFrame][XS_MAX_FILENAME];
+				static uint32_t index = 0u;
+
 				time_t rawtime;
 				time( &rawtime );
-				static uint32_t index = 0u;
+
 				char *p = timestamp[index];
 				//TODO: stop name clash?
 				strftime( p, sizeof(timestamp[index]), "%Y-%m-%d_%H-%M-%S", localtime( &rawtime ) );
+
 				index++;
-				index &= numScreenshotsPerFrame;
+				index &= (numScreenshotsPerFrame - 1);
+
 				return p;
 			}
 
@@ -43,7 +47,8 @@ namespace XS {
 #endif
 
 				RenderCommand cmd( CommandType::Screenshot );
-				cmd.screenshot.name = String::Format( "screenshots/%s.png", GetScreenshotName() ).c_str();
+				std::string name = String::Format( "screenshots/%s.png", GetScreenshotName() );
+				cmd.screenshot.name = name.c_str();
 				cmd.screenshot.width = state.window.width;
 				cmd.screenshot.height = state.window.height;
 				cmd.screenshot.pbo = defaultPbo;

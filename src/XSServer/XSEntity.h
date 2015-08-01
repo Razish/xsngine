@@ -19,8 +19,9 @@ namespace XS {
 
 		public:
 			static const uint32_t	&numEntities;
+			static const uint32_t	 invalidID;
 
-			uint32_t	id = 0xFFFFFFFFu;
+			uint32_t	id = invalidID;
 			EntityType	type = EntityType::Generic;
 			vector3		position;
 

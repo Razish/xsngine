@@ -18,9 +18,10 @@ namespace XS {
 		static bool modified = true;
 
 		uint32_t GetResourceID( const char *name ) {
-			if ( resources.find( name ) != resources.end() ) {
+			auto found = resources.find( name );
+			if ( found != resources.end() ) {
 				// already exists
-				return resources[name];
+				return found->second;
 			}
 			else {
 				// new resource handle
@@ -39,8 +40,11 @@ namespace XS {
 			}
 		}
 
-		void NetworkResources( void ) {
-			if ( modified ) {
+		//FIXME: selectively network to out-of-date clients (i.e. second client connecting later, not having the list
+		//	of resources yet, but `modified` being false.
+		//	`force` bool is a hack, perhaps drive the networking further up the chain according to client's GUIDs
+		void NetworkResources( bool force ) {
+			if ( modified || force ) {
 				// send resource list
 				ByteBuffer resourceBuffer;
 				ServerGame::SerialiseResources( &resourceBuffer );
@@ -49,7 +53,11 @@ namespace XS {
 				resourcePacket.data = resourceBuffer.GetMemory( &resourcePacket.dataLen );
 
 				for ( auto &client : Server::clients ) {
-					Network::Send( client.second->guid, &resourcePacket );
+					if ( !client.second ) {
+						SDL_assert( !"Invalid client instance - did you instantiate and use before initialising?" );
+						continue;
+					}
+						Network::Send( client.second->guid, &resourcePacket );
 				}
 
 				modified = false;

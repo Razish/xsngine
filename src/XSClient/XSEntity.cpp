@@ -14,6 +14,8 @@ namespace XS {
 
 	namespace ClientGame {
 
+		const uint32_t Entity::invalidID = 0xFFFFFFFFu;
+
 		void AddEntity( Entity *entity ) {
 			Entity *e = state.entities[entity->id];
 			if ( e ) {

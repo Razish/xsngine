@@ -4,7 +4,7 @@
 	#define XS_REVISION "unavailable"
 #endif
 
-#if _DEBUG == 1
+#if defined(_DEBUG)
 	#define PRODUCT_VERSION "development debug - rev " XS_REVISION
 #else
 	#define PRODUCT_VERSION "development - rev " XS_REVISION

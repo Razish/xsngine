@@ -13,7 +13,7 @@ namespace XS {
 
 		// ???
 		void NetworkResources(
-			void
+			bool force
 		);
 
 	} // namespace ServerGame

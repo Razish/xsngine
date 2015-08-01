@@ -54,7 +54,7 @@ namespace XS {
 
 		static void GenerateNetworkState( void ) {
 			// make sure resource list is in sync
-			ServerGame::NetworkResources();
+			ServerGame::NetworkResources( false );
 
 			// send snapshot of gamestate
 			Network::XSPacket snapshotPacket( Network::ID_XS_SV2CL_GAMESTATE );

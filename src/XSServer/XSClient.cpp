@@ -7,6 +7,7 @@
 #include "XSCommon/XSConsole.h"
 #include "XSServer/XSClient.h"
 #include "XSServer/XSServer.h"
+#include "XSServer/XSResources.h"
 
 namespace XS {
 
@@ -26,14 +27,18 @@ namespace XS {
 			}
 
 			Client *client = new Client();
+
+			// store it now, we accessed clients[] above meaning any iteration of clients will return a nullptr
+			clients[guid] = client;
+
 			BroadcastMessage( String::Format( "Connection from %X", guid ).c_str() );
 
 			// initialise
 			client->guid = packet->guid.g;
 			client->connectionState = Client::ConnectionState::Connecting;
 
-			// store
-			clients[guid] = client;
+			// send resource list
+			ServerGame::NetworkResources( true );
 		}
 
 	} // namespace ServerGame

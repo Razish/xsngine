@@ -11,8 +11,11 @@ namespace XS {
 
 		uint32_t Entity::privateNumEntities = 0u;
 		const uint32_t &Entity::numEntities = Entity::privateNumEntities;
+		const uint32_t Entity::invalidID = 0xFFFFFFFFu;
 
 		// public
+		//FIXME: have a single CreateEntity function to avoid changing global state on an accidentally-created local
+		//	Entity
 		Entity::Entity()
 		: id( privateNumEntities++ )
 		{

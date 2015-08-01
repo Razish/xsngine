@@ -16,11 +16,13 @@ namespace XS {
 		private:
 
 		public:
-			uint32_t				 id = 0xFFFFFFFFu;
-			EntityType				 type = EntityType::Generic;
-			vector3					 position;
+			static const uint32_t	invalidID;
 
-			Renderer::RenderInfo	 renderInfo;
+			uint32_t				id = invalidID;
+			EntityType				type = EntityType::Generic;
+			vector3					position;
+
+			Renderer::RenderInfo	renderInfo;
 
 			virtual ~Entity();
 

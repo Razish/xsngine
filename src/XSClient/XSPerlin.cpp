@@ -35,7 +35,7 @@ namespace XS {
 			real64_t t = 0.0;
 			real64_t amp = 1;
 			real64_t freq = frequency;
-			
+
 			for ( int32_t k = 0u; k < octaves; k++ ) {
 				real64_t v = GetValue(
 					j * freq + randomSeed,

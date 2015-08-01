@@ -142,7 +142,7 @@ namespace XS {
 				for ( size_t i = 0u; i < snapshotHeader.numEntities; i++ ) {
 					uint32_t entityID = 0xFFFFFFFFu;
 					bb.ReadUInt32( &entityID );
-					SDL_assert( entityID != 0xFFFFFFFFu );
+					SDL_assert( entityID != Entity::invalidID );
 
 					Entity *entity = GetEntity( entityID );
 
