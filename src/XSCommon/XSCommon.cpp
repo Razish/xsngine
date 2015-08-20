@@ -249,21 +249,24 @@ int main( int argc, char **argv ) try {
 			? 1000.0 / Common::com_framerate->GetReal64()
 			: 1000.0 / Common::r_framerate->GetReal64();
 
+		//FIXME: is it better to run the server frame, and then the client frame? or the other way around
+		//	we don't want the client acting on old server data, but we also don't want the client's input to be delayed
+		//		by a frame
+
 		if ( Common::com_dedicated->GetBool() ) {
+			// server tick
 			while ( accumulator >= dt ) {
-				Command::ExecuteBuffer();
-
-				// server frame, then network (snapshot)
 				Server::RunFrame( dt );
-				if ( Common::com_profile->GetBool() ) {
-					console.Print( PrintLevel::Developer, "time: server frame took %.3fmsec\n",
-						perf.GetTiming( true, TimerResolution::Milliseconds )
-					);
-				}
-
 				accumulator -= dt;
 				t += dt;
 			}
+			if ( Common::com_profile->GetBool() ) {
+				console.Print( PrintLevel::Developer, "time: server frame took %.3fmsec\n",
+					perf.GetTiming( true, TimerResolution::Milliseconds )
+				);
+			}
+
+			// broadcast state changes
 			Server::NetworkPump();
 			if ( Common::com_profile->GetBool() ) {
 				console.Print( PrintLevel::Developer, "time: server network pump took %.3fmsec\n",
@@ -272,6 +275,7 @@ int main( int argc, char **argv ) try {
 			}
 		}
 		else {
+			// client tick
 			// recieve server update
 			// create movement command and send it off
 			Client::NetworkPump();
@@ -289,6 +293,7 @@ int main( int argc, char **argv ) try {
 				);
 			}
 
+			// generate the renderer workload
 			// alpha = accumulator / dt;
 			// lerp( previousState, alpha, currentState )
 			Client::DrawFrame( sliceMsec );
@@ -297,6 +302,8 @@ int main( int argc, char **argv ) try {
 					perf.GetTiming( true, TimerResolution::Milliseconds )
 				);
 			}
+
+			// consume buffered render commands
 			Renderer::Update( sliceMsec/*state*/ );
 			if ( Common::com_profile->GetBool() ) {
 				console.Print( PrintLevel::Developer, "time: render update took %.3fmsec\n",

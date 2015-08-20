@@ -289,7 +289,12 @@ namespace XS {
 
 		//TODO: drive this with a generic VBO descriptor to avoid special case drawing like these particles
 		static void DrawParticles( const DrawParticlesCommand &cmd ) {
-			SDL_assert( cmd.material && "DrawParticles with invalid material" );
+			if ( !cmd.material ) {
+				console.Print( PrintLevel::Developer, "%s with invalid material\n",
+					XS_FUNCTION
+				);
+				return;
+			}
 
 			cmd.material->Bind();
 
