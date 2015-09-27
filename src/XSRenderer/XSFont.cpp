@@ -119,8 +119,8 @@ namespace XS {
 				const real32_t rowPos = static_cast<real32_t>( row ) / static_cast<real32_t>( charsPerLine );
 				const size_t rowSize = pointSize * charsPerLine;
 				// 2d-space (not pixel) coordinates to the top-left of the desired glyph
-				const size_t x = col * maxCellSize; // horizontal position
-				const size_t y = row * maxCellSize; // vertical position
+				const size_t xOffset = col * maxCellSize; // horizontal position
+				const size_t yOffset = row * maxCellSize; // vertical position
 
 				// calculate glyph metrics
 				FontData &fd = data[c][pointSize];
@@ -138,7 +138,7 @@ namespace XS {
 				}
 
 				// generate an RGBA texture from the 8bpp glyph
-				const size_t topLeft = x + (y * rowSize); // row + column
+				const size_t topLeft = xOffset + (yOffset * rowSize); // row + column
 			//	const size_t topRight = y + x + size; // (row + column) + charWidth
 			//	const size_t bottomLeft = y + x + (size * rowSize);
 			//	const size_t bottomRight = y + x + (size * rowSize) + size;

@@ -110,7 +110,7 @@ namespace XS {
 					f.Read( reinterpret_cast<uint8_t *>(buffer) );
 
 					// normalise line endings
-					for ( size_t i = 0; i < f.length; i++ ) {
+					for ( long i = 0; i < f.length; i++ ) {
 						if ( buffer[i] == '\r' ) {
 							buffer[i] = '\n';
 						}

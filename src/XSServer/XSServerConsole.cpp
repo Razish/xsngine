@@ -27,7 +27,11 @@ namespace XS {
 
 	namespace Server {
 
+#if defined(XS_OS_WINDOWS)
+		static const SHORT bufferSize = 80;
+#else
 		static const size_t bufferSize = 80u;
+#endif
 
 #if defined(XS_OS_LINUX) || defined(XS_OS_MAC)
 		const char *ServerConsole::promptText = "tty] ";
@@ -154,8 +158,9 @@ namespace XS {
 
 			// set cursor position
 			cursorPos.Y = binfo.dwCursorPosition.Y;
+			SDL_assert( input.head < INT16_MAX );
 			cursorPos.X = input.head < bufferSize
-							? input.head
+							? static_cast<SHORT>( input.head )
 							: (bufferSize > binfo.srWindow.Right)
 								? binfo.srWindow.Right
 								: bufferSize;
@@ -279,7 +284,6 @@ namespace XS {
 				}
 
 				bool keyHandled = true;
-				int newlinepos = -1;
 				WORD key = buff[i].Event.KeyEvent.wVirtualKeyCode;
 				switch ( key ) {
 				case VK_RETURN: {

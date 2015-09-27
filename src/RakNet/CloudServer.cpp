@@ -3,7 +3,7 @@
  *  All rights reserved.
  *
  *  This source code is licensed under the BSD-style license found in the
- *  LICENSE file in the root directory of this source tree. An additional grant 
+ *  LICENSE file in the root directory of this source tree. An additional grant
  *  of patent rights can be found in the PATENTS file in the same directory.
  *
  */
@@ -625,8 +625,7 @@ void CloudServer::OnGetRequest(Packet *packet)
 			keySubscriberId = RakNet::OP_NEW<KeySubscriberID>(_FILE_AND_LINE_);
 			keySubscriberId->key=cloudKey;
 
-			unsigned int specificSystemIndex;
-			for (specificSystemIndex=0; specificSystemIndex < getRequest->cloudQueryWithAddresses.specificSystems.Size(); specificSystemIndex++)
+			for (unsigned int specificSystemIndex=0; specificSystemIndex < getRequest->cloudQueryWithAddresses.specificSystems.Size(); specificSystemIndex++)
 			{
 				keySubscriberId->specificSystemsSubscribedTo.Insert(getRequest->cloudQueryWithAddresses.specificSystems[specificSystemIndex], getRequest->cloudQueryWithAddresses.specificSystems[specificSystemIndex], true, _FILE_AND_LINE_);
 			}
@@ -762,7 +761,7 @@ void CloudServer::OnUnsubscribeRequest(Packet *packet)
 	{
 		CloudKey cloudKey = cloudKeys[index];
 
-	//	dataRepositoryIndex = 
+	//	dataRepositoryIndex =
 			dataRepository.GetIndexFromKey(cloudKey, &dataRepositoryExists);
 		if (dataRepositoryExists==false)
 			continue;

@@ -80,7 +80,7 @@ namespace XS {
 			// should be a valid XMF, try parsing it out
 			XMFMesh *mesh = nullptr;
 			while ( true ) {
-				const char *token = parser.ParseToken();
+				token = parser.ParseToken();
 				if ( !token[0] ) {
 					// end of file
 					if ( mesh ) {

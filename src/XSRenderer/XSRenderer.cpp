@@ -168,11 +168,14 @@ namespace XS {
 					glewGetErrorString( error ) ).c_str() ) );
 			}
 
-			// this causes a driver bug on Nvidia GTX 680 driver version 350.12 targeting OpenGL 3.1 core profile
+			// ARB_debug_output causes a crash due to a driver bug on Nvidia GTX 680 driver versions [350.12, 353.82]
+			//	targeting OpenGL 3.1 core profile
+#if 0
 			if ( GLEW_ARB_debug_output ) {
 				glEnable( GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB );
 				glDebugMessageCallbackARB( OnGLError, nullptr );
 			}
+#endif
 
 			Backend::Init();
 
