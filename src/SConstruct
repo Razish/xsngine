@@ -262,7 +262,7 @@ elif plat == 'Windows':
 	dlibs = [
 		'SDL2',
 		'SDL2main',
-		'freetype250',
+		'freetype26',
 		'zlib',
 		'libpng16',
 	]
