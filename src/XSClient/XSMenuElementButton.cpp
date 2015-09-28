@@ -265,11 +265,11 @@ namespace XS {
 				delete bgData;
 			}
 
-			const real32_t bgWidth = size[0] * Renderer::state.window.width;
-			const real32_t bgHeight = size[1] * Renderer::state.window.height;
+			const real32_t bgWidth = size[0] * Renderer::rdState.window.width;
+			const real32_t bgHeight = size[1] * Renderer::rdState.window.height;
 			const vector2 topLeft = {
-				(position[0] * Renderer::state.window.width) - (bgWidth / 2.0f),
-				(position[1] * Renderer::state.window.height) - (bgHeight / 2.0f)
+				(position[0] * Renderer::rdState.window.width) - (bgWidth / 2.0f),
+				(position[1] * Renderer::rdState.window.height) - (bgHeight / 2.0f)
 			};
 
 			Renderer::DrawQuad(
@@ -290,8 +290,8 @@ namespace XS {
 				assets.font->lineHeight[pointSize]
 			};
 			const vector2 bgMidPoint = {
-				topLeft[0] + ((size[0] * Renderer::state.window.width) / 2.0f),
-				topLeft[1] + ((size[1] * Renderer::state.window.height) / 2.0f)
+				topLeft[0] + ((size[0] * Renderer::rdState.window.width) / 2.0f),
+				topLeft[1] + ((size[1] * Renderer::rdState.window.height) / 2.0f)
 			};
 
 			// draw the text in the middle of the button

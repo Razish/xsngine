@@ -91,8 +91,8 @@ namespace XS {
 
 		void MenuManager::DrawCursor( void ) {
 			vector2 realPos = {
-				Client::cursorPos[0] * Renderer::state.window.width,
-				Client::cursorPos[1] * Renderer::state.window.height
+				Client::cursorPos[0] * Renderer::rdState.window.width,
+				Client::cursorPos[1] * Renderer::rdState.window.height
 			};
 			Renderer::DrawQuad(
 				realPos[0], realPos[1],

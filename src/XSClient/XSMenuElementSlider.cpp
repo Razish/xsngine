@@ -271,11 +271,11 @@ namespace XS {
 			}
 
 			const vector2 topLeft {
-				position[0] * Renderer::state.window.width,
-				position[1] * Renderer::state.window.height
+				position[0] * Renderer::rdState.window.width,
+				position[1] * Renderer::rdState.window.height
 			};
-			const real32_t barWidth = size[0] * Renderer::state.window.width;
-			const real32_t barHeight = size[1] * Renderer::state.window.height;
+			const real32_t barWidth = size[0] * Renderer::rdState.window.width;
+			const real32_t barHeight = size[1] * Renderer::rdState.window.height;
 			const real32_t thumbSize = std::min( barWidth, barHeight );
 
 			Renderer::DrawQuad(

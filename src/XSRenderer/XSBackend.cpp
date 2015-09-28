@@ -22,7 +22,7 @@ namespace XS {
 
 			static struct State {
 				bool wireFrame;
-			} state = {};
+			} rdbState = {};
 
 			static void RegisterCvars( void ) {
 				r_zRange = Cvar::Create( "r_zRange", "0.1 4000.0",
@@ -61,7 +61,7 @@ namespace XS {
 				glGenBuffers( 1, &defaultPbo );
 				glBindBuffer( GL_PIXEL_PACK_BUFFER, defaultPbo );
 				glBufferData( GL_PIXEL_PACK_BUFFER,
-					4 * Renderer::state.window.width * Renderer::state.window.height,
+					4 * Renderer::rdState.window.width * Renderer::rdState.window.height,
 					NULL,
 					GL_STREAM_COPY
 				);
@@ -73,12 +73,12 @@ namespace XS {
 			}
 
 			void ToggleWireframe( bool on ) {
-				state.wireFrame = on;
+				rdbState.wireFrame = on;
 				glPolygonMode( GL_FRONT_AND_BACK, on ? GL_LINE : GL_FILL );
 			}
 
 			bool GetWireframe( void ) {
-				return state.wireFrame;
+				return rdbState.wireFrame;
 			}
 
 			void ClearBuffer( bool clearColour, bool clearDepth, const vector4 &colour ) {

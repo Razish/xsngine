@@ -21,7 +21,7 @@ namespace XS {
 			};
 			buffer->WriteGeneric( &snapshotHeader, sizeof(snapshotHeader) );
 
-			for ( auto &entity : state.entities ) {
+			for ( auto &entity : svgState.entities ) {
 				entity->Serialise( buffer );
 			}
 		}

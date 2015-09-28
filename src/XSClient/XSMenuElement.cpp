@@ -105,8 +105,8 @@ namespace XS {
 				);
 				static const vector4 colour = { 1.0f, 1.0f, 1.0f, alpha };
 				const vector2 pos = {
-					(tooltip.lastMousePos[0] + 0.03333f) * Renderer::state.window.width,
-					tooltip.lastMousePos[1] * Renderer::state.window.height
+					(tooltip.lastMousePos[0] + 0.03333f) * Renderer::rdState.window.width,
+					tooltip.lastMousePos[1] * Renderer::rdState.window.height
 				};
 				tooltip.font->Draw(
 					pos,

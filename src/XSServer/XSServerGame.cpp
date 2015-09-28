@@ -16,13 +16,13 @@ namespace XS {
 
 	namespace ServerGame {
 
-		GameState state = {};
+		GameState svgState = {};
 
 		void AddEntity( Entity *entity ) {
-			auto it = std::find( state.entities.begin(), state.entities.end(), entity );
-			if ( it == state.entities.end() ) {
+			auto it = std::find( svgState.entities.begin(), svgState.entities.end(), entity );
+			if ( it == svgState.entities.end() ) {
 				// not found
-				state.entities.push_back( entity );
+				svgState.entities.push_back( entity );
 			}
 			else {
 				// already exists, this should not happen
@@ -35,8 +35,8 @@ namespace XS {
 		}
 
 		void RemoveEntity( Entity *entity ) {
-			auto it = std::find( state.entities.begin(), state.entities.end(), entity );
-			state.entities.erase( it );
+			auto it = std::find( svgState.entities.begin(), svgState.entities.end(), entity );
+			svgState.entities.erase( it );
 		}
 
 		static void Cmd_SpawnEntity( const CommandContext * const context ) {
@@ -72,7 +72,7 @@ namespace XS {
 		}
 
 		void RunFrame( real64_t dt ) {
-			for ( auto &entity : state.entities ) {
+			for ( auto &entity : svgState.entities ) {
 				entity->Update( dt );
 			}
 		}

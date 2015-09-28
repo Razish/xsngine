@@ -81,7 +81,7 @@ namespace XS {
 
 			camera->SetupPerspective(
 				glm::radians( cg_fov->GetReal32() ),
-				Renderer::state.window.aspectRatio,
+				Renderer::rdState.window.aspectRatio,
 				zNear,
 				zFar
 			);
@@ -97,14 +97,14 @@ namespace XS {
 		}
 
 		void Shutdown( void ) {
-			for ( auto entity : state.entities ) {
+			for ( auto entity : clgState.entities ) {
 				RemoveEntity( entity.second );
 			}
 			delete sceneView;
 		}
 
 		void RunFrame( real64_t dt ) {
-			for ( auto &entity : state.entities ) {
+			for ( auto &entity : clgState.entities ) {
 				entity.second->Update( dt );
 			}
 		}
@@ -113,7 +113,7 @@ namespace XS {
 			camera->Update( dt );
 
 			// add objects to scene
-			for ( const auto &entity : state.entities ) {
+			for ( const auto &entity : clgState.entities ) {
 				entity.second->AddToScene( sceneView );
 			}
 
@@ -121,7 +121,7 @@ namespace XS {
 			static const vector3 lightPos = { 0.0f, 32.0f, 0.0f };
 			sceneView->AddPointLight( lightPos );
 
-			state.viewDelta.clear();
+			clgState.viewDelta.clear();
 		}
 
 		bool ReceivePacket( const RakNet::Packet *packet ) {
@@ -249,8 +249,8 @@ namespace XS {
 
 			delta *= Client::Input::m_sensitivity->GetReal32();
 
-			state.viewAngles += delta;
-			state.viewDelta += delta;
+			clgState.viewAngles += delta;
+			clgState.viewDelta += delta;
 		}
 
 		void MouseButtonEvent( const struct MouseButtonEvent &ev ) {

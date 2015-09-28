@@ -23,7 +23,7 @@ namespace XS {
 		}
 
 		Entity::~Entity() {
-			state.net.removedEntities.push_back( id );
+			svgState.net.removedEntities.push_back( id );
 			privateNumEntities--;
 		};
 

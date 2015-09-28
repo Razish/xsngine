@@ -80,8 +80,8 @@ namespace XS {
 		}
 
 		bool MouseMotionEvent( const struct MouseMotionEvent &ev ) {
-			cursorPos[0] += ev.x / static_cast<real32_t>( Renderer::state.window.width );
-			cursorPos[1] += ev.y / static_cast<real32_t>( Renderer::state.window.height );
+			cursorPos[0] += ev.x / static_cast<real32_t>( Renderer::rdState.window.width );
+			cursorPos[1] += ev.y / static_cast<real32_t>( Renderer::rdState.window.height );
 
 			// clamp the cursor coordinates to screen-space
 			if ( cursorPos[0] < 0.0f ) {
@@ -256,7 +256,7 @@ namespace XS {
 			}
 
 			vector2 pos = {
-				Renderer::state.window.width - textWidth,
+				Renderer::rdState.window.width - textWidth,
 				0.0f
 			};
 			font->Draw( pos, fpsText, fpsTextSize );

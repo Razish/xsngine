@@ -97,7 +97,7 @@ namespace XS {
 		void ClientConsole::Resize( void ) {
 			if ( font ) {
 				const uint16_t fontSize = static_cast<uint16_t>( con_fontSize->GetInt32() );
-				lineCount = ((Renderer::state.window.height / 2) / std::floor( font->lineHeight[fontSize] )) - 1;
+				lineCount = ((Renderer::rdState.window.height / 2) / std::floor( font->lineHeight[fontSize] )) - 1;
 			}
 		}
 
@@ -109,7 +109,7 @@ namespace XS {
 			view->Bind();
 
 			Renderer::DrawQuad(
-				0, 0, Renderer::state.window.width, Renderer::state.window.height / 2,
+				0, 0, Renderer::rdState.window.width, Renderer::rdState.window.height / 2,
 				0.0f, 0.0f, 1.0f, 1.0f,
 				&colourTable[ColourIndex( COLOUR_BLACK )],
 				nullptr
@@ -121,7 +121,8 @@ namespace XS {
 			const uint32_t numLines = console->buffer->GetNumLines();
 			const uint32_t start = std::max(
 				0,
-				static_cast<int32_t>( numLines ) - static_cast<int32_t>( scrollAmount ) - static_cast<int32_t>( lineCount )
+				static_cast<int32_t>( numLines ) - static_cast<int32_t>( scrollAmount )
+					- static_cast<int32_t>( lineCount )
 			);
 			std::vector<std::string> lines = console->buffer->FetchLines( start, lineCount );
 
@@ -166,8 +167,8 @@ namespace XS {
 				versionWidth += font->GetGlyphWidth( *p, 12u );
 			}
 			vector2 versionPos = {
-				Renderer::state.window.width - versionWidth,
-				(Renderer::state.window.height / 2) - font->lineHeight[12u] - 4u
+				Renderer::rdState.window.width - versionWidth,
+				(Renderer::rdState.window.height / 2) - font->lineHeight[12u] - 4u
 			};
 			font->Draw( versionPos, versionText, 12u );
 

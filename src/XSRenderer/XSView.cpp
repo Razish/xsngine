@@ -21,8 +21,8 @@ namespace XS {
 			height( viewHeight )
 		{
 			if ( !viewWidth || !viewHeight ) {
-				width = state.window.width;
-				height = state.window.height;
+				width = rdState.window.width;
+				height = rdState.window.height;
 			}
 
 			perFrameData = new Backend::Buffer( BufferType::Uniform, nullptr, 4 * 1024 * 1024 );

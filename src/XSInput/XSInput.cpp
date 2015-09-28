@@ -347,7 +347,7 @@ namespace XS {
 				cmd.move.RL		= perFrameState.moveRight	+ (perFrameState.moveLeft * -1);
 				cmd.move.UD		= perFrameState.moveUp		+ (perFrameState.moveDown * -1);
 
-				cmd.viewAngles = ClientGame::state.viewAngles;
+				cmd.viewAngles = ClientGame::clgState.viewAngles;
 
 				return cmd;
 			}

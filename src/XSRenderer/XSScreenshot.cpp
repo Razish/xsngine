@@ -36,7 +36,7 @@ namespace XS {
 			void Cmd_Screenshot( const CommandContext * const context ) {
 				Framebuffer::BindDefault();
 				glBindBuffer( GL_PIXEL_PACK_BUFFER, defaultPbo );
-				glReadPixels( 0, 0, state.window.width, state.window.height, GL_RGBA, GL_UNSIGNED_BYTE, NULL );
+				glReadPixels( 0, 0, rdState.window.width, rdState.window.height, GL_RGBA, GL_UNSIGNED_BYTE, NULL );
 				GLsync sync = glFenceSync( GL_SYNC_GPU_COMMANDS_COMPLETE, 0 );
 
 #ifdef _DEBUG
@@ -49,8 +49,8 @@ namespace XS {
 				RenderCommand cmd( CommandType::Screenshot );
 				std::string name = String::Format( "screenshots/%s.png", GetScreenshotName() );
 				cmd.screenshot.name = name.c_str();
-				cmd.screenshot.width = state.window.width;
-				cmd.screenshot.height = state.window.height;
+				cmd.screenshot.width = rdState.window.width;
+				cmd.screenshot.height = rdState.window.height;
 				cmd.screenshot.pbo = defaultPbo;
 				cmd.screenshot.sync = sync;
 

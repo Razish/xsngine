@@ -204,7 +204,7 @@ namespace XS {
 				const FontData &fd = data[c][pointSize];
 
 				// check for overflow
-				if ( currentPos[0] + fd.advance >= state.window.width ) {
+				if ( currentPos[0] + fd.advance >= rdState.window.width ) {
 					currentPos[0] = pos[0];
 					currentPos[1] += lineHeight[pointSize];
 				}
@@ -255,7 +255,7 @@ namespace XS {
 				const FontData &fd = data[c][pointSize];
 
 				// check for overflow
-				if ( currentPos[0] + fd.advance >= state.window.width ) {
+				if ( currentPos[0] + fd.advance >= rdState.window.width ) {
 					currentPos[0] = pos[0];
 					currentPos[1] += lineHeight[pointSize];
 					numLines++;

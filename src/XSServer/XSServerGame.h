@@ -15,7 +15,7 @@ namespace XS {
 			struct NetworkState {
 				std::vector<uint32_t>	removedEntities; // removed this frame, notify client
 			} net;
-		} state;
+		} svgState;
 
 		// initialise the ServerGame
 		void Init(

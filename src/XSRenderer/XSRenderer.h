@@ -42,7 +42,7 @@ namespace XS {
 				const char *coreVersion;
 				const char *shaderVersion;
 			} driver;
-		} state;
+		} rdState;
 
 		// used internally
 		// register cvars owned by the renderer

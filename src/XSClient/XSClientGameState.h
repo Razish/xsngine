@@ -15,7 +15,7 @@ namespace XS {
 			vector3			viewAngles;
 			vector3			viewDelta;
 			EntityContainer	entities;
-		} state;
+		} clgState;
 
 	} // namespace ClientGame
 

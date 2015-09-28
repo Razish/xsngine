@@ -17,25 +17,25 @@ namespace XS {
 		const uint32_t Entity::invalidID = 0xFFFFFFFFu;
 
 		void AddEntity( Entity *entity ) {
-			Entity *e = state.entities[entity->id];
+			Entity *e = clgState.entities[entity->id];
 			if ( e ) {
 				SDL_assert( e != entity );
 			}
 			else {
-				state.entities[entity->id] = entity;
+				clgState.entities[entity->id] = entity;
 			}
 		}
 
 		bool EntityExists( uint32_t id ) {
-			return !!(state.entities[id] != nullptr);
+			return !!(clgState.entities[id] != nullptr);
 		}
 
 		Entity *GetEntity( uint32_t id ) {
-			return state.entities[id];
+			return clgState.entities[id];
 		}
 
 		void RemoveEntity( Entity *entity ) {
-			state.entities.erase( entity->id );
+			clgState.entities.erase( entity->id );
 		}
 
 		Entity::~Entity() {

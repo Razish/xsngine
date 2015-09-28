@@ -184,8 +184,8 @@ namespace XS {
 			}
 
 			const vector2 topLeft = {
-				position[0] * Renderer::state.window.width,
-				position[1] * Renderer::state.window.height
+				position[0] * Renderer::rdState.window.width,
+				position[1] * Renderer::rdState.window.height
 			};
 
 			std::string displayText;

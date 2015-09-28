@@ -5,7 +5,7 @@ namespace XS {
 
 	namespace ClientGame {
 
-		GameState state = {};
+		GameState clgState = {};
 
 	} // namespace ClientGame
 

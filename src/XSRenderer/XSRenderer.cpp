@@ -32,7 +32,7 @@ namespace XS {
 
 	namespace Renderer {
 
-		RendererState state = {};
+		RendererState rdState = {};
 
 		static SDL_Window *window = nullptr;
 		static SDL_GLContext context;
@@ -155,7 +155,7 @@ namespace XS {
 		}
 
 		void Init( void ) {
-			state.valid = true;
+			rdState.valid = true;
 
 			RegisterCvars();
 
@@ -199,7 +199,7 @@ namespace XS {
 
 			RenderCommand::Init();
 
-			glViewport( 0, 0, state.window.width, state.window.height );
+			glViewport( 0, 0, rdState.window.width, rdState.window.height );
 		}
 
 		void Shutdown( void ) {
@@ -297,10 +297,10 @@ namespace XS {
 			SDL_assert( context && "Failed to create OpenGL context on window" );
 
 			SDL_GL_MakeCurrent( window, context );
-			state.window.valid = true;
-			state.window.width = static_cast<uint32_t>( width );
-			state.window.height = static_cast<uint32_t>( height );
-			state.window.aspectRatio = vid_width->GetReal64() / vid_height->GetReal64();
+			rdState.window.valid = true;
+			rdState.window.width = static_cast<uint32_t>( width );
+			rdState.window.height = static_cast<uint32_t>( height );
+			rdState.window.aspectRatio = vid_width->GetReal64() / vid_height->GetReal64();
 
 			SDL_GL_SetSwapInterval( r_swapInterval->GetInt32() );
 		#if defined(XS_OS_MAC)
@@ -313,18 +313,18 @@ namespace XS {
 			*/
 		#endif
 
-			state.driver.vendor = reinterpret_cast<const char *>( glGetString( GL_VENDOR ) );
-			state.driver.renderer = reinterpret_cast<const char *>( glGetString( GL_RENDERER ) );
-			state.driver.coreVersion = reinterpret_cast<const char *>( glGetString( GL_VERSION ) );
-			state.driver.shaderVersion = reinterpret_cast<const char *>( glGetString( GL_SHADING_LANGUAGE_VERSION ) );
+			rdState.driver.vendor = reinterpret_cast<const char *>( glGetString( GL_VENDOR ) );
+			rdState.driver.renderer = reinterpret_cast<const char *>( glGetString( GL_RENDERER ) );
+			rdState.driver.coreVersion = reinterpret_cast<const char *>( glGetString( GL_VERSION ) );
+			rdState.driver.shaderVersion = reinterpret_cast<const char *>( glGetString( GL_SHADING_LANGUAGE_VERSION ) );
 
 			console.Print( PrintLevel::Normal, "OpenGL device: %s %s\n",
-				state.driver.vendor,
-				state.driver.renderer
+				rdState.driver.vendor,
+				rdState.driver.renderer
 			);
 			console.Print( PrintLevel::Normal, "OpenGL version: %s with GLSL %s\n",
-				state.driver.coreVersion,
-				state.driver.shaderVersion
+				rdState.driver.coreVersion,
+				rdState.driver.shaderVersion
 			);
 		}
 
@@ -334,7 +334,7 @@ namespace XS {
 
 			SDL_DestroyWindow( window );
 			window = nullptr;
-			state.window = {};
+			rdState.window = {};
 
 			SDL_Quit();
 		}
