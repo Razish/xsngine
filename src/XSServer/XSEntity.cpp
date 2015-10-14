@@ -30,9 +30,7 @@ namespace XS {
 		void Entity::Update( real64_t dt ) {
 			position[0] = std::sin( Server::GetElapsedTime() / 250.0 );
 			position[2] = std::cos( Server::GetElapsedTime() / 500.0 );
-			if ( physics.enabled ) {
-				//TODO: physics
-			}
+			//TODO: physics
 		}
 
 		void Entity::Serialise( ByteBuffer *buffer ) const {

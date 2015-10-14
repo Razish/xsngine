@@ -197,7 +197,7 @@ files = [
 	'XSInput/XSKeys.cpp',
 	'XSInput/XSMouse.cpp',
 	'XSNetwork/XSNetwork.cpp',
-	'XSPhysics/XSPhysicsActor.cpp',
+	'XSPhysics/XSPhysicsScene.cpp',
 	'XSRenderer/XSBackend.cpp',
 	'XSRenderer/XSBuffer.cpp',
 	'XSRenderer/XSFont.cpp',
@@ -232,6 +232,7 @@ if plat == 'Linux':
 		'freetype',
 		'GL',
 		'm',
+		'ode',
 		'png16',
 		'pthread',
 		'SDL2',
@@ -240,6 +241,7 @@ elif plat == 'Darwin':
 	libs = [
 		'freetype',
 		'm',
+		'ode',
 		'png16',
 		'SDL2',
 	]
@@ -260,11 +262,12 @@ elif plat == 'Windows':
 	]
 	# xsngine-provided libs with release + debug versions, so append the signifying 'd' based on configuration
 	dlibs = [
+		'freetype26',
+		'libpng16',
+		'ode',
 		'SDL2',
 		'SDL2main',
-		'freetype26',
 		'zlib',
-		'libpng16',
 	]
 	libs += [lib + ('d' if debug == 1 else '') for lib in dlibs]
 

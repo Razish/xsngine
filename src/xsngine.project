@@ -607,9 +607,8 @@
     <File Name="XSShared/XSEntityTypes.h"/>
   </VirtualDirectory>
   <VirtualDirectory Name="XSPhysics">
-    <File Name="XSPhysics/XSPhysicsSolver.cpp"/>
-    <File Name="XSPhysics/XSPhysicsActor.h"/>
-    <File Name="XSPhysics/XSPhysicsActor.cpp"/>
+    <File Name="XSPhysics/XSPhysicsScene.cpp"/>
+    <File Name="XSPhysics/XSPhysicsScene.h"/>
   </VirtualDirectory>
   <Settings Type="Dynamic Library">
     <GlobalSettings>
