@@ -170,7 +170,6 @@
 #else
 #ifndef TCHAR
 #define TCHAR char
-#define _TCHAR_DEFINED
 #endif
 #ifndef _T
 #define _T(__x) (__x)
