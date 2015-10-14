@@ -592,7 +592,15 @@ libraries = [
 env['LIBS'] = [
 	env.SConscript(
 		'#/' + lib + '/SConscript',
-		exports = [ 'arch', 'bits', 'build_dir', 'configuration', 'env', 'plat' ]
+		exports = [
+			'arch',
+			'bits',
+			'build_dir',
+			'configuration',
+			'env',
+			'plat',
+			'realcc',
+		]
 	) for lib in libraries
 ]
 env['LIBS'] += libs
