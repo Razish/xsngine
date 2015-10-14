@@ -168,7 +168,7 @@ namespace XS {
 		);
 
 		//NOTE: see disclaimer at top of class regarding storage mechanism of strings
-		//NOTE: caller must free the string contents
+		//NOTE: caller must delete[] the string contents
 		void ReadString(
 			const char ** outStr,
 			uint32_t *outLen = nullptr // sometimes we don't care about the size

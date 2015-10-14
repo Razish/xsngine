@@ -219,6 +219,35 @@ namespace XS {
 				}
 			} break;
 
+			case Network::ID_XS_SV2CL_RESOURCES: {
+				uint8_t *buffer = packet->data + 1;
+				size_t bufferLen = packet->length - 1;
+				ByteBuffer bb( buffer, bufferLen );
+
+				uint32_t numResources = 0u;
+				bb.ReadUInt32( &numResources );
+
+				console.Print( PrintLevel::Debug, "numResources: %u\n",
+					numResources
+				);
+
+				for ( uint32_t i = 0u; i < numResources; i++ ) {
+					uint32_t resourceID = 0u;
+					bb.ReadUInt32( &resourceID );
+
+					uint32_t strLength = 0u;
+					const char *resourceName = nullptr;
+					bb.ReadString( &resourceName, &strLength );
+
+					console.Print( PrintLevel::Debug, "resource %02u: %s\n",
+						resourceID,
+						resourceName
+					);
+
+					delete[] resourceName;
+				}
+			} break;
+
 			case Network::ID_XS_SV2CL_PRINT: {
 				uint8_t *buffer = packet->data + 1;
 				size_t bufferLen = packet->length - 1;
