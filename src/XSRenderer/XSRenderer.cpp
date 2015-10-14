@@ -54,6 +54,7 @@ namespace XS {
 		static ShaderProgram *compositeShader = nullptr;
 #endif
 
+#if 0 // see comment regarding GLEW_ARB_debug_output below
 		static const char *GLErrSeverityToString( GLenum severity ) {
 			switch ( severity ) {
 			case GL_DEBUG_SEVERITY_HIGH_ARB: {
@@ -153,6 +154,7 @@ namespace XS {
 				message
 			);
 		}
+#endif
 
 		void Init( void ) {
 			rdState.valid = true;
