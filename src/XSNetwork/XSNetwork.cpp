@@ -51,7 +51,7 @@ namespace XS {
 			uint16_t port = static_cast<uint16_t>( net_port->GetInt32() );
 
 			RakNet::SocketDescriptor socketDescriptors[] = {
-				RakNet::SocketDescriptor( port + isServer, nullptr ) // primary network card
+				RakNet::SocketDescriptor( port, nullptr ) // primary network card
 			};
 
 			if ( isServer ) {
@@ -112,7 +112,7 @@ namespace XS {
 			}
 
 			if ( !port ) {
-				port = net_port->GetInt32() + !isServer;
+				port = net_port->GetInt32();
 			}
 
 			if ( isServer ) {
