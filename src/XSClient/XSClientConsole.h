@@ -70,6 +70,11 @@ namespace XS {
 			void Toggle(
 				void
 			);
+
+			// whether or not the console is visible
+			bool IsVisible(
+				void
+			) const;
 		} *clientConsole;
 
 	} // namespace Client

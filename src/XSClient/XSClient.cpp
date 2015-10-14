@@ -102,7 +102,9 @@ namespace XS {
 				return true;
 			}
 
-			ClientGame::MouseMotionEvent( ev );
+			else if ( !clientConsole || !clientConsole->IsVisible() ) {
+				ClientGame::MouseMotionEvent( ev );
+			}
 
 			return false;
 		}

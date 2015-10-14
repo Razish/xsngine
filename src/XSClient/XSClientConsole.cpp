@@ -34,6 +34,10 @@ namespace XS {
 			Input::CaptureMouse( !visible );
 		}
 
+		bool ClientConsole::IsVisible( void ) const {
+			return visible;
+		}
+
 		// negative for down, positive for up
 		void ClientConsole::Scroll( int amount ) {
 			if ( amount > 0 ) {
