@@ -30,14 +30,14 @@ Every file must have a trailing newline
 Assume full C++11 support. Use auto, nullptr, lambdas, foreach syntax, etc
 
 We can assume the only platforms are:
-	Win32 (x86) where ARCH_WIDTH is 32
-	Win64 (x86_64) where ARCH_WIDTH is 64
-	Linux32 (i386) where ARCH_WIDTH is 32
-	Linux64 (x86_64) where ARCH_WIDTH is 64
-
-Windows has a premade MSVC 2013 project.
-Other platforms have a SCons project, which is only guaranteed to work on Linux (32 and 64)
-
+	Windows
+		32 bit ("x86")
+		64 bit ("x64")
+	Linux
+		32 bit ("i386")
+		64 bit ("x86_64")
+	Mac
+		64 bit ("x86_64")
 
 
 1. SPACING / INDENTATION / LINE WRAPPING
@@ -70,7 +70,7 @@ The only exception to this rule is multi-line conditionals/definitions
 	switch ( x ) {
 	}
 
-Stylise switch cases as such...
+Stylise switch cases as such, to avoid accidental fall-through bugs:
 	switch ( condition ) {
 	case 1: {
 		// code here
@@ -102,6 +102,15 @@ For multi-line if/else statements, the else keyword starts a new line
 		// ...
 	}
 
+Conditional compilation directives shall be one indentation level below typical block indentation
+	if ( condition ) {
+	#if defined(MY_TEST)
+		int x = 42;
+	#else
+		int x = 0;
+	#endif
+	}
+
 Some projects wrap lines at 80 columns. This was due to UNIX terminals only supporting 80 columns.
 It is now common to see 24-27 inch monitors, but long statements/comments are easier to read if they are wrapped
 All lines shall be wrapped at less than 120 columns. Most editors support right-margin indicators.
@@ -128,11 +137,12 @@ Do not over-comment code. This includes being exceedingly explicit and comment s
 	}
 
 Recursive functions should be explicitly commented at both the point of recursion, and above the function definition
-There is no naming requirement for a recursive function
+There is no naming requirement for a recursive function, but ***_r is acceptable
 
-Line comments should have a space at the start
+Line comments should have a space at the start, except for comments intended to be searchable
 	// good
 	//bad
+	//TODO: easily searchable
 
 Line comments that span multiple lines should be indented with tab for carry-on sentences
 	// line 1 starts here and
@@ -155,10 +165,10 @@ Variables start with lower case. All consecutive words start with upper case.
 	int someinteger; // BAD
 	int SomeInteger; // BAD
 
-Classes and structs should start with upper case, with some exceptions for common types.
+Non-primitive types (e.g. classes/structs) start with upper case, with some exceptions for common types.
 Do not use the reserved _t suffix.
-	class Font {}; // object, has font->Draw() method
-	struct RenderCommand {}; // object, has cmd->Execute() method
+	class Font {};
+	struct RenderCommand {};
 	struct vector3 {}; // essentially a POD type, implementing a primitive object. this is an exception
 
 Enumerated constants are all upper case*. All consecutive words are separated by an underscore.
@@ -167,7 +177,7 @@ Only the first constant may be assigned a value, enumeration will handle the res
 The last constant may be used to know the maximum amount of legitimate values
 
 	enum myEnum_t {
-		ENUM_ONE=0,
+		ENUM_ONE = 0,
 		ENUM_TWO,
 		ENUM_THREE,
 		ENUM_MAX
@@ -191,12 +201,12 @@ This includes literals, macros, conditional compiling
 Preprocessor definitions shall be wrapped in parenthesis to enforce order of operations
 This includes all preprocessor definitions, not just those involving arithmetic
 	#define SOME_VALUE 32 + 32
-	int otherValue = 16 * SOME_VALUE; // (16*32) + 32
+	int otherValue = 16 * SOME_VALUE; // (16*32) + 32 = 544
 
 	Should be...
 
 	#define SOME_VALUE (32 + 32)
-	int otherValue = 16 * SOME_VALUE; // 16 * (32 + 32)
+	int otherValue = 16 * SOME_VALUE; // 16 * (32 + 32) = 1024
 
 Macros containing multiple sequence points shall be wrapped in braces to avoid dangling selection constructs
 	#define DO_SOMETHING(x) { statement_one( (x) ); statement_two(); }
