@@ -615,24 +615,24 @@ elif plat == 'Windows':
 	# windows libs are in e.g. "../lib/x86/libpng16d.lib" for 32 bit debug build of libpng
 	env['LIBPATH'] = '#' + os.sep + '..' + os.sep + 'lib' + os.sep + '' + arch + os.sep
 	libs = [
-		'OpenGL32',
-		'Ws2_32',
-		'User32',
-		'Shell32',
-		'winmm',
-		'Ole32',
 		'Gdi32',
-		'Version',
 		'Imm32',
+		'Ole32',
 		'OleAut32',
+		'OpenGL32',
+		'Shell32',
+		'User32',
+		'Version',
+		'winmm',
+		'Ws2_32',
 	]
 	# xsngine-provided libs with release + debug versions, so append the signifying 'd' based on configuration
 	dlibs = [
+		'freetype26',
+		'png16',
 		'SDL2',
 		'SDL2main',
-		'freetype26',
 		'z',
-		'png16',
 	]
 	libs += [lib + ('d' if debug == 1 else '') for lib in dlibs]
 
