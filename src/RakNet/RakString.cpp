@@ -3,7 +3,7 @@
  *  All rights reserved.
  *
  *  This source code is licensed under the BSD-style license found in the
- *  LICENSE file in the root directory of this source tree. An additional grant 
+ *  LICENSE file in the root directory of this source tree. An additional grant
  *  of patent rights can be found in the PATENTS file in the same directory.
  *
  */
@@ -450,6 +450,7 @@ void RakString::SetChar( unsigned index, RakNet::RakString s )
 }
 
 #ifdef _WIN32
+static WCHAR nullWCString[] = L"";
 WCHAR * RakString::ToWideChar(void)
 {
 	//
@@ -458,7 +459,7 @@ WCHAR * RakString::ToWideChar(void)
 	if ( (sharedString->c_str == NULL) || (*sharedString->c_str == '\0') )
 	{
 		// Return empty string
-		return L"";
+		return nullWCString;
 	}
 
 	//
@@ -630,7 +631,7 @@ void RakString::Erase(unsigned int index, unsigned int count)
 {
 	size_t len = GetLength();
 	RakAssert(index+count <= len);
-        
+
 	Clone();
 	unsigned i;
 	for (i=index; i < len-count; i++)
@@ -905,10 +906,10 @@ RakNet::RakString& RakString::URLDecode(void)
 		{
 			hexDigits[0]=sharedString->c_str[++i];
 			hexDigits[1]=sharedString->c_str[++i];
-			
+
 			if (hexDigits[0]==' ')
 				hexValues[0]=0;
-			
+
 			if (hexDigits[0]>='A' && hexDigits[0]<='F')
 				hexValues[0]=hexDigits[0]-'A'+10;
 			if (hexDigits[0]>='a' && hexDigits[0]<='f')
@@ -950,7 +951,7 @@ void RakString::SplitURI(RakNet::RakString &header, RakNet::RakString &domain, R
 		i+=(unsigned int) strlen("http://");
 	else if (strncmp(sharedString->c_str, "https://", 8)==0)
 		i+=(unsigned int) strlen("https://");
-	
+
 	if (strncmp(sharedString->c_str, "www.", 4)==0)
 		i+=(unsigned int) strlen("www.");
 
@@ -1261,7 +1262,7 @@ bool RakString::Deserialize(char *str, BitStream *bs)
 
 	if (b==false)
 		str[0]=0;
-	
+
 	str[l]=0;
 	return b;
 }
@@ -1428,9 +1429,9 @@ RakNet::RakString RakString::Assign(const char *str,size_t pos, size_t n )
 	if (pos+n>=incomingLen)
 	{
 	n=incomingLen-pos;
-	
+
 	}
-	const char * tmpStr=&(str[pos]); 
+	const char * tmpStr=&(str[pos]);
 
 	size_t len = n+1;
 	Allocate(len);
@@ -1486,7 +1487,7 @@ void RakString::AppendBytes(const char *bytes, unsigned int count)
 		sharedString->c_str[length+count]=0;
 	}
 
-	
+
 }
 void RakString::Clone(void)
 {

@@ -74,8 +74,8 @@ namespace XS {
 			bool hasVertices = indices.size() > 0u;
 			bool hasNormals = normals.size() > 0u;
 			bool hasUVs = UVs.size() > 0u;
-			real32_t *buffer = static_cast<real32_t *>( vertexBuffer->Map() );
 			if ( indices.size() > 0 ) {
+				real32_t *buffer = static_cast<real32_t *>( vertexBuffer->Map() );
 				for ( const auto &index : indices ) {
 					if ( hasVertices ) {
 						*buffer++ = vertices[index][0];
@@ -92,8 +92,8 @@ namespace XS {
 						*buffer++ = UVs[index][1];
 					}
 				}
+				vertexBuffer->Unmap();
 			}
-			vertexBuffer->Unmap();
 
 			if ( indices.size() > 0 ) {
 				indexBuffer = new Buffer( BufferType::Index, nullptr, indices.size() * sizeof(uint32_t) );

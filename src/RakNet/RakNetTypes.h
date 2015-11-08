@@ -3,7 +3,7 @@
  *  All rights reserved.
  *
  *  This source code is licensed under the BSD-style license found in the
- *  LICENSE file in the root directory of this source tree. An additional grant 
+ *  LICENSE file in the root directory of this source tree. An additional grant
  *  of patent rights can be found in the PATENTS file in the same directory.
  *
  */
@@ -100,10 +100,10 @@ typedef unsigned char MessageID;
 
 typedef uint32_t BitSize_t;
 
-#if defined(_MSC_VER) && _MSC_VER > 0
-#define PRINTF_64_BIT_MODIFIER "I64"
+#ifdef _WIN32
+	#define PRINTF_64_BIT_MODIFIER "I64"
 #else
-#define PRINTF_64_BIT_MODIFIER "ll"
+	#define PRINTF_64_BIT_MODIFIER "ll"
 #endif
 
 /// Used with the PublicKey structure

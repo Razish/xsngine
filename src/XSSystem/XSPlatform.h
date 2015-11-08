@@ -18,7 +18,6 @@
 
 // Win64
 #if defined(_WIN64) || defined(__WIN64__)
-
 	#if defined(_MSC_VER)
 		#define OS_STRING "win_msvc64"
 	#elif defined(__MINGW64__)
@@ -27,7 +26,7 @@
 	#define PATH_SEP '\\'
 	#define DLL_EXT ".dll"
 
-	// Visual Studio still doesn't support noexcept
+	// Visual Studio <= 1800 doesn't support noexcept, throw() has the closest behaviour
 	#if defined(_MSC_VER) && _MSC_VER <= 1800
 		#define noexcept throw()
 	#endif

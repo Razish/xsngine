@@ -169,7 +169,8 @@
 #include <tchar.h>
 #else
 #ifndef TCHAR
-#define TCHAR char
+	#define _TCHAR_DEFINED
+	typedef char TCHAR;
 #endif
 #ifndef _T
 #define _T(__x) (__x)

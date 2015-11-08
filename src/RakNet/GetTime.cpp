@@ -3,7 +3,7 @@
  *  All rights reserved.
  *
  *  This source code is licensed under the BSD-style license found in the
- *  LICENSE file in the root directory of this source tree. An additional grant 
+ *  LICENSE file in the root directory of this source tree. An additional grant
  *  of patent rights can be found in the PATENTS file in the same directory.
  *
  */
@@ -15,7 +15,7 @@
 #if defined(_WIN32)
 #include "WindowsIncludes.h"
 
- #if !defined(WINDOWS_PHONE_8)
+	#if defined(_MSC_VER) && !defined(WINDOWS_PHONE_8)
 		// To call timeGetTime
 		// on Code::Blocks, this needs to be libwinmm.a instead
 		#pragma comment(lib, "Winmm.lib")
@@ -60,7 +60,7 @@ RakNet::TimeUS NormalizeTime(RakNet::TimeUS timeIn)
 {
 	RakNet::TimeUS diff, lastNormalizedReturnedValueCopy;
 	static RakNet::SimpleMutex mutex;
-	
+
 	mutex.Lock();
 	if (timeIn>=lastNormalizedInputValue)
 	{
@@ -148,7 +148,7 @@ RakNet::TimeUS GetTimeUS_Windows( void )
 //		HANDLE mProc = GetCurrentProcess();
 
 		// Get the current Affinity
-#if _MSC_VER >= 1400 && defined (_M_X64)
+#if defined(_MSC_VER) && _MSC_VER >= 1400 && defined (_M_X64)
 //		GetProcessAffinityMask(mProc, (PDWORD_PTR)&mProcMask, (PDWORD_PTR)&mSysMask);
 #else
 //		GetProcessAffinityMask(mProc, &mProcMask, &mSysMask);
@@ -156,7 +156,7 @@ RakNet::TimeUS GetTimeUS_Windows( void )
 //		mThread = GetCurrentThread();
 
 #endif // _WIN32_WCE
-	}	
+	}
 
 	// 9/26/2010 In China running LuDaShi, QueryPerformanceFrequency has to be called every time because CPU clock speeds can be different
 	RakNet::TimeUS curTime;

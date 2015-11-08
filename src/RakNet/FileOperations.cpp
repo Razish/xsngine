@@ -3,7 +3,7 @@
  *  All rights reserved.
  *
  *  This source code is licensed under the BSD-style license found in the
- *  LICENSE file in the root directory of this source tree. An additional grant 
+ *  LICENSE file in the root directory of this source tree. An additional grant
  *  of patent rights can be found in the PATENTS file in the same directory.
  *
  */
@@ -14,7 +14,7 @@
 #include "_FindFirst.h" // For linux
 #include <stdio.h>
 #include <string.h>
-#ifdef _WIN32 
+#ifdef _WIN32
 // For mkdir
 #include <direct.h>
 #include <io.h>
@@ -57,21 +57,21 @@ bool WriteFileWithDirectories( const char *path, char *data, unsigned dataLength
 			if ( pathCopy[ index ] == '/' || pathCopy[ index ] == '\\')
 			{
 				pathCopy[ index ] = 0;
-	
+
 	#ifdef _WIN32
 				res = _mkdir( pathCopy );
 	#else
-	
+
 				res = mkdir( pathCopy, 0744 );
 	#endif
 				if (res<0 && errno!=EEXIST && errno!=EACCES)
 				{
 					return false;
 				}
-	
+
 				pathCopy[ index ] = '/';
 			}
-	
+
 			index++;
 		}
 	}
@@ -91,12 +91,18 @@ bool WriteFileWithDirectories( const char *path, char *data, unsigned dataLength
 	}
 	else
 	{
-#ifdef _WIN32
-#pragma warning( disable : 4996 ) // mkdir declared deprecated by Microsoft in order to make it harder to be cross platform.  I don't agree it's deprecated.
+	#ifdef _WIN32
+		#ifdef _MSC_VER
+			#pragma warning( push )
+			#pragma warning( disable : 4996 ) // mkdir declared deprecated by Microsoft in order to make it harder to be cross platform.  I don't agree it's deprecated.
+		#endif
 		res = _mkdir( pathCopy );
-#else
+		#ifdef _MSC_VER
+			#pragma warning( pop )
+		#endif
+	#else
 		res = mkdir( pathCopy, 0744 );
-#endif
+	#endif
 
 		if (res<0 && errno!=EEXIST)
 		{
