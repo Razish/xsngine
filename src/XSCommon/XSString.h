@@ -40,7 +40,17 @@ namespace XS {
 			size_t len = 4096
 		);
 
+		// return a mutable copy of a constant string
+		// if len is zero it will be calculated as strlen + null-terminator
+		// caller must delete[] the return value
+		char *AllocMutable(
+			const char *src,
+			size_t len = 0
+		) XS_WARN_UNUSED_RESULT;
+
+
 		// std::string manipulation
+
 		std::string Format(
 			const char *fmt,
 			...

@@ -12,20 +12,37 @@ namespace XS {
 		struct Object {
 			dBodyID		body;
 			dGeomID		geom;
+			dMass		mass;
+
+			char		*geomData = nullptr;
+
+			uint32_t	id;
+			static uint32_t numObjects;
 
 			Object();
+			~Object();
 		};
 
 		extern class Scene {
 		private:
-			dWorldID			world;
-			dSpaceID			space;
-			dJointGroupID		contactGroup;
-			std::vector<Object>	objects;
+			dWorldID				world;
+			dSpaceID				space;
+			dJointGroupID			contactGroup;
+			std::vector<Object *>	objects;
+
+			friend void NearCallback(
+				void *data,
+				dGeomID o1,
+				dGeomID o2
+			);
 
 		public:
 			Scene();
 			~Scene();
+
+			void Update(
+				real64_t dt
+			);
 
 			dWorldID GetWorld(
 				void

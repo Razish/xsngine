@@ -128,6 +128,18 @@ namespace XS {
 			return 0;
 		}
 
+		char *AllocMutable( const char *src, size_t len ) {
+			if ( len == 0u ) {
+				len = strlen( src ) + 1;
+			}
+
+			// alloc and copy
+			char *newStr = new char[len];
+			std::memcpy( newStr, src, len );
+
+			return newStr;
+		}
+
 		// by Erik Aronesty http://stackoverflow.com/a/8098080
 		std::string Format( const char *fmt, ... ) {
 			size_t size = 128;

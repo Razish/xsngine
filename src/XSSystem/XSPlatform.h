@@ -112,16 +112,48 @@
 
 // compiler specific junk, function names etc
 #if defined(_MSC_VER)
+
 	// visual studio
 	#define XS_FUNCTION __FUNCTION__
 	#define XS_FUNCTION_VERBOSE __FUNCSIG__
+	#define XS_EXPORT __declspec(dllexport)
+	#define XS_NAKED __declspec(naked)
+	#define XS_USED
+	#define XS_UNUSED
+	#define XS_WARN_UNUSED_RESULT
+	#define XS_CDECL __cdecl
+
 #elif defined(__GNUC__) || defined(__clang__)
+
 	// gcc, clang
 	#define XS_FUNCTION __FUNCTION__
 	#define XS_FUNCTION_VERBOSE __PRETTY_FUNCTION__
+	#define XS_EXPORT __attribute__(( visibility( "default" ) ))
+	#define XS_NAKED __attribute__(( noinline ))
+	#define XS_USED __attribute__(( used ))
+	#define XS_UNUSED __attribute__(( unused ))
+	#define XS_WARN_UNUSED_RESULT __attribute__(( warn_unused_result ))
+	#if defined(XSARCH_X86)
+		#define XS_CDECL __attribute__(( cdecl ))
+	#else
+		#define XS_CDECL
+	#endif
+
 #elif defined(__INTEL_COMPILER)
+
 	//TODO: icc / intel
+
 #else
+
 	#define XS_FUNCTION "<unknown-func>"
 	#define XS_FUNCTION_VERBOSE XS_FUNCTION
+	#define XS_EXPORT
+	#define XS_NAKED
+	#define XS_USED
+	#define XS_UNUSED
+	#define XS_WARN_UNUSED_RESULT
+	#define XS_CDECL
+
 #endif
+
+#define XS_CABI extern "C"
