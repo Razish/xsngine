@@ -16,14 +16,8 @@ namespace XS {
 		std::unordered_map<uint64_t, Client *>	clients;
 
 		void IncomingConnection( uint64_t guid ) {
-			// see if client is already connected - should not happen
-			if ( clients[guid] ) {
-				console.Print( PrintLevel::Normal,
-					"Incoming connection from already-connected client with guid %" PRIX64 "\n",
-					guid
-				);
-				delete clients[guid];
-			}
+			// drop client if they're already connected
+			DropClient( guid );
 
 			Client *client = new Client();
 
@@ -44,11 +38,11 @@ namespace XS {
 			Client *client = clients[guid];
 			if ( client ) {
 				console.Print( PrintLevel::Normal,
-					"Dropping client with guid %" PRIX64 ")\n",
+					"Dropping client with guid %" PRIX64 "\n",
 					guid
 				);
 				delete client;
-				clients[guid] = nullptr;
+				clients.erase( guid );
 			}
 		}
 

@@ -74,9 +74,8 @@ namespace XS {
 		}
 
 		void Shutdown( void ) {
-			connected = false;
+			Disconnect();
 
-			//FIXME: peer->CloseConnection( ... )?
 			peer->Shutdown( 500, 0, PacketPriority::LOW_PRIORITY );
 			RakNet::RakPeerInterface::DestroyInstance( peer );
 			peer = nullptr;
@@ -102,7 +101,7 @@ namespace XS {
 		};
 
 		bool IsConnected( void ) {
-			return connected;
+			return IsActive() && connected;
 		}
 
 		bool IsActive( void ) {
@@ -141,8 +140,7 @@ namespace XS {
 		}
 
 		void Disconnect( void ) {
-			if ( connected ) {
-				console.Print( PrintLevel::Normal, "Not connected to a server\n" );
+			if ( !IsConnected() ) {
 				return;
 			}
 
@@ -238,7 +236,9 @@ namespace XS {
 						Server::DropClient( packet->guid.g );
 					}
 					else {
-						console.Print( PrintLevel::Normal, "server shutdown\n" );
+						console.Print( PrintLevel::Normal, "disconnected from server (%s)\n",
+							packet->systemAddress.ToString()
+						);
 						connected = false;
 					}
 				} break;
