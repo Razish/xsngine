@@ -69,6 +69,7 @@ namespace XS {
 		}
 
 		void RunFrame( real64_t dt ) {
+			Physics::scene.Update( dt );
 			for ( auto &entity : svgState.entities ) {
 				entity->Update( dt );
 			}

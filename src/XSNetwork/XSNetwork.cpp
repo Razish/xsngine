@@ -138,7 +138,7 @@ namespace XS {
 		}
 
 		void Disconnect( void ) {
-			if ( connected ) {
+			if ( !connected ) {
 				console.Print( PrintLevel::Normal, "Not connected to a server\n" );
 				return;
 			}

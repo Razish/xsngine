@@ -4,6 +4,7 @@
 #include "XSServer/XSEntity.h"
 #include "XSServer/XSServerGame.h"
 #include "XSServer/XSServer.h"
+#include "XSPhysics/XSPhysicsScene.h"
 
 namespace XS {
 

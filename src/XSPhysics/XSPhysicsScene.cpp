@@ -41,6 +41,8 @@ namespace XS {
 		}
 
 		Scene::Scene() {
+			dInitODE();
+
 			world = dWorldCreate();
 			dWorldSetERP( world, 0.2 );
 			dWorldSetCFM( world, 1e-5 );
@@ -91,6 +93,9 @@ namespace XS {
 		}
 
 		void Scene::Update( real64_t dt ) {
+			if ( dt <= 0.0 ) {
+				return;
+			}
 			dSpaceCollide( space, this, NearCallback );
 			dWorldQuickStep( world, dt );
 			dJointGroupEmpty( contactGroup );
@@ -103,6 +108,7 @@ namespace XS {
 			dJointGroupDestroy( contactGroup );
 			dSpaceDestroy( space );
 			dWorldDestroy( world );
+			dCloseODE();
 		}
 
 		dWorldID Scene::GetWorld( void ) const {

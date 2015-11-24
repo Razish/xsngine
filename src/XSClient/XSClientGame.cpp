@@ -23,6 +23,7 @@
 #include "XSClient/XSResources.h"
 #include "XSInput/XSInput.h"
 #include "XSNetwork/XSNetwork.h"
+#include "XSPhysics/XSPhysicsScene.h"
 #include "XSRenderer/XSView.h"
 #include "XSRenderer/XSModel.h"
 
@@ -104,6 +105,7 @@ namespace XS {
 		}
 
 		void RunFrame( real64_t dt ) {
+			Physics::scene.Update( dt );
 			for ( auto &entity : clgState.entities ) {
 				entity.second->Update( dt );
 			}
