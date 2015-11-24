@@ -56,7 +56,7 @@ namespace XS {
 				return invalidHandle;
 			}
 
-			char *buffer = new char[f.length];
+			char *buffer = new char[f.length + 1];
 			{
 				f.Read( reinterpret_cast<uint8_t *>( buffer ) );
 				//FIXME: dispatch to correct file reader based on extension

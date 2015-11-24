@@ -378,7 +378,10 @@ catch( const XS::XSError &e ) {
 	// indent the console for this scope
 	{
 		Indent indent( 1 );
-		if ( !Common::com_dedicated->GetBool() ) {
+		if ( Common::com_dedicated->GetBool() ) {
+			Server::Shutdown();
+		}
+		else {
 			Client::Shutdown();
 			Renderer::Shutdown();
 		}

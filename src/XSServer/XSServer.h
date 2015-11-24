@@ -40,7 +40,12 @@ namespace XS {
 
 		// ???
 		void IncomingConnection(
-			const RakNet::Packet *packet
+			uint64_t guid
+		);
+
+		// ???
+		void DropClient(
+			uint64_t guid
 		);
 
 		// run a frame and pass control to the ServerGame

@@ -22,6 +22,11 @@ namespace XS {
 			void
 		);
 
+		// ???
+		void Shutdown(
+			void
+		);
+
 		// run a frame, simulate entities
 		void RunFrame(
 			real64_t dt

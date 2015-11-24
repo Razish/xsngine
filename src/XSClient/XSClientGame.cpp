@@ -97,9 +97,10 @@ namespace XS {
 		}
 
 		void Shutdown( void ) {
-			for ( auto entity : clgState.entities ) {
-				RemoveEntity( entity.second );
+			for ( auto &entity : clgState.entities ) {
+				delete entity.second;
 			}
+			clgState.entities.clear();
 			delete sceneView;
 		}
 

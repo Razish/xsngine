@@ -36,6 +36,7 @@ namespace XS {
 
 		void RemoveEntity( Entity *entity ) {
 			auto it = std::find( svgState.entities.begin(), svgState.entities.end(), entity );
+			delete *it;
 			svgState.entities.erase( it );
 		}
 
@@ -69,6 +70,13 @@ namespace XS {
 
 		void Init( void ) {
 			RegisterCommands();
+		}
+
+		void Shutdown( void ) {
+			for ( auto &entity : svgState.entities ) {
+				delete entity;
+			}
+			svgState.entities.clear();
 		}
 
 		void RunFrame( real64_t dt ) {

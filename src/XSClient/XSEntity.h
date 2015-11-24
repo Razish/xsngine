@@ -54,7 +54,7 @@ namespace XS {
 
 		// remove an entity from the game
 		void RemoveEntity(
-			Entity *entity
+			uint32_t id
 		);
 
 	} // namespace ClientGame

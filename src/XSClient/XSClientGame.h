@@ -21,6 +21,11 @@ namespace XS {
 			void
 		);
 
+		// ???
+		void Shutdown(
+			void
+		);
+
 		// run a frame, simulate entities
 		void RunFrame(
 			real64_t dt
@@ -36,10 +41,12 @@ namespace XS {
 			const RakNet::Packet *packet
 		);
 
+		// ???
 		void MouseMotionEvent(
 			const struct MouseMotionEvent &ev
 		);
 
+		// ???
 		void MouseButtonEvent(
 			const struct MouseButtonEvent &ev
 		);

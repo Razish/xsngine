@@ -85,7 +85,7 @@ namespace XS {
 					// end of file
 					if ( mesh ) {
 						mesh->ValidateNormals();
-						meshes.push_back( *mesh );
+						meshes.push_back( mesh );
 						mesh = nullptr;
 					}
 					break;
@@ -100,7 +100,7 @@ namespace XS {
 						if ( mesh->vertices.size() > 0 ) {
 							mesh->ValidateNormals();
 						}
-						meshes.push_back( *mesh );
+						meshes.push_back( mesh );
 					}
 
 					mesh = new XMFMesh();
@@ -208,12 +208,18 @@ namespace XS {
 			}
 		}
 
+		FileXMF::~FileXMF() {
+			for ( auto *mesh : meshes ) {
+				delete mesh;
+			}
+		}
+
 		size_t FileXMF::GetMeshCount( void ) const {
 			return meshes.size();
 		}
 
 		XMFMesh *FileXMF::GetMeshFromIndex( size_t index ) {
-			return &meshes[index];
+			return meshes[index];
 		}
 
 	} // namespace Renderer

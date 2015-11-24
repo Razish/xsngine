@@ -484,10 +484,12 @@ if debug:
 			#'-pg',
 			#'-finstrument-functions',
 			'-fno-omit-frame-pointer',
+			'-fsanitize=address',
 		]
-		#env['LINKFLAGS'] += [
+		env['LINKFLAGS'] += [
 		#	'-pg',
-		#]
+			'-fsanitize=address',
+		]
 	elif realcc == 'cl':
 		env['CCFLAGS'] += [
 			'/Od',		# disable optimisations

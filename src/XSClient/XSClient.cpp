@@ -164,6 +164,11 @@ namespace XS {
 		void Shutdown( void ) {
 			delete clientConsole;
 			delete hudView;
+
+			ClientGame::Shutdown();
+
+			Network::Disconnect();
+			Network::Shutdown();
 		}
 
 		void NetworkPump( void ) {

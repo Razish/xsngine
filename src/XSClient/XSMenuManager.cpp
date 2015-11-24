@@ -37,7 +37,7 @@ namespace XS {
 			material->shaderProgram = Renderer::quadProgram;
 
 			assets.cursor = material;
-			delete cursorData;
+			delete[] cursorData;
 		}
 
 		// load a menu from disk

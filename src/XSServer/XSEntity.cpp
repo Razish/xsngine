@@ -25,6 +25,7 @@ namespace XS {
 		Entity::~Entity() {
 			svgState.net.removedEntities.push_back( id );
 			privateNumEntities--;
+			delete physics.actor;
 		};
 
 		void Entity::Update( real64_t dt ) {
