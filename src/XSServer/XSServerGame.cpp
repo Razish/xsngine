@@ -4,13 +4,13 @@
 #include "XSCommon/XSConsole.h"
 #include "XSCommon/XSCommand.h"
 #include "XSCommon/XSVector.h"
-#include "XSPhysics/XSPhysicsScene.h"
 #include "XSServer/XSServerGame.h"
 #include "XSServer/XSEntity.h"
 #include "XSServer/XSEntityFXRunner.h"
 #include "XSServer/XSEntityModel.h"
 #include "XSServer/XSServer.h"
 #include "XSServer/XSResources.h"
+#include "XSPhysics/XSPhysicsScene.h"
 
 namespace XS {
 
@@ -36,6 +36,7 @@ namespace XS {
 
 		void RemoveEntity( Entity *entity ) {
 			auto it = std::find( svgState.entities.begin(), svgState.entities.end(), entity );
+			delete *it;
 			svgState.entities.erase( it );
 		}
 
@@ -56,7 +57,9 @@ namespace XS {
 			EntityModel *ent = new EntityModel();
 #endif
 			ent->position = pos;
-			//TODO: add to physics scene
+			ent->physicsObject = new Physics::Object( svgState.physicsScene );
+			ent->physicsObject->SetPosition( &ent->position );
+			svgState.physicsScene->AddObject( ent->physicsObject );
 			AddEntity( ent );
 		}
 
@@ -66,10 +69,22 @@ namespace XS {
 
 		void Init( void ) {
 			RegisterCommands();
+			svgState.physicsScene = new Physics::Scene();
+		}
+
+		void Shutdown( void ) {
+			for ( auto &entity : svgState.entities ) {
+				delete entity;
+			}
+			svgState.entities.clear();
+
+			// all objects should have been removed from the physics scene, and its shutdown routine will verify this
+			delete svgState.physicsScene;
 		}
 
 		void RunFrame( real64_t dt ) {
-			Physics::scene.Update( dt );
+			svgState.physicsScene->Update( dt );
+
 			for ( auto &entity : svgState.entities ) {
 				entity->Update( dt );
 			}

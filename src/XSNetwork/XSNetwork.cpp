@@ -1,3 +1,6 @@
+#define __STDC_FORMAT_MACROS
+#include <inttypes.h>
+
 #include <RakNet/RakPeerInterface.h>
 #include <RakNet/BitStream.h>
 #include <RakNet/RakString.h>
@@ -71,9 +74,8 @@ namespace XS {
 		}
 
 		void Shutdown( void ) {
-			connected = false;
+			Disconnect();
 
-			//FIXME: peer->CloseConnection( ... )?
 			peer->Shutdown( 500, 0, PacketPriority::LOW_PRIORITY );
 			RakNet::RakPeerInterface::DestroyInstance( peer );
 			peer = nullptr;
@@ -99,7 +101,7 @@ namespace XS {
 		};
 
 		bool IsConnected( void ) {
-			return connected;
+			return IsActive() && connected;
 		}
 
 		bool IsActive( void ) {
@@ -138,8 +140,7 @@ namespace XS {
 		}
 
 		void Disconnect( void ) {
-			if ( !connected ) {
-				console.Print( PrintLevel::Normal, "Not connected to a server\n" );
+			if ( !IsConnected() ) {
 				return;
 			}
 
@@ -186,12 +187,12 @@ namespace XS {
 
 				case ID_NEW_INCOMING_CONNECTION: {
 					// another client has connected
-					if ( Common::com_dedicated->GetBool() ) {
-						console.Print( PrintLevel::Normal, "client connecting with IP %s and GUID %X\n",
+					if ( isServer ) {
+						console.Print( PrintLevel::Normal, "client connecting with IP %s and GUID %" PRIX64 "\n",
 							packet->systemAddress.ToString(),
 							packet->guid.g
 						);
-						Server::IncomingConnection( packet );
+						Server::IncomingConnection( packet->guid.g );
 					}
 					else {
 						SDL_assert( !"unexpected connection as client" );
@@ -227,9 +228,19 @@ namespace XS {
 				} break;
 
 				case ID_DISCONNECTION_NOTIFICATION: {
-					// we have been disconnected - server shutdown
-					console.Print( PrintLevel::Normal, "server shutdown\n" );
-					connected = false;
+					// we have been disconnected
+					if ( isServer ) {
+						console.Print( PrintLevel::Normal, "client disconnected (%s)\n",
+							packet->systemAddress.ToString()
+						);
+						Server::DropClient( packet->guid.g );
+					}
+					else {
+						console.Print( PrintLevel::Normal, "disconnected from server (%s)\n",
+							packet->systemAddress.ToString()
+						);
+						connected = false;
+					}
 				} break;
 
 				case ID_CONNECTION_LOST: {
@@ -239,7 +250,7 @@ namespace XS {
 				} break;
 
 				default: {
-					if ( Common::com_dedicated->GetBool() ) {
+					if ( isServer ) {
 						if ( Server::ReceivePacket( packet ) ) {
 							return;
 						}
@@ -333,7 +344,7 @@ namespace XS {
 					peer->GetMyBoundAddress().ToString()
 				);
 			}
-			console.Print( PrintLevel::Normal, "GUID: %X\n",
+			console.Print( PrintLevel::Normal, "GUID: %" PRIX64 "\n",
 				myGUID
 			);
 

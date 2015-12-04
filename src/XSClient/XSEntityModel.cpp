@@ -8,6 +8,7 @@ namespace XS {
 
 		EntityModel::EntityModel() {
 			type = EntityType::Model;
+
 		}
 
 		void EntityModel::Update( real64_t dt ) {

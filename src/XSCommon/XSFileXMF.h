@@ -25,13 +25,14 @@ namespace XS {
 		private:
 			static uint32_t		version;
 
-			std::vector<XMFMesh>	meshes;
+			std::vector<XMFMesh *>	meshes;
 
 		public:
 			FileXMF(
 				const char *buffer,
 				size_t bufferSize
 			);
+			~FileXMF();
 
 			// don't allow default instantiation
 			FileXMF() = delete;

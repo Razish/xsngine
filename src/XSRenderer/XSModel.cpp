@@ -31,7 +31,6 @@ namespace XS {
 
 			if ( model ) {
 				console.Print( PrintLevel::Debug, "Loading model \"%s\" using existing model (loaded %i times)\n",
-					XS_FUNCTION,
 					path,
 					model->refCount
 				);
@@ -56,7 +55,7 @@ namespace XS {
 				return invalidHandle;
 			}
 
-			char *buffer = new char[f.length];
+			char *buffer = new char[f.length + 1];
 			{
 				f.Read( reinterpret_cast<uint8_t *>( buffer ) );
 				//FIXME: dispatch to correct file reader based on extension

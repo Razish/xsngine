@@ -1,6 +1,6 @@
+#define __STDC_FORMAT_MACROS
+#include <inttypes.h>
 #include <unordered_map>
-
-#include <RakNet/RakPeerInterface.h>
 
 #include "XSCommon/XSCommon.h"
 #include "XSCommon/XSString.h"
@@ -15,30 +15,35 @@ namespace XS {
 
 		std::unordered_map<uint64_t, Client *>	clients;
 
-		void IncomingConnection( const RakNet::Packet *packet ) {
-			const uint64_t guid = packet->guid.g;
-
-			// see if client is already connected - should not happen
-			if ( clients[guid] ) {
-				console.Print( PrintLevel::Normal, "Incoming connection from already-connected client (guid: %X)\n",
-					guid
-				);
-				delete clients[guid];
-			}
+		void IncomingConnection( uint64_t guid ) {
+			// drop client if they're already connected
+			DropClient( guid );
 
 			Client *client = new Client();
 
 			// store it now, we accessed clients[] above meaning any iteration of clients will return a nullptr
 			clients[guid] = client;
 
-			BroadcastMessage( String::Format( "Connection from %X", guid ).c_str() );
+			BroadcastMessage( String::Format( "Connection from %" PRIX64, guid ).c_str() );
 
 			// initialise
-			client->guid = packet->guid.g;
+			client->guid = guid;
 			client->connectionState = Client::ConnectionState::Connecting;
 
 			// send resource list
 			ServerGame::NetworkResources( true );
+		}
+
+		void DropClient( uint64_t guid ) {
+			Client *client = clients[guid];
+			if ( client ) {
+				console.Print( PrintLevel::Normal,
+					"Dropping client with guid %" PRIX64 "\n",
+					guid
+				);
+				delete client;
+				clients.erase( guid );
+			}
 		}
 
 	} // namespace ServerGame

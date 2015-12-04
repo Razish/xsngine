@@ -98,14 +98,14 @@ namespace XS {
 		}
 
 		void Shutdown( void ) {
-			for ( auto entity : clgState.entities ) {
-				RemoveEntity( entity.second );
+			for ( auto &entity : clgState.entities ) {
+				delete entity.second;
 			}
+			clgState.entities.clear();
 			delete sceneView;
 		}
 
 		void RunFrame( real64_t dt ) {
-			Physics::scene.Update( dt );
 			for ( auto &entity : clgState.entities ) {
 				entity.second->Update( dt );
 			}
@@ -208,7 +208,7 @@ namespace XS {
 						#if 0
 							modelEnt->renderInfo.renderable = Renderer::Model::Register( GetResource( resourceID ) );
 						#else
-							modelEnt->renderInfo.handle = Renderer::Model::Register( "models/torus.xmf" );
+							modelEnt->renderInfo.handle = Renderer::Model::Register( "models/box.xmf" );
 						#endif
 						} break;
 

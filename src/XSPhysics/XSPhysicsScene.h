@@ -3,27 +3,49 @@
 #include <ode/ode.h>
 #include <vector>
 
+#include "XSCommon/XSVector.h"
+
 namespace XS {
 
 	namespace Physics {
 
 		// uses the same coordinate system as the renderer (i.e. +Y is up)
 
-		struct Object {
-			dBodyID		body;
-			dGeomID		geom;
-			dMass		mass;
+		class Object {
 
-			char		*geomData = nullptr;
-
-			uint32_t	id;
+		private:
 			static uint32_t numObjects;
+			class Scene	*scene = nullptr;
+			dBodyID		 body;
+			dGeomID		 geom;
+			dMass		 mass;
 
-			Object();
+		public:
+			// don't allow default instantiation
+			Object() = delete;
+			Object( const Object& ) = delete;
+			Object& operator=( const Object& ) = delete;
+
+			Object( Scene *physicsScene );
 			~Object();
+
+			char			*geomData = nullptr;
+			uint32_t		id;
+
+			// set the object's position
+			void SetPosition(
+				const vector3 *pos
+			) const;
+
+			// get the object's position
+			vector3 GetPosition(
+				void
+			) const;
+
 		};
 
-		extern class Scene {
+		class Scene {
+
 		private:
 			dWorldID				world;
 			dSpaceID				space;
@@ -51,7 +73,17 @@ namespace XS {
 			dSpaceID GetSpace(
 				void
 			) const;
-		} scene;
+
+			void AddObject(
+				Object *object
+			);
+
+			// called by Object destructor
+			void RemoveObject(
+				Object *object
+			);
+
+		};
 
 	} // namespace Physics
 

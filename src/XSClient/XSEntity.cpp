@@ -19,7 +19,7 @@ namespace XS {
 		void AddEntity( Entity *entity ) {
 			Entity *e = clgState.entities[entity->id];
 			if ( e ) {
-				SDL_assert( e != entity );
+				SDL_assert( !"entity exists" );
 			}
 			else {
 				clgState.entities[entity->id] = entity;
@@ -34,23 +34,26 @@ namespace XS {
 			return clgState.entities[id];
 		}
 
-		void RemoveEntity( Entity *entity ) {
-			clgState.entities.erase( entity->id );
+		void RemoveEntity( uint32_t id ) {
+			clgState.entities[id] = nullptr; // potential leak
 		}
 
 		Entity::~Entity() {
+			RemoveEntity( id );
+
 			//FIXME: this isn't right...?
 			if ( renderInfo.handle != Renderer::Renderable::invalidHandle ) {
+				//Renderer::Model::Free( renderInfo.handle );
 				renderInfo.handle = Renderer::Renderable::invalidHandle;
 			}
-
-			RemoveEntity( this );
 		};
 
 		void Entity::Update( real64_t dt ) {
 			if ( renderInfo.handle != Renderer::Renderable::invalidHandle ) {
 				Renderer::Renderable::Get( renderInfo.handle )->Update( dt );
 			}
+
+			// get physics object data
 		}
 
 		void Entity::AddToScene( Renderer::View *view ) {

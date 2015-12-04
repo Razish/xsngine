@@ -49,7 +49,11 @@ namespace XS {
 		}
 
 		void Shutdown( void ) {
+			ServerGame::Shutdown();
+
 			delete serverConsole;
+
+			Network::Shutdown();
 		}
 
 		static void GenerateNetworkState( void ) {

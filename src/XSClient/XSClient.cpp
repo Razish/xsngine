@@ -52,6 +52,10 @@ namespace XS {
 		}
 
 		static void Cmd_Disconnect( const CommandContext * const context ) {
+			if ( !Network::IsConnected() ) {
+				console.Print( PrintLevel::Normal, "Not connected to a server\n" );
+				return;
+			}
 			Network::Disconnect();
 		}
 
@@ -164,6 +168,10 @@ namespace XS {
 		void Shutdown( void ) {
 			delete clientConsole;
 			delete hudView;
+
+			ClientGame::Shutdown();
+			Network::Disconnect();
+			Network::Shutdown();
 		}
 
 		void NetworkPump( void ) {

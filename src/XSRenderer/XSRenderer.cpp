@@ -28,6 +28,10 @@
 #define USE_FBO
 #define FBO_COMPOSITE
 
+// ARB_debug_output causes a crash due to a driver bug on Nvidia GTX 680 driver versions [350.12, 353.82]
+//	targeting OpenGL 3.1 core profile
+//#define RENDERER_DEBUG_OUTPUT
+
 namespace XS {
 
 	namespace Renderer {
@@ -54,7 +58,7 @@ namespace XS {
 		static ShaderProgram *compositeShader = nullptr;
 #endif
 
-#if 0 // see comment regarding GLEW_ARB_debug_output below
+	#ifdef RENDERER_DEBUG_OUTPUT
 		static const char *GLErrSeverityToString( GLenum severity ) {
 			switch ( severity ) {
 			case GL_DEBUG_SEVERITY_HIGH_ARB: {
@@ -154,7 +158,7 @@ namespace XS {
 				message
 			);
 		}
-#endif
+	#endif // RENDERER_DEBUG_OUTPUT
 
 		void Init( void ) {
 			rdState.valid = true;
@@ -172,12 +176,12 @@ namespace XS {
 
 			// ARB_debug_output causes a crash due to a driver bug on Nvidia GTX 680 driver versions [350.12, 353.82]
 			//	targeting OpenGL 3.1 core profile
-#if 0
+		#ifdef RENDERER_DEBUG_OUTPUT
 			if ( GLEW_ARB_debug_output ) {
 				glEnable( GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB );
 				glDebugMessageCallbackARB( OnGLError, nullptr );
 			}
-#endif
+		#endif // RENDERER_DEBUG_OUTPUT
 
 			Backend::Init();
 

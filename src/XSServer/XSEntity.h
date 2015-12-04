@@ -7,6 +7,10 @@ namespace XS {
 
 	class ByteBuffer;
 
+	namespace Physics {
+		class Object;
+	}
+
 	namespace ServerGame {
 
 		class Entity {
@@ -20,9 +24,10 @@ namespace XS {
 			static const uint32_t	&numEntities;
 			static const uint32_t	 invalidID;
 
-			uint32_t	id = invalidID;
-			EntityType	type = EntityType::Generic;
-			vector3		position;
+			uint32_t				 id = invalidID;
+			EntityType				 type = EntityType::Generic;
+			vector3					 position;
+			class Physics::Object	*physicsObject = nullptr;
 
 			Entity( const Entity& ) = delete;
 			Entity& operator=( const Entity& ) = delete;

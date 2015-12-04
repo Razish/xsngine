@@ -26,12 +26,11 @@ namespace XS {
 		Entity::~Entity() {
 			svgState.net.removedEntities.push_back( id );
 			privateNumEntities--;
+			delete physicsObject;
 		};
 
 		void Entity::Update( real64_t dt ) {
-			position[0] = std::sin( Server::GetElapsedTime() / 250.0 );
-			position[2] = std::cos( Server::GetElapsedTime() / 500.0 );
-			//TODO: physics
+			position = physicsObject->GetPosition();
 		}
 
 		void Entity::Serialise( ByteBuffer *buffer ) const {
