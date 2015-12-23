@@ -65,13 +65,13 @@ namespace XS {
 			std::string value = "",
 			std::string description = "none",
 			uint32_t flags = CVAR_NONE
-		);
+		) XS_WARN_UNUSED_RESULT;
 
 		// fetch a handle to an existing cvar
 		// returns nullptr if none are found
 		static Cvar *Get(
 			const std::string &name
-		);
+		) XS_WARN_UNUSED_RESULT;
 
 		// print all cvars, flags and values to console
 		static void List(
@@ -116,34 +116,34 @@ namespace XS {
 		);
 
 		// retrieve a value for the cvar at the given index (e.g. index 1 for "640 480" will be "480"
-		inline const std::string &GetDefaultString( void ) const {
+		inline const std::string &GetDefaultString( void ) const XS_WARN_UNUSED_RESULT {
 			return defaultStr;
 		}
-		inline const std::string &GetFullString( void ) const {
+		inline const std::string &GetFullString( void ) const XS_WARN_UNUSED_RESULT {
 			return fullString;
 		}
-		inline const char *GetFullCString( void ) const {
+		inline const char *GetFullCString( void ) const XS_WARN_UNUSED_RESULT {
 			return fullString.c_str();
 		}
-		inline const std::string &GetString( size_t index = 0u ) const {
+		inline const std::string &GetString( size_t index = 0u ) const XS_WARN_UNUSED_RESULT {
 			return values[index].str;
 		}
-		inline const char *GetCString( size_t index = 0u ) const {
+		inline const char *GetCString( size_t index = 0u ) const XS_WARN_UNUSED_RESULT {
 			return values[index].str.c_str();
 		}
-		inline int32_t GetInt32( size_t index = 0u ) const {
+		inline int32_t GetInt32( size_t index = 0u ) const XS_WARN_UNUSED_RESULT {
 			return values[index].int32;
 		}
-		inline uint32_t GetUInt32( size_t index = 0u ) const {
+		inline uint32_t GetUInt32( size_t index = 0u ) const XS_WARN_UNUSED_RESULT {
 			return values[index].uint32;
 		}
-		inline real32_t GetReal32( size_t index = 0u ) const {
+		inline real32_t GetReal32( size_t index = 0u ) const XS_WARN_UNUSED_RESULT {
 			return values[index].real32;
 		}
-		inline real64_t GetReal64( size_t index = 0u ) const {
+		inline real64_t GetReal64( size_t index = 0u ) const XS_WARN_UNUSED_RESULT {
 			return values[index].real64;
 		}
-		inline bool GetBool( size_t index = 0u ) const {
+		inline bool GetBool( size_t index = 0u ) const XS_WARN_UNUSED_RESULT {
 			return values[index].boolean;
 		}
 	};

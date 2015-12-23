@@ -24,9 +24,8 @@ namespace XS {
 
 		void MenuElementSlider::ParseProperties( TokenParser *parser, const char *fileName ) {
 			const char *tok = nullptr;
-			parser->ParseString( &tok );
 
-			if ( String::CompareCase( tok, "{" ) ) {
+			if ( parser->ParseString( &tok ) || String::CompareCase( tok, "{" ) ) {
 				console.Print( PrintLevel::Normal,
 					"%s missing opening brace when parsing properties for slider menu element from %s:%i\n",
 					XS_FUNCTION,
@@ -37,10 +36,8 @@ namespace XS {
 			}
 
 			while ( true ) {
-				parser->ParseString( &tok );
-
 				// see if we reached the end of the slider definition
-				if ( !String::CompareCase( tok, "}" ) ) {
+				if ( parser->ParseString( &tok ) || !String::CompareCase( tok, "}" ) ) {
 					break;
 				}
 
@@ -73,9 +70,7 @@ namespace XS {
 			std::memset( &properties, 0, sizeof(properties) );
 
 			const char *tok = nullptr;
-			parser->ParseString( &tok );
-
-			if ( String::CompareCase( tok, "{" ) ) {
+			if ( parser->ParseString( &tok ) || String::CompareCase( tok, "{" ) ) {
 				console.Print( PrintLevel::Normal,
 					"%s missing opening brace when parsing slider menu element from %s:%i\n",
 					XS_FUNCTION,
@@ -86,10 +81,8 @@ namespace XS {
 			}
 
 			while ( true ) {
-				parser->ParseString( &tok );
-
 				// see if we reached the end of the slider definition
-				if ( !String::CompareCase( tok, "}" ) ) {
+				if ( parser->ParseString( &tok ) || !String::CompareCase( tok, "}" ) ) {
 					break;
 				}
 

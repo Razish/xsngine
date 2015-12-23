@@ -160,6 +160,36 @@ namespace XS {
 		}
 	#endif // RENDERER_DEBUG_OUTPUT
 
+		static void RegisterCvars( void ) {
+			r_clear = Cvar::Create( "r_clear", "0.1607 0.1921 0.2039 1.0",
+				"Colour of the backbuffer", CVAR_ARCHIVE
+			);
+			r_debug = Cvar::Create( "r_debug", "0",
+				"Enable debugging information", CVAR_ARCHIVE
+			);
+			r_fastPath = Cvar::Create( "r_fastPath", XS_DEBUG_BUILD ? "0" : "1",
+				"Use stable but slow, or unstable but fast render paths", CVAR_ARCHIVE
+			);
+			r_multisample = Cvar::Create( "r_multisample", "2",
+				"Multisample Anti-Aliasing (MSAA) level", CVAR_ARCHIVE
+			);
+			r_skipRender = Cvar::Create( "r_skipRender", "0",
+				"1 - skip 3D views, 2 - skip 2D views, 3 - skip all views", CVAR_ARCHIVE
+			);
+			r_swapInterval = Cvar::Create( "r_swapInterval", "0",
+				"Enable vertical sync", CVAR_ARCHIVE
+			);
+			vid_height = Cvar::Create( "vid_height", "720",
+				"Window height", CVAR_ARCHIVE
+			);
+			vid_noBorder = Cvar::Create( "vid_noBorder", "0",
+				"Disable window border", CVAR_ARCHIVE
+			);
+			vid_width = Cvar::Create( "vid_width", "1280",
+				"Window width", CVAR_ARCHIVE
+			);
+		}
+
 		void Init( void ) {
 			rdState.valid = true;
 
@@ -183,6 +213,7 @@ namespace XS {
 
 			Backend::Init();
 
+			//FIXME: make these TextureManager/ShaderManager?
 			Texture::Init();
 
 			ShaderProgram::Init();
@@ -211,39 +242,11 @@ namespace XS {
 
 			RenderCommand::Shutdown();
 			Font::Shutdown();
+			//ShaderProgram::Shutdown();
+			Texture::Shutdown();
 			Backend::Shutdown();
 
 			DestroyDisplay();
-		}
-
-		void RegisterCvars( void ) {
-			r_clear = Cvar::Create( "r_clear", "0.1607 0.1921 0.2039 1.0",
-				"Colour of the backbuffer", CVAR_ARCHIVE
-			);
-			r_debug = Cvar::Create( "r_debug", "0",
-				"Enable debugging information", CVAR_ARCHIVE
-			);
-			r_fastPath = Cvar::Create( "r_fastPath", XS_DEBUG_BUILD ? "0" : "1",
-				"Use stable but slow, or unstable but fast render paths", CVAR_ARCHIVE
-			);
-			r_multisample = Cvar::Create( "r_multisample", "2",
-				"Multisample Anti-Aliasing (MSAA) level", CVAR_ARCHIVE
-			);
-			r_skipRender = Cvar::Create( "r_skipRender", "0",
-				"1 - skip 3D views, 2 - skip 2D views, 3 - skip all views", CVAR_ARCHIVE
-			);
-			r_swapInterval = Cvar::Create( "r_swapInterval", "0",
-				"Enable vertical sync", CVAR_ARCHIVE
-			);
-			vid_height = Cvar::Create( "vid_height", "720",
-				"Window height", CVAR_ARCHIVE
-			);
-			vid_noBorder = Cvar::Create( "vid_noBorder", "0",
-				"Disable window border", CVAR_ARCHIVE
-			);
-			vid_width = Cvar::Create( "vid_width", "1280",
-				"Window width", CVAR_ARCHIVE
-			);
 		}
 
 		void CreateDisplay( void ) {

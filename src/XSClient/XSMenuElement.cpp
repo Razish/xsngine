@@ -9,7 +9,6 @@
 #include "XSRenderer/XSMaterial.h"
 #include "XSRenderer/XSImagePNG.h"
 #include "XSRenderer/XSInternalFormat.h"
-#include "XSRenderer/XSTexture.h"
 #include "XSRenderer/XSRenderCommand.h"
 #include "XSRenderer/XSFont.h"
 
@@ -23,9 +22,8 @@ namespace XS {
 
 		void MenuElement::ParseTooltip( TokenParser *parser, const char *fileName ) {
 			const char *tok = nullptr;
-			parser->ParseString( &tok );
 
-			if ( String::CompareCase( tok, "{" ) ) {
+			if ( parser->ParseString( &tok ) || String::CompareCase( tok, "{" ) ) {
 				//TODO: show which element the tooltip belongs to
 				//	...which we may not have parsed out yet
 				console.Print( PrintLevel::Normal, "%s missing opening brace when parsing tooltip from %s:%i\n",
@@ -37,10 +35,8 @@ namespace XS {
 			}
 
 			while ( true ) {
-				parser->ParseString( &tok );
-
 				// see if we reached the end of the slider definition
-				if ( !String::CompareCase( tok, "}" ) ) {
+				if ( parser->ParseString( &tok ) || !String::CompareCase( tok, "}" ) ) {
 					break;
 				}
 

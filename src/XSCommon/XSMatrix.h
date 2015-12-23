@@ -15,7 +15,7 @@ namespace XS {
 		// string representation of the matrix3 object
 		std::string tostring(
 			void
-		) const;
+		) const XS_WARN_UNUSED_RESULT;
 
 		// access (r/w) an element
 		inline real32_t &at( size_t row, size_t column ) {
@@ -106,7 +106,7 @@ namespace XS {
 		// string representation of the matrix4 object
 		std::string tostring(
 			void
-		) const;
+		) const XS_WARN_UNUSED_RESULT;
 
 		// access (r/w) an element
 		inline real32_t &at( size_t row, size_t column ) {
@@ -176,14 +176,14 @@ namespace XS {
 		}
 
 		inline real32_t getCofactor( real32_t m0, real32_t m1, real32_t m2, real32_t m3, real32_t m4, real32_t m5,
-			real32_t m6, real32_t m7, real32_t m8 )
+			real32_t m6, real32_t m7, real32_t m8 ) XS_WARN_UNUSED_RESULT
 		{
 			return m0 * (m4 * m8 - m5 * m7)
 				- m1 * (m3 * m8 - m5 * m6)
 				+ m2 * (m3 * m7 - m4 * m6);
 		}
 
-		inline matrix4 invertGeneral( void ) {
+		inline matrix4 invertGeneral( void ) XS_WARN_UNUSED_RESULT {
 			real32_t cofactor0 = getCofactor( data[5], data[6], data[7], data[9], data[10], data[11], data[13], data[14], data[15] );
 			real32_t cofactor1 = getCofactor( data[4], data[6], data[7], data[8], data[10], data[11], data[12], data[14], data[15] );
 			real32_t cofactor2 = getCofactor( data[4], data[5], data[7], data[8], data[ 9], data[11], data[12], data[13], data[15] );
@@ -253,7 +253,7 @@ namespace XS {
 			return m;
 		}
 
-		inline matrix4 inverse( void ) const {
+		inline matrix4 inverse( void ) const XS_WARN_UNUSED_RESULT {
 			//FIXME: affine/general inversion?
 			const real32_t a0 = (at( 0, 0 ) * at( 1, 1 )) - (at( 0, 1 ) * at( 1, 0 ));
 			const real32_t a1 = (at( 0, 0 ) * at( 1, 2 )) - (at( 0, 2 ) * at( 1, 0 ));
@@ -300,7 +300,9 @@ namespace XS {
 			return inv;
 		}
 
-		static inline matrix4 lookAt( const vector3 &eye, const vector3 &center, const vector3 &up ) {
+		static inline matrix4 lookAt( const vector3 &eye, const vector3 &center, const vector3 &up )
+			XS_WARN_UNUSED_RESULT
+		{
 			const vector3 f = vector3::normalise( center - eye );
 			const vector3 s = vector3::normalise( vector3::cross( f, up ) );
 			const vector3 u = vector3::cross( s, f );
@@ -361,6 +363,8 @@ namespace XS {
 	};
 
 	inline matrix4 ortho( real32_t left, real32_t right, real32_t top, real32_t bottom, real32_t zNear, real32_t zFar )
+		XS_WARN_UNUSED_RESULT;
+	inline matrix4 ortho( real32_t left, real32_t right, real32_t top, real32_t bottom, real32_t zNear, real32_t zFar )
 	{
 		matrix4 m;
 		m.identity();
@@ -375,6 +379,8 @@ namespace XS {
 		return m;
 	}
 
+	inline matrix4 perspectiveFov( real32_t fovY, real32_t aspectRatio, real32_t zNear, real32_t zFar )
+		XS_WARN_UNUSED_RESULT;
 	inline matrix4 perspectiveFov( real32_t fovY, real32_t aspectRatio, real32_t zNear, real32_t zFar ) {
 #if 0
 		// convert degrees to radians and divide by 2

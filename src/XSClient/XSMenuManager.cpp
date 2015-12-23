@@ -40,6 +40,10 @@ namespace XS {
 			delete[] cursorData;
 		}
 
+		MenuManager::~MenuManager() {
+			delete assets.cursor;
+		}
+
 		// load a menu from disk
 		bool MenuManager::RegisterMenu( const char *fileName ) {
 			// parse out the menu

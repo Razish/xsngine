@@ -30,6 +30,7 @@ namespace XS {
 
 		public:
 			MenuManager();
+			~MenuManager();
 
 			// load a menu from disk
 			bool RegisterMenu(
@@ -39,12 +40,12 @@ namespace XS {
 			// retrieve the top-most menu
 			const Menu *GetCurrentMenu(
 				void
-			) const;
+			) const XS_WARN_UNUSED_RESULT;
 
 			// retrieve a menu by name
 			const Menu *GetMenuByName(
 				const char *menuName
-			) const;
+			) const XS_WARN_UNUSED_RESULT;
 
 			// push a menu onto the stack
 			void OpenMenu(

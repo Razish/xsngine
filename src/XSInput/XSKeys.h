@@ -17,7 +17,7 @@ namespace XS {
 		// return an ASCII character for the given SDL keycode
 		char GetPrintableCharForKeycode(
 			SDL_Keycode keycode
-		);
+		) XS_WARN_UNUSED_RESULT;
 
 		// pass input events to the client system (console -> menus -> binds/ingame)
 

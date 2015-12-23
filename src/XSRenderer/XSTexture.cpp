@@ -2,6 +2,7 @@
 #include "XSCommon/XSCvar.h"
 #include "XSCommon/XSString.h"
 #include "XSCommon/XSError.h"
+#include "XSCommon/XSConsole.h"
 #include "XSRenderer/XSRenderer.h"
 #include "XSRenderer/XSTexture.h"
 
@@ -13,7 +14,7 @@ namespace XS {
 		static Cvar *r_textureAnisotropyMax = nullptr;
 		static Cvar *r_textureFilter = nullptr;
 
-		static bool anisotropy = false;
+		static bool haveAnisotropicFiltering = false;
 		static real32_t maxAnisotropy = 0.0f;
 
 		static const struct TextureFilter {
@@ -37,10 +38,12 @@ namespace XS {
 			return GetTextureFilter( r_textureFilter->GetDefaultString().c_str() );
 		}
 
+		static std::vector<Texture *> textures;
+
 		const Texture *Texture::lastUsedTexture[maxTextureUnits] = {};
 		int Texture::lastUsedTextureUnit = 0;
 
-		void Texture::Init( void ) {
+		static void RegisterCvars( void ) {
 			r_textureAnisotropy = Cvar::Create( "r_textureAnisotropy", "1",
 				"Enable anisotropic filtering", CVAR_ARCHIVE
 			);
@@ -50,15 +53,28 @@ namespace XS {
 			r_textureFilter = Cvar::Create( "r_textureFilter", "GL_LINEAR_MIPMAP_LINEAR",
 				"Texture filtering mode", CVAR_ARCHIVE
 			);
+		}
+
+		void Texture::Init( void ) {
+			RegisterCvars();
 
 			// get anisotropic filtering settings
 			if ( GLEW_EXT_texture_filter_anisotropic ) {
-				anisotropy = true;
+				haveAnisotropicFiltering = true;
 				glGetFloatv( GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maxAnisotropy );
 			}
 		}
 
+		void Texture::Shutdown( void ) {
+			for ( auto &texture : textures ) {
+				delete texture;
+			}
+			textures.clear();
+		}
+
 		Texture::Texture( uint32_t width, uint32_t height, InternalFormat internalFormat, const uint8_t *data ) {
+			textures.push_back( this );
+
 			glGenTextures( 1, &id );
 			if ( !id ) {
 				throw( XSError( "Failed to create blank texture" ) );
@@ -69,7 +85,7 @@ namespace XS {
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
 
-			if ( anisotropy && r_textureAnisotropy->GetBool() ) {
+			if ( haveAnisotropicFiltering && r_textureAnisotropy->GetBool() ) {
 				glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT,
 					std::min( r_textureAnisotropyMax->GetReal32(), maxAnisotropy ) );
 			}
@@ -94,6 +110,9 @@ namespace XS {
 
 		Texture::~Texture() {
 			glDeleteTextures( 1, &id );
+
+			auto it = std::find( textures.begin(), textures.end(), this );
+			textures.erase( it );
 		}
 
 		void Texture::Bind( int unit ) const {

@@ -167,6 +167,7 @@ namespace XS {
 
 		void Shutdown( void ) {
 			delete clientConsole;
+			delete menu;
 			delete hudView;
 
 			ClientGame::Shutdown();

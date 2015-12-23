@@ -7,26 +7,28 @@
 namespace XS {
 
 	namespace Server {
+
 		extern class ServerConsole {
+
 		private:
-			static const char *promptText;// = "tty] ";
-#if defined(XS_OS_LINUX) || defined(XS_OS_MAC)
+			static const char *promptText; // = "tty] ";
+		#if defined(XS_OS_LINUX) || defined(XS_OS_MAC)
 			static int ec_erase;
 			static int ec_eof;
-#endif
+		#endif
 
 			struct {
 				char buffer[1024];
 				size_t head = 0u;
 			} input;
 
-#if defined(XS_OS_LINUX) || defined(XS_OS_MAC)
+		#if defined(XS_OS_LINUX) || defined(XS_OS_MAC)
 			struct termios tc;
-#elif defined(XS_OS_WINDOWS)
+		#elif defined(XS_OS_WINDOWS)
 			void	*hInput;
 			void	*hOutput;
 			void	*hError;
-#endif
+		#endif
 
 			void Open(
 				void
@@ -40,11 +42,11 @@ namespace XS {
 				void
 			) const;
 
-#if defined(XS_OS_WINDOWS)
+		#if defined(XS_OS_WINDOWS)
 			void Show(
 				void
 			);
-#endif
+		#endif
 
 			void Close(
 				void
@@ -55,9 +57,10 @@ namespace XS {
 
 			const char *Read(
 				void
-			);
+			) XS_WARN_UNUSED_RESULT;
 
 			~ServerConsole();
+
 		} *serverConsole;
 
 	} // namespace Server

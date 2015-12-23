@@ -59,8 +59,14 @@ namespace XS {
 			const char *token = parser.ParseToken();
 			if ( !String::CompareCase( token, "version" ) ) {
 				uint32_t ui = 0u;
-				parser.ParseUInt32( &ui );
-				if ( ui != FileXMF::version ) {
+				if ( parser.ParseUInt32( &ui ) ) {
+					console.Print( PrintLevel::Normal,
+						"%s invalid XMF file: could not parse version identifier\n",
+						XS_FUNCTION
+					);
+					return;
+				}
+				else if ( ui != FileXMF::version ) {
 					console.Print( PrintLevel::Normal,
 						"%s invalid XMF file: wrong version identifier (%u != %u)\n",
 						XS_FUNCTION,
@@ -110,8 +116,10 @@ namespace XS {
 					);
 
 					const char *str = nullptr;
-					parser.ParseString( &str );
-					if ( str ) {
+					if ( parser.ParseString( &str ) ) {
+						mesh->textureName = "invalid-name";
+					}
+					else if ( str ) {
 						mesh->textureName = str;
 					}
 
@@ -131,7 +139,10 @@ namespace XS {
 
 					vector3 vertex;
 					for ( int i = 0; i < 3; i++ ) {
-						parser.ParseReal32( &vertex[i] );
+						real32_t f;
+						if ( !parser.ParseReal32( &f ) ) {
+							vertex[i] = f;
+						}
 					}
 					mesh->vertices.push_back( vertex );
 					parser.SkipLine();
@@ -150,7 +161,10 @@ namespace XS {
 
 					vector3 normal;
 					for ( int i = 0; i < 3; i++ ) {
-						parser.ParseReal32( &normal[i] );
+						real32_t f;
+						if ( !parser.ParseReal32( &f ) ) {
+							normal[i] = f;
+						}
 					}
 					mesh->normals.push_back( normal );
 					parser.SkipLine();
@@ -169,7 +183,10 @@ namespace XS {
 
 					vector2 uv{};
 					for ( int i = 0; i < 2; i++ ) {
-						parser.ParseReal32( &uv[i] );
+						real32_t f;
+						if ( !parser.ParseReal32( &f ) ) {
+							uv[i] = f;
+						}
 					}
 					//FIXME: why flip the UVs?
 					real32_t tmp = uv[0];
@@ -190,10 +207,15 @@ namespace XS {
 					}
 
 					// vertex indices
-					uint32_t a = 0, b = 0, c = 0;
 					const char *str = nullptr;
-					parser.ParseString( &str );
-					if ( str ) {
+					if ( parser.ParseString( &str ) ) {
+						console.Print( PrintLevel::Normal,
+							"%s missing face definition!\n",
+							XS_FUNCTION
+						);
+					}
+					else if ( str ) {
+						uint32_t a = 0, b = 0, c = 0;
 						sscanf( str, "%i/%i/%i", &a, &b, &c );
 						mesh->indices.push_back( a );
 						mesh->indices.push_back( b );

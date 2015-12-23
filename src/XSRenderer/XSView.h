@@ -25,6 +25,7 @@ namespace XS {
 		typedef void (*renderCallback_t)( real64_t dt );
 
 		struct View {
+
 		private:
 			Texture					*colourTexture;
 			Texture					*depthTexture;
@@ -81,6 +82,7 @@ namespace XS {
 			void AddPointLight(
 				const vector3 &lightPos
 			);
+
 		};
 
 	} // namespace Renderer

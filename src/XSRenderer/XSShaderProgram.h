@@ -16,6 +16,7 @@ namespace XS {
 		};
 
 		class Shader {
+
 		private:
 			int			id;
 			ShaderType	type;
@@ -41,6 +42,7 @@ namespace XS {
 			);
 
 			~Shader();
+
 		};
 
 		// a ShaderProgram has a list of type ProgramVariable for uniforms
@@ -51,6 +53,7 @@ namespace XS {
 
 
 		class ShaderProgram {
+
 		private:
 			static const ShaderProgram	*tmpBindProgram;
 
@@ -138,6 +141,7 @@ namespace XS {
 			static uint32_t GetCurrentProgram(
 				void
 			);
+
 		};
 
 	} // namespace Renderer

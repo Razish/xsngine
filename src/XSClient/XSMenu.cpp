@@ -38,7 +38,14 @@ namespace XS {
 				const char *token = parser->ParseToken();
 				if ( !String::Compare( token, "version" ) ) {
 					uint32_t ui = 0u;
-					parser->ParseUInt32( &ui );
+					if ( parser->ParseUInt32( &ui ) ) {
+						console.Print( PrintLevel::Normal,
+							"%s invalid xmenu file '%s' could not parse version identifier\n",
+							XS_FUNCTION,
+							fileName
+						);
+						return;
+					}
 					if ( ui != Menu::version ) {
 						console.Print( PrintLevel::Normal,
 							"%s invalid xmenu file '%s' wrong version identifier (%u != %u)\n",

@@ -9,6 +9,7 @@ namespace XS {
 	namespace ServerGame {
 
 		class EntityFXRunner : public Entity {
+
 		private:
 
 		public:
@@ -24,6 +25,7 @@ namespace XS {
 			void Serialise(
 				ByteBuffer *buffer
 			) const;
+
 		};
 
 	} // namespace ServerGame

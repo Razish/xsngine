@@ -22,9 +22,8 @@ namespace XS {
 
 		void MenuElementButton::ParseProperties( TokenParser *parser, const char *fileName ) {
 			const char *tok = nullptr;
-			parser->ParseString( &tok );
 
-			if ( String::CompareCase( tok, "{" ) ) {
+			if ( parser->ParseString( &tok ) || String::CompareCase( tok, "{" ) ) {
 				console.Print( PrintLevel::Normal,
 					"%s missing opening brace when parsing properties for button menu element from %s:%i\n",
 					XS_FUNCTION,
@@ -35,10 +34,8 @@ namespace XS {
 			}
 
 			while ( true ) {
-				parser->ParseString( &tok );
-
 				// see if we reached the end of the button definition
-				if ( !String::CompareCase( tok, "}" ) ) {
+				if ( parser->ParseString( &tok ) || !String::CompareCase( tok, "}" ) ) {
 					break;
 				}
 
@@ -58,9 +55,7 @@ namespace XS {
 			std::memset( &assets, 0, sizeof(assets) );
 
 			const char *tok = nullptr;
-			parser->ParseString( &tok );
-
-			if ( String::CompareCase( tok, "{" ) ) {
+			if ( parser->ParseString( &tok ) || String::CompareCase( tok, "{" ) ) {
 				console.Print( PrintLevel::Normal,
 					"%s missing opening brace when parsing button menu element from %s:%i\n",
 					XS_FUNCTION,
@@ -71,10 +66,8 @@ namespace XS {
 			}
 
 			while ( true ) {
-				parser->ParseString( &tok );
-
 				// see if we reached the end of the button definition
-				if ( !String::CompareCase( tok, "}" ) ) {
+				if ( parser->ParseString( &tok ) || !String::CompareCase( tok, "}" ) ) {
 					break;
 				}
 

@@ -9,7 +9,7 @@ namespace XS {
 		// ???
 		uint32_t GetResourceID(
 			const char *name
-		);
+		) XS_WARN_UNUSED_RESULT;
 
 		// ???
 		void NetworkResources(

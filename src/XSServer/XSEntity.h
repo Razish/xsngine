@@ -11,6 +11,7 @@ namespace XS {
 	namespace ServerGame {
 
 		class Entity {
+
 		private:
 			static uint32_t		privateNumEntities;
 
@@ -42,6 +43,7 @@ namespace XS {
 			virtual void Serialise(
 				ByteBuffer *buffer
 			) const;
+
 		};
 
 	} // namespace ServerGame

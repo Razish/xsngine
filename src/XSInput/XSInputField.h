@@ -28,7 +28,7 @@ namespace XS {
 			// retrieve the string at the given history index (reverse 1-indexed)
 			std::string GetHistory(
 				size_t index
-			) const;
+			) const XS_WARN_UNUSED_RESULT;
 
 			// make sure the history index does not result in an overrun/underrun
 			void ClampHistory(
@@ -63,12 +63,12 @@ namespace XS {
 			// get a pointer to the current input field string
 			const char *GetLine(
 				void
-			);
+			) XS_WARN_UNUSED_RESULT;
 
 			// get the current cursor position
 			uint32_t GetCursorPos(
 				void
-			) const;
+			) const XS_WARN_UNUSED_RESULT;
 		};
 
 	} // namespace Client

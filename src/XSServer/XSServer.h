@@ -14,8 +14,8 @@ namespace XS {
 
 	namespace Server {
 
-		extern Cvar						*sv_maxConnections;
-		extern uint64_t					 frameNum;
+		extern Cvar		*sv_maxConnections;
+		extern uint64_t	 frameNum;
 
 		// initialise the Server object, loading related subsystems
 		void Init(
@@ -62,7 +62,7 @@ namespace XS {
 		// lazily initialised on each unique frame
 		real64_t GetElapsedTime(
 			TimerResolution resolution = TimerResolution::Milliseconds
-		);
+		) XS_WARN_UNUSED_RESULT;
 
 	} // namespace Server
 

@@ -42,19 +42,19 @@ namespace XS {
 	// returns true if the substring pointed at by p is the beginning of a colour sequence
 	bool IsColourString(
 		const char *p
-	);
+	) XS_WARN_UNUSED_RESULT;
 
 	// string length of text skipping colour sequences
 	size_t ColourStringLength(
 		const char *text
-	);
+	) XS_WARN_UNUSED_RESULT;
 
 	// return the index to the colour table (colourTable) for the given character
 	// e.g. return 6 for the '6' in "^6", or 15 for the 'E' in "^E"
 	// if c is not in range, the return value will be pink for debugging
 	uint32_t ColourIndex(
 		char c
-	);
+	) XS_WARN_UNUSED_RESULT;
 
 	extern const vector4 colourTable[COLOUR_BITS + 1];
 

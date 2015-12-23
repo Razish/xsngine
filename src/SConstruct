@@ -14,6 +14,7 @@
 #
 # envvars:
 #	MORE_WARNINGS	enable additional warnings
+#	SCONS_DEBUG		debug scons tool detection
 #
 
 product_name = 'xsngine'

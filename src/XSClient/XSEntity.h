@@ -45,12 +45,12 @@ namespace XS {
 		// see if an entity with this ID already exists
 		bool EntityExists(
 			uint32_t id
-		);
+		) XS_WARN_UNUSED_RESULT;
 
 		// retrieve an entity by ID
 		Entity *GetEntity(
 			uint32_t id
-		);
+		) XS_WARN_UNUSED_RESULT;
 
 		// remove an entity from the game
 		void RemoveEntity(

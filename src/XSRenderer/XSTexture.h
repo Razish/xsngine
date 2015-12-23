@@ -6,10 +6,11 @@ namespace XS {
 
 	namespace Renderer {
 
-		#define MAX_TEXTURES (256)
+		const uint32_t maxTextures = 256u;
 		const uint32_t maxTextureUnits = 16u;
 
 		class Texture {
+
 		private:
 			static const Texture	*lastUsedTexture[maxTextureUnits];
 			static int				 lastUsedTextureUnit;
@@ -23,6 +24,10 @@ namespace XS {
 			Texture& operator=( const Texture& ) = delete;
 
 			static void Init(
+				void
+			);
+
+			static void Shutdown(
 				void
 			);
 
@@ -40,6 +45,7 @@ namespace XS {
 			void Bind(
 				int unit
 			) const;
+
 		};
 
 	} // namespace Renderer

@@ -74,7 +74,7 @@ namespace XS {
 			// whether or not the console is visible
 			bool IsVisible(
 				void
-			) const;
+			) const XS_WARN_UNUSED_RESULT;
 		} *clientConsole;
 
 	} // namespace Client

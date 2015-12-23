@@ -5,12 +5,16 @@
 namespace XS {
 
 	//TODO: unit test precision at different ranges (and double conversion/promotion?)
-	static bool flcmp( const real32_t &f1, const real32_t &f2, const real32_t epsilon = 0.00001f ) {
+	static bool flcmp( const real32_t &f1, const real32_t &f2, const real32_t epsilon = 0.00001f )
+		XS_WARN_UNUSED_RESULT;
+	static bool flcmp( const real32_t &f1, const real32_t &f2, const real32_t epsilon ) {
 		const real32_t delta = std::abs( f2 - f1 );
 
 		return delta < epsilon;
 	}
-	static bool dblcmp( const real64_t &f1, const real64_t &f2, const real64_t epsilon = 0.000000000000001 ) {
+	static bool dblcmp( const real64_t &f1, const real64_t &f2, const real64_t epsilon = 0.000000000000001 )
+		XS_WARN_UNUSED_RESULT;
+	static bool dblcmp( const real64_t &f1, const real64_t &f2, const real64_t epsilon ) {
 		const real64_t delta = std::abs( f2 - f1 );
 
 		return delta < epsilon;
@@ -22,7 +26,7 @@ namespace XS {
 		// string representation of the vector
 		std::string tostring(
 			void
-		) const;
+		) const XS_WARN_UNUSED_RESULT;
 
 		// access operators
 		inline const real32_t& operator[]( const size_t idx ) const {
@@ -39,12 +43,12 @@ namespace XS {
 		}
 
 		// compare
-		static inline bool compare( const vector2 &lhs, const vector2 &rhs ) {
+		static inline bool compare( const vector2 &lhs, const vector2 &rhs ) XS_WARN_UNUSED_RESULT {
 			return (flcmp( lhs[0], rhs[0] ) && flcmp( lhs[1], rhs[1] ));
 		}
 
 		// ???
-		inline bool compare( const vector2 &rhs ) const {
+		inline bool compare( const vector2 &rhs ) const XS_WARN_UNUSED_RESULT {
 			return (flcmp( data[0], rhs[0] ) && flcmp( data[1], rhs[1] ));
 		}
 
@@ -98,13 +102,13 @@ namespace XS {
 		}
 
 		// ???
-		static inline vector2 inverse( const vector2 &in ) {
+		static inline vector2 inverse( const vector2 &in ) XS_WARN_UNUSED_RESULT {
 			vector2 result = { -in[0], -in[1] };
 			return result;
 		}
 
 		// scalar multiplication
-		inline vector2 operator*( const real32_t scalar ) const {
+		inline vector2 operator*( const real32_t scalar ) const XS_WARN_UNUSED_RESULT {
 			vector2 result = { data[0] * scalar, data[1] * scalar };
 			return result;
 		}
@@ -156,12 +160,12 @@ namespace XS {
 		}
 
 		// ???
-		static inline vector2 ma( const vector2 &a, real32_t scale, const vector2 &b ) {
+		static inline vector2 ma( const vector2 &a, real32_t scale, const vector2 &b ) XS_WARN_UNUSED_RESULT {
 			return a + b*scale;
 		}
 
 		// linear interpolation
-		static inline vector2 lerp( const vector2 &a, real32_t scale, const vector2 &b ) {
+		static inline vector2 lerp( const vector2 &a, real32_t scale, const vector2 &b ) XS_WARN_UNUSED_RESULT {
 			return a + (b-a)*scale;
 		}
 	};
@@ -172,7 +176,7 @@ namespace XS {
 		// string representation of the vector
 		std::string tostring(
 			void
-		) const;
+		) const XS_WARN_UNUSED_RESULT;
 
 		// access operators
 		inline const real64_t& operator[]( const size_t idx ) const {
@@ -189,12 +193,12 @@ namespace XS {
 		}
 
 		// compare
-		static inline bool compare( const pvector2 &lhs, const pvector2 &rhs ) {
+		static inline bool compare( const pvector2 &lhs, const pvector2 &rhs ) XS_WARN_UNUSED_RESULT {
 			return (dblcmp( lhs[0], rhs[0] ) && dblcmp( lhs[1], rhs[1] ));
 		}
 
 		// ???
-		inline bool compare( const pvector2 &rhs ) const {
+		inline bool compare( const pvector2 &rhs ) const XS_WARN_UNUSED_RESULT {
 			return (dblcmp( data[0], rhs[0] ) && dblcmp( data[1], rhs[1] ));
 		}
 
@@ -248,7 +252,7 @@ namespace XS {
 		}
 
 		// ???
-		static inline pvector2 inverse( const pvector2 &in ) {
+		static inline pvector2 inverse( const pvector2 &in ) XS_WARN_UNUSED_RESULT {
 			pvector2 result = { -in[0], -in[1] };
 			return result;
 		}
@@ -306,12 +310,12 @@ namespace XS {
 		}
 
 		// ???
-		static inline pvector2 ma( const pvector2 &a, real64_t scale, const pvector2 &b ) {
+		static inline pvector2 ma( const pvector2 &a, real64_t scale, const pvector2 &b ) XS_WARN_UNUSED_RESULT {
 			return a + b*scale;
 		}
 
 		// linear interpolation
-		static inline pvector2 lerp( const pvector2 &a, real64_t scale, const pvector2 &b ) {
+		static inline pvector2 lerp( const pvector2 &a, real64_t scale, const pvector2 &b ) XS_WARN_UNUSED_RESULT {
 			return a + (b-a)*scale;
 		}
 	};
@@ -322,7 +326,7 @@ namespace XS {
 		// string representation of the vector
 		std::string tostring(
 			void
-		) const;
+		) const XS_WARN_UNUSED_RESULT;
 
 		// access operators
 		inline const real32_t& operator[]( const size_t idx ) const {
@@ -340,12 +344,12 @@ namespace XS {
 		}
 
 		// compare
-		static inline bool compare( const vector3 &lhs, const vector3 &rhs ) {
+		static inline bool compare( const vector3 &lhs, const vector3 &rhs ) XS_WARN_UNUSED_RESULT {
 			return (flcmp( lhs[0], rhs[0] ) && flcmp( lhs[1], rhs[1] ) && flcmp( lhs[2], rhs[2] ));
 		}
 
 		// ???
-		inline bool compare( const vector3 &rhs ) const {
+		inline bool compare( const vector3 &rhs ) const XS_WARN_UNUSED_RESULT {
 			return (flcmp( data[0], rhs[0] ) && flcmp( data[1], rhs[1] ) && flcmp( data[2], rhs[2] ));
 		}
 
@@ -404,7 +408,7 @@ namespace XS {
 		}
 
 		// ???
-		static inline vector3 inverse( const vector3 &in ) {
+		static inline vector3 inverse( const vector3 &in ) XS_WARN_UNUSED_RESULT {
 			vector3 result = { -in[0], -in[1], -in[2] };
 			return result;
 		}
@@ -466,38 +470,38 @@ namespace XS {
 		}
 
 		// ???
-		static inline vector3 ma( const vector3 &a, real32_t scale, const vector3 &b ) {
+		static inline vector3 ma( const vector3 &a, real32_t scale, const vector3 &b ) XS_WARN_UNUSED_RESULT {
 			return a + b*scale;
 		}
 
 		// linear interpolation
-		static inline vector3 lerp( const vector3 &a, real32_t scale, const vector3 &b ) {
+		static inline vector3 lerp( const vector3 &a, real32_t scale, const vector3 &b ) XS_WARN_UNUSED_RESULT {
 			return a + (b-a)*scale;
 		}
 
 		// length
-		inline real32_t length( void ) const {
+		inline real32_t length( void ) const XS_WARN_UNUSED_RESULT {
 			return sqrtf( data[0]*data[0] + data[1]*data[1] + data[2]*data[2] );
 		}
-		static inline real32_t length( const vector3 &vec ) {
+		static inline real32_t length( const vector3 &vec ) XS_WARN_UNUSED_RESULT {
 			return sqrtf( vec[0]*vec[0] + vec[1]*vec[1] + vec[2]*vec[2] );
 		}
 
 		// length squared
-		inline real32_t lengthSquared( void ) const {
+		inline real32_t lengthSquared( void ) const XS_WARN_UNUSED_RESULT {
 			return data[0]*data[0] + data[1]*data[1] + data[2]*data[2];
 		}
-		static inline real32_t lengthSquared( const vector3 &vec ) {
+		static inline real32_t lengthSquared( const vector3 &vec ) XS_WARN_UNUSED_RESULT {
 			return vec[0]*vec[0] + vec[1]*vec[1] + vec[2]*vec[2];
 		}
 
 		// distance
-		static inline real32_t distance( const vector3 &a, const vector3 &b ) {
+		static inline real32_t distance( const vector3 &a, const vector3 &b ) XS_WARN_UNUSED_RESULT {
 			return length( a - b );
 		}
 
 		// ???
-		static inline real32_t distanceSquared( const vector3 &a, const vector3 &b ) {
+		static inline real32_t distanceSquared( const vector3 &a, const vector3 &b ) XS_WARN_UNUSED_RESULT {
 			return lengthSquared( a - b );
 		}
 
@@ -523,7 +527,7 @@ namespace XS {
 		}
 
 		// ???
-		static inline vector3 normalise( const vector3 &vec ) {
+		static inline vector3 normalise( const vector3 &vec ) XS_WARN_UNUSED_RESULT {
 			vector3 result = vec;
 
 			real32_t length = result.length();
@@ -537,17 +541,17 @@ namespace XS {
 		}
 
 		// dot
-		static inline real32_t dot( const vector3 &a, const vector3 &b ) {
+		static inline real32_t dot( const vector3 &a, const vector3 &b ) XS_WARN_UNUSED_RESULT {
 			return a[0]*b[0] + a[1]*b[1] + a[2]*b[2];
 		}
 
 		// ???
-		inline real32_t dot( const vector3 &vec ) const {
+		inline real32_t dot( const vector3 &vec ) const XS_WARN_UNUSED_RESULT {
 			return data[0]*vec[0] + data[1]*vec[1] + data[2]*vec[2];
 		}
 
 		// cross
-		static inline vector3 cross( const vector3 &a, const vector3 &b ) {
+		static inline vector3 cross( const vector3 &a, const vector3 &b ) XS_WARN_UNUSED_RESULT {
 			vector3 result = {
 				(a[1]*b[2]) - (a[2]*b[1]),
 				(a[2]*b[0]) - (a[0]*b[2]),
@@ -558,7 +562,7 @@ namespace XS {
 		}
 
 		// ???
-		inline vector3 cross( const vector3 &v ) const {
+		inline vector3 cross( const vector3 &v ) const XS_WARN_UNUSED_RESULT {
 			return cross( *this, v );
 		}
 
@@ -571,7 +575,7 @@ namespace XS {
 		// string representation of the vector
 		std::string tostring(
 			void
-		) const;
+		) const XS_WARN_UNUSED_RESULT;
 
 		// access operators
 		inline const real64_t& operator[]( const size_t idx ) const {
@@ -589,12 +593,12 @@ namespace XS {
 		}
 
 		// compare
-		static inline bool compare( const pvector3 &lhs, const pvector3 &rhs ) {
+		static inline bool compare( const pvector3 &lhs, const pvector3 &rhs ) XS_WARN_UNUSED_RESULT {
 			return (dblcmp( lhs[0], rhs[0] ) && flcmp( lhs[1], rhs[1] ) && flcmp( lhs[2], rhs[2] ));
 		}
 
 		// ???
-		inline bool compare( const pvector3 &rhs ) const {
+		inline bool compare( const pvector3 &rhs ) const XS_WARN_UNUSED_RESULT {
 			return (dblcmp( data[0], rhs[0] ) && flcmp( data[1], rhs[1] ) && flcmp( data[2], rhs[2] ));
 		}
 
@@ -653,7 +657,7 @@ namespace XS {
 		}
 
 		// ???
-		static inline pvector3 inverse( const pvector3 &in ) {
+		static inline pvector3 inverse( const pvector3 &in ) XS_WARN_UNUSED_RESULT {
 			pvector3 result = { -in[0], -in[1], -in[2] };
 			return result;
 		}
@@ -711,36 +715,36 @@ namespace XS {
 		}
 
 		// ???
-		static inline pvector3 ma( const pvector3 &a, real64_t scale, const pvector3 &b ) {
+		static inline pvector3 ma( const pvector3 &a, real64_t scale, const pvector3 &b ) XS_WARN_UNUSED_RESULT {
 			return a + b*scale;
 		}
 
 		// linear interpolation
-		static inline pvector3 lerp( const pvector3 &a, real64_t scale, const pvector3 &b ) {
+		static inline pvector3 lerp( const pvector3 &a, real64_t scale, const pvector3 &b ) XS_WARN_UNUSED_RESULT {
 			return a + (b-a)*scale;
 		}
 
 		// length
-		inline real64_t length( void ) const {
+		inline real64_t length( void ) const XS_WARN_UNUSED_RESULT {
 			return sqrt( data[0]*data[0] + data[1]*data[1] + data[2]*data[2] );
 		}
-		static inline real64_t length( const pvector3 &vec ) {
+		static inline real64_t length( const pvector3 &vec ) XS_WARN_UNUSED_RESULT {
 			return vec.length();
 		}
 
 		// length squared
-		inline real64_t lengthSquared( void ) const {
+		inline real64_t lengthSquared( void ) const XS_WARN_UNUSED_RESULT {
 			return data[0]*data[0] + data[1]*data[1] + data[2]*data[2];
 		}
-		static inline real64_t lengthSquared( const pvector3 &vec ) {
+		static inline real64_t lengthSquared( const pvector3 &vec ) XS_WARN_UNUSED_RESULT {
 			return vec.lengthSquared();
 		}
 
 		// distance
-		static inline real64_t distance( const pvector3 &a, const pvector3 &b ) {
+		static inline real64_t distance( const pvector3 &a, const pvector3 &b ) XS_WARN_UNUSED_RESULT {
 			return length( a - b );
 		}
-		static inline real64_t distanceSquared( const pvector3 &a, const pvector3 &b ) {
+		static inline real64_t distanceSquared( const pvector3 &a, const pvector3 &b ) XS_WARN_UNUSED_RESULT {
 			return lengthSquared( a - b );
 		}
 
@@ -773,12 +777,12 @@ namespace XS {
 		}
 
 		// dot
-		inline real64_t dot( const pvector3 &vec ) const {
+		inline real64_t dot( const pvector3 &vec ) const XS_WARN_UNUSED_RESULT {
 			return data[0]*vec[0] + data[1]*vec[1] + data[1]*vec[2];
 		}
 
 		// cross
-		static inline pvector3 cross( const pvector3 &a, const pvector3 &b ) {
+		static inline pvector3 cross( const pvector3 &a, const pvector3 &b ) XS_WARN_UNUSED_RESULT {
 			pvector3 result = {
 				(a[1]*b[2]) - (a[2]*b[1]),
 				(a[2]*b[0]) - (a[0]*b[2]),
@@ -786,7 +790,7 @@ namespace XS {
 			};
 			return result;
 		}
-		inline pvector3 cross( const pvector3 &v ) const {
+		inline pvector3 cross( const pvector3 &v ) const XS_WARN_UNUSED_RESULT {
 			return cross( *this, v );
 		}
 
@@ -799,7 +803,7 @@ namespace XS {
 		// string representation of the vector
 		std::string tostring(
 			void
-		) const;
+		) const XS_WARN_UNUSED_RESULT;
 
 		// access operators
 		inline const real32_t& operator[]( const size_t idx ) const {
@@ -818,10 +822,10 @@ namespace XS {
 		}
 
 		// compare
-		static inline bool compare( const vector4 &lhs, const vector4 &rhs ) {
+		static inline bool compare( const vector4 &lhs, const vector4 &rhs ) XS_WARN_UNUSED_RESULT {
 			return (flcmp( lhs[0], rhs[0] ) && flcmp( lhs[1], rhs[1] ) && flcmp( lhs[2], rhs[2] ) && flcmp( lhs[3], rhs[3] ));
 		}
-		inline bool compare( const vector4 &rhs ) const {
+		inline bool compare( const vector4 &rhs ) const XS_WARN_UNUSED_RESULT {
 			return (flcmp( data[0], rhs[0] ) && flcmp( data[1], rhs[1] ) && flcmp( data[2], rhs[2] ) && flcmp( data[3], rhs[3] ));
 		}
 		inline bool operator==( const vector4 &rhs ) const {
@@ -877,7 +881,7 @@ namespace XS {
 			data[2] = -data[2];
 			data[3] = -data[3];
 		}
-		static inline vector4 inverse( const vector4 &in ) {
+		static inline vector4 inverse( const vector4 &in ) XS_WARN_UNUSED_RESULT {
 			vector4 result = { -in[0], -in[1], -in[2], -in[3] };
 			return result;
 		}
@@ -935,12 +939,12 @@ namespace XS {
 		}
 
 		// ???
-		static inline vector4 ma( const vector4 &a, real32_t scale, const vector4 &b ) {
+		static inline vector4 ma( const vector4 &a, real32_t scale, const vector4 &b ) XS_WARN_UNUSED_RESULT {
 			return a + b*scale;
 		}
 
 		// linear interpolation
-		static inline vector4 lerp( const vector4 &a, real32_t scale, const vector4 &b ) {
+		static inline vector4 lerp( const vector4 &a, real32_t scale, const vector4 &b ) XS_WARN_UNUSED_RESULT {
 			return a + (b-a)*scale;
 		}
 	};

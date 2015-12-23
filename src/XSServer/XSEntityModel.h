@@ -9,6 +9,7 @@ namespace XS {
 	namespace ServerGame {
 
 		class EntityModel : public Entity {
+
 		private:
 			uint32_t	modelIndex = 0xFFFFFFFFu;
 			std::string	modelPath;
@@ -23,6 +24,7 @@ namespace XS {
 			void Serialise(
 				ByteBuffer *buffer
 			) const;
+
 		};
 
 	} // namespace ServerGame

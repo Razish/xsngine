@@ -2,7 +2,7 @@
 
 #include <GL/glew.h>
 
-#include "XSRenderer/XSRenderable.h"
+#include "XSRenderer/XSRenderable.h" // for RenderInfo
 
 namespace XS {
 
@@ -43,12 +43,6 @@ namespace XS {
 				const char *shaderVersion;
 			} driver;
 		} rdState;
-
-		// used internally
-		// register cvars owned by the renderer
-		void RegisterCvars(
-			void
-		);
 
 		// used internally
 		// create a window with valid render context

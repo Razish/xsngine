@@ -20,7 +20,7 @@ namespace XS {
 		// returns the maximum length of a full system path
 		uint32_t GetPathMax(
 			void
-		);
+		) XS_WARN_UNUSED_RESULT;
 
 		// returns true if file exists
 		bool MkDir(
@@ -47,7 +47,7 @@ namespace XS {
 		// returns true if file exists
 		bool Stat(
 			const char *path
-		);
+		) XS_WARN_UNUSED_RESULT;
 
 	} // namespace OS
 

@@ -33,7 +33,8 @@ namespace XS {
 		static Cvar *r_framerate = nullptr;
 
 		static void RegisterCvars( void ) {
-			Cvar::Create( "com_date", __DATE__,
+			const Cvar * XS_UNUSED dummyCvar;
+			dummyCvar = Cvar::Create( "com_date", __DATE__,
 				"Compilation date", CVAR_READONLY
 			);
 			com_busyWait = Cvar::Create( "com_busyWait", "0",
@@ -51,7 +52,7 @@ namespace XS {
 			com_profile = Cvar::Create( "com_profile", "0",
 				"Print timing statistics", CVAR_NONE
 			);
-			Cvar::Create( "com_revision", XS_REVISION,
+			dummyCvar = Cvar::Create( "com_revision", XS_REVISION,
 				"git revision", CVAR_READONLY
 			);
 			r_framerate = Cvar::Create( "r_framerate", "120",

@@ -44,7 +44,7 @@ namespace XS {
 		const void *GetMemory(
 			size_t *outLen,
 			bool encode = false // RLE
-		) const;
+		) const XS_WARN_UNUSED_RESULT;
 
 		void Skip(
 			size_t count

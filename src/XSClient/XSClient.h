@@ -47,7 +47,7 @@ namespace XS {
 		// lazily initialised on each unique frame
 		real64_t GetElapsedTime(
 			TimerResolution resolution = TimerResolution::Milliseconds
-		);
+		) XS_WARN_UNUSED_RESULT;
 
 		// handle a key event if console is visible
 		bool ConsoleKeyEvent(

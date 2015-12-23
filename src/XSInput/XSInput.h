@@ -43,7 +43,7 @@ namespace XS {
 			// generate a movement command for this frame's accumulated input
 			MovementCommand GenerateMovementCommand(
 				void
-			);
+			) XS_WARN_UNUSED_RESULT;
 
 		} // namespace Input
 

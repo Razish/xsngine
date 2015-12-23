@@ -169,9 +169,7 @@ namespace XS {
 		std::vector<std::string> Split( const std::string &s, char delim ) {
 			std::vector<std::string> elems;
 
-			Split( s, delim, elems );
-
-			return elems;
+			return Split( s, delim, elems );
 		}
 
 		std::string Join( const std::vector<std::string> &strings, const std::string &separator ) {

@@ -45,12 +45,12 @@ namespace XS {
 		// ???
 		bool IsConnected(
 			void
-		);
+		) XS_WARN_UNUSED_RESULT;
 
 		// ???
 		bool IsActive(
 			void
-		);
+		) XS_WARN_UNUSED_RESULT;
 
 		// specifying 0 for the port will use the default server port
 		bool Connect(

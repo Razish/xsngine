@@ -32,7 +32,7 @@ namespace XS {
 		// check if the buffer is empty
 		bool IsEmpty(
 			void
-		) const;
+		) const XS_WARN_UNUSED_RESULT;
 
 		// clear the message buffer
 		inline void Clear( void ) {
@@ -43,12 +43,12 @@ namespace XS {
 		std::vector<std::string> FetchLines(
 			uint32_t start,
 			uint32_t count
-		) const;
+		) const XS_WARN_UNUSED_RESULT;
 
 		// query the number of lines the buffer contains
 		uint32_t GetNumLines(
 			void
-		) const;
+		) const XS_WARN_UNUSED_RESULT;
 	};
 
 } // namespace XS

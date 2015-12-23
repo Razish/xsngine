@@ -23,9 +23,7 @@ namespace XS {
 
 		void MenuElementText::ParseProperties( TokenParser *parser, const char *fileName ) {
 			const char *tok = nullptr;
-			parser->ParseString( &tok );
-
-			if ( String::CompareCase( tok, "{" ) ) {
+			if ( parser->ParseString( &tok ) || String::CompareCase( tok, "{" ) ) {
 				console.Print( PrintLevel::Normal,
 					"%s missing opening brace when parsing properties for text menu element from %s:%i\n",
 					XS_FUNCTION,
@@ -36,10 +34,8 @@ namespace XS {
 			}
 
 			while ( true ) {
-				parser->ParseString( &tok );
-
 				// see if we reached the end of the text definition
-				if ( !String::CompareCase( tok, "}" ) ) {
+				if ( parser->ParseString( &tok ) || !String::CompareCase( tok, "}" ) ) {
 					break;
 				}
 
@@ -66,9 +62,7 @@ namespace XS {
 			MenuElement::properties.decorative = true;
 
 			const char *tok = nullptr;
-			parser->ParseString( &tok );
-
-			if ( String::CompareCase( tok, "{" ) ) {
+			if ( parser->ParseString( &tok ) || String::CompareCase( tok, "{" ) ) {
 				console.Print( PrintLevel::Normal,
 					"%s missing opening brace when parsing text menu element from %s:%i\n",
 					XS_FUNCTION,
@@ -79,10 +73,8 @@ namespace XS {
 			}
 
 			while ( true ) {
-				parser->ParseString( &tok );
-
 				// see if we reached the end of the text definition
-				if ( !String::CompareCase( tok, "}" ) ) {
+				if ( parser->ParseString( &tok ) || !String::CompareCase( tok, "}" ) ) {
 					break;
 				}
 

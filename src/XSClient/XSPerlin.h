@@ -15,23 +15,23 @@ namespace XS {
 			real64_t Total(
 				real64_t i,
 				real64_t j
-			) const;
+			) const XS_WARN_UNUSED_RESULT;
 
 			real64_t GetValue(
 				real64_t x,
 				real64_t y
-			) const;
+			) const XS_WARN_UNUSED_RESULT;
 
 			real64_t Interpolate(
 				real64_t x,
 				real64_t y,
 				real64_t a
-			) const;
+			) const XS_WARN_UNUSED_RESULT;
 
 			real64_t Noise(
 				int32_t x,
 				int32_t y
-			) const;
+			) const XS_WARN_UNUSED_RESULT;
 
 		public:
 			const real64_t &persistence;
@@ -65,7 +65,7 @@ namespace XS {
 			real64_t GetHeight(
 				real64_t x,
 				real64_t y
-			) const;
+			) const XS_WARN_UNUSED_RESULT;
 
 		};
 

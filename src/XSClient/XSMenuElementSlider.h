@@ -36,7 +36,7 @@ namespace XS {
 
 			bool MouseWithinBounds(
 				const vector2 &mousePos
-			) const;
+			) const XS_WARN_UNUSED_RESULT;
 
 			void ParseProperties(
 				TokenParser *parser,

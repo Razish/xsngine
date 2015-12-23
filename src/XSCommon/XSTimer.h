@@ -51,7 +51,7 @@ namespace XS {
 		real64_t GetTiming(
 			bool restart = false,
 			TimerResolution resolution = TimerResolution::Microseconds
-		);
+		) XS_WARN_UNUSED_RESULT;
 	};
 
 } // namespace XS

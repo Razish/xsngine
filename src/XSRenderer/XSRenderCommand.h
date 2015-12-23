@@ -50,6 +50,7 @@ namespace XS {
 		};
 
 		struct RenderCommand {
+
 		private:
 			CommandType type;
 
@@ -84,6 +85,7 @@ namespace XS {
 			void Execute(
 				void
 			) const;
+
 		};
 
 		// ???

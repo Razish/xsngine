@@ -42,11 +42,11 @@ namespace XS {
 			// load the mesh from disk
 			size_t GetMeshCount(
 				void
-			) const;
+			) const XS_WARN_UNUSED_RESULT;
 
 			XMFMesh *GetMeshFromIndex(
 				size_t index
-			);
+			) XS_WARN_UNUSED_RESULT;
 		};
 
 	} // namespace Common
