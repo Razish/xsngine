@@ -17,7 +17,7 @@
 #	SCONS_DEBUG		debug scons tool detection
 #
 
-product_name = 'xsngine'
+product_name = 'rpgproto'
 
 debug = int( ARGUMENTS.get( 'debug', 0 ) )
 configuration = { 0: lambda x: 'release', 1: lambda x: 'debug', 2: lambda x: 'optimised-debug' }[debug](debug)
@@ -666,7 +666,7 @@ env['LIBS'] = [
 env['LIBS'] += libs
 
 # targets
-binaryName = 'xsn' + '.' + arch + env['PROGSUFFIX']
+binaryName = 'rpgproto' + '.' + arch + env['PROGSUFFIX']
 env.Program( binaryName, files )
 
 if not env.GetOption( 'clean' ) and not os.path.lexists( './' + product_name ):

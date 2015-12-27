@@ -161,7 +161,7 @@ namespace XS {
 	#endif // RENDERER_DEBUG_OUTPUT
 
 		static void RegisterCvars( void ) {
-			r_clear = Cvar::Create( "r_clear", "0.1607 0.1921 0.2039 1.0",
+			r_clear = Cvar::Create( "r_clear", "0.2039 0.1921 0.1607 1.0",
 				"Colour of the backbuffer", CVAR_ARCHIVE
 			);
 			r_debug = Cvar::Create( "r_debug", "0",
