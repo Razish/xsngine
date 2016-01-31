@@ -35,14 +35,14 @@ Steps:
 ## Windows ##
 
 Make sure `C:\Python27` and `C:\Python27\Scripts` are in your `%PATH%` environment variable.  
-Install Visual Studio 2013 Community Edition or later for C++11 features.  
-All projects use scons under the hood, and there are project files available for VS2013, Codelite and Code::Blocks.  
+Install Visual Studio 2015 Community Edition or later for C++ language features.  
+All projects use scons under the hood, and there are project files available for VS2015, CodeLite and Code::Blocks.  
 You can also run a build from the command-line with `scons -Q` from within the `src` directory.
 
 ## Linux ##
 
-You will require libsdl2-dev, libglu1-mesa-dev, libfreetype6-dev and libpng16-dev (which is not available in the main repositories as of Ubuntu 14.10)  
-libfreetype6-dev depends on libpng12-dev, so you will have to install that first, and then install libpng16-dev (dimensio/libpng16-deb) with the following method:
+You will require `libsdl2-dev`, `libglu1-mesa-dev`, `libfreetype6-dev` and `libpng16-dev` (which is not available in the main repositories as of Ubuntu 14.10)  
+`libfreetype6-dev` depends on `libpng12-dev`, so you will have to install that first, and then install `libpng16-dev` (`dimensio/libpng16-deb`) with the following method:
 
 ```bash
 $ git clone https://github.com/dimensio/libpng16-deb.git && cd libpng16-deb
@@ -68,4 +68,4 @@ As Mac and Linux both have a UNIX environment + tools, the process between the t
 All the provided project files assume there is an executable file named `xsngine` in the current working directory.  
 Because different platforms will have different binary names, and these tools are used on all platforms, it is recommended to create a symlink from `xsngine.exe` to e.g. `xsn.x86.exe` - On Windows you will require the Win32 Symlink Extensions.  
 
-Run the binary with `+set com_path ../bin` to load assets correctly. See [xsngine-assets](https://github.com/Razish/xsngine-assets) for these files.
+Run the binary with `+set com_path "../bin"` to load assets correctly. See [xsngine-assets](https://github.com/Razish/xsngine-assets) for these files.
