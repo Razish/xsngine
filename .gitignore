@@ -67,6 +67,9 @@ Desktop.ini
 .codelite
 *.workspace
 
+# Sublime Text
+*.sublime-workspace
+
 # scons
 .sconsign.dblite
 
