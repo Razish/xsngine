@@ -188,15 +188,23 @@ namespace XS {
 		}
 
 		void Cmd_SetBind( const CommandContext * const context ) {
-			if ( context->size() < 2 ) {
-				console.Print( PrintLevel::Normal, "\"bind\" failed. Must specify a key and command\n" );
+			if ( context->size() < 1 ) {
+				console.Print( PrintLevel::Normal, "Usage: bind <key> [command]\n" );
 				return;
 			}
 
 			SDL_Keycode keycode = GetKeycodeForName( (*context)[0].c_str() );
 
 			if ( keycode == SDLK_UNKNOWN ) {
-				console.Print( PrintLevel::Normal, "\"bind\" failed. Unknown key \"%s\"\n", (*context)[0].c_str() );
+				console.Print( PrintLevel::Normal, "Unknown key \"%s\"", (*context)[0].c_str() );
+				return;
+			}
+
+			if (context->size() == 1) {
+				std::string boundString = "";
+				if(!binds[keycode].empty())
+					boundString = binds[keycode];
+				console.Print(PrintLevel::Normal, "%s: \"%s\"\n", (*context)[0].c_str(), boundString.c_str());
 				return;
 			}
 
