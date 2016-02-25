@@ -7,10 +7,15 @@
 #include "XSRenderer/XSRenderCommand.h"
 #include "XSRenderer/XSBuffer.h"
 
-#define GLM_SWIZZLE
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/ext.hpp>
+#if defined(__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6))
+	#pragma GCC diagnostic push
+	#pragma GCC diagnostic ignored "-Wstrict-aliasing"
+	#define GLM_SWIZZLE
+	#include <glm/glm.hpp>
+	#include <glm/gtc/matrix_transform.hpp>
+	#include <glm/ext.hpp>
+	#pragma GCC diagnostic pop
+#endif
 
 namespace XS {
 
