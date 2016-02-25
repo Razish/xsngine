@@ -185,7 +185,8 @@ namespace XS {
 			Network::Receive();
 
 			// generate this frame's movement command
-			Input::GenerateMovementCommand();
+			Input::MovementCommand &cmd = Input::AllocateMovementCommand();
+			Input::GenerateMovementCommand( cmd );
 		}
 
 		bool ReceivePacket( const RakNet::Packet *packet ) {

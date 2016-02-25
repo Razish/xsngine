@@ -71,8 +71,6 @@ elif bits == 64:
 else:
 	raise Exception( 'could not determine architecture width: ' + str(bits) )
 
-clangHack = plat == 'Darwin'
-
 # create the build environment
 #FIXME: also consider LD, AS, AR in the toolset
 import os
@@ -263,12 +261,11 @@ if realcc == 'gcc' or realcc == 'clang':
 			'-Wswitch-default',
 			'-Wunreachable-code',
 		]
-		if not clangHack:
-			env['CCFLAGS'] += [
-				'-Wdouble-promotion',
-				'-Wsuggest-attribute=const',
-				'-Wunsuffixed-float-constants',
-			]
+		env['CCFLAGS'] += [
+			'-Wdouble-promotion',
+			'-Wsuggest-attribute=const',
+			'-Wunsuffixed-float-constants',
+		]
 
 	# gcc-specific warnings
 	if realcc == 'gcc' and cmp_version( ccversion, '4.6' ) >= 0 and arch != 'arm':

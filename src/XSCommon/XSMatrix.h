@@ -52,38 +52,69 @@ namespace XS {
 			*this = m;
 		}
 
-		inline matrix3 invert( void ) {
-			real32_t determinant = 0.0f;
-			real32_t invDeterminant = 0.0f;
-			real32_t tmp[9];
+		inline matrix3 invert( void ) const XS_WARN_UNUSED_RESULT {
+			const matrix3 tmp {
+				data[4] * data[8] - data[5] * data[7],
+				data[2] * data[7] - data[1] * data[8],
+				data[1] * data[5] - data[2] * data[4],
+				data[5] * data[6] - data[3] * data[8],
+				data[0] * data[8] - data[2] * data[6],
+				data[2] * data[3] - data[0] * data[5],
+				data[3] * data[7] - data[4] * data[6],
+				data[1] * data[6] - data[0] * data[7],
+				data[0] * data[4] - data[1] * data[3]
+			};
 
-			tmp[0] = data[4] * data[8] - data[5] * data[7];
-			tmp[1] = data[2] * data[7] - data[1] * data[8];
-			tmp[2] = data[1] * data[5] - data[2] * data[4];
-			tmp[3] = data[5] * data[6] - data[3] * data[8];
-			tmp[4] = data[0] * data[8] - data[2] * data[6];
-			tmp[5] = data[2] * data[3] - data[0] * data[5];
-			tmp[6] = data[3] * data[7] - data[4] * data[6];
-			tmp[7] = data[1] * data[6] - data[0] * data[7];
-			tmp[8] = data[0] * data[4] - data[1] * data[3];
-
-			determinant = data[0] * tmp[0] + data[1] * tmp[3] + data[2] * tmp[6];
+			const real32_t determinant = data[0] * tmp.data[0] + data[1] * tmp.data[3] + data[2] * tmp.data[6];
 			if ( std::abs( determinant ) <= 0.00000f ) {
 				return matrix3();
 			}
 
-			invDeterminant = 1.0f / determinant;
-			data[0] = invDeterminant * tmp[0];
-			data[1] = invDeterminant * tmp[1];
-			data[2] = invDeterminant * tmp[2];
-			data[3] = invDeterminant * tmp[3];
-			data[4] = invDeterminant * tmp[4];
-			data[5] = invDeterminant * tmp[5];
-			data[6] = invDeterminant * tmp[6];
-			data[7] = invDeterminant * tmp[7];
-			data[8] = invDeterminant * tmp[8];
+			const real32_t invDeterminant = 1.0f / determinant;
 
-			return *this;
+			matrix3 m = *this;
+			m.data[0] = invDeterminant * tmp.data[0];
+			m.data[1] = invDeterminant * tmp.data[1];
+			m.data[2] = invDeterminant * tmp.data[2];
+			m.data[3] = invDeterminant * tmp.data[3];
+			m.data[4] = invDeterminant * tmp.data[4];
+			m.data[5] = invDeterminant * tmp.data[5];
+			m.data[6] = invDeterminant * tmp.data[6];
+			m.data[7] = invDeterminant * tmp.data[7];
+			m.data[8] = invDeterminant * tmp.data[8];
+
+			return m;
+		}
+
+		inline void invert( void ) {
+			const matrix3 tmp {
+				data[4] * data[8] - data[5] * data[7],
+				data[2] * data[7] - data[1] * data[8],
+				data[1] * data[5] - data[2] * data[4],
+				data[5] * data[6] - data[3] * data[8],
+				data[0] * data[8] - data[2] * data[6],
+				data[2] * data[3] - data[0] * data[5],
+				data[3] * data[7] - data[4] * data[6],
+				data[1] * data[6] - data[0] * data[7],
+				data[0] * data[4] - data[1] * data[3]
+			};
+
+			const real32_t determinant = data[0] * tmp.data[0] + data[1] * tmp.data[3] + data[2] * tmp.data[6];
+			if ( std::abs( determinant ) <= 0.00000f ) {
+				identity();
+				return;
+			}
+
+			const real32_t invDeterminant = 1.0f / determinant;
+			data[0] = invDeterminant * tmp.data[0];
+			data[1] = invDeterminant * tmp.data[1];
+			data[2] = invDeterminant * tmp.data[2];
+			data[3] = invDeterminant * tmp.data[3];
+			data[4] = invDeterminant * tmp.data[4];
+			data[5] = invDeterminant * tmp.data[5];
+			data[6] = invDeterminant * tmp.data[6];
+			data[7] = invDeterminant * tmp.data[7];
+			data[8] = invDeterminant * tmp.data[8];
 		}
 
 		// matrix multiplication
@@ -164,79 +195,134 @@ namespace XS {
 			data[ 4] = r.data[3];	data[ 5] = r.data[4];	data[ 6] = r.data[5];
 			data[ 8] = r.data[6];	data[ 9] = r.data[7];	data[10] = r.data[8];
 
-			real32_t x = data[12];
-			real32_t y = data[13];
-			real32_t z = data[14];
+			const vector3 v {
+				data[12],
+				data[13],
+				data[14],
+			};
 
-			data[12] = -(r.data[0] * x + r.data[3] * y + r.data[6] * z);
-			data[13] = -(r.data[1] * x + r.data[4] * y + r.data[7] * z);
-			data[14] = -(r.data[2] * x + r.data[5] * y + r.data[8] * z);
+			data[12] = -(r.data[0] * v[0] + r.data[3] * v[1] + r.data[6] * v[2]);
+			data[13] = -(r.data[1] * v[0] + r.data[4] * v[1] + r.data[7] * v[2]);
+			data[14] = -(r.data[2] * v[0] + r.data[5] * v[1] + r.data[8] * v[2]);
 
 			return *this;
 		}
 
 		inline real32_t getCofactor( real32_t m0, real32_t m1, real32_t m2, real32_t m3, real32_t m4, real32_t m5,
-			real32_t m6, real32_t m7, real32_t m8 ) XS_WARN_UNUSED_RESULT
+			real32_t m6, real32_t m7, real32_t m8 ) const XS_WARN_UNUSED_RESULT
 		{
 			return m0 * (m4 * m8 - m5 * m7)
 				- m1 * (m3 * m8 - m5 * m6)
 				+ m2 * (m3 * m7 - m4 * m6);
 		}
 
-		inline matrix4 invertGeneral( void ) XS_WARN_UNUSED_RESULT {
-			real32_t cofactor0 = getCofactor( data[5], data[6], data[7], data[9], data[10], data[11], data[13], data[14], data[15] );
-			real32_t cofactor1 = getCofactor( data[4], data[6], data[7], data[8], data[10], data[11], data[12], data[14], data[15] );
-			real32_t cofactor2 = getCofactor( data[4], data[5], data[7], data[8], data[ 9], data[11], data[12], data[13], data[15] );
-			real32_t cofactor3 = getCofactor( data[4], data[5], data[6], data[8], data[ 9], data[10], data[12], data[13], data[14] );
+		// will not operate in place upon failure, but return an identity matrix
+		// therefore you should not ignore this return value.
+		inline matrix4 invertGeneral( void ) const XS_WARN_UNUSED_RESULT {
+			const real32_t cofactor0 = getCofactor( data[5], data[6], data[7], data[9], data[10], data[11], data[13],
+				data[14], data[15] );
+			const real32_t cofactor1 = getCofactor( data[4], data[6], data[7], data[8], data[10], data[11], data[12],
+				data[14], data[15] );
+			const real32_t cofactor2 = getCofactor( data[4], data[5], data[7], data[8], data[ 9], data[11], data[12],
+				data[13], data[15] );
+			const real32_t cofactor3 = getCofactor( data[4], data[5], data[6], data[8], data[ 9], data[10], data[12],
+				data[13], data[14] );
 
-			real32_t determinant = data[0] * cofactor0 - data[1] * cofactor1 + data[2] * cofactor2 - data[3] * cofactor3;
+			const real32_t determinant = data[0] * cofactor0 - data[1] * cofactor1 + data[2] * cofactor2 - data[3] * cofactor3;
 			if ( std::abs( determinant ) < 0.000001f ) {
 				matrix4 m;
 				m.identity();
 				return m;
 			}
 
-			real32_t cofactor4  = getCofactor( data[1], data[2], data[3], data[9], data[10], data[11], data[13], data[14], data[15] );
-			real32_t cofactor5  = getCofactor( data[0], data[2], data[3], data[8], data[10], data[11], data[12], data[14], data[15] );
-			real32_t cofactor6  = getCofactor( data[0], data[1], data[3], data[8], data[ 9], data[11], data[12], data[13], data[15] );
-			real32_t cofactor7  = getCofactor( data[0], data[1], data[2], data[8], data[ 9], data[10], data[12], data[13], data[14] );
+			const real32_t invDeterminant = 1.0f / determinant;
+			const real32_t cofactor4  = getCofactor( data[1], data[2], data[3], data[9], data[10], data[11], data[13],
+				data[14], data[15] );
+			const real32_t cofactor5  = getCofactor( data[0], data[2], data[3], data[8], data[10], data[11], data[12],
+				data[14], data[15] );
+			const real32_t cofactor6  = getCofactor( data[0], data[1], data[3], data[8], data[ 9], data[11], data[12], data[13], data[15] );
+			const real32_t cofactor7  = getCofactor( data[0], data[1], data[2], data[8], data[ 9], data[10], data[12], data[13], data[14] );
 
-			real32_t cofactor8  = getCofactor( data[1], data[2], data[3], data[5], data[6], data[7], data[13], data[14], data[15] );
-			real32_t cofactor9  = getCofactor( data[0], data[2], data[3], data[4], data[6], data[7], data[12], data[14], data[15] );
-			real32_t cofactor10 = getCofactor( data[0], data[1], data[3], data[4], data[5], data[7], data[12], data[13], data[15] );
-			real32_t cofactor11 = getCofactor( data[0], data[1], data[2], data[4], data[5], data[6], data[12], data[13], data[14] );
+			const real32_t cofactor8  = getCofactor( data[1], data[2], data[3], data[5], data[6], data[7], data[13], data[14], data[15] );
+			const real32_t cofactor9  = getCofactor( data[0], data[2], data[3], data[4], data[6], data[7], data[12], data[14], data[15] );
+			const real32_t cofactor10 = getCofactor( data[0], data[1], data[3], data[4], data[5], data[7], data[12], data[13], data[15] );
+			const real32_t cofactor11 = getCofactor( data[0], data[1], data[2], data[4], data[5], data[6], data[12], data[13], data[14] );
 
-			real32_t cofactor12 = getCofactor( data[1], data[2], data[3], data[5], data[6], data[7], data[9], data[10], data[11] );
-			real32_t cofactor13 = getCofactor( data[0], data[2], data[3], data[4], data[6], data[7], data[8], data[10], data[11] );
-			real32_t cofactor14 = getCofactor( data[0], data[1], data[3], data[4], data[5], data[7], data[8], data[ 9], data[11] );
-			real32_t cofactor15 = getCofactor( data[0], data[1], data[2], data[4], data[5], data[6], data[8], data[ 9], data[10] );
+			const real32_t cofactor12 = getCofactor( data[1], data[2], data[3], data[5], data[6], data[7], data[9], data[10], data[11] );
+			const real32_t cofactor13 = getCofactor( data[0], data[2], data[3], data[4], data[6], data[7], data[8], data[10], data[11] );
+			const real32_t cofactor14 = getCofactor( data[0], data[1], data[3], data[4], data[5], data[7], data[8], data[ 9], data[11] );
+			const real32_t cofactor15 = getCofactor( data[0], data[1], data[2], data[4], data[5], data[6], data[8], data[ 9], data[10] );
 
-			real32_t invDeterminant = 1.0f / determinant;
+			return matrix4 {
+				 invDeterminant * cofactor0 ,  invDeterminant * cofactor4 ,
+				 invDeterminant * cofactor8 ,  invDeterminant * cofactor12,
+
+				-invDeterminant * cofactor1 ,  invDeterminant * cofactor5 ,
+				-invDeterminant * cofactor9 ,  invDeterminant * cofactor13,
+
+				 invDeterminant * cofactor2 , -invDeterminant * cofactor6 ,
+				 invDeterminant * cofactor10, -invDeterminant * cofactor14,
+
+				-invDeterminant * cofactor3 ,  invDeterminant * cofactor7 ,
+				-invDeterminant * cofactor11,  invDeterminant * cofactor15,
+			};
+		}
+
+		// will not operate in place upon failure, but return an identity matrix
+		// therefore you should not ignore this return value.
+		inline void invertGeneral( void ) {
+			const real32_t cofactor0 = getCofactor( data[5], data[6], data[7], data[9], data[10], data[11], data[13],
+				data[14], data[15] );
+			const real32_t cofactor1 = getCofactor( data[4], data[6], data[7], data[8], data[10], data[11], data[12],
+				data[14], data[15] );
+			const real32_t cofactor2 = getCofactor( data[4], data[5], data[7], data[8], data[ 9], data[11], data[12],
+				data[13], data[15] );
+			const real32_t cofactor3 = getCofactor( data[4], data[5], data[6], data[8], data[ 9], data[10], data[12],
+				data[13], data[14] );
+
+			const real32_t determinant = data[0] * cofactor0 - data[1] * cofactor1 + data[2] * cofactor2 - data[3] * cofactor3;
+			if ( std::abs( determinant ) < 0.000001f ) {
+				identity();
+				return;
+			}
+
+			const real32_t invDeterminant = 1.0f / determinant;
+			const real32_t cofactor4  = getCofactor( data[1], data[2], data[3], data[9], data[10], data[11], data[13],
+				data[14], data[15] );
+			const real32_t cofactor5  = getCofactor( data[0], data[2], data[3], data[8], data[10], data[11], data[12],
+				data[14], data[15] );
+			const real32_t cofactor6  = getCofactor( data[0], data[1], data[3], data[8], data[ 9], data[11], data[12], data[13], data[15] );
+			const real32_t cofactor7  = getCofactor( data[0], data[1], data[2], data[8], data[ 9], data[10], data[12], data[13], data[14] );
+
+			const real32_t cofactor8  = getCofactor( data[1], data[2], data[3], data[5], data[6], data[7], data[13], data[14], data[15] );
+			const real32_t cofactor9  = getCofactor( data[0], data[2], data[3], data[4], data[6], data[7], data[12], data[14], data[15] );
+			const real32_t cofactor10 = getCofactor( data[0], data[1], data[3], data[4], data[5], data[7], data[12], data[13], data[15] );
+			const real32_t cofactor11 = getCofactor( data[0], data[1], data[2], data[4], data[5], data[6], data[12], data[13], data[14] );
+
+			const real32_t cofactor12 = getCofactor( data[1], data[2], data[3], data[5], data[6], data[7], data[9], data[10], data[11] );
+			const real32_t cofactor13 = getCofactor( data[0], data[2], data[3], data[4], data[6], data[7], data[8], data[10], data[11] );
+			const real32_t cofactor14 = getCofactor( data[0], data[1], data[3], data[4], data[5], data[7], data[8], data[ 9], data[11] );
+			const real32_t cofactor15 = getCofactor( data[0], data[1], data[2], data[4], data[5], data[6], data[8], data[ 9], data[10] );
 
 			data[ 0] =  invDeterminant * cofactor0;
-			data[ 1] = -invDeterminant * cofactor4;
+			data[ 1] =  invDeterminant * cofactor4;
 			data[ 2] =  invDeterminant * cofactor8;
-			data[ 3] = -invDeterminant * cofactor12;
-
+			data[ 3] =  invDeterminant * cofactor12;
 			data[ 4] = -invDeterminant * cofactor1;
 			data[ 5] =  invDeterminant * cofactor5;
 			data[ 6] = -invDeterminant * cofactor9;
 			data[ 7] =  invDeterminant * cofactor13;
-
 			data[ 8] =  invDeterminant * cofactor2;
 			data[ 9] = -invDeterminant * cofactor6;
 			data[10] =  invDeterminant * cofactor10;
 			data[11] = -invDeterminant * cofactor14;
-
 			data[12] = -invDeterminant * cofactor3;
 			data[13] =  invDeterminant * cofactor7;
 			data[14] = -invDeterminant * cofactor11;
 			data[15] =  invDeterminant * cofactor15;
-
-			return *this;
 		}
 
-		inline matrix4 invert( void ) {
+		inline matrix4 invert( void ) const XS_WARN_UNUSED_RESULT {
 			matrix4 m = *this;
 			if ( flcmp( data[ 3], 0.0f )
 				&& flcmp( data[ 7], 0.0f )

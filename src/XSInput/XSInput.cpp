@@ -323,7 +323,7 @@ namespace XS {
 			}
 
 			static std::deque<MovementCommand> movementCmds;
-			static MovementCommand &AllocateMovementCommand( void ) {
+			MovementCommand &AllocateMovementCommand( void ) {
 				//FIXME: calculate ~1s worth of input?
 				if ( movementCmds.size() >= 10 ) {
 					movementCmds.pop_front();
@@ -336,9 +336,8 @@ namespace XS {
 				return movementCmds.back();
 			}
 
-			MovementCommand GenerateMovementCommand( void ) {
+			void GenerateMovementCommand( MovementCommand &cmd ) {
 				//TODO: keep a list of previously generated movement commands to resend
-				MovementCommand &cmd = AllocateMovementCommand();
 
 				//TODO: get button state etc
 				cmd.buttonState = 0u;
@@ -348,8 +347,6 @@ namespace XS {
 				cmd.move.UD		= perFrameState.moveUp		+ (perFrameState.moveDown * -1);
 
 				cmd.viewAngles = ClientGame::clgState.viewAngles;
-
-				return cmd;
 			}
 
 		} // namespace Input

@@ -28,6 +28,8 @@ namespace XS {
 					int32_t RL : 2; // -1 for left, 0 for neutral, 1 for right
 					int32_t UD : 2; // -1 for down, 0 for neutral, 1 for up
 				} move;
+				//TODO: add a way to express analogue input for controllers
+				//	can we abuse directions to compress the vector?
 			};
 
 			// initialise input state, register cvars, etc
@@ -40,10 +42,15 @@ namespace XS {
 				void
 			);
 
-			// generate a movement command for this frame's accumulated input
-			MovementCommand GenerateMovementCommand(
+			// allocate a movement command and commit to history
+			MovementCommand &AllocateMovementCommand(
 				void
-			) XS_WARN_UNUSED_RESULT;
+			);
+
+			// generate a movement command for this frame's accumulated input
+			void GenerateMovementCommand(
+				MovementCommand &cmd
+			);
 
 		} // namespace Input
 
