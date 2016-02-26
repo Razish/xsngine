@@ -123,7 +123,8 @@ namespace XS {
 #if defined(XS_OS_LINUX) || defined(XS_OS_MAC)
 			static char keys[] = { '\b', ' ', '\b' };
 			for ( auto &key : keys ) {
-				write( STDOUT_FILENO, &key, 1 );
+				if ( write( STDOUT_FILENO, &key, 1 ) == -1 ) {
+				}
 			}
 #endif
 		}
@@ -192,8 +193,13 @@ namespace XS {
 						std::memset( input.buffer, 0, sizeof(input.buffer) );
 						input.head = 0u;
 
-						write( STDOUT_FILENO, &key, 1 );
-						write( STDOUT_FILENO, promptText, strlen( promptText ) );
+						if ( write( STDOUT_FILENO, &key, 1 ) == -1 ) {
+							// ...
+						}
+
+						if ( write( STDOUT_FILENO, promptText, strlen( promptText ) ) == -1 ) {
+							// ...
+						}
 
 						return text;
 					}
@@ -248,7 +254,9 @@ namespace XS {
 					input.head = sizeof(input.buffer) - 1;
 				}
 
-				write( STDOUT_FILENO, &key, 1 );
+				if ( write( STDOUT_FILENO, &key, 1 ) == -1 ) {
+					// ...
+				}
 			}
 #elif defined(XS_OS_WINDOWS)
 			DWORD events = 0;
