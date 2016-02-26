@@ -120,7 +120,11 @@
 	#define XS_USED
 	#define XS_UNUSED
 	#define XS_WARN_UNUSED_RESULT
+	#define XS_WARN_DEPRECATED
 	#define XS_CDECL __cdecl
+	#define XS_PURE
+	#define XS_PERF_HOT
+	#define XS_PERF_COLD
 
 #elif defined(__GNUC__) || defined(__clang__)
 
@@ -132,11 +136,15 @@
 	#define XS_USED __attribute__(( used ))
 	#define XS_UNUSED __attribute__(( unused ))
 	#define XS_WARN_UNUSED_RESULT __attribute__(( warn_unused_result ))
+	#define XS_WARN_DEPRECATED __attribute__(( deprecated ))
 	#if defined(XSARCH_X86)
 		#define XS_CDECL __attribute__(( cdecl ))
 	#else
 		#define XS_CDECL
 	#endif
+	#define XS_PURE __attribute__(( pure ))
+	#define XS_PERF_HOT __attribute__(( hot ))
+	#define XS_PERF_COLD __attribute__(( cold ))
 
 #elif defined(__INTEL_COMPILER)
 
@@ -151,7 +159,11 @@
 	#define XS_USED
 	#define XS_UNUSED
 	#define XS_WARN_UNUSED_RESULT
+	#define XS_WARN_DEPRECATED
 	#define XS_CDECL
+	#define XS_PURE
+	#define XS_PERF_HOT
+	#define XS_PERF_COLD
 
 #endif
 
