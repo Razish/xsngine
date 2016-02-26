@@ -602,6 +602,14 @@
     <File Name="XSServer/XSEntityFXRunner.h"/>
     <File Name="XSServer/XSEntityModel.h"/>
     <File Name="XSServer/XSEntityModel.cpp"/>
+    <File Name="XSServer/XSCharacter.cpp"/>
+    <File Name="XSServer/XSCharacter.h"/>
+    <File Name="XSServer/XSQuest.cpp"/>
+    <File Name="XSServer/XSQuest.h"/>
+    <File Name="XSServer/XSInventoryManager.cpp"/>
+    <File Name="XSServer/XSInventoryManager.h"/>
+    <File Name="XSServer/XSQuestManager.cpp"/>
+    <File Name="XSServer/XSQuestManager.h"/>
   </VirtualDirectory>
   <VirtualDirectory Name="XSShared">
     <File Name="XSShared/XSEntityTypes.h"/>

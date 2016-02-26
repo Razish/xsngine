@@ -3,6 +3,7 @@
 #include <unordered_map>
 
 #include "XSNetwork/XSNetwork.h"
+#include "XSServer/XSCharacter.h"
 
 namespace XS {
 
@@ -34,6 +35,9 @@ namespace XS {
 				Limbo,
 				Playing
 			} state;
+
+			std::vector<Character>	 characters;
+			Character				*currentCharacter;
 
 		};
 

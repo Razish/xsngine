@@ -6,11 +6,15 @@ server_env = env.Clone()
 
 # sources
 files = [
+	'XSServer/XSCharacter.cpp',
 	'XSServer/XSClient.cpp',
 	'XSServer/XSEntity.cpp',
 	'XSServer/XSEntityFXRunner.cpp',
 	'XSServer/XSEntityModel.cpp',
+	'XSServer/XSInventoryManager.cpp',
 	'XSServer/XSNetcode.cpp',
+	'XSServer/XSQuest.cpp',
+	'XSServer/XSQuestManager.cpp',
 	'XSServer/XSResources.cpp',
 	'XSServer/XSServerGame.cpp',
 ]
