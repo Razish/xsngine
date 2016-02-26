@@ -15,8 +15,8 @@ namespace XS {
 
 	namespace Renderer {
 
-		View::View( uint32_t viewWidth, uint32_t viewHeight, bool is2D, renderCallback_t preRender,
-			renderCallback_t postRender )
+		View::View( uint32_t viewWidth, uint32_t viewHeight, bool is2D, RenderCallback preRender,
+			RenderCallback postRender )
 		: callbackPreRender( preRender ), callbackPostRender( postRender ), is2D( is2D ), width( viewWidth ),
 			height( viewHeight )
 		{

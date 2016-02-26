@@ -7,6 +7,8 @@ namespace XS {
 		void *handle; // handle to the dynamic library
 
 	public:
+		using InitFunc = const char * (*)( uint32_t );
+
 		// don't allow default instantiation
 		Module() = delete;
 		Module( const Module& ) = delete;

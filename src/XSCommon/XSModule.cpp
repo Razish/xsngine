@@ -8,8 +8,6 @@
 
 namespace XS {
 
-	typedef const char * (*initFunc_t)(uint32_t);
-
 	Module::Module( const char *name, uint32_t version ) {
 		char relativePath[XS_MAX_FILENAME];
 		String::FormatBuffer( relativePath, sizeof(relativePath), "%s" ARCH_STRING DLL_EXT, name );
@@ -23,7 +21,7 @@ namespace XS {
 			return;
 		}
 
-		if ( initFunc_t init = (initFunc_t)SDL_LoadFunction( absolutePath, "LoadModule" ) ) {
+		if ( InitFunc init = (InitFunc)SDL_LoadFunction( absolutePath, "LoadModule" ) ) {
 			const char *msg = init( version );
 			if ( msg ) {
 				throw( XSError( msg ) );

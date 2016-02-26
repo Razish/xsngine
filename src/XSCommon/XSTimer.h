@@ -16,11 +16,9 @@
 namespace XS {
 
 	#if defined(XS_OS_WINDOWS)
-		typedef LARGE_INTEGER TimeValue;
-	#elif defined(XS_OS_LINUX)
-		typedef struct timeval TimeValue;
-	#elif defined(XS_OS_MAC)
-		typedef struct timeval TimeValue;
+		using TimeValue = LARGE_INTEGER;
+	#elif defined(XS_OS_LINUX) || defined(XS_OS_MAC)
+		using TimeValue = struct timeval;
 	#endif
 
 	enum class TimerResolution {

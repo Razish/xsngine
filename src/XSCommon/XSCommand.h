@@ -5,8 +5,8 @@
 
 namespace XS {
 
-	typedef std::vector<std::string> CommandContext;
-	typedef void (*CommandFunc)( const CommandContext * const context );
+	using CommandContext = std::vector<std::string>;
+	using CommandFunc = void (*)( const CommandContext * const context );
 
 	namespace Command {
 

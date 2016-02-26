@@ -9,7 +9,7 @@ namespace XS {
 	namespace ClientGame {
 
 		class Entity;
-		typedef std::unordered_map<uint32_t, Entity *> EntityContainer;
+		using EntityContainer = std::unordered_map<uint32_t, Entity *>;
 
 		extern struct GameState {
 			vector3			viewAngles;

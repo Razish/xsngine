@@ -26,9 +26,9 @@
 //TODO: determine max filepath for current filesystem at runtime (NTFS, ext4, HFS+)
 #define XS_MAX_FILENAME (96)
 
-typedef float real32_t;
-typedef double real64_t;
-typedef long double real80_t;
+using real32_t = float;
+using real64_t = double;
+using real80_t = long double;
 
 // 32 bit field aliasing
 union byteAlias32_t {

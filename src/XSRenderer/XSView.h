@@ -29,7 +29,7 @@ namespace XS {
 		class Texture;
 
 		// used for pre/post render callbacks
-		typedef void (*renderCallback_t)( real64_t dt );
+		using RenderCallback = void (*)( real64_t dt );
 
 		struct View {
 
@@ -38,8 +38,8 @@ namespace XS {
 			Texture					*depthTexture;
 			std::queue<RenderInfo>	 renderObjects;
 			std::queue<vector3>		 pointLights;
-			renderCallback_t		 callbackPreRender;
-			renderCallback_t		 callbackPostRender;
+			RenderCallback			 callbackPreRender;
+			RenderCallback			 callbackPostRender;
 
 		public:
 			bool						 is2D;
@@ -56,8 +56,8 @@ namespace XS {
 				uint32_t viewWidth,
 				uint32_t viewHeight,
 				bool is2D,
-				renderCallback_t preRender = nullptr,
-				renderCallback_t postRender = nullptr
+				RenderCallback preRender = nullptr,
+				RenderCallback postRender = nullptr
 			);
 
 			// do not call publicly

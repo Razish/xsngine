@@ -14,7 +14,7 @@ namespace XS {
 			uint32_t block[16];
 		};
 
-		typedef uint32_t (*md5Func_t)(uint32_t x, uint32_t y, uint32_t z);
+		using MD5Func = uint32_t (*)( uint32_t x, uint32_t y, uint32_t z );
 
 		static uint32_t F( uint32_t x, uint32_t y, uint32_t z ) {
 			return z ^ (x & (y ^ z));
@@ -32,7 +32,9 @@ namespace XS {
 			return y ^ (x | ~z);
 		}
 
-		static void MD5_Step( md5Func_t func, uint32_t *a, uint32_t b, uint32_t c, uint32_t d, uint32_t x, uint32_t t, uint32_t s ) {
+		static void MD5_Step( MD5Func func, uint32_t *a, uint32_t b, uint32_t c, uint32_t d, uint32_t x, uint32_t t,
+			uint32_t s )
+		{
 			*a += func( b, c, d ) + x + t;
 			*a = ((*a) << s) | (((*a) & 0xFFFFFFFFu) >> (32 - s));
 			*a += b;
