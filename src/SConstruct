@@ -77,7 +77,7 @@ import os
 env = Environment(
 	TARGET_ARCH = arch,
 	tools = tools,
-	ENV = { 'PATH' : os.environ['PATH'] }
+	ENV = { 'TMP': os.environ['TMP'], 'PATH' : os.environ['PATH'] }
 )
 
 # set the proper compiler name
