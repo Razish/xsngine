@@ -74,10 +74,13 @@ else:
 # create the build environment
 #FIXME: also consider LD, AS, AR in the toolset
 import os
+def get_env( key, default_value = None ):
+	return default_value if key not in os.environ else os.environ[key]
+
 env = Environment(
 	TARGET_ARCH = arch,
 	tools = tools,
-	ENV = { 'TMP': os.environ['TMP'], 'PATH' : os.environ['PATH'] }
+	ENV = { 'TMP' : get_env( 'TMP' ), 'PATH' : get_env( 'PATH' ) }
 )
 
 # set the proper compiler name
