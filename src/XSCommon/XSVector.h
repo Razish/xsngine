@@ -59,8 +59,7 @@ namespace XS {
 
 		// addition
 		inline vector2 operator+( const vector2 &rhs ) const {
-			vector2 result = { data[0] + rhs[0], data[1] + rhs[1] };
-			return result;
+			return vector2{ data[0] + rhs[0], data[1] + rhs[1] };
 		}
 
 		// ???
@@ -72,8 +71,7 @@ namespace XS {
 
 		// subtraction
 		inline vector2 operator-( const vector2 &rhs ) const {
-			vector2 result = { data[0] - rhs[0], data[1] - rhs[1] };
-			return result;
+			return vector2{ data[0] - rhs[0], data[1] - rhs[1] };
 		}
 
 		// ???
@@ -103,14 +101,12 @@ namespace XS {
 
 		// ???
 		static inline vector2 inverse( const vector2 &in ) XS_WARN_UNUSED_RESULT {
-			vector2 result = { -in[0], -in[1] };
-			return result;
+			return vector2{ -in[0], -in[1] };
 		}
 
 		// scalar multiplication
 		inline vector2 operator*( const real32_t scalar ) const XS_WARN_UNUSED_RESULT {
-			vector2 result = { data[0] * scalar, data[1] * scalar };
-			return result;
+			return vector2{ data[0] * scalar, data[1] * scalar };
 		}
 
 		// ???
@@ -122,8 +118,7 @@ namespace XS {
 
 		// vector multiplication
 		inline vector2 operator*( const vector2 &rhs ) const {
-			vector2 result = { data[0] * rhs[0], data[1] * rhs[1] };
-			return result;
+			return vector2{ data[0] * rhs[0], data[1] * rhs[1] };
 		}
 
 		// ???
@@ -135,8 +130,7 @@ namespace XS {
 
 		// scalar division
 		inline vector2 operator/( const real32_t divisor ) const {
-			vector2 result = { data[0] / divisor, data[1] / divisor };
-			return result;
+			return vector2{ data[0] / divisor, data[1] / divisor };
 		}
 
 		// ???
@@ -148,8 +142,7 @@ namespace XS {
 
 		// vector division
 		inline vector2 operator/( const vector2 &rhs ) const {
-			vector2 result = { data[0] / rhs[0], data[1] / rhs[1] };
-			return result;
+			return vector2{ data[0] / rhs[0], data[1] / rhs[1] };
 		}
 
 		// ???
@@ -209,8 +202,7 @@ namespace XS {
 
 		// addition
 		inline pvector2 operator+( const pvector2 &rhs ) const {
-			pvector2 result = { data[0] + rhs[0], data[1] + rhs[1] };
-			return result;
+			return pvector2{ data[0] + rhs[0], data[1] + rhs[1] };
 		}
 
 		// ???
@@ -222,8 +214,7 @@ namespace XS {
 
 		// subtraction
 		inline pvector2 operator-( const pvector2 &rhs ) const {
-			pvector2 result = { data[0] - rhs[0], data[1] - rhs[1] };
-			return result;
+			return pvector2{ data[0] - rhs[0], data[1] - rhs[1] };
 		}
 
 		// ???
@@ -272,8 +263,7 @@ namespace XS {
 
 		// vector multiplication
 		inline pvector2 operator*( const pvector2 &rhs ) const {
-			pvector2 result = { data[0] * rhs[0], data[1] * rhs[1] };
-			return result;
+			return pvector2{ data[0] * rhs[0], data[1] * rhs[1] };
 		}
 
 		// ???
@@ -285,8 +275,7 @@ namespace XS {
 
 		// scalar division
 		inline pvector2 operator/( const real64_t divisor ) const {
-			pvector2 result = { data[0] / divisor, data[1] / divisor };
-			return result;
+			return pvector2{ data[0] / divisor, data[1] / divisor };
 		}
 
 		// ???
@@ -298,8 +287,7 @@ namespace XS {
 
 		// vector division
 		inline pvector2 operator/( const pvector2 &rhs ) const {
-			pvector2 result = { data[0] / rhs[0], data[1] / rhs[1] };
-			return result;
+			return pvector2{ data[0] / rhs[0], data[1] / rhs[1] };
 		}
 
 		// ???
@@ -360,8 +348,7 @@ namespace XS {
 
 		// addition
 		inline vector3 operator+( const vector3 &rhs ) const {
-			vector3 result = { data[0] + rhs[0], data[1] + rhs[1], data[2] + rhs[2] };
-			return result;
+			return vector3{ data[0] + rhs[0], data[1] + rhs[1], data[2] + rhs[2] };
 		}
 
 		// ???
@@ -374,8 +361,7 @@ namespace XS {
 
 		// subtraction
 		inline vector3 operator-( const vector3 &rhs ) const {
-			vector3 result = { data[0] - rhs[0], data[1] - rhs[1], data[2] - rhs[2] };
-			return result;
+			return vector3{ data[0] - rhs[0], data[1] - rhs[1], data[2] - rhs[2] };
 		}
 
 		// ???
@@ -409,14 +395,12 @@ namespace XS {
 
 		// ???
 		static inline vector3 inverse( const vector3 &in ) XS_WARN_UNUSED_RESULT {
-			vector3 result = { -in[0], -in[1], -in[2] };
-			return result;
+			return vector3{ -in[0], -in[1], -in[2] };
 		}
 
 		// scalar multiplication
 		inline vector3 operator*( const real32_t scalar ) const {
-			vector3 result = { data[0] * scalar, data[1] * scalar, data[1] * scalar };
-			return result;
+			return vector3{ data[0] * scalar, data[1] * scalar, data[1] * scalar };
 		}
 
 		// ???
@@ -429,8 +413,7 @@ namespace XS {
 
 		// vector multiplication
 		inline vector3 operator*( const vector3 &rhs ) const {
-			vector3 result = { data[0] * rhs[0], data[1] * rhs[1], data[2] * rhs[2] };
-			return result;
+			return vector3{ data[0] * rhs[0], data[1] * rhs[1], data[2] * rhs[2] };
 		}
 
 		// ???
@@ -443,8 +426,7 @@ namespace XS {
 
 		// scalar division
 		inline vector3 operator/( const real32_t divisor ) const {
-			vector3 result = { data[0] / divisor, data[1] / divisor, data[2] / divisor };
-			return result;
+			return vector3{ data[0] / divisor, data[1] / divisor, data[2] / divisor };
 		}
 
 		// ???
@@ -457,8 +439,7 @@ namespace XS {
 
 		// vector division
 		inline vector3 operator/( const vector3 &rhs ) const {
-			vector3 result = { data[0] / rhs[0], data[1] / rhs[1], data[2] / rhs[2] };
-			return result;
+			return vector3{ data[0] / rhs[0], data[1] / rhs[1], data[2] / rhs[2] };
 		}
 
 		// ???
@@ -552,13 +533,11 @@ namespace XS {
 
 		// cross
 		static inline vector3 cross( const vector3 &a, const vector3 &b ) XS_WARN_UNUSED_RESULT {
-			vector3 result = {
+			return vector3{
 				(a[1]*b[2]) - (a[2]*b[1]),
 				(a[2]*b[0]) - (a[0]*b[2]),
 				(a[0]*b[1]) - (a[1]*b[0])
 			};
-
-			return result;
 		}
 
 		// ???
@@ -609,8 +588,7 @@ namespace XS {
 
 		// addition
 		inline pvector3 operator+( const pvector3 &rhs ) const {
-			pvector3 result = { data[0] + rhs[0], data[1] + rhs[1], data[2] + rhs[2] };
-			return result;
+			return pvector3{ data[0] + rhs[0], data[1] + rhs[1], data[2] + rhs[2] };
 		}
 
 		// ???
@@ -623,8 +601,7 @@ namespace XS {
 
 		// subtraction
 		inline pvector3 operator-( const pvector3 &rhs ) const {
-			pvector3 result = { data[0] - rhs[0], data[1] - rhs[1], data[2] - rhs[2] };
-			return result;
+			return pvector3{ data[0] - rhs[0], data[1] - rhs[1], data[2] - rhs[2] };
 		}
 
 		// ???
@@ -658,14 +635,12 @@ namespace XS {
 
 		// ???
 		static inline pvector3 inverse( const pvector3 &in ) XS_WARN_UNUSED_RESULT {
-			pvector3 result = { -in[0], -in[1], -in[2] };
-			return result;
+			return pvector3{ -in[0], -in[1], -in[2] };
 		}
 
 		// scalar multiplication
 		inline pvector3 operator*( const real64_t scalar ) const {
-			pvector3 result = { data[0] * scalar, data[1] * scalar, data[2] * scalar };
-			return result;
+			return pvector3{ data[0] * scalar, data[1] * scalar, data[2] * scalar };
 		}
 
 		// ???
@@ -678,8 +653,7 @@ namespace XS {
 
 		// vector multiplication
 		inline pvector3 operator*( const pvector3 &rhs ) const {
-			pvector3 result = { data[0] * rhs[0], data[1] * rhs[1], data[2] * rhs[2] };
-			return result;
+			return pvector3{ data[0] * rhs[0], data[1] * rhs[1], data[2] * rhs[2] };
 		}
 
 		// ???
@@ -692,8 +666,7 @@ namespace XS {
 
 		// scalar division
 		inline pvector3 operator/( const real64_t divisor ) const {
-			pvector3 result = { data[0] / divisor, data[1] / divisor, data[2] / divisor };
-			return result;
+			return pvector3{ data[0] / divisor, data[1] / divisor, data[2] / divisor };
 		}
 		inline pvector3& operator/=( const real64_t divisor ) {
 			data[0] /= divisor;
@@ -704,8 +677,7 @@ namespace XS {
 
 		// vector division
 		inline pvector3 operator/( const pvector3 &rhs ) const {
-			pvector3 result = { data[0] / rhs[0], data[1] / rhs[1], data[2] / rhs[2] };
-			return result;
+			return pvector3{ data[0] / rhs[0], data[1] / rhs[1], data[2] / rhs[2] };
 		}
 		inline pvector3& operator/=( const pvector3 &rhs ) {
 			data[0] /= rhs[0];
@@ -783,12 +755,11 @@ namespace XS {
 
 		// cross
 		static inline pvector3 cross( const pvector3 &a, const pvector3 &b ) XS_WARN_UNUSED_RESULT {
-			pvector3 result = {
+			return pvector3{
 				(a[1]*b[2]) - (a[2]*b[1]),
 				(a[2]*b[0]) - (a[0]*b[2]),
 				(a[0]*b[1]) - (a[1]*b[0])
 			};
-			return result;
 		}
 		inline pvector3 cross( const pvector3 &v ) const XS_WARN_UNUSED_RESULT {
 			return cross( *this, v );
@@ -834,8 +805,7 @@ namespace XS {
 
 		// addition
 		inline vector4 operator+( const vector4 &rhs ) const {
-			vector4 result = { data[0] + rhs[0], data[1] + rhs[1], data[2] + rhs[2], data[3] + rhs[3] };
-			return result;
+			return vector4{ data[0] + rhs[0], data[1] + rhs[1], data[2] + rhs[2], data[3] + rhs[3] };
 		}
         inline vector4& operator+=( const vector4& rhs ) {
 			data[0] += rhs[0];
@@ -847,8 +817,7 @@ namespace XS {
 
 		// subtraction
 		inline vector4 operator-( const vector4 &rhs ) const {
-			vector4 result = { data[0] - rhs[0], data[1] - rhs[1], data[2] - rhs[2], data[3] - rhs[3] };
-			return result;
+			return vector4{ data[0] - rhs[0], data[1] - rhs[1], data[2] - rhs[2], data[3] - rhs[3] };
 		}
         inline vector4& operator-=( const vector4& rhs ) {
 			data[0] -= rhs[0];
@@ -882,14 +851,12 @@ namespace XS {
 			data[3] = -data[3];
 		}
 		static inline vector4 inverse( const vector4 &in ) XS_WARN_UNUSED_RESULT {
-			vector4 result = { -in[0], -in[1], -in[2], -in[3] };
-			return result;
+			return vector4{ -in[0], -in[1], -in[2], -in[3] };
 		}
 
 		// scalar multiplication
 		inline vector4 operator*( const real32_t scalar ) const {
-			vector4 result = { data[0] * scalar, data[1] * scalar, data[2] * scalar, data[3] * scalar };
-			return result;
+			return vector4{ data[0] * scalar, data[1] * scalar, data[2] * scalar, data[3] * scalar };
 		}
 		inline vector4& operator*=( const real32_t scalar ) {
 			data[0] *= scalar;
@@ -901,8 +868,7 @@ namespace XS {
 
 		// vector multiplication
 		inline vector4 operator*( const vector4 &rhs ) const {
-			vector4 result = { data[0] * rhs[0], data[1] * rhs[1], data[2] * rhs[2], data[3] * rhs[3] };
-			return result;
+			return vector4{ data[0] * rhs[0], data[1] * rhs[1], data[2] * rhs[2], data[3] * rhs[3] };
 		}
 		inline vector4& operator*=( const vector4 &rhs ) {
 			data[0] *= rhs[0];
@@ -914,8 +880,7 @@ namespace XS {
 
 		// scalar division
 		inline vector4 operator/( const real32_t divisor ) const {
-			vector4 result = { data[0] / divisor, data[1] / divisor, data[2] / divisor, data[3] / divisor };
-			return result;
+			return vector4{ data[0] / divisor, data[1] / divisor, data[2] / divisor, data[3] / divisor };
 		}
 		inline vector4& operator/=( const real32_t divisor ) {
 			data[0] /= divisor;
@@ -927,8 +892,7 @@ namespace XS {
 
 		// vector division
 		inline vector4 operator/( const vector4 &rhs ) const {
-			vector4 result = { data[0] / rhs[0], data[1] / rhs[1], data[2] / rhs[2], data[3] / rhs[3] };
-			return result;
+			return vector4{ data[0] / rhs[0], data[1] / rhs[1], data[2] / rhs[2], data[3] / rhs[3] };
 		}
 		inline vector4& operator/=( const vector4 &rhs ) {
 			data[0] /= rhs[0];

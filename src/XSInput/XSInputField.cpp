@@ -8,7 +8,7 @@ namespace XS {
 
 	namespace Client {
 
-		std::string InputField::GetHistory( size_t index ) const {
+		const std::string &InputField::GetHistory( size_t index ) const {
 			return history[history.size() - index];
 		}
 

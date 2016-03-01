@@ -10,8 +10,12 @@ namespace XS {
 
 		class EntityModel : public Entity {
 
+		public:
+			using ModelID = uint32_t;
+
 		private:
-			uint32_t	modelIndex = 0xFFFFFFFFu;
+			//TODO: invalidID/invalidIndex
+			ModelID		modelIndex = std::numeric_limits<ModelID>::max();
 			std::string	modelPath;
 
 		public:

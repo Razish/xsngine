@@ -174,7 +174,9 @@ namespace XS {
 		// then tokenise it
 		values.clear();
 		const char delim = ' ';
-		std::vector<std::string> tokens = String::Split( value, delim );
+		std::vector<std::string> tokens;
+		String::Split( value, delim, tokens );
+
 		for ( const auto &it : tokens ) {
 			// now store each token in multiple formats
 			CvarValue newValue = {};

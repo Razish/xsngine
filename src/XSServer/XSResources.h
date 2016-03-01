@@ -6,6 +6,8 @@ namespace XS {
 
 	namespace ServerGame {
 
+		using ResourceID = uint32_t;
+
 		// ???
 		uint32_t GetResourceID(
 			const char *name

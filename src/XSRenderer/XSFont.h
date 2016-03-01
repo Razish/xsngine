@@ -17,13 +17,30 @@ namespace XS {
 		struct Material;
 
 		struct FontData {
+
 			vector2		pixelSize;
 			vector2		s, t;
 			vector2		offset;
 			real32_t	advance;
+
 		};
 
+		//
+		// Font overview
+		// a Font object provides mechanisms for rendering ascii text at different sizes
+		// Fonts are rendered and cached to disk on first load for faster subsequent loads. if an artist wants to
+		//	prototype different fonts, simply changing the source assets will cause the cache to be regenerated
+		//
+		// performance notes
+		// all functions may cause the glyphs to be rendered if cache is not valid
+		// don't construct multiple Font objects for different sizes, a single Font can render at multiple sizes
+		//
+		// implementation details
+		// all textures, materials and metrics are stored in the single Font using the point size as the key
+		//
+
 		class Font {
+
 		private:
 			std::map<uint16_t, Texture*>	texture;
 			std::map<uint16_t, Material*>	material;
@@ -63,7 +80,7 @@ namespace XS {
 				const vector2 &pos,
 				const std::string &text,
 				uint16_t pointSize
-			);
+			) XS_WARN_UNUSED_RESULT;
 
 			// return the pixel width of the specified character
 			real32_t GetGlyphWidth(
@@ -85,6 +102,7 @@ namespace XS {
 			static Font *Register(
 				const char *name
 			);
+
 		};
 
 	} // namespace Renderer

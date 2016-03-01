@@ -8,10 +8,10 @@ namespace XS {
 
 	namespace Renderer {
 
-		static std::unordered_map<uint32_t, Renderable *> renderables;
+		static std::unordered_map<Renderable::Handle, Renderable *> renderables;
 
-		uint32_t Renderable::numRegistered = 0u;
-		const uint32_t Renderable::invalidHandle = 0xFFFFFFFFu;
+		Renderable::Handle Renderable::numRegistered = 0u;
+		const Renderable::Handle Renderable::invalidHandle = std::numeric_limits<Renderable::Handle>::max();
 
 		Renderable::Renderable() {
 			renderables[handle] = this;
@@ -30,9 +30,8 @@ namespace XS {
 			// ...
 		}
 
-		Renderable *Renderable::Get( uint32_t handle ) {
-			Renderable *renderable = renderables[handle];
-			return renderable;
+		Renderable *Renderable::Get( Handle handle ) {
+			return renderables[handle];
 		}
 
 	} // namespace Renderer

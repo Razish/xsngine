@@ -2,24 +2,42 @@
 
 #include <unordered_map>
 
+#include "XSNetwork/XSNetwork.h"
+
 namespace XS {
 
 	namespace Server {
 
-		struct Client;
+		class Client {
 
-		extern std::unordered_map<uint64_t, Client *>	clients;
+		private:
+			// ...
 
-		struct Client {
-			enum class ConnectionState {
+		public:
+			class Connection {
+
+			private:
+				// ...
+
+			public:
+				Network::GUID guid;
+
+				// send a packet to this client
+				void Send(
+					const Network::XSPacket *packet
+				);
+
+			} connection;
+
+			enum class State {
 				Connecting,
 				Limbo,
 				Playing
-			};
+			} state;
 
-			uint64_t		guid;
-			ConnectionState	connectionState;
 		};
+
+		extern std::unordered_map<Network::GUID, Client *> clients;
 
 	} // namespace Server
 

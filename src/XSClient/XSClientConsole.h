@@ -8,7 +8,7 @@
 namespace XS {
 
 	// forward declaration
-	struct Console;
+	class Console;
 	class Cvar;
 	class InputField;
 	namespace Renderer {
@@ -20,6 +20,7 @@ namespace XS {
 
 		// driver for global Console instance to handle client interaction/rendering
 		extern class ClientConsole {
+
 		private:
 			Console			*console = nullptr;
 			bool			 visible = false;
@@ -75,6 +76,7 @@ namespace XS {
 			bool IsVisible(
 				void
 			) const XS_WARN_UNUSED_RESULT;
+
 		} *clientConsole;
 
 	} // namespace Client

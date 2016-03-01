@@ -22,31 +22,39 @@ namespace XS {
 		};
 
 		struct DrawQuadCommand {
+
 			vector2 pos;
 			vector2 size;
 			vector2 st1, st2;
 			const vector4	*colour;
 			const Material	*material;
+
 		};
 
 		struct DrawModelCommand {
+
 			const Model			*model;
 			RenderInfo			 info;
+
 		};
 
 		struct DrawParticlesCommand {
+
 			const Backend::Buffer	*vbo;
 			const Backend::Buffer	*ibo;
 			const Material			*material;
 			size_t					 count;
+
 		};
 
 		struct ScreenshotCommand {
+
 			int32_t		 width;
 			int32_t		 height;
 			GLuint		 pbo;
 			GLsync		 sync;
 			const char	*name;
+
 		};
 
 		struct RenderCommand {

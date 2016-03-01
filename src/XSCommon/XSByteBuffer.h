@@ -19,6 +19,7 @@ namespace XS {
 	//		written as 32-bit fields
 
 	class ByteBuffer {
+
 	private:
 		bool					reading;
 		std::vector<uint8_t>	buffer;
@@ -173,6 +174,7 @@ namespace XS {
 			const char ** outStr,
 			uint32_t *outLen = nullptr // sometimes we don't care about the size
 		);
+
 	};
 
 } // namespace XS

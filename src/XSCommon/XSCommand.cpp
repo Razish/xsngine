@@ -122,7 +122,9 @@ namespace XS {
 		// command buffer
 
 		void Append( const char *str, char delimiter ) {
-			std::vector<std::string> commands = String::Split( str, delimiter );
+			std::vector<std::string> commands;
+			String::Split( str, delimiter, commands );
+
 			//FIXME: strip whitespace? seems to work fine
 			for ( const auto &command : commands ) {
 				buffer.push( command );
@@ -140,7 +142,7 @@ namespace XS {
 
 				CommandContext context;
 				if ( start != std::string::npos && start != cmd.size() - 1 ) {
-					context = String::Split( &cmd[start + 1], ' ' );
+					String::Split( &cmd[start + 1], ' ', context );
 
 					// strip any quotes around the arguments
 					for ( auto &tok : context ) {

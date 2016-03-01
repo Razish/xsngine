@@ -13,25 +13,32 @@ namespace XS {
 		};
 
 		struct OrientedBoundingBoxVolume {
+
 			vector3		mins;
 			vector3		maxs;
 			matrix4		transform;
+
 		};
 
 		struct SphereVolume {
+
 			real32_t	radius;
+
 		};
 
 		struct Actor {
+
 			VolumeType	type;
 
 			union VolumeData {
 				OrientedBoundingBoxVolume obb;
 				SphereVolume sphere;
 			} volume;
+
 		};
 
 		struct RigidActor : public Actor {
+
 			RigidActor(
 				VolumeType type
 			);
@@ -40,6 +47,7 @@ namespace XS {
 			RigidActor() = delete;
 			RigidActor( const RigidActor& ) = delete;
 			RigidActor& operator=( const RigidActor& ) = delete;
+
 		};
 
 	} // namespace Physics

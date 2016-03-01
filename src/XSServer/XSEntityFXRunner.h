@@ -11,6 +11,7 @@ namespace XS {
 		class EntityFXRunner : public Entity {
 
 		private:
+			// ...
 
 		public:
 			uint32_t count;

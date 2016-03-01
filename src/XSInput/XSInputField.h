@@ -12,6 +12,7 @@ namespace XS {
 	namespace Client {
 
 		class InputField {
+
 		private:
 			std::vector<std::string>	 history;
 
@@ -26,7 +27,7 @@ namespace XS {
 			uint32_t					 numChars;
 
 			// retrieve the string at the given history index (reverse 1-indexed)
-			std::string GetHistory(
+			const std::string &GetHistory(
 				size_t index
 			) const XS_WARN_UNUSED_RESULT;
 
@@ -69,6 +70,7 @@ namespace XS {
 			uint32_t GetCursorPos(
 				void
 			) const XS_WARN_UNUSED_RESULT;
+
 		};
 
 	} // namespace Client

@@ -15,7 +15,7 @@ namespace XS {
 		bool GetFileTime(
 			const char *path,
 			int32_t *outTime
-		);
+		) XS_WARN_UNUSED_RESULT;
 
 		// returns the maximum length of a full system path
 		uint32_t GetPathMax(
@@ -25,7 +25,7 @@ namespace XS {
 		// returns true if file exists
 		bool MkDir(
 			const char *path
-		);
+		) XS_WARN_UNUSED_RESULT;
 
 		// resolve a relative game path into a full OS path
 		bool ResolvePath(

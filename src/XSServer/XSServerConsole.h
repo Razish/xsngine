@@ -18,8 +18,10 @@ namespace XS {
 		#endif
 
 			struct {
+
 				char buffer[1024];
 				size_t head = 0u;
+
 			} input;
 
 		#if defined(XS_OS_LINUX) || defined(XS_OS_MAC)

@@ -21,6 +21,7 @@ namespace XS {
 		extern Cvar *cg_terrainDimensions;
 
 		class Terrain {
+
 		private:
 #if 0
 			Renderer::ShaderProgram	*program = nullptr;
@@ -43,6 +44,7 @@ namespace XS {
 			);
 
 			~Terrain();
+
 		};
 
 	} // namespace ClientGame

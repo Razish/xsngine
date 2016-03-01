@@ -10,7 +10,7 @@ namespace XS {
 			const char *filename,
 			uint32_t *outWidth = nullptr,
 			uint32_t *outHeight = nullptr
-		);
+		) XS_WARN_UNUSED_RESULT;
 
 		// write a PNG file to filename
 		bool WritePNG(

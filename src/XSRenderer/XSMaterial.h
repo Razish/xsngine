@@ -18,15 +18,20 @@ namespace XS {
 		const uint32_t MF_WIREFRAME	= 0x00000001u;
 
 		struct Material {
+
 			struct SamplerBinding {
+
 				int		 	 	 unit;
 				std::string	 	 uniform;
 				const Texture	*texture;
+
 			};
 
 			struct BufferBinding {
+
 				int				 index;
 				Backend::Buffer	*buffer;
+
 			};
 
 			ShaderProgram				*shaderProgram = nullptr;
@@ -38,6 +43,7 @@ namespace XS {
 			void Bind(
 				void
 			) const;
+
 		};
 
 	} // namespace Renderer

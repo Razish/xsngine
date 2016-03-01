@@ -13,11 +13,11 @@ namespace XS {
 
 	namespace ServerGame {
 
-		static std::unordered_map<std::string, uint32_t> resources;
+		static std::unordered_map<std::string, ResourceID> resources;
 		static uint32_t numResources = 0u;
 		static bool modified = true;
 
-		uint32_t GetResourceID( const char *name ) {
+		ResourceID GetResourceID( const char *name ) {
 			auto found = resources.find( name );
 			if ( found != resources.end() ) {
 				// already exists
@@ -57,7 +57,7 @@ namespace XS {
 						SDL_assert( !"Invalid client instance - did you instantiate and use before initialising?" );
 						continue;
 					}
-						Network::Send( client.second->guid, &resourcePacket );
+					client.second->connection.Send( &resourcePacket );
 				}
 
 				modified = false;

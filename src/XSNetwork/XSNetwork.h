@@ -6,6 +6,8 @@ namespace XS {
 
 	namespace Network {
 
+		using GUID = uint64_t;
+
 		enum GameMessage {
 			// server --> client
 			ID_XS_SV2CL_GAMESTATE = ID_USER_PACKET_ENUM + 1,
@@ -17,6 +19,7 @@ namespace XS {
 		};
 
 		struct XSPacket {
+
 			GameMessage		 msg;
 			const void		*data = nullptr;
 			size_t			 dataLen = 0u;
@@ -30,6 +33,7 @@ namespace XS {
 			: msg( msg )
 			{
 			}
+
 		};
 
 		// ???
@@ -70,7 +74,7 @@ namespace XS {
 
 		// ???
 		void Send(
-			uint64_t guid,
+			GUID guid,
 			const XSPacket *packet
 		);
 

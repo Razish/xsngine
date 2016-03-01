@@ -145,7 +145,7 @@ namespace XS {
 					bb.ReadUInt32( &entityID );
 					SDL_assert( entityID != Entity::invalidID );
 
-					Entity *entity = GetEntity( entityID );
+					Entity *entity = Entity::Get( entityID );
 
 					if ( entity ) {
 						//TODO: delta update of entity
@@ -215,7 +215,7 @@ namespace XS {
 
 						entity->id = entityID;
 						entity->position = tmpPos;
-						AddEntity( entity );
+						entity->AddToWorld();
 					}
 				}
 			} break;

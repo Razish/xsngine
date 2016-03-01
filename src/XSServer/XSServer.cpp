@@ -68,7 +68,7 @@ namespace XS {
 			snapshotPacket.data = snapshotBuffer.GetMemory( &snapshotPacket.dataLen );
 
 			for ( auto &client : clients ) {
-				Network::Send( client.second->guid, &snapshotPacket );
+				client.second->connection.Send( &snapshotPacket );
 			}
 		}
 

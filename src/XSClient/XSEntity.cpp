@@ -21,32 +21,30 @@ namespace XS {
 
 	namespace ClientGame {
 
-		const uint32_t Entity::invalidID = 0xFFFFFFFFu;
+		const Entity::ID Entity::invalidID = 0xFFFFFFFFu;
 
-		void AddEntity( Entity *entity ) {
-			Entity *e = clgState.entities[entity->id];
+		void Entity::AddToWorld( void ) {
+			Entity *e = clgState.entities[id];
 			if ( e ) {
-				SDL_assert( !"entity exists" );
+				if ( e == this ) {
+					SDL_assert( !"tried to add entity to world twice" );
+				}
+				else {
+					SDL_assert( !"entity with this id already exists" );
+				}
 			}
 			else {
-				clgState.entities[entity->id] = entity;
+				clgState.entities[id] = this;
 			}
-		}
-
-		bool EntityExists( uint32_t id ) {
-			return !!(clgState.entities[id] != nullptr);
-		}
-
-		Entity *GetEntity( uint32_t id ) {
-			return clgState.entities[id];
-		}
-
-		void RemoveEntity( uint32_t id ) {
-			clgState.entities[id] = nullptr; // potential leak
 		}
 
 		Entity::~Entity() {
-			RemoveEntity( id );
+			if ( clgState.entities[id] == this ) {
+				clgState.entities[id] = nullptr; // potential leak
+			}
+			else {
+				SDL_assert( !"tried to untrack entity with mismatched ID" );
+			}
 
 			//FIXME: this isn't right...?
 			if ( renderInfo.handle != Renderer::Renderable::invalidHandle ) {
@@ -61,10 +59,18 @@ namespace XS {
 			}
 		}
 
-		void Entity::AddToScene( Renderer::View *view ) {
-			if ( renderInfo.handle != Renderer::Renderable::invalidHandle ) {
-				SDL_assert( view );
+		bool Entity::Exists( ID id ) {
+			return !!(clgState.entities[id] != nullptr);
+		}
 
+		Entity *Entity::Get( ID id ) {
+			return clgState.entities[id];
+		}
+
+		void Entity::AddToScene( Renderer::View *view ) {
+			SDL_assert( view );
+
+			if ( renderInfo.handle != Renderer::Renderable::invalidHandle ) {
 				renderInfo.worldPos = position;
 				view->AddObject( renderInfo );
 			}

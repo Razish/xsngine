@@ -11,14 +11,17 @@ namespace XS {
 		};
 
 		struct BufferMemory {
+
 			size_t offset;
 			size_t size;
 			void *devicePtr;
+
 		};
 
 		namespace Backend {
 
 			class Buffer {
+
 			private:
 				GLuint	privateID;
 				GLenum	type;
@@ -48,7 +51,8 @@ namespace XS {
 				);
 
 				// ???
-				BufferMemory MapDiscard(
+				void MapDiscard(
+					BufferMemory *buffer,
 					size_t size
 				);
 

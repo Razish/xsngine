@@ -46,21 +46,17 @@ namespace XS {
 			...
 		) XS_WARN_UNUSED_RESULT;
 
-		std::vector<std::string> &Split(
+		void Split(
 			const std::string &s,
 			char delim,
 			std::vector<std::string> &elems
-		) XS_WARN_UNUSED_RESULT;
+		);
 
-		std::vector<std::string> Split(
-			const std::string &s,
-			char delim
-		) XS_WARN_UNUSED_RESULT;
-
-		std::string Join(
+		void Join(
 			const std::vector<std::string> &strings,
-			const std::string &separator
-		) XS_WARN_UNUSED_RESULT;
+			const std::string &separator,
+			std::string &out
+		);
 
 	} // namespace String
 

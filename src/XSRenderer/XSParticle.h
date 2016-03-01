@@ -20,6 +20,7 @@ namespace XS {
 	namespace Renderer {
 
 		class Particle {
+
 		public:
 			Particle();
 
@@ -35,6 +36,7 @@ namespace XS {
 			bool Update(
 				real64_t dt
 			);
+
 		};
 
 	} // namespace Renderer

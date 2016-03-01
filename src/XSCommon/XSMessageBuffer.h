@@ -8,9 +8,15 @@ namespace XS {
 	class Logger;
 
 	class MessageBuffer {
+
+	public:
+		using Message = std::string;
+
 	private:
-		std::vector<std::string>	 buffer;
-		Logger						*log;
+		using Container = std::vector<Message>;
+
+		Container	 buffer;
+		Logger		*log;
 
 	public:
 		// don't allow default instantiation
@@ -24,9 +30,35 @@ namespace XS {
 
 		~MessageBuffer();
 
+		class iterator : public Container::iterator {
+
+		public:
+			iterator( typename Container::iterator c )
+				: Container::iterator( c )
+			{
+			}
+
+			Message &operator*( void ) {
+				return Container::iterator::operator *();
+			}
+
+		};
+
+		iterator begin( void ) {
+			return iterator( buffer.begin() );
+		}
+
+		iterator end( void ) {
+			return iterator( buffer.end() );
+		}
+
+		size_t size( void ) const {
+			return buffer.size();
+		}
+
 		// append a message to the buffer
 		void Append(
-			std::string message
+			const Message &message
 		);
 
 		// check if the buffer is empty
@@ -35,20 +67,10 @@ namespace XS {
 		) const XS_WARN_UNUSED_RESULT;
 
 		// clear the message buffer
-		inline void Clear( void ) {
-			buffer.clear();
-		}
-
-		// retrieve count lines from index start
-		std::vector<std::string> FetchLines(
-			uint32_t start,
-			uint32_t count
-		) const XS_WARN_UNUSED_RESULT;
-
-		// query the number of lines the buffer contains
-		uint32_t GetNumLines(
+		void Clear(
 			void
-		) const XS_WARN_UNUSED_RESULT;
+		);
+
 	};
 
 } // namespace XS

@@ -23,7 +23,7 @@ namespace XS {
 		static bool connected = false;
 		static uint32_t maxConnections = 1u;
 		static bool	isServer = false;
-		static uint64_t myGUID = 0u;
+		static GUID myGUID = 0u;
 
 		static Cvar *net_debug = nullptr;
 		static Cvar *net_port = nullptr;
@@ -274,7 +274,7 @@ namespace XS {
 			}
 		}
 
-		void Send( uint64_t guid, const XSPacket *packet ) {
+		void Send( GUID guid, const XSPacket *packet ) {
 			if ( net_debug->GetUInt32() & 0x1u ) {
 				console.Print( PrintLevel::Normal, "Send: %i (%i)\n",
 					packet->msg,

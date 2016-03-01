@@ -3,11 +3,15 @@
 namespace XS {
 
 	class Module {
+
+	public:
+		using Version = uint32_t;
+
 	private:
 		void *handle; // handle to the dynamic library
 
 	public:
-		using InitFunc = const char * (*)( uint32_t );
+		using InitFunc = const char * (*)( Version );
 
 		// don't allow default instantiation
 		Module() = delete;
@@ -17,7 +21,7 @@ namespace XS {
 		// dynamically load a module
 		Module(
 			const char *name,
-			uint32_t version
+			Version version
 		);
 
 		~Module();

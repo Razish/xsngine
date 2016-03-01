@@ -16,6 +16,7 @@ namespace XS {
 		} // namespace Backend
 
 		struct Mesh {
+
 			bool					 uploaded = false;
 			bool					 materialCreated = false;
 
@@ -42,6 +43,7 @@ namespace XS {
 			);
 
 			~Mesh();
+
 		};
 
 	} // namespace Renderer

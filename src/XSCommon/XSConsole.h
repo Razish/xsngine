@@ -10,7 +10,16 @@ namespace XS {
 		Developer,
 	};
 
-	extern struct Console {
+	extern class Console {
+
+	private:
+		// append a line to the list, accounting for split lines
+		void Append(
+			const char *text,
+			bool multiLine
+		);
+
+	public:
 		int32_t			indentation;
 		MessageBuffer	*buffer;
 
@@ -39,13 +48,6 @@ namespace XS {
 			...
 		);
 
-	private:
-		// used internally
-		// append a line to the list, accounting for split lines
-		void Append(
-			const char *text,
-			bool multiLine
-		);
 	} console;
 
 	// Instantiate a local (stack-level) Indent object to indent subsequent console prints

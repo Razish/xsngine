@@ -17,7 +17,7 @@ namespace XS {
 		static std::unordered_map<std::string, Model*> models;
 
 		// public, static
-		uint32_t Model::Register( const char *path ) {
+		Model::Handle Model::Register( const char *path ) {
 			//HACK: assume null path means raw model data
 			if ( !path ) {
 				Model *model = new Model();

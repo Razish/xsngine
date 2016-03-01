@@ -41,7 +41,7 @@ namespace XS {
 		// negative for down, positive for up
 		void ClientConsole::Scroll( int amount ) {
 			if ( amount > 0 ) {
-				if ( scrollAmount + amount < static_cast<int32_t>( console->buffer->GetNumLines() - lineCount ) ) {
+				if ( scrollAmount + amount < static_cast<int32_t>( console->buffer->size() - lineCount ) ) {
 					scrollAmount += amount;
 				}
 			}
@@ -122,13 +122,15 @@ namespace XS {
 			Resize();
 
 			// draw the console text
-			const uint32_t numLines = console->buffer->GetNumLines();
+			const uint32_t numLines = console->buffer->size();
 			const uint32_t start = std::max(
 				0,
 				static_cast<int32_t>( numLines ) - static_cast<int32_t>( scrollAmount )
 					- static_cast<int32_t>( lineCount )
 			);
-			std::vector<std::string> lines = console->buffer->FetchLines( start, lineCount );
+			const uint32_t begin = std::min( numLines, start );
+			const uint32_t end = std::min( begin + lineCount, numLines );
+			std::vector<std::string> lines( console->buffer->begin() + begin, console->buffer->begin() + end );
 
 			// TODO: might have to draw lines in reverse to compensate for one buffer element spanning multiple
 			//	lines

@@ -9,27 +9,31 @@ namespace XS {
 		class Renderable;
 
 		struct RenderInfo {
+
 			uint32_t	 handle;
 			vector3		 worldPos;
+
 		};
 
 		// base class implemented by e.g. Model, Particle
 		class Renderable {
-		public:
-			static uint32_t			numRegistered;
-			static const uint32_t	invalidHandle;
 
-			uint32_t			handle;
+		public:
+			using Handle = uint32_t;
+			static Handle			numRegistered;
+			static const Handle	invalidHandle;
+
+			Handle			handle;
 
 			Renderable();
 			~Renderable();
 
 			static Renderable *Get(
-				uint32_t handle
+				Handle handle
 			);
 
 			// register a renderable
-			uint32_t Register(
+			Handle Register(
 				const char *path
 			);
 

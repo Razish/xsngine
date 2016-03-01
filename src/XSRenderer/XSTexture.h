@@ -11,12 +11,15 @@ namespace XS {
 
 		class Texture {
 
+		public:
+			using ID = unsigned int; // GLuint
+
 		private:
 			static const Texture	*lastUsedTexture[maxTextureUnits];
 			static int				 lastUsedTextureUnit;
 
 		public:
-			uint32_t	id;
+			ID	id;
 
 			// don't allow default instantiation
 			Texture() = delete;

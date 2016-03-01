@@ -11,11 +11,15 @@ namespace XS {
 	namespace ServerGame {
 
 		struct Baseline {
+
 			GameState	state;
+
 		};
 
 		extern struct NetworkState {
-			std::unordered_map<uint64_t, Baseline *>	baseLines; // per Client, key is client's GUID
+
+			std::unordered_map<Network::GUID, Baseline *>	baseLines; // per Client, key is client's GUID
+
 		} net;
 
 		// ???

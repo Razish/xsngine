@@ -26,22 +26,28 @@ namespace XS {
 		class Model;
 
 		extern struct RendererState {
+
 			bool valid;
 
 			struct Window {
+
 				bool		valid;
 
 				uint32_t	width;
 				uint32_t	height;
 				real32_t	aspectRatio;
+
 			} window;
 
 			struct Driver {
+
 				const char *vendor;
 				const char *renderer;
 				const char *coreVersion;
 				const char *shaderVersion;
+
 			} driver;
+
 		} rdState;
 
 		// used internally

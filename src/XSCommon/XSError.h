@@ -8,6 +8,7 @@
 namespace XS {
 
 	struct XSError : public std::exception {
+
 	protected:
 		std::string		msg;
 
@@ -35,6 +36,7 @@ namespace XS {
 		virtual const char *what() const noexcept {
 			return msg.c_str();
 		}
+
 	};
 
 } // namespace XS

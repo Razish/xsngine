@@ -76,7 +76,8 @@ namespace XS {
 				callbackPreRender( dt );
 			}
 
-			XS::Renderer::BufferMemory bufferMem = perFrameData->MapDiscard( sizeof( matrix4 ) );
+			BufferMemory bufferMem;
+			perFrameData->MapDiscard( &bufferMem, sizeof( matrix4 ) );
 			matrix4 *m = static_cast<matrix4 *>( bufferMem.devicePtr );
 
 			memcpy( m->data, glm::value_ptr( projectionMatrix ), sizeof(m->data) );

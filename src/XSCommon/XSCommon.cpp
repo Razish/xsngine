@@ -96,7 +96,9 @@ namespace XS {
 		#ifdef _DEBUG
 			console.Print( PrintLevel::Normal, "Startup parameters:\n" );
 			Indent indent( 1 );
-			for ( const auto &arg : String::Split( &commandLine[start + 1], delimiter ) ) {
+			std::vector<std::string> args;
+			String::Split( &commandLine[start + 1], delimiter, args );
+			for ( const auto &arg : args ) {
 				console.Print( PrintLevel::Normal, "%s\n", arg.c_str() );
 			}
 		#endif

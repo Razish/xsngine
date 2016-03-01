@@ -12,17 +12,20 @@ namespace XS {
 
 		class Entity {
 
-		private:
-			static uint32_t		privateNumEntities;
+		public:
+			using ID = uint32_t;
 
 		protected:
 			Entity();
 
-		public:
-			static const uint32_t	&numEntities;
-			static const uint32_t	 invalidID;
+		private:
+			static ID		privateNumEntities;
 
-			uint32_t	id = invalidID;
+		public:
+			static const ID	&numEntities;
+			static const ID	 invalidID;
+
+			ID			id = invalidID;
 			EntityType	type = EntityType::Generic;
 			vector3		position;
 

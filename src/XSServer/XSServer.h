@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "XSCommon/XSTimer.h"
+#include "XSNetwork/XSNetwork.h"
 
 namespace RakNet {
 	struct Packet;
@@ -40,12 +41,12 @@ namespace XS {
 
 		// ???
 		void IncomingConnection(
-			uint64_t guid
+			Network::GUID guid
 		);
 
 		// ???
 		void DropClient(
-			uint64_t guid
+			Network::GUID guid
 		);
 
 		// run a frame and pass control to the ServerGame

@@ -3,18 +3,21 @@
 #include <list>
 #include <vector>
 
+#include "XSNetwork/XSNetwork.h"
+#include "XSServer/XSEntity.h"
+
 namespace XS {
 
 	namespace ServerGame {
 
-		class Entity;
-
 		extern struct GameState {
+
 			std::list<Entity *>		entities;
 
 			struct NetworkState {
-				std::vector<uint32_t>	removedEntities; // removed this frame, notify client
+				std::vector<Entity::ID>		removedEntities; // removed this frame, notify client
 			} net;
+
 		} svgState;
 
 		// initialise the ServerGame
@@ -35,7 +38,7 @@ namespace XS {
 		// ???
 		void Connect(
 			const char *ip,
-			uint64_t guid
+			Network::GUID guid
 		);
 
 	} // namespace ServerGame

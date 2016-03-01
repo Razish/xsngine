@@ -13,6 +13,7 @@ namespace XS {
 
 		// shared between all instances of a "model" (i.e. mesh + skin combinations)
 		class Model : public Renderable {
+
 		private:
 			uint32_t	refCount = 0u; // misnomer, actually counts how many duplicates exist, not how many instances
 
@@ -23,7 +24,7 @@ namespace XS {
 			~Model();
 
 			// register a model
-			static uint32_t Register(
+			static Handle Register(
 				const char *path
 			);
 
@@ -35,6 +36,7 @@ namespace XS {
 			void AddMesh(
 				Mesh *mesh
 			);
+
 		};
 
 	} // namespace Renderer

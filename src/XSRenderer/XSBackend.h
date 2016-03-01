@@ -33,7 +33,7 @@ namespace XS {
 			// ???
 			bool GetWireframe(
 				void
-			);
+			) XS_WARN_UNUSED_RESULT;
 
 			// ???
 			void ClearBuffer(

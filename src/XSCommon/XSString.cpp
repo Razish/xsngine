@@ -155,24 +155,16 @@ namespace XS {
 		}
 
 		// by Evan Teran http://stackoverflow.com/a/236803
-		std::vector<std::string> &Split( const std::string &s, char delim, std::vector<std::string> &elems ) {
+		void Split( const std::string &s, char delim, std::vector<std::string> &elems ) {
 			std::stringstream ss( s );
 			std::string item;
 
 			while ( std::getline( ss, item, delim ) ) {
 				elems.push_back( item );
 			}
-
-			return elems;
 		}
 
-		std::vector<std::string> Split( const std::string &s, char delim ) {
-			std::vector<std::string> elems;
-
-			return Split( s, delim, elems );
-		}
-
-		std::string Join( const std::vector<std::string> &strings, const std::string &separator ) {
+		void Join( const std::vector<std::string> &strings, const std::string &separator, std::string &out ) {
 			std::stringstream ss;
 
 			const auto &end = strings.end();
@@ -183,7 +175,7 @@ namespace XS {
 				}
 			}
 
-			return ss.str();
+			out = ss.str();
 		}
 
 	} // namespace String

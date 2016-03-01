@@ -9,9 +9,9 @@ namespace XS {
 
 	namespace ClientGame {
 
-		static std::unordered_map<uint32_t, std::string> resources;
+		static std::unordered_map<ResourceID, std::string> resources;
 
-		const char *GetResourceName( uint32_t id ) {
+		const char *GetResourceName( ResourceID id ) {
 			return resources[id].c_str();
 		}
 

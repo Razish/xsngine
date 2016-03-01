@@ -54,7 +54,7 @@ namespace XS {
 				return glMapBufferRange( type, 0, size, GL_MAP_WRITE_BIT );
 			}
 
-			BufferMemory Buffer::MapDiscard( size_t allocSize ) {
+			void Buffer::MapDiscard( BufferMemory *result, size_t allocSize ) {
 				Bind();
 
 				allocSize = (allocSize + alignment - 1) & ~(alignment - 1);
@@ -64,17 +64,15 @@ namespace XS {
 					offset = 0;
 				}
 
-				BufferMemory result;
-				result.devicePtr = glMapBufferRange(
+				result->devicePtr = glMapBufferRange(
 					type,
 					offset,
 					allocSize,
 					GL_MAP_WRITE_BIT | GL_MAP_UNSYNCHRONIZED_BIT | GL_MAP_INVALIDATE_RANGE_BIT
 				);
-				result.offset = offset;
-				result.size = allocSize;
+				result->offset = offset;
+				result->size = allocSize;
 				offset += allocSize;
-				return result;
 			}
 
 			void Buffer::Unmap( void ) {

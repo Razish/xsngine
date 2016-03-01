@@ -1,4 +1,4 @@
-#pragma once
+		#pragma once
 
 #if defined(XS_OS_WINDOWS)
 	#define WIN32_LEAN_AND_MEAN
@@ -28,6 +28,7 @@ namespace XS {
 	};
 
 	class Timer {
+
 	private:
 		TimeValue	start;
 		TimeValue	stop;
@@ -50,6 +51,7 @@ namespace XS {
 			bool restart = false,
 			TimerResolution resolution = TimerResolution::Microseconds
 		) XS_WARN_UNUSED_RESULT;
+
 	};
 
 } // namespace XS

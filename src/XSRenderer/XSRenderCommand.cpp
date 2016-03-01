@@ -161,7 +161,8 @@ namespace XS {
 			texcoords[3][0]	= cmd.st2[0];
 			texcoords[3][1]	= cmd.st2[1];
 
-			BufferMemory bufferMem = quadsVertexBuffer->MapDiscard( 4 * sizeof( real32_t ) * 8 );
+			BufferMemory bufferMem;
+			quadsVertexBuffer->MapDiscard( &bufferMem, 4 * sizeof( real32_t ) * 8 );
 			real32_t *vertexBuffer = static_cast<real32_t *>( bufferMem.devicePtr );
 			for ( size_t i = 0u; i < 4; i++ ) {
 				*vertexBuffer++ = vertices[i][0];

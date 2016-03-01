@@ -9,6 +9,7 @@ namespace XS {
 		#define MAX_FBO_COLOR_TEXTURES (4)
 
 		class Framebuffer {
+
 		public:
 			static const Framebuffer	*currentReadFramebuffer;
 			static const Framebuffer	*currentWriteFramebuffer;
@@ -26,7 +27,7 @@ namespace XS {
 			// retrieve the currently bound framebuffer
 			static const Framebuffer *GetCurrent(
 				void
-			);
+			) XS_WARN_UNUSED_RESULT;
 
 			// blit from source framebuffer to destination framebuffer
 			static void Blit(
@@ -90,6 +91,7 @@ namespace XS {
 			bool Check(
 				void
 			) const;
+
 		};
 
 	} // namespace Renderer

@@ -5,6 +5,7 @@
 #include "XSCommon/XSCommon.h"
 #include "XSCommon/XSString.h"
 #include "XSCommon/XSConsole.h"
+#include "XSNetwork/XSNetwork.h"
 #include "XSServer/XSClient.h"
 #include "XSServer/XSServer.h"
 #include "XSServer/XSResources.h"
@@ -13,9 +14,13 @@ namespace XS {
 
 	namespace Server {
 
-		std::unordered_map<uint64_t, Client *>	clients;
+		std::unordered_map<Network::GUID, Client *> clients;
 
-		void IncomingConnection( uint64_t guid ) {
+		void Client::Connection::Send( const Network::XSPacket *packet ) {
+			Network::Send( guid, packet );
+		}
+
+		void IncomingConnection( Network::GUID guid ) {
 			// drop client if they're already connected
 			DropClient( guid );
 
@@ -27,14 +32,14 @@ namespace XS {
 			BroadcastMessage( String::Format( "Connection from %" PRIX64, guid ).c_str() );
 
 			// initialise
-			client->guid = guid;
-			client->connectionState = Client::ConnectionState::Connecting;
+			client->connection.guid = guid;
+			client->state = Client::State::Connecting;
 
 			// send resource list
 			ServerGame::NetworkResources( true );
 		}
 
-		void DropClient( uint64_t guid ) {
+		void DropClient( Network::GUID guid ) {
 			Client *client = clients[guid];
 			if ( client ) {
 				console.Print( PrintLevel::Normal,
