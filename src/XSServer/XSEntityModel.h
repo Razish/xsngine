@@ -1,5 +1,7 @@
 #pragma once
 
+#include <limits>
+
 #include "XSServer/XSEntity.h"
 
 namespace XS {
