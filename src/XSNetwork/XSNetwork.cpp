@@ -28,7 +28,7 @@ namespace XS {
 		static Cvar *net_debug = nullptr;
 		static Cvar *net_port = nullptr;
 
-		static void Cmd_NetStat( const CommandContext * const context ) {
+		static void Cmd_NetStat( const CommandContext & context ) {
 			PrintStatus();
 		}
 
@@ -274,9 +274,9 @@ namespace XS {
 			}
 		}
 
-		void Send( GUID guid, const XSPacket *packet ) {
+		void SendPacket( GUID guid, const XSPacket *packet ) {
 			if ( net_debug->GetUInt32() & 0x1u ) {
-				console.Print( PrintLevel::Normal, "Send: %i (%i)\n",
+				console.Print( PrintLevel::Normal, "SendPacket: %i (%i)\n",
 					packet->msg,
 					ID_USER_PACKET_ENUM
 				);
@@ -383,6 +383,10 @@ namespace XS {
 				}
 			}
 			delete[] remoteSystems;
+		}
+
+		void XSPacket::Send( GUID guid ) const {
+			SendPacket( guid, this );
 		}
 
 	} // namespace Network

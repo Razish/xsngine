@@ -75,7 +75,7 @@ namespace XS {
 
 		// toggle visibility of the console, locking or releasing mouse control
 		void Cmd_ToggleConsole(
-			const CommandContext * const context
+			const CommandContext & context
 		);
 
 		// draw a client frame and pass control to the ClientGame

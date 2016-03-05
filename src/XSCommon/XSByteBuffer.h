@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <string>
 
 namespace XS {
 
@@ -20,11 +21,16 @@ namespace XS {
 
 	class ByteBuffer {
 
+	public:
+		using String = std::string;
+
 	private:
 		bool					reading;
 		std::vector<uint8_t>	buffer;
 		size_t					offset = 0u; // current read/write position
 		size_t					size = 0u; // total
+
+		//TODO: add string pool to avoid runtime heap allocations
 
 		void Resize(
 			size_t addSize
@@ -169,6 +175,10 @@ namespace XS {
 		);
 
 		//NOTE: see disclaimer at top of class regarding storage mechanism of strings
+		void ReadString(
+			String &out
+		);
+
 		//NOTE: caller must delete[] the string contents
 		void ReadString(
 			const char ** outStr,

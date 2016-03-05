@@ -151,10 +151,10 @@ namespace XS {
 			f.AppendString( str.c_str() );
 		}
 
-		static void Cmd_WriteConfig( const CommandContext * const context ) {
+		static void Cmd_WriteConfig( const CommandContext & context ) {
 			const char *cfg = nullptr;
-			if ( context->size() ) {
-				 cfg = (*context)[0].c_str();
+			if ( context.size() ) {
+				 cfg = context[0].c_str();
 			 }
 
 			WriteConfig( cfg );

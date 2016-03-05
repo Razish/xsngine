@@ -17,7 +17,7 @@ namespace XS {
 		std::unordered_map<Network::GUID, Client *> clients;
 
 		void Client::Connection::Send( const Network::XSPacket *packet ) {
-			Network::Send( guid, packet );
+			packet->Send( guid );
 		}
 
 		void IncomingConnection( Network::GUID guid ) {

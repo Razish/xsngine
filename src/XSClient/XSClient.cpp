@@ -11,6 +11,7 @@
 #include "XSCommon/XSTimer.h"
 #include "XSCommon/XSGlobals.h"
 #include "XSCommon/XSEvent.h"
+#include "XSCommon/XSByteBuffer.h"
 #include "XSClient/XSClient.h"
 #include "XSClient/XSClientGame.h"
 #include "XSClient/XSClientConsole.h"
@@ -43,7 +44,7 @@ namespace XS {
 		// console input
 		ClientConsole *clientConsole = nullptr;
 
-		void Cmd_ToggleConsole( const CommandContext * const context ) {
+		void Cmd_ToggleConsole( const CommandContext & context ) {
 			if ( !clientConsole ) {
 				throw XSError( "Tried to toggle client console without a valid instance" );
 			}
@@ -51,7 +52,7 @@ namespace XS {
 			clientConsole->Toggle();
 		}
 
-		static void Cmd_Disconnect( const CommandContext * const context ) {
+		static void Cmd_Disconnect( const CommandContext & context ) {
 			if ( !Network::IsConnected() ) {
 				console.Print( PrintLevel::Normal, "Not connected to a server\n" );
 				return;
@@ -59,18 +60,43 @@ namespace XS {
 			Network::Disconnect();
 		}
 
-		static void Cmd_Connect( const CommandContext * const context ) {
-			size_t numArgs = context->size();
-			const char *hostname = (numArgs >= 1) ? (*context)[0].c_str() : nullptr;
-			uint16_t port = (numArgs >= 2) ? atoi( (*context)[1].c_str() ) : 0u;
+		static void Cmd_SendCommand( const CommandContext & context ) {
+			if ( !Network::IsConnected() ) {
+				console.Print( PrintLevel::Normal, "Not connected to a server\n" );
+				return;
+			}
+
+			ByteBuffer commandBuffer;
+
+			// write the number of args
+			const size_t numArgs = context.size() - 1;
+			commandBuffer.WriteUInt32( numArgs );
+
+			// write each arg
+			for ( const std::string &arg : context ) {
+				commandBuffer.WriteString( arg.c_str() );
+				console.Print( PrintLevel::Normal, "  arg: %s, len: %i\n",
+					arg.c_str(), arg.length()
+				);
+			}
+
+			Network::XSPacket commandPacket( Network::ID_XS_CL2SV_COMMAND );
+			commandPacket.data = commandBuffer.GetMemory( &commandPacket.dataLen );
+			commandPacket.Send( 0u );
+		}
+
+		static void Cmd_Connect( const CommandContext & context ) {
+			size_t numArgs = context.size();
+			const char *hostname = (numArgs >= 1) ? context[0].c_str() : nullptr;
+			uint16_t port = (numArgs >= 2) ? atoi( context[1].c_str() ) : 0u;
 			Network::Connect( hostname, port );
 		}
 
-		static void Cmd_OpenMenu( const CommandContext * const context ) {
-			menu->OpenMenu( (*context)[0].c_str() );
+		static void Cmd_OpenMenu( const CommandContext & context ) {
+			menu->OpenMenu( context[0].c_str() );
 		}
 
-		static void Cmd_ReloadMenu( const CommandContext * const context ) {
+		static void Cmd_ReloadMenu( const CommandContext & context ) {
 			delete menu;
 			menu = new MenuManager();
 			menu->RegisterMenu( "menus/settings.xmenu" );
@@ -78,6 +104,7 @@ namespace XS {
 
 		static void RegisterCommands( void ) {
 			Command::AddCommand( "disconnect", Cmd_Disconnect );
+			Command::AddCommand( "cmd", Cmd_SendCommand );
 			Command::AddCommand( "connect", Cmd_Connect );
 			Command::AddCommand( "openMenu", Cmd_OpenMenu );
 			Command::AddCommand( "reloadMenu", Cmd_ReloadMenu );

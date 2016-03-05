@@ -13,13 +13,19 @@ namespace XS {
 			ID_XS_SV2CL_GAMESTATE = ID_USER_PACKET_ENUM + 1,
 			ID_XS_SV2CL_RESOURCES,
 			ID_XS_SV2CL_PRINT,
+			ID_XS_SV2CL_DUMMY,
 
 			// client --> server
+			ID_XS_CL2SV_COMMAND,
 			ID_XS_CL2SV_DUMMY,
 		};
 
-		struct XSPacket {
+		class XSPacket {
 
+		private:
+			// ...
+
+		public:
 			GameMessage		 msg;
 			const void		*data = nullptr;
 			size_t			 dataLen = 0u;
@@ -33,6 +39,10 @@ namespace XS {
 			: msg( msg )
 			{
 			}
+
+			void Send(
+				GUID guid
+			) const;
 
 		};
 
@@ -73,7 +83,7 @@ namespace XS {
 		);
 
 		// ???
-		void Send(
+		void SendPacket(
 			GUID guid,
 			const XSPacket *packet
 		);

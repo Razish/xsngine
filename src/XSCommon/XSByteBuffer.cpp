@@ -237,6 +237,25 @@ namespace XS {
 		offset += sizeof(real32_t);
 	}
 
+	void ByteBuffer::ReadString( ByteBuffer::String &out ) {
+		SDL_assert( reading );
+
+		// read the size
+		uint32_t length;
+		ReadUInt32( &length );
+
+		// alloc the memory - size + 1 for null terminator
+		out.reserve( length );
+		// this also updates the std::string's size for when not accessing the memory directly
+		out.resize( length );
+
+		// read the contents
+		ReadGeneric( static_cast<void *>( &out[0] ), length );
+
+		// add null terminator
+		out[length] = '\0';
+	}
+
 	void ByteBuffer::ReadString( const char ** outStr, uint32_t *outLen ) {
 		SDL_assert( reading );
 

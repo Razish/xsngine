@@ -1,3 +1,6 @@
+#define __STDC_FORMAT_MACROS
+#include <inttypes.h>
+
 #include <RakNet/RakPeerInterface.h>
 
 #include "XSCommon/XSCommon.h"
@@ -91,6 +94,52 @@ namespace XS {
 		bool ReceivePacket( const RakNet::Packet *packet ) {
 			switch ( packet->data[0] ) {
 
+			case Network::ID_XS_CL2SV_COMMAND: {
+				const Network::GUID guid = packet->guid.g;
+				const Client *client = clients[guid];
+
+				if ( client->state <= Client::State::Connecting ) {
+					console.Print( PrintLevel::Developer,
+						"client cmd from GUID %" PRIX64 " ignored during connecting stage\n",
+						guid
+					);
+					break;
+				}
+
+				const uint8_t *buffer = packet->data + 1;
+				size_t bufferLen = packet->length - 1;
+				ByteBuffer bb( buffer, bufferLen );
+
+				uint32_t numArgs = 0u;
+				bb.ReadUInt32( &numArgs );
+
+				ByteBuffer::String cmd;
+				bb.ReadString( cmd );
+
+				std::vector<std::string> args;
+				args.reserve( numArgs ); // pre-allocate the memory required for the number of arguments
+
+				for ( uint32_t i = 0u; i < numArgs; i++ ) {
+					ByteBuffer::String arg;
+					bb.ReadString( arg );
+					args.push_back( arg );
+				}
+
+			#if defined(_DEBUG)
+				console.Print( PrintLevel::Normal, "client cmd from GUID %" PRIX64 ": %s\n",
+					guid, cmd.c_str()
+				);
+				for ( const auto &arg : args ) {
+					console.Print( PrintLevel::Normal, "  arg: %s, len: %i\n",
+						arg.c_str(), arg.length()
+					);
+				}
+			#endif
+
+				//TODO: lookup server command table and execute
+
+			} break;
+
 			case Network::ID_XS_CL2SV_DUMMY: {
 				// ...
 			} break;
@@ -130,7 +179,7 @@ namespace XS {
 			bb.WriteString( msg );
 			packet.data = bb.GetMemory( &packet.dataLen );
 
-			Network::Send( 0u, &packet );
+			packet.Send( 0u );
 		}
 
 		// lazy initialise on first request per frame
