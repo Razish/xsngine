@@ -1,3 +1,6 @@
+#define __STDC_FORMAT_MACROS
+#include <inttypes.h>
+
 #include <png.h>
 
 #include "XSCommon/XSCommon.h"
@@ -5,6 +8,7 @@
 #include "XSCommon/XSFile.h"
 #include "XSCommon/XSGlobals.h"
 #include "XSCommon/XSCvar.h"
+#include "XSCommon/XSByteBuffer.h"
 #include "XSRenderer/XSRenderer.h"
 #include "XSRenderer/XSImagePNG.h"
 
@@ -18,6 +22,9 @@ namespace XS {
 	#endif
 
 		void user_read_data( png_structp png_ptr, png_bytep data, png_size_t length );
+		void user_write_data( png_structp png_ptr, png_bytep data, png_size_t length );
+		void user_flush_data( png_structp png_ptr );
+
 		void png_print_error( png_structp png_ptr, png_const_charp msg ) {
 			console.Print( PrintLevel::Developer, "%s\n",
 				msg
@@ -167,6 +174,127 @@ namespace XS {
 				memcpy( dest, buf + offset, len );
 				offset += len;
 			}
+
+		};
+
+		struct PNGFileWriter {
+		private:
+			size_t offset;
+			png_structp png_ptr;
+			png_infop info_ptr;
+
+		public:
+			File &f;
+			ByteBuffer bb;
+
+			PNGFileWriter( File &f )
+			: offset( 0 ), png_ptr( nullptr ), info_ptr( nullptr ), f( f )
+			{
+			}
+
+			~PNGFileWriter() {
+				// because libpng is teh sux
+				size_t outLen = 0u;
+				const void *mem = bb.GetMemory( &outLen );
+				f.Write( mem, outLen );
+
+				if ( info_ptr ) {
+					// destroys both structs
+					png_destroy_info_struct( png_ptr, &info_ptr );
+				}
+				else if ( png_ptr ) {
+					png_destroy_write_struct( &png_ptr, nullptr );
+				}
+			}
+
+			// returns true on successful write
+			bool Write( uint8_t *data, uint32_t w, uint32_t h, int numChannels ) {
+				png_ptr = png_create_write_struct( PNG_LIBPNG_VER_STRING, nullptr, png_print_error,
+					png_print_error
+				);
+				if ( !png_ptr ) {
+					return false;
+				}
+
+				info_ptr = png_create_info_struct( png_ptr );
+				if ( !info_ptr ) {
+					png_destroy_write_struct( &png_ptr, &info_ptr );
+					return false;
+				}
+
+				if ( setjmp( png_jmpbuf( png_ptr ) ) ) {
+					return false;
+				}
+
+				// the io_ptr simply points to this class instance, and our user_write_data function will cast it back
+				png_set_write_fn( png_ptr, (png_voidp)this, &user_write_data, &user_flush_data );
+
+				int colourType = PNG_COLOR_TYPE_RGB;
+				if ( numChannels == 4 ) {
+					colourType = PNG_COLOR_TYPE_RGBA;
+				}
+				else if ( numChannels == 1 ) {
+					colourType = PNG_COLOR_TYPE_GRAY;
+				}
+				else if ( numChannels != 3 ) {
+					SDL_assert( !"WritePNG: invalid numChannels, expected 1, 3 or 4" );
+				}
+
+				png_set_IHDR( png_ptr, info_ptr, w, h, 8/*depth*/, colourType, PNG_INTERLACE_NONE,
+					PNG_COMPRESSION_TYPE_BASE,
+					PNG_FILTER_TYPE_BASE
+				);
+				png_colorp palette = NULL;
+				if ( numChannels != 1 ) {
+					palette = static_cast<png_colorp>(
+						png_malloc( png_ptr, PNG_MAX_PALETTE_LENGTH * sizeof(png_color) )
+					);
+					if ( !palette ) {
+						png_destroy_write_struct( &png_ptr, &info_ptr );
+						return false;
+					}
+					png_set_PLTE( png_ptr, info_ptr, palette, PNG_MAX_PALETTE_LENGTH );
+				}
+				png_write_info( png_ptr, info_ptr );
+				png_set_packing( png_ptr );
+
+				png_bytepp rows = static_cast<png_bytepp>( png_malloc( png_ptr, h * sizeof(png_bytep) ) );
+				std::memset( rows, 0, h * sizeof(png_bytep) );
+				for ( int i = 0; i < h; i++ ) {
+					rows[i] = (png_bytep)(data + (h - i - 1) * w * numChannels);
+				}
+
+				// re-set the jmp so that these new memory allocations can be reclaimed
+				if ( setjmp( png_jmpbuf( png_ptr ) ) ) {
+					png_free( png_ptr, rows );
+					return false;
+				}
+
+				png_write_image( png_ptr, rows );
+				png_write_end( png_ptr, info_ptr );
+				//png_write_flush( png_ptr );
+				if ( palette ) {
+					png_free( png_ptr, palette );
+				}
+				png_destroy_write_struct( &png_ptr, &info_ptr );
+
+				png_free( png_ptr, rows );
+				return true;
+			}
+
+			void WriteBytes( void *data, size_t len ) {
+				//f.Write( static_cast<uint8_t *>( data ) + offset, len, true );
+				ByteBuffer::Error status = bb.WriteRaw( data, len );
+				if ( status == ByteBuffer::Error::Success ) {
+					offset += len;
+				}
+				else {
+					console.Print( PrintLevel::Developer, "%s(%s): Failed to write %" PRIuMAX " bytes\n",
+						XS_FUNCTION, f.path, len
+					);
+				}
+			}
+
 		};
 
 		void user_read_data( png_structp png_ptr, png_bytep data, png_size_t length ) {
@@ -175,17 +303,35 @@ namespace XS {
 			reader->ReadBytes( data, length );
 		}
 
+		void user_write_data( png_structp png_ptr, png_bytep data, png_size_t length ) {
+			png_voidp w = png_get_io_ptr( png_ptr );
+			PNGFileWriter *writer = static_cast<PNGFileWriter *>( w );
+			writer->WriteBytes( data, length );
+		}
+
+		void user_flush_data( png_structp png_ptr ) {
+			png_voidp w = png_get_io_ptr( png_ptr );
+			PNGFileWriter *writer = static_cast<PNGFileWriter *>( w );
+			size_t outLen = 0u;
+			const void *mem = writer->bb.GetMemory( &outLen );
+			writer->f.Write( mem, outLen );
+			console.Print( PrintLevel::Developer, "%s(%s): writing %" PRIuMAX " bytes from 0x%" PRIXPTR "\n",
+				XS_FUNCTION, writer->f.path, outLen, mem
+			);
+		}
+
 		// Loads a PNG image from file.
 		uint8_t *LoadPNG( const char *filename, uint32_t *outWidth, uint32_t *outHeight ) {
 			uint8_t *out = nullptr;
 
 			const File f( filename, FileMode::ReadBinary );
 			if ( !f.open ) {
-				console.Print( PrintLevel::Normal, "Could not open PNG file \"%s\"\n", filename );
+				console.Print( PrintLevel::Normal, "Could not open PNG file \"%s\" for reading\n", filename );
 				return nullptr;
 			}
 
-			console.Print( PrintLevel::Developer, "Loading \"%s\"...\n",
+			console.Print( PrintLevel::Developer, "%s( %s )\n",
+				XS_FUNCTION,
 				filename
 			);
 
@@ -193,8 +339,8 @@ namespace XS {
 			std::memset( buf, 0, f.length );
 			f.Read( buf );
 
-			PNGFileReader r( buf );
-			if ( !r.Read( &out, outWidth, outHeight ) ) {
+			PNGFileReader reader( buf );
+			if ( !reader.Read( &out, outWidth, outHeight ) ) {
 				delete[] buf;
 				return nullptr;
 			}
@@ -204,70 +350,17 @@ namespace XS {
 		}
 
 		bool WritePNG( const char *filename, uint8_t *pixels, int w, int h, int numChannels ) {
-			png_structp png = png_create_write_struct( PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr );
-			if ( !png ) {
+			File f( filename, FileMode::WriteBinary );
+			if ( !f.open ) {
+				console.Print( PrintLevel::Normal, "Could not open PNG file \"%s\" for writing\n", filename );
 				return false;
 			}
 
-			png_infop info = png_create_info_struct( png );
-			if ( !info ) {
-				png_destroy_write_struct( &png, &info );
+			PNGFileWriter writer( f );
+			if ( !writer.Write( pixels, w, h, numChannels ) ) {
 				return false;
 			}
 
-			char filepath[XS_MAX_FILENAME];
-			File::GetFullPath( filename, filepath, sizeof( filepath ) );
-
-			//TODO: replace with xsngine file writing
-			FILE *fp = fopen( filepath, "wb" );
-			if ( !fp ) {
-				png_destroy_write_struct( &png, &info );
-				return false;
-			}
-
-			png_init_io( png, fp );
-
-			int colourType = PNG_COLOR_TYPE_RGB;
-			if ( numChannels == 4 ) {
-				colourType = PNG_COLOR_TYPE_RGBA;
-			}
-			else if ( numChannels == 1 ) {
-				colourType = PNG_COLOR_TYPE_GRAY;
-			}
-			else if ( numChannels != 3 ) {
-				SDL_assert( !"Renderer::WritePNG: invalid numChannels, expected 1, 3 or 4" );
-			}
-
-			png_set_IHDR( png, info, w, h, 8/*depth*/, colourType, PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_BASE,
-				PNG_FILTER_TYPE_BASE );
-			png_colorp palette = NULL;
-			if ( numChannels != 1 ) {
-				palette = static_cast<png_colorp>( png_malloc( png, PNG_MAX_PALETTE_LENGTH * sizeof(png_color) ) );
-				if ( !palette ) {
-					fclose( fp );
-					png_destroy_write_struct( &png, &info );
-					return false;
-				}
-				png_set_PLTE( png, info, palette, PNG_MAX_PALETTE_LENGTH );
-			}
-			png_write_info( png, info );
-			png_set_packing( png );
-
-			png_bytepp rows = static_cast<png_bytepp>( png_malloc( png, h * sizeof(png_bytep) ) );
-			std::memset( rows, 0, h * sizeof(png_bytep) );
-			for ( int i = 0; i < h; i++ ) {
-				rows[i] = (png_bytep)(pixels + (h - i - 1) * w * numChannels);
-			}
-
-			png_write_image( png, rows );
-			png_write_end( png, info );
-			if ( palette ) {
-				png_free( png, palette );
-			}
-			png_destroy_write_struct( &png, &info );
-
-			fclose( fp );
-			png_free( png, rows );
 			return true;
 		}
 

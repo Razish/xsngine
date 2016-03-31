@@ -3,6 +3,7 @@
 #include <unordered_map>
 
 #include "XSCommon/XSCommon.h"
+#include "XSCommon/XSByteBuffer.h"
 #include "XSCommon/XSString.h"
 #include "XSCommon/XSConsole.h"
 #include "XSNetwork/XSNetwork.h"
@@ -16,39 +17,23 @@ namespace XS {
 
 		std::unordered_map<Network::GUID, Client *> clients;
 
-		void Client::Connection::Send( const Network::XSPacket *packet ) {
-			Network::Send( guid, packet );
+		Client::Client( Network::Connection &connection )
+		: connection( connection )
+		{
+			clients[connection.guid] = this;
 		}
 
-		void IncomingConnection( Network::GUID guid ) {
-			// drop client if they're already connected
-			DropClient( guid );
-
-			Client *client = new Client();
-
-			// store it now, we accessed clients[] above meaning any iteration of clients will return a nullptr
-			clients[guid] = client;
-
-			BroadcastMessage( String::Format( "Connection from %" PRIX64, guid ).c_str() );
-
-			// initialise
-			client->connection.guid = guid;
-			client->state = Client::State::Connecting;
-
-			// send resource list
-			ServerGame::NetworkResources( true );
+		Client::~Client() {
+			clients[connection.guid] = nullptr;
 		}
 
-		void DropClient( Network::GUID guid ) {
-			Client *client = clients[guid];
-			if ( client ) {
-				console.Print( PrintLevel::Normal,
-					"Dropping client with guid %" PRIX64 "\n",
-					guid
-				);
-				delete client;
-				clients.erase( guid );
-			}
+		void Client::Print( const char *msg ) const {
+			Network::XSPacket msgPacket( Network::ID_XS_SV2CL_PRINT );
+			ByteBuffer msgBuffer;
+			ByteBuffer::Error status;
+			status = msgBuffer.WriteString( msg );
+			msgPacket.data = msgBuffer.GetMemory( &msgPacket.dataLen );
+			connection.Send( msgPacket );
 		}
 
 	} // namespace ServerGame

@@ -3,12 +3,9 @@
 #include "XSCommon/XSVector.h"
 #include "XSShared/XSEntityTypes.h"
 #include "XSRenderer/XSRenderable.h"
+#include "XSRenderer/XSView.h"
 
 namespace XS {
-
-	namespace Renderer {
-		struct View;
-	}
 
 	namespace ClientGame {
 
@@ -55,7 +52,7 @@ namespace XS {
 
 			// render an entity to the currently bound View
 			void AddToScene(
-				Renderer::View *view
+				Renderer::View &view
 			);
 
 		};

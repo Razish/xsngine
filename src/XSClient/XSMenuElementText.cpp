@@ -53,13 +53,13 @@ namespace XS {
 			}
 		}
 
-		MenuElementText::MenuElementText( TokenParser *parser, const char *fileName )
-		: text( "" ), pointSize( 0u )
+		MenuElementText::MenuElementText( const Menu &parent, TokenParser *parser, const char *fileName )
+		: MenuElement( parent ), text( "" ), pointSize( 0u )
 		{
-			std::memset( &properties, 0, sizeof(properties) );
+			std::memset( static_cast<void *>( &properties ), 0, sizeof(properties) );
 			std::memset( &assets, 0, sizeof(assets) );
 
-			MenuElement::properties.decorative = true;
+			properties.decorative = true;
 
 			const char *tok = nullptr;
 			if ( parser->ParseString( &tok ) || String::CompareCase( tok, "{" ) ) {
@@ -171,13 +171,17 @@ namespace XS {
 		}
 
 		void MenuElementText::Paint( void ) {
+			if ( properties.hidden ) {
+				return;
+			}
+
 			if ( text.empty() ) {
 				return;
 			}
 
 			const vector2 topLeft = {
-				position[0] * Renderer::rdState.window.width,
-				position[1] * Renderer::rdState.window.height
+				position[0] * parent.view.width,
+				position[1] * parent.view.height
 			};
 
 			std::string displayText;
@@ -214,10 +218,19 @@ namespace XS {
 		}
 
 		void MenuElementText::MouseButtonEvent( const struct MouseButtonEvent &ev ) {
+			// hmm...this is kind of redundant :^)
+			if ( properties.decorative ) {
+				return;
+			}
+
 			// ...
 		}
 
 		void MenuElementText::MouseMotionEvent( void ) {
+			if ( properties.decorative ) {
+				return;
+			}
+
 			// ...
 		}
 

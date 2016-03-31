@@ -3,11 +3,12 @@
 #include <string>
 
 #include "XSCommon/XSVector.h"
+#include "XSClient/XSMenu.h"
+#include "XSRenderer/XSView.h"
 
 namespace XS {
 
 	class TokenParser;
-	class Menu;
 
 	namespace Renderer {
 		class Font;
@@ -15,21 +16,29 @@ namespace XS {
 
 	namespace Client {
 
+		// a MenuElement is an abstract base class for more derived/specialised types and as such should have no (or
+		//	minimal) data attached to it
+		// currently there is some metadata as-well as tooltip data
 		class MenuElement {
 			friend class Menu;
+
 		private:
 			// ...
 
 		protected:
-			MenuElement();
+			MenuElement(
+				const Menu &parent
+			);
 
-			Menu			*parent = nullptr;
+			const Menu		&parent;
 			vector2			 position;
 			std::string		 name;
+
+			// abstract base class for properties
 			struct Properties {
 				bool			hidden = false;
 				bool			decorative = false;
-			} properties;
+			};
 
 			struct Tooltip {
 				Renderer::Font	*font = nullptr;
@@ -72,6 +81,7 @@ namespace XS {
 			virtual void MouseMotionEvent(
 				void
 			) = 0;
+
 		};
 
 	} // namespace Client

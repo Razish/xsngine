@@ -1,6 +1,9 @@
 #define __STDC_FORMAT_MACROS
 #include <inttypes.h>
 
+#include <unordered_map>
+#include <map>
+
 #include <RakNet/RakPeerInterface.h>
 #include <RakNet/BitStream.h>
 #include <RakNet/RakString.h>
@@ -10,6 +13,7 @@
 #include "XSCommon/XSGlobals.h"
 #include "XSCommon/XSCvar.h"
 #include "XSCommon/XSCommand.h"
+#include "XSCommon/XSByteBuffer.h"
 #include "XSClient/XSClient.h"
 #include "XSNetwork/XSNetwork.h"
 #include "XSServer/XSServer.h"
@@ -25,10 +29,142 @@ namespace XS {
 		static bool	isServer = false;
 		static GUID myGUID = 0u;
 
+		static std::unordered_map<GUID, Connection *> connections;
+
 		static Cvar *net_debug = nullptr;
 		static Cvar *net_port = nullptr;
 
-		static void Cmd_NetStat( const CommandContext * const context ) {
+		void XSPacket::Send( GUID guid ) const {
+			SendPacket( guid, *this );
+		}
+
+		Connection::Connection( GUID guid )
+		: state( privateState ), guid( guid )
+		{
+			// ...
+		}
+		Connection::~Connection() {
+			// ...
+		}
+
+		// note: recursive for now
+		Connection &Connection::Get( GUID guid ) {
+			auto it = connections.find( guid );
+			if ( it != connections.end() ) {
+				return *it->second;
+			}
+
+			// doesn't already exist, allocate a new one
+			connections[guid] = new Connection( guid );
+			return *connections[guid];
+		}
+
+		using StateList = std::vector<Connection::State>;
+		using GraphContainer = std::map<Connection::State, StateList>;
+		static const GraphContainer connectionTransitionGraph {
+			{
+				Connection::State::NotConnected, {
+					Connection::State::SynSent
+				}
+			},
+			{
+				Connection::State::SynSent, {
+					Connection::State::SynReceived
+				}
+			},
+			{
+				Connection::State::SynReceived, {
+					Connection::State::AckSent
+				}
+			},
+			{
+				Connection::State::AckSent, {
+					Connection::State::AckReceived
+				}
+			},
+			{
+				Connection::State::AckReceived, {
+					Connection::State::Active
+				}
+			},
+			{
+				Connection::State::Active, {
+					Connection::State::Disconnecting,
+					Connection::State::Dead
+				}
+			},
+			{
+				Connection::State::Disconnecting, {
+					Connection::State::Dead
+				}
+			},
+		};
+
+		static const std::map<Connection::State, const char *> stateToString {
+			{ Connection::State::NotConnected,	"NotConnected" },
+			{ Connection::State::SynSent,		"SynSent" },
+			{ Connection::State::SynReceived,	"SynReceived" },
+			{ Connection::State::AckSent,		"AckSent" },
+			{ Connection::State::AckReceived,	"AckReceived" },
+			{ Connection::State::Active,		"Active" },
+			{ Connection::State::Disconnecting,	"Disconnecting" },
+			{ Connection::State::Dead,			"Dead" }
+		};
+
+		const char *Connection::StateToString( Connection::State state ) {
+			const auto &it = stateToString.find( state );
+			if ( it == stateToString.end() ) {
+				return "Unknown";
+			}
+			else {
+				return it->second;
+			}
+		}
+
+		bool Connection::ChangeState( Connection::State newState, bool network ) {
+			if ( state == newState ) {
+				// nothing to do
+				return false;
+			}
+
+			const GraphContainer::const_iterator &it = connectionTransitionGraph.find( privateState );
+			const StateList &node = it->second;
+			if ( node.empty() || std::find( node.begin(), node.end(), newState ) == node.end() ) {
+				console.Print( PrintLevel::Developer,
+					"connection %" PRIX64 " state change failed: %s -> %s not allowed\n",
+					guid,
+					Connection::StateToString( state ),
+					Connection::StateToString( newState )
+				);
+				return false;
+			}
+
+			console.Print( PrintLevel::Developer,
+				"connection %" PRIX64 " state change (%s -> %s)\n",
+				guid,
+				Connection::StateToString( privateState ),
+				Connection::StateToString( newState )
+			);
+
+			if ( network ) {
+				ByteBuffer stateBuffer;
+				ByteBuffer::Error status;
+				status = stateBuffer.Write<State>( newState );
+
+				XSPacket statePacket( isServer ? ID_XS_SV2CL_CONNECTION_STATE : ID_XS_CL2SV_CONNECTION_STATE );
+				statePacket.data = stateBuffer.GetMemory( &statePacket.dataLen );
+				statePacket.Send( guid );
+			}
+
+			privateState = newState;
+			return true;
+		}
+
+		void Connection::Send( const XSPacket &packet ) const {
+			packet.Send( guid );
+		}
+
+		static void Cmd_NetStat( const CommandContext &context ) {
 			PrintStatus();
 		}
 
@@ -100,6 +236,7 @@ namespace XS {
 			"not connected", // IS_NOT_CONNECTED, was never connected, or else was disconnected long enough ago that the entry has been discarded
 		};
 
+		//FIXME: move all of this into Connection
 		bool IsConnected( void ) {
 			return IsActive() && connected;
 		}
@@ -145,9 +282,10 @@ namespace XS {
 			}
 
 			if ( isServer ) {
+				//FIXME: when does this happen?
 			}
 			else {
-				console.Print( PrintLevel::Normal, "Closing network connection.\n" );
+				console.Print( PrintLevel::Normal, "closing network connection.\n" );
 				peer->CloseConnection( peer->GetSystemAddressFromIndex( 0 ), true );
 			}
 
@@ -171,11 +309,12 @@ namespace XS {
 				case ID_REMOTE_DISCONNECTION_NOTIFICATION: {
 					// another client has disconnected gracefully
 					console.Print( PrintLevel::Normal, "another client disconnected\n" );
+					//TODO: grab meaningful info
 				} break;
 
 				case ID_CONNECTION_ATTEMPT_FAILED: {
 					// connection attempt failed
-					console.Print( PrintLevel::Normal, "connection attempt failed (%s)\n",
+					console.Print( PrintLevel::Normal, "error: connection attempt failed (%s)\n",
 						packet->systemAddress.ToString()
 					);
 				} break;
@@ -183,16 +322,18 @@ namespace XS {
 				case ID_REMOTE_CONNECTION_LOST: {
 					// another client has lost connection
 					console.Print( PrintLevel::Normal, "another client lost connection\n" );
+					//TODO: grab meaningful info
 				} break;
 
 				case ID_NEW_INCOMING_CONNECTION: {
 					// another client has connected
 					if ( isServer ) {
+						const GUID guid = packet->guid.g;
 						console.Print( PrintLevel::Normal, "client connecting with IP %s and GUID %" PRIX64 "\n",
 							packet->systemAddress.ToString(),
-							packet->guid.g
+							guid
 						);
-						Server::IncomingConnection( packet->guid.g );
+						Server::IncomingConnection( Connection::Get( guid ) );
 					}
 					else {
 						SDL_assert( !"unexpected connection as client" );
@@ -211,41 +352,48 @@ namespace XS {
 					// a client with our GUID is already connected, wait for timeout because we probably disconnected
 					//	ungracefully
 					//TODO: filter for server/client?
-					console.Print( PrintLevel::Normal, "already connected, wait for timeout\n" );
+					console.Print( PrintLevel::Normal, "error: already connected, wait for timeout\n" );
 					connected = false;
 				} break;
 
 				case ID_CONNECTION_REQUEST_ACCEPTED: {
 					// out connection request has been accepted
-					console.Print( PrintLevel::Normal, "connection accepted\n" );
+					console.Print( PrintLevel::Developer, "connection accepted\n" );
 					connected = true;
+					if ( !isServer ) {
+						const GUID guid = packet->guid.g;
+						Client::Connect( Connection::Get( guid ) );
+					}
 				} break;
 
 				case ID_NO_FREE_INCOMING_CONNECTIONS: {
 					// the server is full
-					console.Print( PrintLevel::Normal, "server is full\n" );
+					console.Print( PrintLevel::Normal, "error: server is full\n" );
 					connected = false;
 				} break;
 
 				case ID_DISCONNECTION_NOTIFICATION: {
+					const GUID guid = packet->guid.g;
 					// we have been disconnected
 					if ( isServer ) {
 						console.Print( PrintLevel::Normal, "client disconnected (%s)\n",
 							packet->systemAddress.ToString()
 						);
-						Server::DropClient( packet->guid.g );
+						Server::DropClient( guid );
+						connections.erase( guid );
 					}
 					else {
 						console.Print( PrintLevel::Normal, "disconnected from server (%s)\n",
 							packet->systemAddress.ToString()
 						);
-						connected = false;
+						Client::Disconnect( guid );
+						Disconnect();
 					}
 				} break;
 
 				case ID_CONNECTION_LOST: {
 					// our connection was lost
-					console.Print( PrintLevel::Normal, "connection lost\n" );
+					console.Print( PrintLevel::Normal, "error: connection lost\n" );
 					connected = false;
 				} break;
 
@@ -274,10 +422,10 @@ namespace XS {
 			}
 		}
 
-		void Send( GUID guid, const XSPacket *packet ) {
+		void SendPacket( GUID guid, const XSPacket &packet ) {
 			if ( net_debug->GetUInt32() & 0x1u ) {
-				console.Print( PrintLevel::Normal, "Send: %i (%i)\n",
-					packet->msg,
+				console.Print( PrintLevel::Normal, "SendPacket: %i (%i)\n",
+					packet.msg,
 					ID_USER_PACKET_ENUM
 				);
 			}
@@ -290,13 +438,13 @@ namespace XS {
 
 			// write message ID
 			bs.Write(
-				static_cast<RakNet::MessageID>( packet->msg )
+				static_cast<RakNet::MessageID>( packet.msg )
 			);
 
 			// write message contents
 			bs.Write(
-				static_cast<const char *>( packet->data ),
-				static_cast<unsigned int>( packet->dataLen )
+				static_cast<const char *>( packet.data ),
+				static_cast<unsigned int>( packet.dataLen )
 			);
 
 			// send it to the correct peer

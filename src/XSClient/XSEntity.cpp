@@ -67,12 +67,10 @@ namespace XS {
 			return clgState.entities[id];
 		}
 
-		void Entity::AddToScene( Renderer::View *view ) {
-			SDL_assert( view );
-
+		void Entity::AddToScene( Renderer::View &view ) {
 			if ( renderInfo.handle != Renderer::Renderable::invalidHandle ) {
 				renderInfo.worldPos = position;
-				view->AddObject( renderInfo );
+				view.AddObject( renderInfo );
 			}
 		}
 

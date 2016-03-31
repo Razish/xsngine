@@ -12,6 +12,8 @@
 	#pragma GCC diagnostic pop
 #endif
 
+#include "XSRenderer/XSView.h"
+
 namespace XS {
 
 	namespace ClientGame {
@@ -24,9 +26,11 @@ namespace XS {
 			BaseCamera& operator=( const BaseCamera& ) = delete;
 
 			BaseCamera(
+				const Renderer::View &view,
 				const glm::vec3 &position
 			);
 			BaseCamera(
+				const Renderer::View &view,
 				const glm::mat4 &transform
 			);
 
@@ -86,12 +90,13 @@ namespace XS {
 				void
 			);
 
-			glm::mat4	viewTransform;
-			glm::mat4	projectionTransform;
-			glm::mat4	projectionViewTransform;
-			glm::mat4	worldTransform;
+			const Renderer::View	&view;
+			glm::mat4				 viewTransform;
+			glm::mat4				 projectionTransform;
+			glm::mat4				 projectionViewTransform;
+			glm::mat4				 worldTransform;
 
-			bool		perspectiveSet;
+			bool					 perspectiveSet; //FIXME: hide?
 		};
 
 	} // namespace ClientGame

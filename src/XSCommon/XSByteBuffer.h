@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <string>
 
 namespace XS {
 
@@ -20,11 +21,22 @@ namespace XS {
 
 	class ByteBuffer {
 
+	public:
+		using String = std::string;
+		enum class Error : uint32_t {
+			Success = 0u,
+			BufferOverflow,
+			ReadWhileWriting,
+			WriteWhileReading,
+		};
+
 	private:
 		bool					reading;
 		std::vector<uint8_t>	buffer;
 		size_t					offset = 0u; // current read/write position
 		size_t					size = 0u; // total
+
+		//TODO: add string pool to avoid runtime heap allocations
 
 		void Resize(
 			size_t addSize
@@ -47,133 +59,91 @@ namespace XS {
 			bool encode = false // RLE
 		) const XS_WARN_UNUSED_RESULT;
 
-		void Skip(
-			size_t count
+		// string representation of error codes
+		static const char *ErrorToString(
+			Error error
 		);
 
-		// write generic data to the buffer
-		void WriteGeneric(
+		// debug: dump buffer contents to disk
+		void DumpToFile(
+			const char *path
+		) const;
+
+		Error Skip(
+			size_t count
+		) XS_WARN_UNUSED_RESULT;
+
+		// append a raw buffer
+		// dataLen: size in bytes
+		Error WriteRaw(
 			const void *data,
 			size_t dataLen
-		);
+		) XS_WARN_UNUSED_RESULT;
 
-		// write a signed 64 bit integer to the buffer
-		void WriteInt64(
-			int64_t data
-		);
+		// write a primitive type
+		template<typename T>
+		Error Write(
+			T data
+		) XS_WARN_UNUSED_RESULT
+		{
+			if ( reading ) {
+				return Error::WriteWhileReading;
+			}
+			const size_t writeSize = sizeof(T);
+			if ( offset + writeSize > size ) {
+				// nop: not actually an error, we'll just expand the buffer accordingly
+			}
 
-		// write an unsigned 64 bit integer to the buffer
-		void WriteUInt64(
-			uint64_t data
-		);
+			Resize( writeSize );
+			*reinterpret_cast<T *>( &buffer[offset] ) = data;
 
-		// write a signed 32 bit integer to the buffer
-		void WriteInt32(
-			int32_t data
-		);
+			offset += writeSize;
 
-		// write an unsigned 32 bit integer to the buffer
-		void WriteUInt32(
-			uint32_t data
-		);
-
-		// write a signed 16 bit integer to the buffer
-		void WriteInt16(
-			int16_t data
-		);
-
-		// write an unsigned 16 bit integer to the buffer
-		void WriteUInt16(
-			uint16_t data
-		);
-
-		// write a signed 8 bit integer to the buffer
-		void WriteInt8(
-			int8_t data
-		);
-
-		// write an unsigned 8 bit integer to the buffer
-		void WriteUInt8(
-			uint8_t data
-		);
-
-		// write a 64-bit floating point value to the buffer
-		void WriteReal64(
-			real64_t data
-		);
-
-		// write a 32-bit floating point value to the buffer
-		void WriteReal32(
-			real32_t data
-		);
+			return Error::Success;
+		}
 
 		//NOTE: see disclaimer at top of class regarding storage mechanism of strings
-		void WriteString(
+		Error WriteString(
 			const char *str
-		);
+		) XS_WARN_UNUSED_RESULT;
 
-		// write generic data to the buffer
-		void ReadGeneric(
+		// read a raw buffer
+		Error ReadRaw(
 			void *outData,
 			size_t dataLen
-		);
+		) XS_WARN_UNUSED_RESULT;
 
-		// write a signed 64 bit integer to the buffer
-		void ReadInt64(
-			int64_t *outData
-		);
+		// read a primitive type
+		template<typename T>
+		Error Read(
+			T *outData
+		) XS_WARN_UNUSED_RESULT
+		{
+			const size_t addSize = sizeof(T);
+			if ( !reading ) {
+				return Error::ReadWhileWriting;
+			}
+			if ( offset + addSize > size ) {
+				return Error::BufferOverflow;
+			}
 
-		// write an unsigned 64 bit integer to the buffer
-		void ReadUInt64(
-			uint64_t *outData
-		);
+			*outData = *reinterpret_cast<T *>( &buffer[offset] );
+			offset += addSize;
 
-		// write a signed 32 bit integer to the buffer
-		void ReadInt32(
-			int32_t *outData
-		);
+			return Error::Success;
+		}
 
-		// write an unsigned 32 bit integer to the buffer
-		void ReadUInt32(
-			uint32_t *outData
-		);
-
-		// write a signed 16 bit integer to the buffer
-		void ReadInt16(
-			int16_t *outData
-		);
-
-		// write an unsigned 16 bit integer to the buffer
-		void ReadUInt16(
-			uint16_t *outData
-		);
-
-		// write a signed 8 bit integer to the buffer
-		void ReadInt8(
-			int8_t *outData
-		);
-
-		// write an unsigned 8 bit integer to the buffer
-		void ReadUInt8(
-			uint8_t *outData
-		);
-
-		// write a 64-bit floating point value to the buffer
-		void ReadReal64(
-			real64_t *outData
-		);
-
-		// write a 32-bit floating point value to the buffer
-		void ReadReal32(
-			real32_t *outData
-		);
+		//NOTE: see disclaimer at top of class regarding storage mechanism of strings
+		Error ReadString(
+			String &out
+		) XS_WARN_UNUSED_RESULT;
 
 		//NOTE: see disclaimer at top of class regarding storage mechanism of strings
 		//NOTE: caller must delete[] the string contents
-		void ReadString(
+		Error ReadString(
 			const char ** outStr,
 			uint32_t *outLen = nullptr // sometimes we don't care about the size
-		);
+		) XS_WARN_UNUSED_RESULT;
 
 	};
 

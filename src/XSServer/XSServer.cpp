@@ -1,3 +1,6 @@
+#define __STDC_FORMAT_MACROS
+#include <inttypes.h>
+
 #include <RakNet/RakPeerInterface.h>
 
 #include "XSCommon/XSCommon.h"
@@ -26,6 +29,193 @@ namespace XS {
 		uint64_t frameNum = 0u;
 
 		ServerConsole *serverConsole = nullptr;
+
+		static void Cmd_Ping( const Client &client, const CommandContext &context ) {
+			Network::XSPacket pongPacket( Network::ID_XS_SV2CL_PRINT );
+			ByteBuffer pongBuffer;
+			ByteBuffer::Error status;
+			status = pongBuffer.WriteString( "Pong!\n" );
+			pongPacket.data = pongBuffer.GetMemory( &pongPacket.dataLen );
+			client.connection.Send( pongPacket );
+		}
+
+		using CommandContext = std::vector<std::string>;
+		using CommandFunc = void (*)( const Client &client, const CommandContext &context );
+		static std::unordered_map<std::string, CommandFunc> clientCommands{
+			{ "ping", Cmd_Ping },
+		};
+
+		static void OnClientCommand( const Client &client, const char *cmd, const CommandContext &context ) {
+			auto it = clientCommands.find( cmd );
+			if ( it == clientCommands.end() ) {
+				// unknown command
+				return;
+			}
+			it->second( client, context );
+		}
+
+		void DropClient( Network::GUID guid ) {
+			Client *client = clients[guid];
+			if ( client ) {
+				console.Print( PrintLevel::Normal, "Dropping client with guid %" PRIX64 "\n",
+					guid
+				);
+
+				delete client;
+			}
+
+			// announce
+			BroadcastMessage( String::Format( "Client %" PRIX64 " has disconnected\n", guid ).c_str() );
+		}
+
+		void IncomingConnection( Network::Connection &connection ) {
+			// drop client if they're already connected
+			DropClient( connection.guid );
+
+			BroadcastMessage( String::Format( "Connection from %" PRIX64, connection.guid ).c_str() );
+		}
+
+		bool ReceivePacket( const RakNet::Packet *packet ) {
+			switch ( packet->data[0] ) {
+
+			case Network::ID_XS_CL2SV_CONNECTION_STATE: {
+				using State = Network::Connection::State;
+				const Network::GUID guid = packet->guid.g;
+				Network::Connection &connection = Network::Connection::Get( guid );
+
+				const uint8_t *buffer = packet->data + 1;
+				size_t bufferLen = packet->length - 1;
+				ByteBuffer bb( buffer, bufferLen );
+				ByteBuffer::Error status;
+
+				State newState;
+				status = bb.Read<State>( &newState );
+
+				if ( connection.ChangeState( newState ) ) {
+					// the client is telling us their state has changed
+					switch ( newState ) {
+
+					case State::NotConnected: {
+						// initial state: no connections requested
+						// error: should never change to this
+						SDL_assert( !"unhandled case" );
+					} break;
+
+					case State::SynSent: {
+						// we request a connection to a host
+
+						//TODO: send a challenge
+
+						connection.ChangeState( State::SynReceived, true );
+					} break;
+
+					case State::SynReceived: {
+						// the host sends us back a challenge
+						SDL_assert( !"unhandled case" );
+					} break;
+
+					case State::AckSent: {
+						// we respond to the challenge
+
+						//TODO: check if challenge response is good
+
+						//TODO: allocate client instance
+						new Client( connection );
+
+						//TODO: start sending session info
+						ServerGame::NetworkResources( true );
+
+						connection.ChangeState( State::AckReceived, true );
+					} break;
+
+					case State::AckReceived: {
+						// host allocates client instance and starts sending session info
+						SDL_assert( !"unhandled case" );
+					} break;
+
+					case State::Active: {
+						// baselines have been receieved, connection is active
+						// nothing to do at the moment
+					} break;
+
+					case State::Disconnecting: {
+						// disconnection has been requested
+						// this is handled by another RakNet message currently
+						SDL_assert( !"unhandled case" );
+					} break;
+
+					case State::Dead: {
+						// this host has finished disconnecting or has timed out
+						SDL_assert( !"unhandled case" );
+					} break;
+
+					default: {
+						SDL_assert( !"unhandled case" );
+					} break;
+
+					}
+				}
+			} break;
+
+			case Network::ID_XS_CL2SV_COMMAND: {
+				const Network::GUID guid = packet->guid.g;
+				const Network::Connection &connection = Network::Connection::Get( guid );
+
+				if ( connection.state != Network::Connection::State::Active ) {
+					console.Print( PrintLevel::Developer,
+						"client cmd from GUID %" PRIX64 " ignored during connection state %s\n",
+						guid, connection.StateToString( connection.state )
+					);
+					break;
+				}
+
+				const uint8_t *buffer = packet->data + 1;
+				size_t bufferLen = packet->length - 1;
+				ByteBuffer bb( buffer, bufferLen );
+				ByteBuffer::Error status;
+
+				uint32_t numArgs = 0u;
+				CommandContext context;
+				if ( (status = bb.Read<uint32_t>( &numArgs )) == ByteBuffer::Error::Success ) {
+					context.reserve( numArgs ); // pre-allocate the memory required for the number of arguments
+				}
+
+				ByteBuffer::String cmd;
+				status = bb.ReadString( cmd );
+
+				console.Print( PrintLevel::Debug, "client cmd from GUID %" PRIX64 ": %s\n",
+					guid, cmd.c_str()
+				);
+
+				if ( numArgs > 0u ) {
+					for ( uint32_t i = 0u; i < numArgs; i++ ) {
+						ByteBuffer::String arg;
+						status = bb.ReadString( arg );
+						context.push_back( arg );
+					}
+				}
+
+				for ( const auto &arg : context ) {
+					console.Print( PrintLevel::Normal, "  arg: %s, len: %i\n",
+						arg.c_str(), arg.length()
+					);
+				}
+
+				OnClientCommand( *clients[guid], cmd.c_str(), context );
+			} break;
+
+			case Network::ID_XS_CL2SV_DUMMY: {
+				// ...
+			} break;
+
+			default: {
+				return false;
+			} break;
+
+			}
+
+			return true;
+		}
 
 		static void RegisterCvars( void ) {
 			sv_maxConnections = Cvar::Create( "sv_maxConnections", "16",
@@ -67,8 +257,11 @@ namespace XS {
 			ServerGame::GenerateSnapshot( &snapshotBuffer );
 			snapshotPacket.data = snapshotBuffer.GetMemory( &snapshotPacket.dataLen );
 
-			for ( auto &client : clients ) {
-				client.second->connection.Send( &snapshotPacket );
+			for ( auto &it : clients ) {
+				const Client *client = it.second;
+				if ( client ) {
+					client->connection.Send( snapshotPacket );
+				}
 			}
 		}
 
@@ -82,26 +275,11 @@ namespace XS {
 			Network::Receive();
 
 			//TODO: process player input
+			ServerGame::NetworkResources( false );
 
 			// issue a snapshot
 			//FIXME: stop sending the entire state
 			GenerateNetworkState();
-		}
-
-		bool ReceivePacket( const RakNet::Packet *packet ) {
-			switch ( packet->data[0] ) {
-
-			case Network::ID_XS_CL2SV_DUMMY: {
-				// ...
-			} break;
-
-			default: {
-				return false;
-			} break;
-
-			}
-
-			return true;
 		}
 
 		void RunFrame( real64_t dt ) {
@@ -127,10 +305,12 @@ namespace XS {
 			Network::XSPacket packet( Network::ID_XS_SV2CL_PRINT );
 
 			ByteBuffer bb;
-			bb.WriteString( msg );
+			if ( bb.WriteString( msg ) != ByteBuffer::Error::Success ) {
+				return;
+			}
 			packet.data = bb.GetMemory( &packet.dataLen );
 
-			Network::Send( 0u, &packet );
+			packet.Send( 0u );
 		}
 
 		// lazy initialise on first request per frame

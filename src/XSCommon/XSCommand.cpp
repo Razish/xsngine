@@ -20,11 +20,11 @@ namespace XS {
 		// command buffer
 		static std::queue<std::string> buffer;
 
-		static void Cmd_ClearConsole( const CommandContext * const context ) {
+		static void Cmd_ClearConsole( const CommandContext &context ) {
 			console.Clear();
 		}
 
-		static void Cmd_ListCommands( const CommandContext * const context ) {
+		static void Cmd_ListCommands( const CommandContext &context ) {
 			console.Print( PrintLevel::Normal, "Listing commands...\n" );
 			Indent indent( 1 );
 
@@ -36,17 +36,17 @@ namespace XS {
 			}
 		}
 
-		static void Cmd_ListCvars( const CommandContext * const context ) {
+		static void Cmd_ListCvars( const CommandContext &context ) {
 			Cvar::List();
 		}
 
-		static void Cmd_PrintCvar( const CommandContext * const context ) {
-			if ( context->size() < 1 ) {
+		static void Cmd_PrintCvar( const CommandContext &context ) {
+			if ( context.size() < 1 ) {
 				console.Print( PrintLevel::Normal, "\"print\" failed. Must specify at-least one cvar\n" );
 				return;
 			}
 
-			for ( const auto &it : *context ) {
+			for ( const auto &it : context ) {
 				const Cvar *cv = Cvar::Get( it );
 				if ( cv ) {
 					console.Print( PrintLevel::Normal, "%s: \"%s\"\n",
@@ -62,12 +62,12 @@ namespace XS {
 			}
 		}
 
-		static void Cmd_ResetCvar( const CommandContext * const context ) {
-			Cvar *cv = Cvar::Get( (*context)[0] );
+		static void Cmd_ResetCvar( const CommandContext &context ) {
+			Cvar *cv = Cvar::Get( context[0] );
 
 			if ( !cv ) {
 				console.Print( PrintLevel::Normal, "%s: does not exist\n",
-					(*context)[0].c_str()
+					context[0].c_str()
 				);
 				return;
 			}
@@ -75,18 +75,18 @@ namespace XS {
 			cv->Set( cv->GetDefaultString() );
 		}
 
-		static void Cmd_SetCvar( const CommandContext * const context ) {
-			if ( context->size() < 2 ) {
+		static void Cmd_SetCvar( const CommandContext &context ) {
+			if ( context.size() < 2 ) {
 				console.Print( PrintLevel::Normal, "\"set\" failed. Must specify a cvar and value\n" );
 				return;
 			}
 
-			Cvar *cv = Cvar::Create( (*context)[0] );
+			Cvar *cv = Cvar::Create( context[0] );
 
-			size_t size = context->size();
+			size_t size = context.size();
 			std::string value;
 			for ( size_t i = 1; i < size; i++ ) {
-				value += (*context)[i];
+				value += context[i];
 				if ( i != size - 1 ) {
 					value += " ";
 				}
@@ -94,13 +94,13 @@ namespace XS {
 			cv->Set( value );
 		}
 
-		static void Cmd_ToggleCvar( const CommandContext * const context ) {
-			Cvar *cv = Cvar::Get( (*context)[0] );
+		static void Cmd_ToggleCvar( const CommandContext &context ) {
+			Cvar *cv = Cvar::Get( context[0] );
 
 			cv->Set( !cv->GetBool() );
 		}
 
-		static void Cmd_Quit( const CommandContext * const context ) {
+		static void Cmd_Quit( const CommandContext &context ) {
 			// generic shutdown
 			throw( XSError() );
 		}
@@ -153,7 +153,7 @@ namespace XS {
 				if ( commandTable.find( name ) != commandTable.end() ) {
 					const CommandFunc &func = commandTable[name];
 					if ( func ) {
-						func( &context );
+						func( context );
 					}
 				}
 				else {

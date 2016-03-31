@@ -8,8 +8,8 @@ namespace XS {
 
 		class FlyCamera : public BaseCamera {
 		public:
-			inline FlyCamera( real32_t speed )
-			: BaseCamera( glm::vec3() ), flySpeed( speed )
+			inline FlyCamera( const Renderer::View &view, real32_t speed )
+			: BaseCamera( view, glm::vec3() ), flySpeed( speed )
 			{
 			}
 

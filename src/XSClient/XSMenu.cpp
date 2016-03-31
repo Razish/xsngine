@@ -19,7 +19,9 @@ namespace XS {
 
 		uint32_t Menu::version = 3u;
 
-		Menu::Menu( const char *fileName ) {
+		Menu::Menu( const Renderer::View &view, const char *fileName )
+		: view( view )
+		{
 			const File f( fileName );
 			if ( !f.open ) {
 				return;
@@ -126,8 +128,7 @@ namespace XS {
 							break;
 						}
 
-						element = new MenuElementButton( parser, fileName );
-						element->parent = this;
+						element = new MenuElementButton( *this, parser, fileName );
 						elements.push_back( element );
 						element = nullptr;
 
@@ -144,8 +145,7 @@ namespace XS {
 							break;
 						}
 
-						element = new MenuElementSlider( parser, fileName );
-						element->parent = this;
+						element = new MenuElementSlider( *this, parser, fileName );
 						elements.push_back( element );
 						element = nullptr;
 
@@ -162,8 +162,7 @@ namespace XS {
 							break;
 						}
 
-						element = new MenuElementText( parser, fileName );
-						element->parent = this;
+						element = new MenuElementText( *this, parser, fileName );
 						elements.push_back( element );
 						element = nullptr;
 
@@ -180,17 +179,19 @@ namespace XS {
 		}
 
 		void Menu::Paint( void ) {
+			//PERF: see how separable this painting algorithm is
+
+			// first pass: paint the frame (Menu)
+			// ...
+
+			// second pass: fill with elements
 			for ( auto element : elements ) {
-				if ( !element->properties.hidden ) {
-					element->Paint();
-				}
+				element->Paint();
 			}
 
-			// render tooltip
+			// third pass: special cases such as tooltips
 			for ( auto element : elements ) {
-				if ( !element->properties.hidden ) {
-					element->DrawTooltip();
-				}
+				element->DrawTooltip();
 			}
 		}
 
@@ -206,9 +207,7 @@ namespace XS {
 			{
 				// pass it down the chain
 				for ( auto element : elements ) {
-					if ( !element->properties.decorative ) {
-						element->MouseButtonEvent( ev );
-					}
+					element->MouseButtonEvent( ev );
 				}
 				return true;
 			}
@@ -229,9 +228,7 @@ namespace XS {
 			{
 				// pass it down the chain
 				for ( auto element : elements ) {
-					if ( !element->properties.decorative ) {
-						element->MouseMotionEvent();
-					}
+					element->MouseMotionEvent();
 				}
 				return true;
 			}

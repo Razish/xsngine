@@ -15,26 +15,24 @@ namespace XS {
 			// ...
 
 		public:
-			class Connection {
+			Network::Connection &connection;
 
-			private:
-				// ...
+			// don't allow default instantiation
+			Client() = delete;
+			Client( const Client& ) = delete;
+			Client& operator=( const Client& ) = delete;
 
-			public:
-				Network::GUID guid;
+			// this also tracks it via clients[Client::connection::guid]
+			Client( Network::Connection &connection );
 
-				// send a packet to this client
-				void Send(
-					const Network::XSPacket *packet
-				);
+			// this removes the [Client::connection::guid] association and invalidates iterators
+			~Client();
 
-			} connection;
-
-			enum class State {
-				Connecting,
-				Limbo,
-				Playing
-			} state;
+			// print a message to the client's console
+			// note: does not insert a line-feed at the end!
+			void Print(
+				const char *msg
+			) const;
 
 			std::vector<Character>	 characters;
 			Character				*currentCharacter;

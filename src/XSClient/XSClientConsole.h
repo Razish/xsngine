@@ -35,6 +35,10 @@ namespace XS {
 				int amount // negative for down, positive for up
 			);
 
+			void Split(
+				const std::string &line, std::vector<std::string> &lines
+			);
+
 		public:
 			// instantiate the ClientConsole for a specified Console object
 			ClientConsole(

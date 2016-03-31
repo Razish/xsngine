@@ -15,12 +15,14 @@ namespace XS {
 			const char *src
 		);
 
+		// safe strncpy that ensures a trailing zero
 		void Copy(
 			char *dst,
 			const char *src,
 			size_t len
 		);
 
+		// safe sprintf-like
 		int FormatBuffer(
 			char *dst,
 			size_t len,
@@ -28,6 +30,7 @@ namespace XS {
 			...
 		);
 
+		// strncmp
 		int CompareCase(
 			const char *s1,
 			const char *s2,

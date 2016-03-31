@@ -106,7 +106,7 @@ namespace XS {
 	}
 
 	// create the folders necessary to store the specified file
-	static bool CreatePath( const char *fullPath ) {
+	bool File::CreatePath( const char *fullPath ) {
 		char path[XS_MAX_FILENAME] = {};
 		String::Copy( path, fullPath, sizeof(path) );
 		for ( char *s = strchr( path, PATH_SEP ) + 1; s && *s; s++ ) {
@@ -199,10 +199,16 @@ namespace XS {
 		fputs( str, file );
 	}
 
-	void File::Write( const void *buf, size_t len ) const {
+	void File::Write( const void *buf, size_t len/*, bool append*/ ) {
 		if ( !IsWriteMode( mode ) ) {
 			return;
 		}
+		/*
+		if ( append ) {
+			fseek( file, cursor, SEEK_SET );
+			cursor += len;
+		}
+		*/
 		fwrite( buf, 1, len, file );
 	}
 

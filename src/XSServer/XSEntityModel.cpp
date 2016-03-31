@@ -15,9 +15,15 @@ namespace XS {
 			Entity::Update( dt );
 		}
 
-		void EntityModel::Serialise( ByteBuffer *buffer ) const {
-			Entity::Serialise( buffer );
-			buffer->WriteUInt32( modelIndex );
+		ByteBuffer::Error EntityModel::Serialise( ByteBuffer *buffer ) const {
+			ByteBuffer::Error status;
+			status = Entity::Serialise( buffer );
+			status = buffer->Write<uint32_t>( modelIndex );
+			if ( status != ByteBuffer::Error::Success ) {
+				return status;
+			}
+
+			return ByteBuffer::Error::Success;
 		}
 
 	} // namespace ServerGame

@@ -53,6 +53,7 @@ namespace XS {
 		);
 
 		FILE		*file = nullptr;
+		//size_t		 cursor = 0u; // used for binary append
 		FileMode	 mode;
 
 	public:
@@ -91,6 +92,11 @@ namespace XS {
 			char *path
 		);
 
+		// create the folders necessary to store the specified file
+		static bool CreatePath(
+			const char *fullPath
+		);
+
 		// don't allow default instantiation
 		File() = delete;
 		File( const File& ) = delete;
@@ -118,11 +124,13 @@ namespace XS {
 		) const;
 
 		// write len bytes from buf into file
-		// does not concatenate file, will truncate.
+		// if append is false, file will be truncated
+		//FIXME: implement binary append
 		void Write(
 			const void *buf,
 			size_t len
-		) const;
+			//bool append = false
+		);
 	};
 
 } // namespace XS

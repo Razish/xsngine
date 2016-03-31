@@ -33,7 +33,7 @@ namespace XS {
 				return p;
 			}
 
-			void Cmd_Screenshot( const CommandContext * const context ) {
+			void Cmd_Screenshot( const CommandContext &context ) {
 				Framebuffer::BindDefault();
 				glBindBuffer( GL_PIXEL_PACK_BUFFER, defaultPbo );
 				glReadPixels( 0, 0, rdState.window.width, rdState.window.height, GL_RGBA, GL_UNSIGNED_BYTE, NULL );

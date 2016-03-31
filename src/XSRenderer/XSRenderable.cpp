@@ -1,3 +1,4 @@
+#include <limits>
 #include <unordered_map>
 
 #include "XSCommon/XSCommon.h"

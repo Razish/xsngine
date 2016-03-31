@@ -34,40 +34,40 @@ namespace XS {
 				);
 			}
 
-			static void Cmd_MoveForward_Down( const CommandContext * const context ) {
+			static void Cmd_MoveForward_Down( const CommandContext &context ) {
 				Input::perFrameState.moveForward = true;
 			}
-			static void Cmd_MoveForward_Up( const CommandContext * const context ) {
+			static void Cmd_MoveForward_Up( const CommandContext &context ) {
 				Input::perFrameState.moveForward = false;
 			}
-			static void Cmd_MoveBack_Down( const CommandContext * const context ) {
+			static void Cmd_MoveBack_Down( const CommandContext &context ) {
 				Input::perFrameState.moveBack = true;
 			}
-			static void Cmd_MoveBack_Up( const CommandContext * const context ) {
+			static void Cmd_MoveBack_Up( const CommandContext &context ) {
 				Input::perFrameState.moveBack = false;
 			}
-			static void Cmd_MoveLeft_Down( const CommandContext * const context ) {
+			static void Cmd_MoveLeft_Down( const CommandContext &context ) {
 				Input::perFrameState.moveLeft = true;
 			}
-			static void Cmd_MoveLeft_Up( const CommandContext * const context ) {
+			static void Cmd_MoveLeft_Up( const CommandContext &context ) {
 				Input::perFrameState.moveLeft = false;
 			}
-			static void Cmd_MoveRight_Down( const CommandContext * const context ) {
+			static void Cmd_MoveRight_Down( const CommandContext &context ) {
 				Input::perFrameState.moveRight = true;
 			}
-			static void Cmd_MoveRight_Up( const CommandContext * const context ) {
+			static void Cmd_MoveRight_Up( const CommandContext &context ) {
 				Input::perFrameState.moveRight = false;
 			}
-			static void Cmd_MoveUp_Down( const CommandContext * const context ) {
+			static void Cmd_MoveUp_Down( const CommandContext &context ) {
 				Input::perFrameState.moveUp = true;
 			}
-			static void Cmd_MoveUp_Up( const CommandContext * const context ) {
+			static void Cmd_MoveUp_Up( const CommandContext &context ) {
 				Input::perFrameState.moveUp = false;
 			}
-			static void Cmd_MoveDown_Down( const CommandContext * const context ) {
+			static void Cmd_MoveDown_Down( const CommandContext &context ) {
 				Input::perFrameState.moveDown = true;
 			}
-			static void Cmd_MoveDown_Up( const CommandContext * const context ) {
+			static void Cmd_MoveDown_Up( const CommandContext &context ) {
 				Input::perFrameState.moveDown = false;
 			}
 

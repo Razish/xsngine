@@ -26,8 +26,12 @@ namespace XS {
 			std::string		text;
 			uint16_t		pointSize = 16u;
 
-			struct Properties {
+			struct Properties : public MenuElement::Properties {
 				bool			centered = false;
+
+				Properties()
+				: MenuElement::Properties() {
+				}
 			} properties;
 
 			bool MouseWithinBounds(
@@ -46,6 +50,7 @@ namespace XS {
 			MenuElementButton& operator=( const MenuElementButton& ) = delete;
 
 			MenuElementButton(
+				const Menu &parent,
 				TokenParser *parser,
 				const char *fileName
 			);

@@ -16,8 +16,9 @@ namespace XS {
 
 	namespace Client {
 
-		MenuElement::MenuElement() {
-			std::memset( &properties, 0, sizeof(properties) );
+		MenuElement::MenuElement( const Menu &parent )
+		: parent( parent )
+		{
 		}
 
 		void MenuElement::ParseTooltip( TokenParser *parser, const char *fileName ) {
@@ -90,6 +91,12 @@ namespace XS {
 		}
 
 		void MenuElement::DrawTooltip( void ) {
+			#if 0
+			//FIXME: re-implement after redesigning menu elements
+			if ( properties.hidden ) {
+				return;
+			}
+
 			const real64_t currentTime = GetElapsedTime();
 			if ( tooltip.mouseHovering ) {
 				tooltip.lastMouseTime = currentTime;
@@ -111,6 +118,7 @@ namespace XS {
 					&colour
 				);
 			}
+			#endif
 		}
 
 	} // namespace Client

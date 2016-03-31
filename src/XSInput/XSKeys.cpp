@@ -172,7 +172,7 @@ namespace XS {
 			return '\0';
 		}
 
-		void Cmd_ListBinds( const CommandContext * const context ) {
+		void Cmd_ListBinds( const CommandContext &context ) {
 			console.Print( PrintLevel::Normal, "Listing binds...\n" );
 
 			std::map<SDL_Keycode, std::string> sorted( binds.begin(), binds.end() );
@@ -187,32 +187,33 @@ namespace XS {
 			}
 		}
 
-		void Cmd_SetBind( const CommandContext * const context ) {
-			if ( context->size() < 1 ) {
+		void Cmd_SetBind( const CommandContext &context ) {
+			if ( context.size() < 1 ) {
 				console.Print( PrintLevel::Normal, "Usage: bind <key> [command]\n" );
 				return;
 			}
 
-			SDL_Keycode keycode = GetKeycodeForName( (*context)[0].c_str() );
+			SDL_Keycode keycode = GetKeycodeForName( context[0].c_str() );
 
 			if ( keycode == SDLK_UNKNOWN ) {
-				console.Print( PrintLevel::Normal, "Unknown key \"%s\"", (*context)[0].c_str() );
+				console.Print( PrintLevel::Normal, "Unknown key \"%s\"", context[0].c_str() );
 				return;
 			}
 
-			if (context->size() == 1) {
+			if ( context.size() == 1 ) {
 				std::string boundString = "";
-				if(!binds[keycode].empty())
+				if ( !binds[keycode].empty() ) {
 					boundString = binds[keycode];
-				console.Print(PrintLevel::Normal, "%s: \"%s\"\n", (*context)[0].c_str(), boundString.c_str());
+				}
+				console.Print( PrintLevel::Normal, "%s: \"%s\"\n", context[0].c_str(), boundString.c_str() );
 				return;
 			}
 
 			// join all args, so we can do /bind x command argument
-			const size_t size = context->size();
+			const size_t size = context.size();
 			std::string value;
 			for ( size_t i = 1; i < size; i++ ) {
-				value += (*context)[i];
+				value += context[i];
 				if ( i != size - 1 ) {
 					value += " ";
 				}
