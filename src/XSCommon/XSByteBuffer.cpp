@@ -1,4 +1,7 @@
+#include <map>
+
 #include "XSCommon/XSCommon.h"
+#include "XSCommon/XSFile.h"
 #include "XSCommon/XSByteBuffer.h"
 
 namespace XS {
@@ -27,222 +30,110 @@ namespace XS {
 		return static_cast<const void *>( &buffer[0] );
 	}
 
-	void ByteBuffer::Skip( size_t count ) {
-		SDL_assert( reading );
-		offset += count;
-		SDL_assert( count < size );
+	static const std::map<ByteBuffer::Error, const char *> errorToString {
+		{ ByteBuffer::Error::Success,			"success" },
+		{ ByteBuffer::Error::BufferOverflow,	"buffer overflow" },
+		{ ByteBuffer::Error::ReadWhileWriting,	"read while writing" },
+		{ ByteBuffer::Error::WriteWhileReading,	"write while reading" }
+	};
+
+	const char *ByteBuffer::ErrorToString( ByteBuffer::Error error ) {
+		const auto &it = errorToString.find( error);
+		if ( it == errorToString.end() ) {
+			return "Unknown";
+		}
+		else {
+			return it->second;
+		}
 	}
 
-	void ByteBuffer::WriteGeneric( const void *data, size_t dataLen ) {
-		SDL_assert( !reading );
+	void ByteBuffer::DumpToFile( const char *path ) const {
+		File f( path, FileMode::Write );
+		if ( !f.open ) {
+			return;
+		}
 
-		// resize the buffer
+		//TODO: hex visualisation?
+		f.Write( static_cast<const void *>( &buffer[0] ), size );
+	}
+
+
+	ByteBuffer::Error ByteBuffer::Skip( size_t count ) {
+		//TODO: should we allow skipping / writing null bytes?
+		// waiting for users to request it to see if there's any interest in this functionality
+		SDL_assert( reading );
+
+		if ( offset + count > size ) {
+			return Error::BufferOverflow;
+		}
+
+		offset += count;
+
+		return Error::Success;
+	}
+
+	ByteBuffer::Error ByteBuffer::WriteRaw( const void *data, size_t dataLen ) {
+		if ( reading ) {
+			return Error::WriteWhileReading;
+		}
+		if ( offset + dataLen > size ) {
+			// nop: not actually an error, we'll just expand the buffer accordingly
+		}
+
 		Resize( dataLen );
 		std::memcpy( &buffer[offset], data, dataLen );
+
 		offset += dataLen;
+
+		return Error::Success;
 	}
 
-	void ByteBuffer::WriteInt64( int64_t data ) {
-		SDL_assert( !reading );
+	ByteBuffer::Error ByteBuffer::WriteString( const char *str ) {
+		if ( reading ) {
+			return Error::WriteWhileReading;
+		}
 
-		size_t writeSize = sizeof(int64_t);
-
-		Resize( writeSize );
-		*reinterpret_cast<int64_t *>( &buffer[offset] ) = data;
-
-		offset += writeSize;
-	}
-
-	void ByteBuffer::WriteUInt64( uint64_t data ) {
-		SDL_assert( !reading );
-
-		size_t writeSize = sizeof(uint64_t);
-
-		Resize( writeSize );
-		*reinterpret_cast<uint64_t *>( &buffer[offset] ) = data;
-
-		offset += writeSize;
-	}
-
-	void ByteBuffer::WriteInt32( int32_t data ) {
-		SDL_assert( !reading );
-
-		size_t writeSize = sizeof(int32_t);
-
-		Resize( writeSize );
-		*reinterpret_cast<int32_t *>( &buffer[offset] ) = data;
-
-		offset += writeSize;
-	}
-
-	void ByteBuffer::WriteUInt32( uint32_t data ) {
-		SDL_assert( !reading );
-
-		size_t writeSize = sizeof(uint32_t);
-
-		Resize( writeSize );
-		*reinterpret_cast<uint32_t *>( &buffer[offset] ) = data;
-
-		offset += writeSize;
-	}
-
-	void ByteBuffer::WriteInt16( int16_t data ) {
-		SDL_assert( !reading );
-
-		size_t writeSize = sizeof(int16_t);
-
-		Resize( writeSize );
-		*reinterpret_cast<int16_t *>( &buffer[offset] ) = data;
-
-		offset += writeSize;
-	}
-
-	void ByteBuffer::WriteUInt16( uint16_t data ) {
-		SDL_assert( !reading );
-
-		size_t writeSize = sizeof(uint16_t);
-
-		Resize( writeSize );
-		*reinterpret_cast<uint16_t *>( &buffer[offset] ) = data;
-
-		offset += writeSize;
-	}
-
-	void ByteBuffer::WriteInt8( int8_t data ) {
-		SDL_assert( !reading );
-
-		size_t writeSize = sizeof(int8_t);
-
-		Resize( writeSize );
-		*reinterpret_cast<int8_t *>( &buffer[offset] ) = data;
-
-		offset += writeSize;
-	}
-
-	void ByteBuffer::WriteUInt8( uint8_t data ) {
-		SDL_assert( !reading );
-
-		size_t writeSize = sizeof(uint8_t);
-
-		Resize( writeSize );
-		*reinterpret_cast<uint8_t *>( &buffer[offset] ) = data;
-
-		offset += writeSize;
-	}
-
-	void ByteBuffer::WriteReal64( real64_t data ) {
-		SDL_assert( !reading );
-
-		size_t writeSize = sizeof(real64_t);
-
-		Resize( writeSize );
-		*reinterpret_cast<real64_t *>( &buffer[offset] ) = data;
-
-		offset += writeSize;
-	}
-
-	void ByteBuffer::WriteReal32( real32_t data ) {
-		SDL_assert( !reading );
-
-		size_t writeSize = sizeof(real32_t);
-
-		Resize( writeSize );
-		*reinterpret_cast<real32_t *>( &buffer[offset] ) = data;
-
-		offset += writeSize;
-	}
-
-	void ByteBuffer::WriteString( const char *str ) {
-		SDL_assert( !reading );
-
+		// write it out pascal style
+		// 4 bytes for length
+		// n bytes for contents (no null terminator)
 		const uint32_t strLen = static_cast<uint32_t>( strlen( str ) );
-		WriteUInt32( strLen );
-		WriteGeneric( reinterpret_cast<const void *>( str ), strLen );
+		Error status;
+		if ( (status = Write<uint32_t>( strLen )) != Error::Success ) {
+			return status;
+		}
+		status = WriteRaw( str, strLen );
+		if ( status != Error::Success ) {
+			return status;
+		}
+
+		return Error::Success;
 	}
 
-	void ByteBuffer::ReadGeneric( void *outData, size_t dataLen ) {
-		SDL_assert( reading );
+	ByteBuffer::Error ByteBuffer::ReadRaw( void *outData, size_t dataLen ) {
+		if ( !reading ) {
+			return Error::ReadWhileWriting;
+		}
+		if ( offset + dataLen > size ) {
+			return Error::BufferOverflow;
+		}
 
 		std::memcpy( outData, &buffer[offset], dataLen );
 		offset += dataLen;
+
+		return Error::Success;
 	}
 
-	void ByteBuffer::ReadInt64( int64_t *outData ) {
-		SDL_assert( reading );
-
-		*outData = *reinterpret_cast<int64_t *>( &buffer[offset] );
-		offset += sizeof(int64_t);
-	}
-
-	void ByteBuffer::ReadUInt64( uint64_t *outData ) {
-		SDL_assert( reading );
-
-		*outData = *reinterpret_cast<uint64_t *>( &buffer[offset] );
-		offset += sizeof(uint64_t);
-	}
-
-	void ByteBuffer::ReadInt32( int32_t *outData ) {
-		SDL_assert( reading );
-
-		*outData = *reinterpret_cast<int32_t *>( &buffer[offset] );
-		offset += sizeof(int32_t);
-	}
-
-	void ByteBuffer::ReadUInt32( uint32_t *outData ) {
-		SDL_assert( reading );
-
-		*outData = *reinterpret_cast<uint32_t *>( &buffer[offset] );
-		offset += sizeof(uint32_t);
-	}
-
-	void ByteBuffer::ReadInt16( int16_t *outData ) {
-		SDL_assert( reading );
-
-		*outData = *reinterpret_cast<int16_t *>( &buffer[offset] );
-		offset += sizeof(int16_t);
-	}
-
-	void ByteBuffer::ReadUInt16( uint16_t *outData ) {
-		SDL_assert( reading );
-
-		*outData = *reinterpret_cast<uint16_t *>( &buffer[offset] );
-		offset += sizeof(uint16_t);
-	}
-
-	void ByteBuffer::ReadInt8( int8_t *outData ) {
-		SDL_assert( reading );
-
-		*outData = *reinterpret_cast<int8_t *>( &buffer[offset] );
-		offset += sizeof(int8_t);
-	}
-
-	void ByteBuffer::ReadUInt8( uint8_t *outData ) {
-		SDL_assert( reading );
-
-		*outData = *reinterpret_cast<uint8_t *>( &buffer[offset] );
-		offset += sizeof(uint8_t);
-	}
-
-	void ByteBuffer::ReadReal64( real64_t *outData ) {
-		SDL_assert( reading );
-
-		*outData = *reinterpret_cast<real64_t *>( &buffer[offset] );
-		offset += sizeof(real64_t);
-	}
-
-	void ByteBuffer::ReadReal32( real32_t *outData ) {
-		SDL_assert( reading );
-
-		*outData = *reinterpret_cast<real32_t *>( &buffer[offset] );
-		offset += sizeof(real32_t);
-	}
-
-	void ByteBuffer::ReadString( ByteBuffer::String &out ) {
-		SDL_assert( reading );
+	ByteBuffer::Error ByteBuffer::ReadString( ByteBuffer::String &out ) {
+		if ( !reading ) {
+			return Error::ReadWhileWriting;
+		}
 
 		// read the size
 		uint32_t length;
-		ReadUInt32( &length );
+		Error tmp;
+		if ( (tmp = Read<uint32_t>( &length )) != Error::Success ) {
+			return tmp;
+		}
 
 		// alloc the memory - size + 1 for null terminator
 		out.reserve( length );
@@ -250,24 +141,37 @@ namespace XS {
 		out.resize( length );
 
 		// read the contents
-		ReadGeneric( static_cast<void *>( &out[0] ), length );
+		if ( (tmp = ReadRaw( &out[0], length )) != Error::Success ) {
+			return tmp;
+		}
 
 		// add null terminator
 		out[length] = '\0';
+
+		return Error::Success;
 	}
 
-	void ByteBuffer::ReadString( const char ** outStr, uint32_t *outLen ) {
-		SDL_assert( reading );
+	ByteBuffer::Error ByteBuffer::ReadString( const char ** outStr, uint32_t *outLen ) {
+		if ( !reading ) {
+			return Error::ReadWhileWriting;
+		}
 
 		// read the size
 		uint32_t len = 0u;
-		ReadUInt32( &len );
+		// read the size
+		uint32_t length;
+		Error tmp;
+		if ( (tmp = Read<uint32_t>( &length )) != Error::Success ) {
+			return tmp;
+		}
 
 		// alloc the memory - size + 1 for null terminator
 		char *str = new char[len + 1];
 
 		// read the contents
-		ReadGeneric( static_cast<void *>( str ), len );
+		if ( (tmp = ReadRaw( str, len )) != Error::Success ) {
+			return tmp;
+		}
 
 		// add null terminator
 		str[len] = '\0';
@@ -275,6 +179,8 @@ namespace XS {
 		if ( outLen ) {
 			*outLen = len;
 		}
+
+		return Error::Success;
 	}
 
 } // namespace XS

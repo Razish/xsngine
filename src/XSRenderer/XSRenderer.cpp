@@ -51,7 +51,7 @@ namespace XS {
 		static Cvar *vid_noBorder = nullptr;
 		static Cvar *vid_width = nullptr;
 
-		std::vector<View *> views;
+		static std::vector<View *> views;
 		static View *currentView = nullptr;
 
 #ifdef FBO_COMPOSITE
@@ -360,7 +360,7 @@ namespace XS {
 			Backend::ClearBuffer( true, true, clearColour );
 #endif
 
-			for ( const auto &view : views ) {
+			for ( auto *view : views ) {
 				if ( r_skipRender->GetInt32() & (1 << static_cast<uint32_t>( view->is2D )) ) {
 					continue;
 				}
@@ -424,9 +424,11 @@ namespace XS {
 			SDL_GL_SwapWindow( window );
 		}
 
-		//TODO: unify View code, perhaps static functions/members
 		void RegisterView( View *view ) {
-			views.push_back( view );
+			auto it = std::find( views.begin(), views.end(), view );
+			if ( it == views.end() ) {
+				views.push_back( view );
+			}
 		}
 
 		void SetCurrentView( View *view ) {
@@ -438,7 +440,12 @@ namespace XS {
 		}
 
 		static void AssertView( void ) {
+			//FIXME: should we attempt to unbind views at any point? only for debug builds or !r_fastPath?
+			// at the moment, this will only occur on the first render call to an unbound view, which almost never
+			//	happens
 			if ( !currentView ) {
+				//FIXME: should this policy really be a fatal error?
+				// can't we just log the message and skip the render step
 				throw( XSError( "Attempted to issue render command without binding a view" ) );
 			}
 		}

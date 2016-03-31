@@ -6,7 +6,7 @@
 namespace XS {
 
 	using CommandContext = std::vector<std::string>;
-	using CommandFunc = void (*)( const CommandContext & context );
+	using CommandFunc = void (*)( const CommandContext &context );
 
 	namespace Command {
 

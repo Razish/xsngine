@@ -13,6 +13,10 @@ namespace XS {
 
 		class InputField {
 
+		public:
+			using ExecuteFunc = void (*)( const char *text );
+			using AutocompleteFunc = const char *(*)( const char *match );
+
 		private:
 			std::vector<std::string>	 history;
 
@@ -43,11 +47,11 @@ namespace XS {
 			InputField& operator=( const InputField& ) = delete;
 
 			InputField(
-				void (*executeFunc)( const char *text ),
-				const char *(*autoCompleteFunc)( const char *match )
+				ExecuteFunc executeFunction,
+				AutocompleteFunc autocompleteFunction
 			)
-			: historyIndex( 0u ), historySeeking( false ), current( "" ), execute( executeFunc ),
-				autoComplete( autoCompleteFunc ), cursorPos( 0u ), numChars( 0u )
+			: historyIndex( 0u ), historySeeking( false ), current( "" ), execute( executeFunction ),
+				autoComplete( autocompleteFunction ), cursorPos( 0u ), numChars( 0u )
 			{
 			}
 

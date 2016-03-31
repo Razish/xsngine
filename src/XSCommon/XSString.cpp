@@ -18,7 +18,6 @@ namespace XS {
 			Copy( dst + destLen, src, len - destLen);
 		}
 
-		// safe strncpy that ensures a trailing zero
 		void Copy( char *dst, const char *src, size_t len ) {
 			if ( !dst ) {
 				throw( XSError( Format( "%s NULL dest", XS_FUNCTION ).c_str() ) );
@@ -36,7 +35,6 @@ namespace XS {
 			dst[len - 1] = '\0';
 		}
 
-		// safe sprintf-like
 		int FormatBuffer( char *dst, size_t len, const char *fmt, ... ) {
 			va_list ap;
 
@@ -85,7 +83,6 @@ namespace XS {
 			return 0;
 		}
 
-		// stricmpn
 		int Compare( const char *s1, const char *s2, size_t len ) {
 			// bail early on NULL strings
 			if ( !s1 ) {

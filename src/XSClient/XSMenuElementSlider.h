@@ -28,10 +28,14 @@ namespace XS {
 			std::string		postExecCommand;
 			bool			updatingValue = false;
 
-			struct Properties {
+			struct Properties : public MenuElement::Properties {
 				bool			centered = false;
 				bool			vertical = false;
 				bool			integral = false;
+
+				Properties()
+				: MenuElement::Properties() {
+				}
 			} properties;
 
 			bool MouseWithinBounds(
@@ -54,6 +58,7 @@ namespace XS {
 			MenuElementSlider& operator=( const MenuElementSlider& ) = delete;
 
 			MenuElementSlider(
+				const Menu &parent,
 				TokenParser *parser,
 				const char *fileName
 			);

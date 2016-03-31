@@ -69,7 +69,7 @@ namespace XS {
 		}
 
 		static void SetupCamera( void ) {
-			camera = new FlyCamera( 0.05f );
+			camera = new FlyCamera( *sceneView, 0.05f );
 
 			const glm::vec3 cameraPos( 0.0f, 0.0f, 0.0f );
 			const glm::vec3 lookAt( 0.0f, 0.0f, -1.0f ); // looking down -Z
@@ -114,8 +114,9 @@ namespace XS {
 			camera->Update( dt );
 
 			// add objects to scene
+			Renderer::View &v = *sceneView; // cache
 			for ( const auto &entity : clgState.entities ) {
-				entity.second->AddToScene( sceneView );
+				entity.second->AddToScene( v );
 			}
 
 			// add lights to scene
@@ -128,21 +129,102 @@ namespace XS {
 		bool ReceivePacket( const RakNet::Packet *packet ) {
 			switch ( packet->data[0] ) {
 
+			case Network::ID_XS_SV2CL_CONNECTION_STATE: {
+				using State = Network::Connection::State;
+				const Network::GUID guid = packet->guid.g;
+				Network::Connection &connection = Network::Connection::Get( guid );
+				SDL_assert( guid == connection.guid );
+
+				const uint8_t *buffer = packet->data + 1;
+				size_t bufferLen = packet->length - 1;
+				ByteBuffer bb( buffer, bufferLen );
+				ByteBuffer::Error status;
+
+				State newState;
+				status = bb.Read<State>( &newState );
+
+				if ( connection.ChangeState( newState ) ) {
+					// the server is telling us our state has changed
+					switch ( newState ) {
+
+					case State::NotConnected: {
+						// initial state: no connections requested
+						// error: should never change to this
+						SDL_assert( !"unhandled case" );
+					} break;
+
+					case State::SynSent: {
+						// we request a connection to a host
+						SDL_assert( !"unhandled case" );
+					} break;
+
+					case State::SynReceived: {
+						// the host sends us back a challenge
+
+						//TODO: respond to challenge sent by host
+
+						connection.ChangeState( State::AckSent, true );
+					} break;
+
+					case State::AckSent: {
+						// we respond to the challenge
+						SDL_assert( !"unhandled case" );
+					} break;
+
+					case State::AckReceived: {
+						// host allocates client instance and starts sending session info
+
+						//TODO: wait for baselines
+
+						connection.ChangeState( State::Active, true );
+					} break;
+
+					case State::Active: {
+						// baselines have been receieved, connection is active
+						// nothing to do at the moment
+						SDL_assert( !"unhandled case" );
+					} break;
+
+					case State::Disconnecting: {
+						// disconnection has been requested
+						// this is handled by another RakNet message currently
+						SDL_assert( !"unhandled case" );
+					} break;
+
+					case State::Dead: {
+						// this host has finished disconnecting or has timed out
+						// this is handled by another RakNet message currently
+						SDL_assert( !"unhandled case" );
+					} break;
+
+					default: {
+					} break;
+
+					}
+				}
+			} break;
+
 			case Network::ID_XS_SV2CL_GAMESTATE: {
 				//TODO: store a large history of snapshots, with entity states so we can interpolate between them
 				uint8_t *buffer = packet->data + 1;
 				size_t bufferLen = packet->length - 1;
 
 				ByteBuffer bb( buffer, bufferLen );
+				ByteBuffer::Error status;
 
 				struct SnapshotHeader {
 					uint32_t numEntities;
 				} snapshotHeader;
-				bb.ReadGeneric( &snapshotHeader, sizeof(snapshotHeader) );
+				status = bb.ReadRaw( &snapshotHeader, sizeof(snapshotHeader) );
+
+				if ( status != ByteBuffer::Error::Success ) {
+					// can't operate on snapshot format we didn't expect
+					break;
+				}
 
 				for ( size_t i = 0u; i < snapshotHeader.numEntities; i++ ) {
 					uint32_t entityID = 0xFFFFFFFFu;
-					bb.ReadUInt32( &entityID );
+					status = bb.Read<uint32_t>( &entityID );
 					SDL_assert( entityID != Entity::invalidID );
 
 					Entity *entity = Entity::Get( entityID );
@@ -151,25 +233,25 @@ namespace XS {
 						//TODO: delta update of entity
 						// must be specialised
 						// skip type
-						bb.Skip( sizeof(uint32_t) );
+						status = bb.Skip( sizeof(uint32_t) );
 
 						// read position
-						bb.ReadReal32( &entity->position[0] );
-						bb.ReadReal32( &entity->position[1] );
-						bb.ReadReal32( &entity->position[2] );
+						status = bb.Read<real32_t>( &entity->position[0] );
+						status = bb.Read<real32_t>( &entity->position[1] );
+						status = bb.Read<real32_t>( &entity->position[2] );
 
 						if ( entity->type == EntityType::Model ) {
-							bb.Skip( sizeof(uint32_t) );
+							status = bb.Skip( sizeof(uint32_t) );
 						}
 					}
 					else {
 						EntityType entityType = EntityType::Generic;
-						bb.ReadUInt32( reinterpret_cast<uint32_t *>( &entityType ) );
+						status = bb.Read<uint32_t>( reinterpret_cast<uint32_t *>( &entityType ) );
 
 						vector3 tmpPos = {};
-						bb.ReadReal32( &tmpPos[0] );
-						bb.ReadReal32( &tmpPos[1] );
-						bb.ReadReal32( &tmpPos[2] );
+						status = bb.Read<real32_t>( &tmpPos[0] );
+						status = bb.Read<real32_t>( &tmpPos[1] );
+						status = bb.Read<real32_t>( &tmpPos[2] );
 
 						//TODO: spawn factory?
 						switch ( entityType ) {
@@ -183,8 +265,8 @@ namespace XS {
 							entity = new EntityFXRunner();
 
 							EntityFXRunner *fxEnt = reinterpret_cast<EntityFXRunner*>( entity );
-							bb.ReadUInt32( &fxEnt->count );
-							bb.ReadUInt32( &fxEnt->life );
+							status = bb.Read<uint32_t>( &fxEnt->count );
+							status = bb.Read<uint32_t>( &fxEnt->life );
 							//TODO: refactor ParticleEmitter to not be a Renderable, or implement a
 							//	ParticleEmitter::Register() ala Renderer::Model::Register
 							/*
@@ -201,7 +283,7 @@ namespace XS {
 
 							// read model ID
 							uint32_t resourceID;
-							bb.ReadUInt32( &resourceID );
+							status = bb.Read<uint32_t>( &resourceID );
 
 							EntityModel *modelEnt = reinterpret_cast<EntityModel*>( entity );
 						#if 0
@@ -224,9 +306,10 @@ namespace XS {
 				uint8_t *buffer = packet->data + 1;
 				size_t bufferLen = packet->length - 1;
 				ByteBuffer bb( buffer, bufferLen );
+				ByteBuffer::Error status;
 
 				uint32_t numResources = 0u;
-				bb.ReadUInt32( &numResources );
+				status = bb.Read<uint32_t>( &numResources );
 
 				console.Print( PrintLevel::Debug, "numResources: %u\n",
 					numResources
@@ -234,11 +317,11 @@ namespace XS {
 
 				for ( uint32_t i = 0u; i < numResources; i++ ) {
 					uint32_t resourceID = 0u;
-					bb.ReadUInt32( &resourceID );
+					status = bb.Read<uint32_t>( &resourceID );
 
 					uint32_t strLength = 0u;
 					const char *resourceName = nullptr;
-					bb.ReadString( &resourceName, &strLength );
+					status = bb.ReadString( &resourceName, &strLength );
 
 					console.Print( PrintLevel::Debug, "resource %02u: %s\n",
 						resourceID,
@@ -253,16 +336,18 @@ namespace XS {
 				uint8_t *buffer = packet->data + 1;
 				size_t bufferLen = packet->length - 1;
 				ByteBuffer bb( buffer, bufferLen );
+				ByteBuffer::Error status;
 
-				const char *msg = nullptr;
-				bb.ReadString( &msg );
+				ByteBuffer::String str;
+				//const char *msg = nullptr;
+				status = bb.ReadString( str );
 
 				// avoid printf format attacks
 				console.Print( PrintLevel::Normal, "%s\n",
-					msg
+					str.c_str()
 				);
 
-				delete[] msg;
+				//delete[] msg;
 			} break;
 
 			default: {

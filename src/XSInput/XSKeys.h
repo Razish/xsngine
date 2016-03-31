@@ -23,12 +23,12 @@ namespace XS {
 
 		// list all key bindings
 		void Cmd_ListBinds(
-			const CommandContext & context
+			const CommandContext &context
 		);
 
 		// set a key binding
 		void Cmd_SetBind(
-			const CommandContext & context
+			const CommandContext &context
 		);
 
 		// append all key bindings to the specified string

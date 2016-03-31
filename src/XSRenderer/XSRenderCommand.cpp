@@ -17,7 +17,6 @@
 #include "XSRenderer/XSVertexAttributes.h"
 #include "XSRenderer/XSTexture.h"
 #include "XSRenderer/XSShaderProgram.h"
-#include "XSRenderer/XSView.h"
 
 #if defined(__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6))
 	#pragma GCC diagnostic push

@@ -36,14 +36,23 @@ namespace XS {
 			}
 		}
 
-		void Entity::Serialise( ByteBuffer *buffer ) const {
+		ByteBuffer::Error Entity::Serialise( ByteBuffer *buffer ) const {
+			ByteBuffer::Error status;
 			// header info
-			buffer->WriteUInt32( id );
-			buffer->WriteUInt32( type );
+			status = buffer->Write<uint32_t>( id );
+			status = buffer->Write<uint32_t>( type );
+			if ( status != ByteBuffer::Error::Success ) {
+				return status;
+			}
 
-			buffer->WriteReal32( position[0] );
-			buffer->WriteReal32( position[1] );
-			buffer->WriteReal32( position[2] );
+			status = buffer->Write<uint32_t>( position[0] );
+			status = buffer->Write<uint32_t>( position[1] );
+			status = buffer->Write<uint32_t>( position[2] );
+			if ( status != ByteBuffer::Error::Success ) {
+				return status;
+			}
+
+			return ByteBuffer::Error::Success;
 		}
 
 	} // namespace ServerGame

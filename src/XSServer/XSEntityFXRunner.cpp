@@ -17,10 +17,20 @@ namespace XS {
 			Entity::Update( dt );
 		}
 
-		void EntityFXRunner::Serialise( ByteBuffer *buffer ) const {
-			Entity::Serialise( buffer );
-			buffer->WriteUInt32( count );
-			buffer->WriteUInt32( life );
+		ByteBuffer::Error EntityFXRunner::Serialise( ByteBuffer *buffer ) const {
+			ByteBuffer::Error status;
+			status = Entity::Serialise( buffer );
+			if ( status != ByteBuffer::Error::Success ) {
+				return status;
+			}
+
+			status = buffer->Write<uint32_t>( count );
+			status = buffer->Write<uint32_t>( life );
+			if ( status != ByteBuffer::Error::Success ) {
+				return status;
+			}
+
+			return ByteBuffer::Error::Success;
 		}
 
 	} // namespace ServerGame

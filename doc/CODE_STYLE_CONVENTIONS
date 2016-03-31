@@ -139,7 +139,7 @@ Do not over-comment code. This includes being exceedingly explicit and comment s
 Recursive functions should be explicitly commented at both the point of recursion, and above the function definition
 There is no naming requirement for a recursive function, but ***_r is acceptable
 
-Line comments should have a space at the start, except for comments intended to be searchable
+Line comments should have a space at the start, except for comment tags intended to be searchable
 	// good
 	//bad
 	//TODO: easily searchable
@@ -149,7 +149,15 @@ Line comments that span multiple lines should be indented with tab for carry-on 
 	//	continues on here after wrapping
 	// line 2 starts here
 
-
+Place any performance, security and memory management concerns directly above function prototype
+	// this function does X to bar
+	// dev note: if you add/remove any states, also modify StateToString
+	void SomeFunction(
+		//TODO: investigate options for Z
+		//FIXME: this doesn't really work: because reasons
+		//PERF: investigate SIMD application here
+		Foo *bar
+	);
 
 3.	NAMING
 
@@ -176,11 +184,11 @@ Constants should generally use a shorthand prefix to avoid name clashing, e.g. I
 Only the first constant may be assigned a value, enumeration will handle the rest.
 The last constant may be used to know the maximum amount of legitimate values
 
-	enum myEnum_t {
-		ENUM_ONE = 0,
-		ENUM_TWO,
-		ENUM_THREE,
-		ENUM_MAX
+	enum EntityFlags {
+		ENTFLAG_ONE = 0,
+		ENTFLAG_TWO,
+		ENTFLAG_THREE,
+		ENTFLAG_MAX
 	};
 
 An exception to this rule is for strongly-typed enums, e.g.:

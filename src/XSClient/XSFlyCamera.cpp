@@ -9,7 +9,6 @@
 #include "XSClient/XSClientGameState.h"
 #include "XSInput/XSInput.h"
 #include "XSInput/XSKeys.h"
-#include "XSRenderer/XSView.h"
 
 #if defined(__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6))
 	#pragma GCC diagnostic push
@@ -34,7 +33,7 @@ namespace XS {
 
 			SetupPerspective(
 				glm::radians( cg_fov->GetReal32() ),
-				Renderer::rdState.window.aspectRatio,
+				view.width / view.height,
 				zNear,
 				zFar
 			);

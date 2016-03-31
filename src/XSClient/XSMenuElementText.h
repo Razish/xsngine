@@ -22,9 +22,13 @@ namespace XS {
 			std::string		text;
 			uint16_t		pointSize = 16u;
 
-			struct Properties {
+			struct Properties : public MenuElement::Properties {
 				bool			centered = false;
 				bool			vertical = false;
+
+				Properties()
+				: MenuElement::Properties() {
+				}
 			} properties;
 
 			void ParseProperties(
@@ -39,6 +43,7 @@ namespace XS {
 			MenuElementText& operator=( const MenuElementText& ) = delete;
 
 			MenuElementText(
+				const Menu &parent,
 				TokenParser *parser,
 				const char *fileName
 			);

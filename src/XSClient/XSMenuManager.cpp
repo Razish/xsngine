@@ -14,8 +14,8 @@ namespace XS {
 
 	namespace Client {
 
-		MenuManager::MenuManager()
-		: isOpen( privateIsOpen )
+		MenuManager::MenuManager( const Renderer::View &view )
+		: view( view ), isOpen( privateIsOpen )
 		{
 			privateIsOpen = false;
 
@@ -47,7 +47,7 @@ namespace XS {
 		// load a menu from disk
 		bool MenuManager::RegisterMenu( const char *fileName ) {
 			// parse out the menu
-			Menu *menu = new Menu( fileName );
+			Menu *menu = new Menu( view, fileName );
 
 			if ( menu->name.empty() ) {
 				return false;
@@ -95,8 +95,8 @@ namespace XS {
 
 		void MenuManager::DrawCursor( void ) {
 			vector2 realPos = {
-				Client::cursorPos[0] * Renderer::rdState.window.width,
-				Client::cursorPos[1] * Renderer::rdState.window.height
+				Client::cursorPos[0] * view.width,
+				Client::cursorPos[1] * view.height
 			};
 			Renderer::DrawQuad(
 				realPos[0], realPos[1],

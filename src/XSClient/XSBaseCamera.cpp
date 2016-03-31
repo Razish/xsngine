@@ -2,7 +2,6 @@
 #include "XSCommon/XSVector.h"
 #include "XSCommon/XSMatrix.h"
 #include "XSClient/XSBaseCamera.h"
-#include "XSRenderer/XSView.h"
 
 #if defined(__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6))
 	#pragma GCC diagnostic push
@@ -20,13 +19,15 @@ namespace XS {
 
 	namespace ClientGame {
 
-		BaseCamera::BaseCamera( const glm::vec3 &position ) {
+		BaseCamera::BaseCamera( const Renderer::View &view, const glm::vec3 &position )
+		: view( view )
+		{
 			worldTransform[3] = glm::vec4( position, 1.0 );
 			perspectiveSet = false;
 		}
 
-		BaseCamera::BaseCamera( const glm::mat4 &transform )
-		: worldTransform( transform )
+		BaseCamera::BaseCamera( const Renderer::View &view, const glm::mat4 &transform )
+		: view( view ), worldTransform( transform )
 		{
 			UpdateProjectionViewTransform();
 		}
@@ -36,8 +37,7 @@ namespace XS {
 			UpdateProjectionViewTransform();
 		}
 
-		void BaseCamera::SetPosition( const glm::vec3 &position)
-		{
+		void BaseCamera::SetPosition( const glm::vec3 &position ) {
 			worldTransform[3] = glm::vec4( position, 1.0f );
 			UpdateProjectionViewTransform();
 		}

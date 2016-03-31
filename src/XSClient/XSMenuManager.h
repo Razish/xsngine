@@ -4,6 +4,7 @@
 #include <unordered_map>
 
 #include "XSClient/XSMenu.h"
+#include "XSRenderer/XSView.h"
 
 namespace XS {
 
@@ -21,15 +22,27 @@ namespace XS {
 			// list of all loaded menus
 			std::unordered_map<std::string, Menu *>	menus;
 
+			// view the menus will be rendered to
+			const Renderer::View	&view;
+
 			bool	privateIsOpen = false;
 
 			struct {
 				Renderer::Material	*cursor = nullptr;
 			} assets;
-			uint32_t cursorWidth = 0u, cursorHeight = 0u;
+			uint32_t cursorWidth = 0u;
+			uint32_t cursorHeight = 0u;
 
 		public:
-			MenuManager();
+			// don't allow default instantiation
+			MenuManager() = delete;
+			MenuManager( const MenuManager& ) = delete;
+			MenuManager& operator=( const MenuManager& ) = delete;
+
+			// instantiate a MenuManager
+			MenuManager(
+				const Renderer::View &view
+			);
 			~MenuManager();
 
 			// load a menu from disk

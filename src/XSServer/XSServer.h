@@ -41,7 +41,7 @@ namespace XS {
 
 		// ???
 		void IncomingConnection(
-			Network::GUID guid
+			Network::Connection &connection
 		);
 
 		// ???

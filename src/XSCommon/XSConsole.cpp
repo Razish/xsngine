@@ -1,4 +1,5 @@
 #include <iostream>
+#include <sstream>
 
 #include "XSCommon/XSCommon.h"
 #include "XSCommon/XSGlobals.h"
@@ -61,22 +62,32 @@ namespace XS {
 			}
 		}
 
-		//FIXME: care about printing twice on same line
-		std::string finalOut = "";
-		for ( int32_t i = 0; i < indentation; i++ ) {
-			finalOut += "  ";
+		// preprocess the string (e.g. split by \n)
+		std::vector<std::string> lines;
+		std::istringstream ss( str );
+		std::string line;
+		while ( std::getline( ss, line ) ) {
+			lines.push_back( line );
 		}
-		finalOut += str;
 
-		//TODO: strip colours?
-		fprintf( stdout, "%s", finalOut.c_str() );
-		buffer->Append( finalOut );
+		for ( auto &line : lines ) {
+			//FIXME: care about printing twice on same line
+			std::string finalOut = "";
+			for ( int32_t i = 0; i < indentation; i++ ) {
+				finalOut += "  ";
+			}
+			finalOut += line;
 
-	#if defined(XS_OS_WINDOWS) && defined(_DEBUG)
-		if ( !finalOut.empty() ) {
-			OutputDebugString( finalOut.c_str() );
+			//TODO: strip colours?
+			fprintf( stdout, "%s\n", finalOut.c_str() );
+			buffer->Append( finalOut );
+
+		#if defined(XS_OS_WINDOWS) && defined(_DEBUG)
+			if ( !finalOut.empty() ) {
+				OutputDebugString( finalOut.c_str() );
+			}
+		#endif
 		}
-	#endif
 	}
 
 

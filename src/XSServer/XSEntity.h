@@ -1,12 +1,11 @@
 #pragma once
 
 #include "XSCommon/XSVector.h"
+#include "XSCommon/XSByteBuffer.h"
 #include "XSShared/XSEntityTypes.h"
 #include "XSPhysics/XSPhysicsActor.h"
 
 namespace XS {
-
-	class ByteBuffer;
 
 	namespace ServerGame {
 
@@ -43,9 +42,9 @@ namespace XS {
 				real64_t dt
 			);
 
-			virtual void Serialise(
+			virtual ByteBuffer::Error Serialise(
 				ByteBuffer *buffer
-			) const;
+			) const XS_WARN_UNUSED_RESULT;
 
 		};
 

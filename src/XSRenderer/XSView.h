@@ -51,7 +51,7 @@ namespace XS {
 			std::queue<RenderCommand>	 renderCommands;
 
 			// construct a view, specifying additional callbacks if necessary
-			// if width or height are 0, they are both inherited from the current resolution
+			// if width or height are 0, they are both inherited from the window's resolution
 			View(
 				uint32_t viewWidth,
 				uint32_t viewHeight,
@@ -59,8 +59,6 @@ namespace XS {
 				RenderCallback preRender = nullptr,
 				RenderCallback postRender = nullptr
 			);
-
-			// do not call publicly
 			~View();
 
 			// bind a view so that subsequent render calls are associated with it

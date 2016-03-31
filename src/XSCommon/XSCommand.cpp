@@ -20,11 +20,11 @@ namespace XS {
 		// command buffer
 		static std::queue<std::string> buffer;
 
-		static void Cmd_ClearConsole( const CommandContext & context ) {
+		static void Cmd_ClearConsole( const CommandContext &context ) {
 			console.Clear();
 		}
 
-		static void Cmd_ListCommands( const CommandContext & context ) {
+		static void Cmd_ListCommands( const CommandContext &context ) {
 			console.Print( PrintLevel::Normal, "Listing commands...\n" );
 			Indent indent( 1 );
 
@@ -36,11 +36,11 @@ namespace XS {
 			}
 		}
 
-		static void Cmd_ListCvars( const CommandContext & context ) {
+		static void Cmd_ListCvars( const CommandContext &context ) {
 			Cvar::List();
 		}
 
-		static void Cmd_PrintCvar( const CommandContext & context ) {
+		static void Cmd_PrintCvar( const CommandContext &context ) {
 			if ( context.size() < 1 ) {
 				console.Print( PrintLevel::Normal, "\"print\" failed. Must specify at-least one cvar\n" );
 				return;
@@ -62,7 +62,7 @@ namespace XS {
 			}
 		}
 
-		static void Cmd_ResetCvar( const CommandContext & context ) {
+		static void Cmd_ResetCvar( const CommandContext &context ) {
 			Cvar *cv = Cvar::Get( context[0] );
 
 			if ( !cv ) {
@@ -75,7 +75,7 @@ namespace XS {
 			cv->Set( cv->GetDefaultString() );
 		}
 
-		static void Cmd_SetCvar( const CommandContext & context ) {
+		static void Cmd_SetCvar( const CommandContext &context ) {
 			if ( context.size() < 2 ) {
 				console.Print( PrintLevel::Normal, "\"set\" failed. Must specify a cvar and value\n" );
 				return;
@@ -94,13 +94,13 @@ namespace XS {
 			cv->Set( value );
 		}
 
-		static void Cmd_ToggleCvar( const CommandContext & context ) {
+		static void Cmd_ToggleCvar( const CommandContext &context ) {
 			Cvar *cv = Cvar::Get( context[0] );
 
 			cv->Set( !cv->GetBool() );
 		}
 
-		static void Cmd_Quit( const CommandContext & context ) {
+		static void Cmd_Quit( const CommandContext &context ) {
 			// generic shutdown
 			throw( XSError() );
 		}

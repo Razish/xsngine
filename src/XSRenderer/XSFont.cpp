@@ -1,4 +1,5 @@
 #include <unordered_map>
+#include <limits>
 
 #include "XSCommon/XSCommon.h"
 #include "XSCommon/XSString.h"
@@ -204,7 +205,8 @@ namespace XS {
 				const FontData &fd = data[c][pointSize];
 
 				// check for overflow
-				if ( currentPos[0] + fd.advance >= rdState.window.width ) {
+				//FIXME: this is more a concern of the View being rendered to, not the size of the window
+				if ( currentPos[0] + fd.advance > rdState.window.width + std::numeric_limits<real32_t>::epsilon() ) {
 					currentPos[0] = pos[0];
 					currentPos[1] += lineHeight[pointSize];
 				}
@@ -227,6 +229,7 @@ namespace XS {
 				currentPos[0] += fd.advance;
 
 				// check for line-feeds
+				// note: this should not occur for ClientConsole - those linebreaks are preprocessed :)
 				if ( c == '\n' ) {
 					currentPos[0] = pos[0];
 					currentPos[1] += lineHeight[pointSize];
@@ -240,10 +243,10 @@ namespace XS {
 		}
 
 		uint32_t Font::GetTextLineCount( const vector2 &pos, const std::string &text, uint16_t pointSize ) {
-			uint32_t numLines = 0u;
+			uint32_t numLines = 1u;
 
 			if ( text.empty() ) {
-				return numLines;
+				return 0u;
 			}
 
 			RenderGlyphs( pointSize );
@@ -255,6 +258,7 @@ namespace XS {
 				const FontData &fd = data[c][pointSize];
 
 				// check for overflow
+				//FIXME: this is more a concern of the View being rendered to, not the size of the window
 				if ( currentPos[0] + fd.advance >= rdState.window.width ) {
 					currentPos[0] = pos[0];
 					currentPos[1] += lineHeight[pointSize];
@@ -264,6 +268,7 @@ namespace XS {
 				currentPos[0] += fd.advance;
 
 				// check for line-feeds
+				// note: this should not occur for ClientConsole - those linebreaks are preprocessed :)
 				if ( c == '\n' ) {
 					currentPos[0] = pos[0];
 					currentPos[1] += lineHeight[pointSize];

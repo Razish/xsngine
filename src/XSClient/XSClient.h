@@ -5,6 +5,7 @@
 #include "XSCommon/XSCommand.h"
 #include "XSCommon/XSTimer.h"
 #include "XSCommon/XSVector.h"
+#include "XSNetwork/XSNetwork.h"
 
 namespace RakNet {
 	struct Packet;
@@ -36,6 +37,16 @@ namespace XS {
 		// a network pump receieved a packet intended for the Server to receive
 		bool ReceivePacket(
 			const RakNet::Packet *packet
+		);
+
+		// the server has accepted our connection
+		void Connect(
+			Network::Connection &connection
+		);
+
+		// the server has disconnected us
+		void Disconnect(
+			Network::GUID guid
 		);
 
 		// run a frame and pass control to the ClientGame
@@ -75,7 +86,7 @@ namespace XS {
 
 		// toggle visibility of the console, locking or releasing mouse control
 		void Cmd_ToggleConsole(
-			const CommandContext & context
+			const CommandContext &context
 		);
 
 		// draw a client frame and pass control to the ClientGame

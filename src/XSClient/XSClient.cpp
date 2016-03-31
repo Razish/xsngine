@@ -14,6 +14,7 @@
 #include "XSCommon/XSByteBuffer.h"
 #include "XSClient/XSClient.h"
 #include "XSClient/XSClientGame.h"
+#include "XSClient/XSClientGameState.h"
 #include "XSClient/XSClientConsole.h"
 #include "XSClient/XSMenuManager.h"
 #include "XSClient/XSTerrain.h"
@@ -44,7 +45,7 @@ namespace XS {
 		// console input
 		ClientConsole *clientConsole = nullptr;
 
-		void Cmd_ToggleConsole( const CommandContext & context ) {
+		void Cmd_ToggleConsole( const CommandContext &context ) {
 			if ( !clientConsole ) {
 				throw XSError( "Tried to toggle client console without a valid instance" );
 			}
@@ -52,7 +53,7 @@ namespace XS {
 			clientConsole->Toggle();
 		}
 
-		static void Cmd_Disconnect( const CommandContext & context ) {
+		static void Cmd_Disconnect( const CommandContext &context ) {
 			if ( !Network::IsConnected() ) {
 				console.Print( PrintLevel::Normal, "Not connected to a server\n" );
 				return;
@@ -60,45 +61,48 @@ namespace XS {
 			Network::Disconnect();
 		}
 
-		static void Cmd_SendCommand( const CommandContext & context ) {
+		static void Cmd_SendCommand( const CommandContext &context ) {
 			if ( !Network::IsConnected() ) {
 				console.Print( PrintLevel::Normal, "Not connected to a server\n" );
 				return;
 			}
 
 			ByteBuffer commandBuffer;
+			ByteBuffer::Error status;
 
 			// write the number of args
 			const size_t numArgs = context.size() - 1;
-			commandBuffer.WriteUInt32( numArgs );
+			status = commandBuffer.Write<uint32_t>( numArgs );
 
 			// write each arg
 			for ( const std::string &arg : context ) {
-				commandBuffer.WriteString( arg.c_str() );
-				console.Print( PrintLevel::Normal, "  arg: %s, len: %i\n",
+				status = commandBuffer.WriteString( arg.c_str() );
+				console.Print( PrintLevel::Developer, "  arg: %s, len: %i\n",
 					arg.c_str(), arg.length()
 				);
 			}
 
-			Network::XSPacket commandPacket( Network::ID_XS_CL2SV_COMMAND );
-			commandPacket.data = commandBuffer.GetMemory( &commandPacket.dataLen );
-			commandPacket.Send( 0u );
+			if ( status == ByteBuffer::Error::Success ) {
+				Network::XSPacket commandPacket( Network::ID_XS_CL2SV_COMMAND );
+				commandPacket.data = commandBuffer.GetMemory( &commandPacket.dataLen );
+				commandPacket.Send( 0u );
+			}
 		}
 
-		static void Cmd_Connect( const CommandContext & context ) {
+		static void Cmd_Connect( const CommandContext &context ) {
 			size_t numArgs = context.size();
 			const char *hostname = (numArgs >= 1) ? context[0].c_str() : nullptr;
 			uint16_t port = (numArgs >= 2) ? atoi( context[1].c_str() ) : 0u;
 			Network::Connect( hostname, port );
 		}
 
-		static void Cmd_OpenMenu( const CommandContext & context ) {
+		static void Cmd_OpenMenu( const CommandContext &context ) {
 			menu->OpenMenu( context[0].c_str() );
 		}
 
-		static void Cmd_ReloadMenu( const CommandContext & context ) {
+		static void Cmd_ReloadMenu( const CommandContext &context ) {
 			delete menu;
-			menu = new MenuManager();
+			menu = new MenuManager( *hudView );
 			menu->RegisterMenu( "menus/settings.xmenu" );
 		}
 
@@ -184,7 +188,7 @@ namespace XS {
 
 			// hud
 			hudView = new Renderer::View( 0u, 0u, true );
-			menu = new MenuManager();
+			menu = new MenuManager( *hudView );
 			menu->RegisterMenu( "menus/settings.xmenu" );
 		//	menu->OpenMenu( "settings" );
 
@@ -223,6 +227,26 @@ namespace XS {
 			else {
 				return false;
 			}
+		}
+
+		void Connect( Network::Connection &connection ) {
+			// the server has accepted our connection
+			if ( ClientGame::clgState.connection ) {
+				//TODO: print message about disconnecting from current server
+			}
+
+			ClientGame::clgState.connection = &connection;
+
+			// request a connection
+			connection.ChangeState( Network::Connection::State::SynSent, true );
+		}
+
+		void Disconnect( Network::GUID guid ) {
+			// the server has disconnected us
+			if ( !ClientGame::clgState.connection || ClientGame::clgState.connection->guid != guid ) {
+				return;
+			}
+			ClientGame::clgState.connection = nullptr;
 		}
 
 		void RunFrame( real64_t dt ) {
@@ -296,7 +320,7 @@ namespace XS {
 			}
 
 			vector2 pos = {
-				Renderer::rdState.window.width - textWidth,
+				hudView->width - textWidth,
 				0.0f
 			};
 			font->Draw( pos, fpsText, fpsTextSize );

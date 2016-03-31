@@ -27,9 +27,9 @@ namespace XS {
 				real64_t dt
 			);
 
-			void Serialise(
+			ByteBuffer::Error Serialise(
 				ByteBuffer *buffer
-			) const;
+			) const XS_WARN_UNUSED_RESULT;
 
 		};
 

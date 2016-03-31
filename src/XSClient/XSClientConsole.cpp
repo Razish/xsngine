@@ -23,6 +23,7 @@ namespace XS {
 		}
 
 		static const char *InputAutoComplete( const char *match ) {
+			//TODO: advanced auto completion (ala zsh/oh-my-zsh)
 			return "Autocompleted";
 		}
 
@@ -83,7 +84,8 @@ namespace XS {
 		}
 
 		ClientConsole::ClientConsole( Console *consoleInstance )
-		: console( consoleInstance ), visible( false ), scrollAmount( 0 ), lineCount( 24u ), font( nullptr )
+		: console( consoleInstance ), visible( false ), scrollAmount( 0 ), lineCount( 24u ),
+			font( nullptr )
 		{
 			con_fontSize = Cvar::Create( "con_fontSize", "16",
 				"Size of the console font", CVAR_ARCHIVE
@@ -101,8 +103,39 @@ namespace XS {
 		void ClientConsole::Resize( void ) {
 			if ( font ) {
 				const uint16_t fontSize = static_cast<uint16_t>( con_fontSize->GetInt32() );
-				lineCount = ((Renderer::rdState.window.height / 2) / std::floor( font->lineHeight[fontSize] )) - 1;
+				lineCount = ((view->height / 2) / std::floor( font->lineHeight[fontSize] )) - 1;
 			}
+		}
+
+		// split a string into multiple chunks
+		void ClientConsole::Split( const std::string &line, std::vector<std::string> &lines ) {
+			const uint16_t fontSize = static_cast<uint16_t>( con_fontSize->GetInt32() );
+			const real32_t lineWidth = view->width;
+
+			ptrdiff_t startOffset = 0u;
+			real32_t accumWidth = 0.0f;
+
+			const char *p = line.c_str();
+			for ( char c = *p; c != '\0'; c = *p++ ) {
+				if ( c == '\t' ) {
+					//FIXME: actually handle tab stops properly
+					accumWidth += font->GetGlyphWidth( ' ', fontSize );
+				}
+				else {
+					accumWidth += font->GetGlyphWidth( c, fontSize );
+				}
+
+				if ( accumWidth >= lineWidth ) {
+					// splice and reset counters
+					const ptrdiff_t endOffset = p - line.c_str();
+					lines.push_back( std::string( line.cbegin() + startOffset, line.cbegin() + endOffset ) );
+					startOffset = endOffset;
+					accumWidth = 0.0f;
+				}
+			}
+
+			// push the remainder of the line
+			lines.push_back( std::string( line.cbegin() + startOffset, line.cend() ) );
 		}
 
 		void ClientConsole::Draw( void ) {
@@ -113,7 +146,7 @@ namespace XS {
 			view->Bind();
 
 			Renderer::DrawQuad(
-				0, 0, Renderer::rdState.window.width, Renderer::rdState.window.height / 2,
+				0, 0, view->width, view->height / 2,
 				0.0f, 0.0f, 1.0f, 1.0f,
 				&colourTable[ColourIndex( COLOUR_BLACK )],
 				nullptr
@@ -121,38 +154,19 @@ namespace XS {
 
 			Resize();
 
-			// draw the console text
-			const uint32_t numLines = console->buffer->size();
-			const uint32_t start = std::max(
-				0,
-				static_cast<int32_t>( numLines ) - static_cast<int32_t>( scrollAmount )
-					- static_cast<int32_t>( lineCount )
-			);
-			const uint32_t begin = std::min( numLines, start );
-			const uint32_t end = std::min( begin + lineCount, numLines );
-			std::vector<std::string> lines( console->buffer->begin() + begin, console->buffer->begin() + end );
-
-			// TODO: might have to draw lines in reverse to compensate for one buffer element spanning multiple
-			//	lines
-			const real32_t x = 0.0f;
-			vector2 pos = { x, 0.0f };
-			uint32_t drawn = 0u;
 			const uint16_t fontSize = static_cast<uint16_t>( con_fontSize->GetInt32() );
-			for ( const auto &it : lines ) {
-				const uint32_t linesToDraw = font->GetTextLineCount( pos, it, fontSize );
-				drawn += linesToDraw;
-				if ( drawn > lineCount ) {
-					break;
-				}
-				font->Draw( pos, it, fontSize, &colourTable[ColourIndex( COLOUR_WHITE )] );
-				pos[1] += linesToDraw * font->lineHeight[fontSize];
-			}
+			const real32_t x = 0.0f;
+			vector2 pos = {
+				x,
+				(view->height / 2.0f) - font->lineHeight[fontSize]
+			};
 
 			// draw the input line
 			font->Draw( pos, String::Format( ">%s", input->GetLine() ), fontSize );
 
 			// and now the cursor
 			const char *line = input->GetLine();
+			real32_t savedX = pos[0];
 			pos[0] = font->GetGlyphWidth( '>', fontSize );
 			for ( const char *p = line; *p; p++ ) {
 				if ( p - line >= static_cast<int32_t>( input->GetCursorPos() ) ) {
@@ -165,22 +179,59 @@ namespace XS {
 				// flash every 250ms
 				font->Draw( pos, "_", fontSize );
 			}
+			pos[0] = savedX;
 
 			// draw version information
-			const char *versionText = WINDOW_TITLE;
-			real32_t versionWidth = 2.0f;
-			for ( const char *p = versionText; *p; p++ ) {
-				versionWidth += font->GetGlyphWidth( *p, 12u );
-			}
-			vector2 versionPos = {
-				Renderer::rdState.window.width - versionWidth,
-				(Renderer::rdState.window.height / 2) - font->lineHeight[12u] - 4u
+			static const std::vector<std::string> helpInfoList {
+				PRODUCT_NAME " on " OS_STRING " (" ARCH_STRING ")",
+				PRODUCT_VERSION,
 			};
-			font->Draw( versionPos, versionText, 12u );
+			const uint16_t helpFontSize = 12u;
+			uint32_t numHelpLinesDrawn = 0u;
+			for ( auto helpInfo = helpInfoList.crbegin(); helpInfo != helpInfoList.crend(); ++helpInfo ) {
+				real32_t helpWidth = 0u;
+				for ( const char *p = (*helpInfo).c_str(); *p; p++ ) {
+					helpWidth += font->GetGlyphWidth( *p, helpFontSize );
+				}
+				const vector2 helpPos = {
+					view->width - helpWidth,
+					(view->height / 2)
+						- (font->lineHeight[helpFontSize] * numHelpLinesDrawn)
+						- font->lineHeight[fontSize]
+						- 4u
+				};
+				font->Draw( helpPos, *helpInfo, helpFontSize );
+				numHelpLinesDrawn++;
+			}
 
-			// adjust for next line
-			pos[0] = x;
-			pos[1] += font->lineHeight[fontSize];
+			// grab a subset of the console buffer that we may want to draw - we do word-wrapping in realtime
+			// line breaks and carriage returns are preprocessed in the Console
+			const uint32_t numLines = console->buffer->size();
+			const uint32_t start = std::max(
+				0,
+				static_cast<int32_t>( numLines )
+					- static_cast<int32_t>( scrollAmount )
+					- static_cast<int32_t>( lineCount )
+			);
+			const uint32_t begin = std::min( numLines, start );
+			const uint32_t end = std::min( begin + lineCount, numLines );
+			std::vector<std::string> lines( console->buffer->begin() + begin, console->buffer->begin() + end );
+
+			uint32_t drawn = 0u;
+			for ( auto line = lines.crbegin(); line != lines.crend(); ++line ) {
+				// substring of renderable characters
+				std::vector<std::string> subsets;
+				Split( *line, subsets );
+				for ( auto subset = subsets.crbegin(); subset != subsets.crend(); ++subset ) {
+					const uint32_t subsetLineCount = font->GetTextLineCount( pos, *subset, fontSize );
+					drawn += subsetLineCount;
+					if ( drawn > lineCount ) {
+						break;
+					}
+					pos[1] -= font->lineHeight[fontSize] * subsetLineCount;
+					font->Draw( pos, *subset, fontSize, &colourTable[ColourIndex( COLOUR_WHITE )] );
+				}
+			}
 		}
 
 	} // namespace Client

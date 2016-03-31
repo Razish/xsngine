@@ -34,7 +34,7 @@ namespace XS {
 
 		public:
 			iterator( Container::iterator c )
-				: Container::iterator( c )
+			: Container::iterator( c )
 			{
 			}
 

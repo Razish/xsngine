@@ -47,11 +47,11 @@ namespace XS {
 			}
 		}
 
-		MenuElementButton::MenuElementButton( TokenParser *parser, const char *fileName )
-		: texture( "" ), cmd( "" ), text( "" ), pointSize( 0u )
+		MenuElementButton::MenuElementButton( const Menu &parent, TokenParser *parser, const char *fileName )
+		: MenuElement( parent ), texture( "" ), cmd( "" ), text( "" ), pointSize( 0u )
 		{
 			size = { 0.0f, 0.0f };
-			std::memset( &properties, 0, sizeof(properties) );
+			std::memset( static_cast<void *>( &properties ), 0, sizeof(properties) );
 			std::memset( &assets, 0, sizeof(assets) );
 
 			const char *tok = nullptr;
@@ -235,6 +235,10 @@ namespace XS {
 
 
 		void MenuElementButton::Paint( void ) {
+			if ( properties.hidden ) {
+				return;
+			}
+
 			// lazy loading
 			if ( !assets.background ) {
 				Renderer::Material *material = new Renderer::Material();
@@ -258,11 +262,11 @@ namespace XS {
 				delete bgData;
 			}
 
-			const real32_t bgWidth = size[0] * Renderer::rdState.window.width;
-			const real32_t bgHeight = size[1] * Renderer::rdState.window.height;
+			const real32_t bgWidth = size[0] * parent.view.width;
+			const real32_t bgHeight = size[1] * parent.view.height;
 			const vector2 topLeft = {
-				(position[0] * Renderer::rdState.window.width) - (bgWidth / 2.0f),
-				(position[1] * Renderer::rdState.window.height) - (bgHeight / 2.0f)
+				(position[0] * parent.view.width) - (bgWidth / 2.0f),
+				(position[1] * parent.view.height) - (bgHeight / 2.0f)
 			};
 
 			Renderer::DrawQuad(
@@ -283,8 +287,8 @@ namespace XS {
 				assets.font->lineHeight[pointSize]
 			};
 			const vector2 bgMidPoint = {
-				topLeft[0] + ((size[0] * Renderer::rdState.window.width) / 2.0f),
-				topLeft[1] + ((size[1] * Renderer::rdState.window.height) / 2.0f)
+				topLeft[0] + ((size[0] * parent.view.width) / 2.0f),
+				topLeft[1] + ((size[1] * parent.view.height) / 2.0f)
 			};
 
 			// draw the text in the middle of the button
@@ -297,6 +301,10 @@ namespace XS {
 		}
 
 		void MenuElementButton::MouseButtonEvent( const struct MouseButtonEvent &ev ) {
+			if ( properties.decorative ) {
+				return;
+			}
+
 			if ( !MouseWithinBounds( Client::cursorPos ) ) {
 				return;
 			}
@@ -307,7 +315,11 @@ namespace XS {
 		}
 
 		void MenuElementButton::MouseMotionEvent( void ) {
-			// ...
+			if ( properties.decorative ) {
+				return;
+			}
+
+			//TODO: highlighting buttons or such
 		}
 
 	} // namespace Client

@@ -8,6 +8,7 @@
 #include "XSRenderer/XSBackend.h"
 #include "XSRenderer/XSRenderable.h"
 #include "XSRenderer/XSShaderProgram.h"
+#include "XSRenderer/XSRenderer.h"
 
 #define USE_FBO
 
@@ -27,7 +28,7 @@ namespace XS {
 
 			perFrameData = new Backend::Buffer( BufferType::Uniform, nullptr, 4 * 1024 * 1024 );
 
-#ifdef USE_FBO
+		#ifdef USE_FBO
 			fbo = new Framebuffer();
 			fbo->Bind();
 
@@ -42,11 +43,11 @@ namespace XS {
 				depthTexture = new Texture( width, height, InternalFormat::Depth24Stencil8 );
 				fbo->AttachDepthStencilTexture( depthTexture );
 			}
-#else
+		#else
 			fbo = nullptr;
 			colourTexture = nullptr;
 			depthTexture = nullptr;
-#endif
+		#endif
 
 			RegisterView( this );
 		}

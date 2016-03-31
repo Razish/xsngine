@@ -19,9 +19,9 @@
 // Win64
 #if defined(_WIN64) || defined(__WIN64__)
 	#if defined(_MSC_VER)
-		#define OS_STRING "win_msvc64"
+		#define OS_STRING "Windows/MSVC-64"
 	#elif defined(__MINGW64__)
-		#define OS_STRING "win_mingw64"
+		#define OS_STRING "Windows/MinGW-64"
 	#endif
 	#define PATH_SEP '\\'
 	#define DLL_EXT ".dll"
@@ -37,9 +37,9 @@
 #elif defined(_WIN32) || defined(__WIN32__)
 
 	#if defined(_MSC_VER)
-		#define OS_STRING "win_msvc"
+		#define OS_STRING "Windows/MSVC"
 	#elif defined(__MINGW32__)
-		#define OS_STRING "win_mingw"
+		#define OS_STRING "Windows/MinGW"
 	#endif
 	#define PATH_SEP '\\'
 	#define DLL_EXT ".dll"
@@ -54,7 +54,7 @@
 // MAC OS X
 #elif defined(MACOS_X) || defined(__APPLE_CC__)
 
-	#define OS_STRING "macosx"
+	#define OS_STRING "OS X"
 	#define PATH_SEP '/'
 	#define DLL_EXT ".dylib"
 
@@ -63,7 +63,7 @@
 // Linux
 #elif defined(__linux__)
 
-	#define OS_STRING "linux"
+	#define OS_STRING "GNU/Linux"
 	#define PATH_SEP '/'
 	#define DLL_EXT ".so"
 

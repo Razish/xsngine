@@ -172,7 +172,7 @@ namespace XS {
 			return '\0';
 		}
 
-		void Cmd_ListBinds( const CommandContext & context ) {
+		void Cmd_ListBinds( const CommandContext &context ) {
 			console.Print( PrintLevel::Normal, "Listing binds...\n" );
 
 			std::map<SDL_Keycode, std::string> sorted( binds.begin(), binds.end() );
@@ -187,7 +187,7 @@ namespace XS {
 			}
 		}
 
-		void Cmd_SetBind( const CommandContext & context ) {
+		void Cmd_SetBind( const CommandContext &context ) {
 			if ( context.size() < 1 ) {
 				console.Print( PrintLevel::Normal, "Usage: bind <key> [command]\n" );
 				return;

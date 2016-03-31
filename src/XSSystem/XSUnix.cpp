@@ -15,6 +15,7 @@ namespace XS {
 	namespace OS {
 
 		void GetCurrentWorkingDirectory( char *cwd, size_t bufferLen ) {
+			SDL_assert( cwd && "OS::GetCurrentWorkingDirectory called with invalid parameters" );
 			if ( getcwd( cwd, (int)bufferLen - 1 ) == nullptr ) {
 				cwd[0] = '\0';
 			}
@@ -23,6 +24,7 @@ namespace XS {
 		}
 
 		bool GetFileTime( const char *path, int32_t *outTime ) {
+			SDL_assert( path && outTime && "OS::GetFileTime called with invalid parameters" );
 			struct stat buf;
 
 			if ( stat( path, &buf ) ) {
@@ -45,8 +47,10 @@ namespace XS {
 		}
 
 		bool MkDir( const char *path ) {
+			SDL_assert( path && "OS::MkDir called with invalid parameters" );
 			if ( mkdir( path, S_IRWXU | S_IXGRP | S_IRGRP ) ) {
 				if ( errno != EEXIST ) {
+					console.Print( PrintLevel::Debug, "%s(%s): %s\n", XS_FUNCTION, path, strerror( errno ) );
 					return false;
 				}
 			}

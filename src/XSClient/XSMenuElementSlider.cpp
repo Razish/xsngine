@@ -61,13 +61,13 @@ namespace XS {
 			}
 		}
 
-		MenuElementSlider::MenuElementSlider( TokenParser *parser, const char *fileName )
-		: cvarName( "" ), postExecCommand( "" ), updatingValue( false )
+		MenuElementSlider::MenuElementSlider( const Menu &parent, TokenParser *parser, const char *fileName )
+		: MenuElement( parent ), cvarName( "" ), postExecCommand( "" ), updatingValue( false )
 		{
 			size = { 0.0f, 0.0f };
 			std::memset( &assets, 0, sizeof(assets) );
 			std::memset( &range, 0, sizeof(range) );
-			std::memset( &properties, 0, sizeof(properties) );
+			std::memset( static_cast<void *>( &properties ), 0, sizeof(properties) );
 
 			const char *tok = nullptr;
 			if ( parser->ParseString( &tok ) || String::CompareCase( tok, "{" ) ) {
@@ -219,6 +219,10 @@ namespace XS {
 		}
 
 		void MenuElementSlider::Paint( void ) {
+			if ( properties.hidden ) {
+				return;
+			}
+
 			// lazy loading
 			if ( !assets.thumb ) {
 				Renderer::Material *material = new Renderer::Material();
@@ -264,11 +268,11 @@ namespace XS {
 			}
 
 			const vector2 topLeft {
-				position[0] * Renderer::rdState.window.width,
-				position[1] * Renderer::rdState.window.height
+				position[0] * parent.view.width,
+				position[1] * parent.view.height
 			};
-			const real32_t barWidth = size[0] * Renderer::rdState.window.width;
-			const real32_t barHeight = size[1] * Renderer::rdState.window.height;
+			const real32_t barWidth = size[0] * parent.view.width;
+			const real32_t barHeight = size[1] * parent.view.height;
 			const real32_t thumbSize = std::min( barWidth, barHeight );
 
 			Renderer::DrawQuad(
@@ -328,6 +332,10 @@ namespace XS {
 		}
 
 		void MenuElementSlider::MouseButtonEvent( const struct MouseButtonEvent &ev ) {
+			if ( properties.decorative ) {
+				return;
+			}
+
 			if ( !MouseWithinBounds( Client::cursorPos ) ) {
 				return;
 			}
@@ -354,6 +362,10 @@ namespace XS {
 		}
 
 		void MenuElementSlider::MouseMotionEvent( void ) {
+			if ( properties.decorative ) {
+				return;
+			}
+
 			if ( MouseWithinBounds( Client::cursorPos ) ) {
 				tooltip.mouseHovering = true;
 				tooltip.lastMousePos = Client::cursorPos;

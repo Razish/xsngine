@@ -31,13 +31,23 @@ namespace XS {
 			}
 		}
 
-		static void SerialiseResources( ByteBuffer *buffer ) {
+		static ByteBuffer::Error SerialiseResources( ByteBuffer *buffer ) {
+			ByteBuffer::Error status;
 			//TODO: determine actual number of resources, in-case we remove some later..?
-			buffer->WriteUInt32( numResources );
-			for ( auto &it : resources ) {
-				buffer->WriteUInt32( it.second );
-				buffer->WriteString( it.first.c_str() );
+			status = buffer->Write<uint32_t>( numResources );
+			if ( status != ByteBuffer::Error::Success ) {
+				return status;
 			}
+
+			for ( auto &it : resources ) {
+				status = buffer->Write<uint32_t>( it.second );
+				status = buffer->WriteString( it.first.c_str() );
+			}
+			if ( status != ByteBuffer::Error::Success ) {
+				return status;
+			}
+
+			return ByteBuffer::Error::Success;
 		}
 
 		//FIXME: selectively network to out-of-date clients (i.e. second client connecting later, not having the list
@@ -47,17 +57,25 @@ namespace XS {
 			if ( modified || force ) {
 				// send resource list
 				ByteBuffer resourceBuffer;
-				ServerGame::SerialiseResources( &resourceBuffer );
+				ByteBuffer::Error status;
+				status = ServerGame::SerialiseResources( &resourceBuffer );
+				if ( (status = ServerGame::SerialiseResources( &resourceBuffer )) != ByteBuffer::Error::Success ) {
+					SDL_assert( !"Could not serialise ServerGame instance" );
+					return;
+				}
 
 				Network::XSPacket resourcePacket( Network::ID_XS_SV2CL_RESOURCES );
 				resourcePacket.data = resourceBuffer.GetMemory( &resourcePacket.dataLen );
 
 				for ( auto &client : Server::clients ) {
 					if ( !client.second ) {
-						SDL_assert( !"Invalid client instance - did you instantiate and use before initialising?" );
+						SDL_assert(
+							!"Invalid client instance on network pump - did you instantiate and use before "
+								"initialising?"
+						);
 						continue;
 					}
-					client.second->connection.Send( &resourcePacket );
+					client.second->connection.Send( resourcePacket );
 				}
 
 				modified = false;
