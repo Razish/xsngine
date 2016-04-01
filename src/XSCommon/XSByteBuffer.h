@@ -84,7 +84,7 @@ namespace XS {
 		template<typename T>
 		Error Write(
 			T data
-		) XS_WARN_UNUSED_RESULT
+		) //XS_WARN_UNUSED_RESULT
 		{
 			if ( reading ) {
 				return Error::WriteWhileReading;
