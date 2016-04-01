@@ -31,12 +31,12 @@ namespace XS {
 		ServerConsole *serverConsole = nullptr;
 
 		static void Cmd_Ping( const Client &client, const CommandContext &context ) {
-			Network::XSPacket pongPacket( Network::ID_XS_SV2CL_PRINT );
 			ByteBuffer pongBuffer;
-			ByteBuffer::Error status;
-			status = pongBuffer.WriteString( "Pong!\n" );
-			pongPacket.data = pongBuffer.GetMemory( &pongPacket.dataLen );
-			client.connection.Send( pongPacket );
+			if ( pongBuffer.WriteString( "Pong!\n" ) == ByteBuffer::Error::Success ) {
+				Network::XSPacket pongPacket( Network::ID_XS_SV2CL_PRINT );
+				pongPacket.data = pongBuffer.GetMemory( &pongPacket.dataLen );
+				client.connection.Send( pongPacket );
+			}
 		}
 
 		using CommandContext = std::vector<std::string>;
@@ -86,10 +86,12 @@ namespace XS {
 				const uint8_t *buffer = packet->data + 1;
 				size_t bufferLen = packet->length - 1;
 				ByteBuffer bb( buffer, bufferLen );
-				ByteBuffer::Error status;
 
 				State newState;
-				status = bb.Read<State>( &newState );
+				if ( bb.Read<State>( &newState ) != ByteBuffer::Error::Success ) {
+					// invalid packet format
+					break;
+				}
 
 				if ( connection.ChangeState( newState ) ) {
 					// the client is telling us their state has changed

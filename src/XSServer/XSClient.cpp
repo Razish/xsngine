@@ -28,12 +28,12 @@ namespace XS {
 		}
 
 		void Client::Print( const char *msg ) const {
-			Network::XSPacket msgPacket( Network::ID_XS_SV2CL_PRINT );
 			ByteBuffer msgBuffer;
-			ByteBuffer::Error status;
-			status = msgBuffer.WriteString( msg );
-			msgPacket.data = msgBuffer.GetMemory( &msgPacket.dataLen );
-			connection.Send( msgPacket );
+			if (  msgBuffer.WriteString( msg ) == ByteBuffer::Error::Success ) {
+				Network::XSPacket msgPacket( Network::ID_XS_SV2CL_PRINT );
+				msgPacket.data = msgBuffer.GetMemory( &msgPacket.dataLen );
+				connection.Send( msgPacket );
+			}
 		}
 
 	} // namespace ServerGame

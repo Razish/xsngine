@@ -117,7 +117,7 @@ namespace XS {
 		template<typename T>
 		Error Read(
 			T *outData
-		) XS_WARN_UNUSED_RESULT
+		) //XS_WARN_UNUSED_RESULT
 		{
 			const size_t addSize = sizeof(T);
 			if ( !reading ) {

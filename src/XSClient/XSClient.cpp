@@ -77,9 +77,6 @@ namespace XS {
 			// write each arg
 			for ( const std::string &arg : context ) {
 				status = commandBuffer.WriteString( arg.c_str() );
-				console.Print( PrintLevel::Developer, "  arg: %s, len: %i\n",
-					arg.c_str(), arg.length()
-				);
 			}
 
 			if ( status == ByteBuffer::Error::Success ) {

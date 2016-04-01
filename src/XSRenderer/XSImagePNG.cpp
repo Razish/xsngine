@@ -267,15 +267,14 @@ namespace XS {
 				// re-set the jmp so that these new memory allocations can be reclaimed
 				if ( setjmp( png_jmpbuf( png_ptr ) ) ) {
 					png_free( png_ptr, rows );
+					png_free( png_ptr, palette );
 					return false;
 				}
 
 				png_write_image( png_ptr, rows );
 				png_write_end( png_ptr, info_ptr );
 				//png_write_flush( png_ptr );
-				if ( palette ) {
-					png_free( png_ptr, palette );
-				}
+				png_free( png_ptr, palette );
 				png_destroy_write_struct( &png_ptr, &info_ptr );
 
 				png_free( png_ptr, rows );

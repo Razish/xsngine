@@ -3,6 +3,7 @@
 
 #include <unordered_map>
 #include <map>
+#include <algorithm>
 
 #include <RakNet/RakPeerInterface.h>
 #include <RakNet/BitStream.h>
@@ -148,8 +149,9 @@ namespace XS {
 
 			if ( network ) {
 				ByteBuffer stateBuffer;
-				ByteBuffer::Error status;
-				status = stateBuffer.Write<State>( newState );
+				if ( stateBuffer.Write<State>( newState ) != ByteBuffer::Error::Success ) {
+					// ...
+				}
 
 				XSPacket statePacket( isServer ? ID_XS_SV2CL_CONNECTION_STATE : ID_XS_CL2SV_CONNECTION_STATE );
 				statePacket.data = stateBuffer.GetMemory( &statePacket.dataLen );

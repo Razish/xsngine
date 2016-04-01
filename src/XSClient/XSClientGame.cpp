@@ -138,10 +138,12 @@ namespace XS {
 				const uint8_t *buffer = packet->data + 1;
 				size_t bufferLen = packet->length - 1;
 				ByteBuffer bb( buffer, bufferLen );
-				ByteBuffer::Error status;
 
 				State newState;
-				status = bb.Read<State>( &newState );
+				if ( bb.Read<State>( &newState ) != ByteBuffer::Error::Success ) {
+					// invalid packet format
+					break;
+				}
 
 				if ( connection.ChangeState( newState ) ) {
 					// the server is telling us our state has changed
@@ -306,10 +308,11 @@ namespace XS {
 				uint8_t *buffer = packet->data + 1;
 				size_t bufferLen = packet->length - 1;
 				ByteBuffer bb( buffer, bufferLen );
-				ByteBuffer::Error status;
 
 				uint32_t numResources = 0u;
-				status = bb.Read<uint32_t>( &numResources );
+				if ( bb.Read<uint32_t>( &numResources ) != ByteBuffer::Error::Success ) {
+					break;
+				}
 
 				console.Print( PrintLevel::Debug, "numResources: %u\n",
 					numResources
@@ -317,7 +320,7 @@ namespace XS {
 
 				for ( uint32_t i = 0u; i < numResources; i++ ) {
 					uint32_t resourceID = 0u;
-					status = bb.Read<uint32_t>( &resourceID );
+					ByteBuffer::Error status = bb.Read<uint32_t>( &resourceID );
 
 					uint32_t strLength = 0u;
 					const char *resourceName = nullptr;
@@ -328,6 +331,9 @@ namespace XS {
 						resourceName
 					);
 
+					if ( status != ByteBuffer::Error::Success ) {
+					}
+
 					delete[] resourceName;
 				}
 			} break;
@@ -336,18 +342,13 @@ namespace XS {
 				uint8_t *buffer = packet->data + 1;
 				size_t bufferLen = packet->length - 1;
 				ByteBuffer bb( buffer, bufferLen );
-				ByteBuffer::Error status;
 
 				ByteBuffer::String str;
-				//const char *msg = nullptr;
-				status = bb.ReadString( str );
-
-				// avoid printf format attacks
-				console.Print( PrintLevel::Normal, "%s\n",
-					str.c_str()
-				);
-
-				//delete[] msg;
+				if ( bb.ReadString( str ) == ByteBuffer::Error::Success ) {
+					console.Print( PrintLevel::Normal, "%s\n",
+						str.c_str()
+					);
+				}
 			} break;
 
 			default: {
