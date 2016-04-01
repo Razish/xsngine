@@ -63,14 +63,9 @@ namespace XS {
 		}
 
 		// preprocess the string (e.g. split by \n)
-		std::vector<std::string> lines;
 		std::istringstream ss( str );
 		std::string line;
 		while ( std::getline( ss, line ) ) {
-			lines.push_back( line );
-		}
-
-		for ( auto &line : lines ) {
 			//FIXME: care about printing twice on same line
 			std::string finalOut = "";
 			for ( int32_t i = 0; i < indentation; i++ ) {
