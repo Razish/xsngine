@@ -7,7 +7,7 @@ env.VariantDir( build_dir, '#', duplicate = 0 )
 raknet_env = env.Clone()
 
 raknet_env['CPPDEFINES'] += [ 'RakAssert(x) = ' ]
-if realcc == 'gcc' or realcc == 'clang':
+if 'gcc' in realcc or 'clang' in realcc:
 	raknet_env['CCFLAGS'] += [ '-Wno-unused-private-field' ]
 
 # sources

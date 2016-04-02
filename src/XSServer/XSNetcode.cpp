@@ -10,7 +10,6 @@ namespace XS {
 		NetworkState net = {};
 
 		void GenerateSnapshot( ByteBuffer *buffer ) {
-			ByteBuffer::Error status;
 			//FIXME: delta etc, this is temporary
 			//TODO: bit-pack based on last ACKed state (states should have an accumulative id)
 
@@ -20,10 +19,12 @@ namespace XS {
 			} snapshotHeader = {
 				Entity::numEntities
 			};
-			status = buffer->WriteRaw( &snapshotHeader, sizeof(snapshotHeader) );
-
-			for ( auto &entity : svgState.entities ) {
-				status = entity->Serialise( buffer );
+			if ( buffer->WriteRaw( &snapshotHeader, sizeof(snapshotHeader) ) == ByteBuffer::Error::Success ) {
+				for ( auto &entity : svgState.entities ) {
+					if ( entity->Serialise( buffer ) != ByteBuffer::Error::Success ) {
+						// ...
+					}
+				}
 			}
 
 			//TODO: if debugServerNetworking

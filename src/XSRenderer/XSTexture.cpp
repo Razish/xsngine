@@ -66,8 +66,8 @@ namespace XS {
 		}
 
 		void Texture::Shutdown( void ) {
-			for ( auto &texture : textures ) {
-				delete &texture;
+			for ( Texture *texture : textures ) {
+				delete texture;
 			}
 			textures.clear();
 		}
