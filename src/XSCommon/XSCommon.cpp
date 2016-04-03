@@ -133,13 +133,14 @@ namespace XS {
 		static void WriteConfig( const char *cfg = nullptr ) {
 			std::string str = "";
 			Cvar::WriteCvars( str );
-			if ( !com_dedicated->GetBool() ) {
+			const bool dedicated = com_dedicated->GetBool();
+			if ( !dedicated ) {
 				Client::WriteBinds( str );
 			}
 
 			// default config if none specified
 			if ( !cfg ) {
-				cfg = com_dedicated->GetBool() ? DEFAULT_CONFIG_SERVER : DEFAULT_CONFIG;
+				cfg = dedicated ? DEFAULT_CONFIG_SERVER : DEFAULT_CONFIG;
 			}
 
 			const File f( cfg, FileMode::Write );
@@ -186,6 +187,8 @@ int main( int argc, char **argv ) try {
 	File::SetBasePath();
 	Common::LoadConfig();
 
+	const bool dedicated = Common::com_dedicated->GetBool();
+
 	//
 	// DO NOT LOAD MEDIA BEFORE THIS POINT
 	//
@@ -194,18 +197,20 @@ int main( int argc, char **argv ) try {
 		WINDOW_TITLE " (" XSTR( ARCH_WIDTH ) " bits) built on " __DATE__ " with " XS_COMPILER "\n"
 	);
 
-	if ( !Common::com_dedicated->GetBool() ) {
+	if ( !dedicated ) {
 		Renderer::Init();
 	}
 
 	Event::Init();
-	if ( Common::com_dedicated->GetBool() ) {
+	if ( dedicated ) {
 		Server::Init();
 	}
 	else {
 		Client::Input::Init();
 		Client::Init();
 	}
+
+	Network::Init();
 
 	if ( Common::com_profile->GetBool() ) {
 		real64_t t = globalTimer.GetTiming( true, TimerResolution::Milliseconds );
@@ -237,7 +242,7 @@ int main( int argc, char **argv ) try {
 		accumulator += sliceMsec;
 
 		// input
-		if ( !Common::com_dedicated->GetBool() ) {
+		if ( !dedicated ) {
 			//TODO: run on another thread at 1000hz?
 			Client::Input::Poll();
 		}
@@ -248,7 +253,7 @@ int main( int argc, char **argv ) try {
 
 		Timer perf;
 
-		const real64_t dt = Common::com_dedicated->GetBool()
+		const real64_t dt = dedicated
 			? 1000.0 / Common::com_framerate->GetReal64()
 			: 1000.0 / Common::r_framerate->GetReal64();
 
@@ -256,7 +261,7 @@ int main( int argc, char **argv ) try {
 		//	we don't want the client acting on old server data, but we also don't want the client's input to be delayed
 		//		by a frame
 
-		if ( Common::com_dedicated->GetBool() ) {
+		if ( dedicated ) {
 			// server tick
 			while ( accumulator >= dt ) {
 				Server::RunFrame( dt );
@@ -359,6 +364,7 @@ catch( const XS::XSError &e ) {
 	using namespace XS;
 
 	const bool profile = Common::com_profile->GetBool();
+	const bool dedicated = Common::com_dedicated->GetBool();
 
 	if ( !e.intended ) {
 		SDL_assert( !"A fatal error has occurred. Please check your console.log.\nPress \"ignore\" to proceed with "
@@ -381,11 +387,15 @@ catch( const XS::XSError &e ) {
 	// indent the console for this scope
 	{
 		Indent indent( 1 );
-		if ( Common::com_dedicated->GetBool() ) {
+		if ( dedicated ) {
 			Server::Shutdown();
 		}
 		else {
 			Client::Shutdown();
+		}
+		Network::Shutdown();
+
+		if ( dedicated ) {
 			Renderer::Shutdown();
 		}
 

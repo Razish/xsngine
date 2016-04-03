@@ -1,5 +1,6 @@
 #define __STDC_FORMAT_MACROS
 #include <inttypes.h>
+#include <algorithm>
 
 #include <RakNet/RakPeerInterface.h>
 
@@ -39,10 +40,40 @@ namespace XS {
 			}
 		}
 
+		static void Cmd_Say( const Client &client, const CommandContext &context ) {
+			ByteBuffer chatBuffer;
+			// identifier of the sender
+			if ( chatBuffer.Write<Network::GUID>( client.connection.guid ) != ByteBuffer::Error::Success ) {
+				return;
+			}
+			// reserved for message flags
+			if ( chatBuffer.Write<uint32_t>( 0u ) != ByteBuffer::Error::Success ) {
+				return;
+			}
+
+			std::string msg;
+			String::Join( context, " ", msg );
+			String::Strip( msg, "\r\n" );
+			// chat message
+			if ( !msg.empty() && chatBuffer.WriteString( msg.c_str() ) != ByteBuffer::Error::Success ) {
+				return;
+			}
+			Network::XSPacket chatPacket( Network::ID_XS_SV2CL_CHAT );
+			chatPacket.data = chatBuffer.GetMemory( &chatPacket.dataLen );
+
+			for ( auto &it : clients ) {
+				Client *cl = it.second;
+				if ( cl ) {
+					cl->connection.Send( chatPacket );
+				}
+			}
+		}
+
 		using CommandContext = std::vector<std::string>;
 		using CommandFunc = void (*)( const Client &client, const CommandContext &context );
 		static std::unordered_map<std::string, CommandFunc> clientCommands{
 			{ "ping", Cmd_Ping },
+			{ "say", Cmd_Say },
 		};
 
 		static void OnClientCommand( const Client &client, const char *cmd, const CommandContext &context ) {
@@ -233,8 +264,6 @@ namespace XS {
 			RegisterCvars();
 			RegisterCommands();
 
-			Network::Init();
-
 			serverConsole = new ServerConsole();
 
 			ServerGame::Init();
@@ -244,8 +273,6 @@ namespace XS {
 			ServerGame::Shutdown();
 
 			delete serverConsole;
-
-			Network::Shutdown();
 		}
 
 		static void GenerateNetworkState( void ) {
