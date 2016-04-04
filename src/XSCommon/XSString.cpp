@@ -175,6 +175,60 @@ namespace XS {
 			out = ss.str();
 		}
 
+		std::string &Strip( std::string &s, const std::string &chars ) {
+			s.erase(
+				remove_if(
+					s.begin(),
+					s.end(),
+					[&chars]( const char& c ) {
+						return chars.find( c ) != std::string::npos;
+					}
+				),
+				s.end()
+			);
+			return s;
+		}
+
+		std::string StripCopy( std::string s, const std::string &chars ) {
+			return Strip( s, chars );
+		}
+
+		std::string &StripNonDigit( std::string &s ) {
+			s.erase(
+				remove_if(
+					s.begin(),
+					s.end(),
+					[]( const char &c ) {
+						return !isdigit( c );
+					}
+				),
+				s.end()
+			);
+			return s;
+		}
+
+		std::string StripNonDigitCopy( std::string s ) {
+			return StripNonDigit( s );
+		}
+
+		std::string &StripIfNot( std::string &s, const std::string &allowed ) {
+			s.erase(
+				remove_if(
+					s.begin(),
+					s.end(),
+					[&allowed]( const char &c ) {
+						return allowed.find(c) == std::string::npos;
+					}
+				),
+				s.end()
+			);
+			return s;
+		}
+
+		std::string StripIfNotCopy( std::string s, const std::string &allowed ) {
+			return StripIfNot( s, allowed );
+		}
+
 	} // namespace String
 
 } // namespace XS

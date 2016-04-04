@@ -178,8 +178,6 @@ namespace XS {
 		void Init( void ) {
 			RegisterCommands();
 
-			Network::Init();
-
 			// client game module
 			ClientGame::Init();
 
@@ -201,7 +199,6 @@ namespace XS {
 			ClientGame::Shutdown();
 
 			Network::Disconnect();
-			Network::Shutdown();
 		}
 
 		void NetworkPump( void ) {

@@ -61,6 +61,38 @@ namespace XS {
 			std::string &out
 		);
 
+
+		std::string &Strip(
+			std::string &s,
+			const std::string &chars
+		);
+
+		// version of the above that does not write in-place
+		std::string StripCopy(
+			std::string s,
+			const std::string &chars
+		);
+
+		std::string &StripNonDigit(
+			std::string &s
+		);
+
+		// version of the above that does not write in-place
+		std::string StripNonDigitCopy(
+			std::string s
+		);
+
+		std::string &StripIfNot(
+			std::string &s,
+			const std::string &allowed
+		);
+
+		// version of the above that does not write in-place
+		std::string StripIfNotCopy(
+			std::string s,
+			const std::string &allowed
+		);
+
 	} // namespace String
 
 } // namespace XS

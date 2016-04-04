@@ -29,7 +29,7 @@ namespace XS {
 
 		void Client::Print( const char *msg ) const {
 			ByteBuffer msgBuffer;
-			if (  msgBuffer.WriteString( msg ) == ByteBuffer::Error::Success ) {
+			if ( msgBuffer.WriteString( msg ) == ByteBuffer::Error::Success ) {
 				Network::XSPacket msgPacket( Network::ID_XS_SV2CL_PRINT );
 				msgPacket.data = msgBuffer.GetMemory( &msgPacket.dataLen );
 				connection.Send( msgPacket );

@@ -212,11 +212,18 @@ namespace XS {
 		}
 
 		void Shutdown( void ) {
+			for ( auto &it : connections ) {
+				Connection *connection = it.second;
+				delete connection;
+				it.second = nullptr;
+			}
 			Disconnect();
 
-			peer->Shutdown( 500, 0, PacketPriority::LOW_PRIORITY );
-			RakNet::RakPeerInterface::DestroyInstance( peer );
-			peer = nullptr;
+			if ( peer ) {
+				peer->Shutdown( 500, 0, PacketPriority::LOW_PRIORITY );
+				RakNet::RakPeerInterface::DestroyInstance( peer );
+				peer = nullptr;
+			}
 		}
 
 		static const char *connectionAttemptResultMessages[] = {

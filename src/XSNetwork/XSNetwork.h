@@ -37,8 +37,15 @@ namespace XS {
 
 			// offset	size	description
 			// ------	----	-----------
-			// 00		????	????
+			// 00		s		string to print to console (line-feed is not appended)
 			ID_XS_SV2CL_PRINT,
+
+			// offset	size	description
+			// ------	----	-----------
+			// 00		64		unsigned 64 bit integer: identifier of the sender
+			// 64		4		unsigned 32 bit integer: reserved for message flags (e.g. private channel info)
+			// 68		s		string of the chat message
+			ID_XS_SV2CL_CHAT,
 
 			//
 			// client --> server

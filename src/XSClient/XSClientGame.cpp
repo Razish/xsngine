@@ -1,3 +1,5 @@
+#define __STDC_FORMAT_MACROS
+#include <inttypes.h>
 #include <algorithm>
 
 #include <RakNet/RakPeerInterface.h>
@@ -345,10 +347,30 @@ namespace XS {
 
 				ByteBuffer::String str;
 				if ( bb.ReadString( str ) == ByteBuffer::Error::Success ) {
-					console.Print( PrintLevel::Normal, "%s\n",
+					console.Print( PrintLevel::Normal, "%s",
 						str.c_str()
 					);
 				}
+			} break;
+
+			case Network::ID_XS_SV2CL_CHAT: {
+				uint8_t *buffer = packet->data + 1;
+				size_t bufferLen = packet->length - 1;
+				ByteBuffer bb( buffer, bufferLen );
+
+				Network::GUID senderGUID;
+				if ( bb.Read<Network::GUID>( &senderGUID ) != ByteBuffer::Error::Success ) {
+					break;
+				}
+				uint32_t flags;
+				if ( bb.Read<uint32_t>( &flags ) != ByteBuffer::Error::Success ) {
+					break;
+				}
+				ByteBuffer::String str;
+				if ( bb.ReadString( str ) != ByteBuffer::Error::Success ) {
+					break;
+				}
+				console.Print( PrintLevel::Normal, "%" PRIX64 " said: %s\n", senderGUID, str.c_str() );
 			} break;
 
 			default: {
