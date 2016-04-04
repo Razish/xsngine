@@ -31,16 +31,11 @@ namespace XS {
 
 		ServerConsole *serverConsole = nullptr;
 
-		static void Cmd_Ping( const Client &client, const CommandContext &context ) {
-			ByteBuffer pongBuffer;
-			if ( pongBuffer.WriteString( "Pong!\n" ) == ByteBuffer::Error::Success ) {
-				Network::XSPacket pongPacket( Network::ID_XS_SV2CL_PRINT );
-				pongPacket.data = pongBuffer.GetMemory( &pongPacket.dataLen );
-				client.connection.Send( pongPacket );
-			}
+		static void Cmd_Ping( Client &client, const CommandContext &context ) {
+			client.Print( "Pong!\n" );
 		}
 
-		static void Cmd_Say( const Client &client, const CommandContext &context ) {
+		static void Cmd_Say( Client &client, const CommandContext &context ) {
 			ByteBuffer chatBuffer;
 			// identifier of the sender
 			if ( chatBuffer.Write<Network::GUID>( client.connection.guid ) != ByteBuffer::Error::Success ) {
@@ -70,13 +65,13 @@ namespace XS {
 		}
 
 		using CommandContext = std::vector<std::string>;
-		using CommandFunc = void (*)( const Client &client, const CommandContext &context );
+		using CommandFunc = void (*)( Client &client, const CommandContext &context );
 		static std::unordered_map<std::string, CommandFunc> clientCommands{
 			{ "ping", Cmd_Ping },
 			{ "say", Cmd_Say },
 		};
 
-		static void OnClientCommand( const Client &client, const char *cmd, const CommandContext &context ) {
+		static void OnClientCommand( Client &client, const char *cmd, const CommandContext &context ) {
 			auto it = clientCommands.find( cmd );
 			if ( it == clientCommands.end() ) {
 				// unknown command

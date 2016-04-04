@@ -347,7 +347,7 @@ namespace XS {
 
 				ByteBuffer::String str;
 				if ( bb.ReadString( str ) == ByteBuffer::Error::Success ) {
-					console.Print( PrintLevel::Normal, "%s\n",
+					console.Print( PrintLevel::Normal, "%s",
 						str.c_str()
 					);
 				}

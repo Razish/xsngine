@@ -37,7 +37,7 @@ namespace XS {
 
 			// offset	size	description
 			// ------	----	-----------
-			// 00		s		string to print to console
+			// 00		s		string to print to console (line-feed is not appended)
 			ID_XS_SV2CL_PRINT,
 
 			// offset	size	description
