@@ -4,11 +4,12 @@ Table of contents:
 	2.	COMMENTS
 	3.	NAMING
 	4.	SCOPING / NAMESPACE
-	5.	C->C++: CLASSES / ITERATORS
-	6.	TYPES
-	7.	LITERALS
-	8.	FILE NAMES
-	9.	MISCELLANIOUS
+	5.	CLASSES
+	6.	ITERATORS
+	7.	TYPES
+	8.	LITERALS
+	9.	FILE NAMES
+	10.	MISCELLANIOUS
 
 
 
@@ -40,7 +41,8 @@ We can assume the only platforms are:
 		64 bit ("x86_64")
 
 
-1. SPACING / INDENTATION / LINE WRAPPING
+
+1.	SPACING / INDENTATION / LINE WRAPPING
 
 Use tabs with a width of 4
 Never indent with spaces
@@ -115,9 +117,11 @@ Some projects wrap lines at 80 columns. This was due to UNIX terminals only supp
 It is now common to see 24-27 inch monitors, but long statements/comments are easier to read if they are wrapped
 All lines shall be wrapped at less than 120 columns. Most editors support right-margin indicators.
 
+Also see 6. CLASSES section
 
 
-2. COMMENTS
+
+2.	COMMENTS
 
 Do not over-comment code. This includes being exceedingly explicit and comment style.
 	// ================
@@ -158,6 +162,8 @@ Place any performance, security and memory management concerns directly above fu
 		//PERF: investigate SIMD application here
 		Foo *bar
 	);
+
+
 
 3.	NAMING
 
@@ -229,7 +235,7 @@ Variables and functions shall use en-GB spelling.
 
 
 
-4. SCOPING / NAMESPACE
+4.	SCOPING / NAMESPACE
 
 Never use 'using namespace xxx'
 This includes 'using namespace std' and 'using namespace XS'
@@ -240,15 +246,67 @@ Namespaces begin with upper case
 
 
 
-5. C->C++: CLASSES / ITERATORS
+5.	CLASSES
+
+Classes shall be stylised as such:
+
+	// XSCommon/XSFoo.h
+
+	using FooID = uint32_t; // unique identifiers for each Foo
+
+	// describe what Foo does here (e.g. its concerns/aspects)
+	// note the spacing between access modifiers, alignment of members and spacing of function arguments
+	class Foo {
+
+	private:
+		Foo();
+
+	protected:
+		int		forDerivedFoo;
+
+	public:
+		static int	staticPublicMembers;
+
+		int		publicMembers;
+
+		X(); // public constructor
+
+		// iterators
+
+		// static member functions
+		static Foo *Create(
+			void
+		);
+
+		// member functions
+		void Bar(
+			void
+		);
+
+	};
+
+	// XSCommon/XSFoo.cpp
+	#include "XSCommon/XSFoo.h"
+
+	int Foo::staticBar = 1337;
+
+	// public, static
+	Foo Foo::Create() {
+		return new Foo();
+	}
+
+	void Foo::Bar( void ) {
+	}
 
 Classes should avoid unnecessary one-line Get/Set methods.
 Get/Set shall only be used when there are side-effects such as announcing Cvar changes, updating a cache, etc
 
 	class X {
+
 	private:
 		int x;
 		// ...
+
 	public:
 		void SetX( int newX ) {
 			x = newX;
@@ -256,17 +314,42 @@ Get/Set shall only be used when there are side-effects such as announcing Cvar c
 		int GetX( void ) {
 			return x;
 		}
+
 	};
 	X.SetX( 10 );
 
 	Should be...
 
 	class X {
+
 	public:
 		int x;
 		// ...
+
 	};
 	X.x = 10;
+
+Consider having read-only members via const reference without the need for a Get function
+
+	class X {
+
+	private:
+		int privateFoo;
+
+	public:
+		const int &foo;
+
+		// constructor
+		X() : foo(privateFoo)
+		{
+			privateFoo = 1337;
+		}
+
+	};
+
+
+
+6.	ITERATORS
 
 Iterators should be named the singular form of the object it is iterating over.
 If there is no suitable noun, consider changing the object you are iterating over. Avoid aliasing/name collisions.
@@ -281,7 +364,8 @@ Even better would be to use C++11 foreach syntax
 	for ( const auto &it : list ) {}
 
 
-6. TYPES
+
+7.	TYPES
 
 Always consider 64 bit types when dealing with pointers, sizes, bit values, unsigned/signed comparisons
 	size_t bufferLen = sizeof( buffer );
@@ -318,7 +402,7 @@ Use const as much as possible.
 
 
 
-7. LITERALS
+8.	LITERALS
 
 Always use precision specifier when dealing with floating point numbers
 	float f = 0.6f; // good
@@ -335,7 +419,7 @@ Use sign specifier when defining literals to be used for bit values and such
 
 
 
-8.	FILE NAMES
+9.	FILE NAMES
 
 File names should follow this convention...
 
@@ -351,7 +435,7 @@ File names should follow this convention...
 
 
 
-9.	MISCELLANIOUS
+10.	MISCELLANIOUS
 
 Do not include intended side-effects in print statements, especially if they're conditionally compiled.
 Use PrintLevel::Debug and let the callee decide whether to print
