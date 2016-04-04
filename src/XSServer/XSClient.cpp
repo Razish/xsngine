@@ -18,12 +18,14 @@ namespace XS {
 		std::unordered_map<Network::GUID, Client *> clients;
 
 		Client::Client( Network::Connection &connection )
-		: connection( connection )
+		: connection( connection ), account( nullptr ), character( nullptr )
 		{
 			clients[connection.guid] = this;
 		}
 
 		Client::~Client() {
+			Logout();
+			//FIXME: investigate connection timeout to log out
 			clients[connection.guid] = nullptr;
 		}
 
@@ -34,6 +36,60 @@ namespace XS {
 				msgPacket.data = msgBuffer.GetMemory( &msgPacket.dataLen );
 				connection.Send( msgPacket );
 			}
+		}
+
+		void Client::SelectCharacter( Character *newCharacter ) {
+			SDL_assert( account );
+
+			if ( newCharacter == character ) {
+				// nothing to do
+				return;
+			}
+
+			if ( character ) {
+				//TODO: cleanup character info, logout etc
+			}
+
+			//TODO: leave world? stop quests? etc
+
+			Print(
+				String::Format( "Selecting character %i (%s) from account ID %i\n",
+					newCharacter->id,
+					newCharacter->name.c_str(),
+					account->id
+				).c_str()
+			);
+
+			character = newCharacter;
+		}
+
+		//FIXME: move to Account::Login()
+		Account::LoginError Client::Login( const char *name, const char *password ) {
+			Logout();
+
+			Account *act = Account::Find( name );
+			if ( !act ) {
+				return Account::LoginError::AcctNotFound;
+			}
+
+			if ( act->password != password ) {
+				return Account::LoginError::BadAuthentication;
+			}
+
+			if ( !act->RequestLock() ) {
+				// could not attain lock - account is in use elsewhere
+				return Account::LoginError::Locked;
+			}
+
+			account = act;
+			return Account::LoginError::Success;
+		}
+
+		void Client::Logout( void ) {
+			if ( account ) {
+				account->ReleaseLock();
+			}
+			account = nullptr;
 		}
 
 	} // namespace ServerGame

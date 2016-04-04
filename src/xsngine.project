@@ -610,6 +610,8 @@
     <File Name="XSServer/XSInventoryManager.h"/>
     <File Name="XSServer/XSQuestManager.cpp"/>
     <File Name="XSServer/XSQuestManager.h"/>
+    <File Name="XSServer/XSAccount.cpp"/>
+    <File Name="XSServer/XSAccount.h"/>
   </VirtualDirectory>
   <VirtualDirectory Name="XSShared">
     <File Name="XSShared/XSEntityTypes.h"/>

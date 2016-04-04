@@ -31,6 +31,146 @@ namespace XS {
 
 		ServerConsole *serverConsole = nullptr;
 
+		static void Cmd_CreateAccount( Client &client, const CommandContext &context ) {
+			if ( client.account ) {
+				client.Print(
+					String::Format( "You are already logged into account %i\n", client.account->id ).c_str()
+				);
+				return;
+			}
+
+			if ( context.size() != 2 ) {
+				client.Print( "usage: acct_create name password\n" );
+			}
+
+			const char *name = context[0].c_str();
+			const char *password = context[1].c_str();
+			Account *account = Account::Create( name, password );
+			client.Print( String::Format( "Created account (id: %i)\n", account->id ).c_str() );
+		}
+
+		static void Cmd_AccountInfo( Client &client, const CommandContext &context ) {
+			if ( !client.account ) {
+				client.Print( "You are not logged into an account\n" );
+				return;
+			}
+
+			// basic account info
+			client.Print(
+				String::Format( "Account %i:\n", client.account->id ).c_str()
+			);
+			client.Print(
+				String::Format( "  name: %s\n", client.account->name.c_str() ).c_str()
+			);
+
+			// characters
+			std::vector<Character *> characterList;
+			Character::List( client.account->id, characterList );
+			const size_t numCharacters = characterList.size();
+			client.Print(
+				String::Format( "  numCharacters: %" PRIuMAX "\n", numCharacters ).c_str()
+			);
+			for ( const Character *character : characterList ) {
+				client.Print(
+					String::Format( "  Character %i/%" PRIuMAX ":\n", character->id, numCharacters ).c_str()
+				);
+				client.Print(
+					String::Format( "    name: %s\n", character->name.c_str() ).c_str()
+				);
+
+				// quests
+				client.Print(
+					String::Format( "    numQuests: %i\n", character->quests.activeQuests.size() ).c_str()
+				);
+				for ( QuestID questID : character->quests.activeQuests ) {
+					//const Quest *quest = Quest::GetFromID( questID );
+					client.Print(
+						String::Format( "      quest %i:\n", questID ).c_str()
+					);
+				}
+			}
+		}
+
+		static void Cmd_Login( Client &client, const CommandContext &context ) {
+			if ( client.account ) {
+				client.Print(
+					String::Format( "Already logged into account %i\n", client.account->id ).c_str()
+				);
+				return;
+			}
+
+			if ( context.size() != 2 ) {
+				client.Print( "usage: acct_login name password\n" );
+				return;
+			}
+
+			const char *name = context[0].c_str();
+			const char *password = context[1].c_str();
+			Account::LoginError loginStatus = client.Login( name, password );
+			if ( loginStatus != Account::LoginError::Success ) {
+				client.Print( String::Format( "Failed login: %i\n", loginStatus ).c_str() );
+				return;
+			}
+			client.Print(
+				String::Format( "Logged into account id: %i\n",
+					client.account->id
+				).c_str()
+			);
+		}
+
+		static void Cmd_Logout( Client &client, const CommandContext &context ) {
+			client.Logout();
+		}
+
+		static void Cmd_CreateCharacter( Client &client, const CommandContext &context ) {
+			if ( !client.account ) {
+				client.Print( "You are not logged into an account\n" );
+				return;
+			}
+
+			if ( context.size() != 1 ) {
+				client.Print( "usage: char_create name\n" );
+				return;
+			}
+
+			const char *name = context[0].c_str();
+			const Character *character = Character::Create( client.account->id, name );
+			if ( !character ) {
+				client.Print(
+					String::Format( "Character \"%s\" already exists on account %i (character id: %i)\n",
+						name, character->accountID, character->id
+					).c_str()
+				);
+				return;
+			}
+
+			client.Print( String::Format( "Created character: %s\n", character->name.c_str() ).c_str() );
+		}
+
+		static void Cmd_SelectCharacter( Client &client, const CommandContext &context ) {
+			if ( !client.account ) {
+				client.Print( "You are not logged into an account\n" );
+				return;
+			}
+
+			if ( context.size() != 1 ) {
+				client.Print( "usage: char_select name\n" );
+				return;
+			}
+			const char *name = context[0].c_str();
+			Character *character = Character::Find( client.account->id, name );
+			if ( !character ) {
+				client.Print(
+					String::Format( "Could not find character named %s for account %i\n",
+						name,
+						client.account->id
+					).c_str()
+				);
+				return;
+			}
+			client.SelectCharacter( character );
+		}
+
 		static void Cmd_Ping( Client &client, const CommandContext &context ) {
 			client.Print( "Pong!\n" );
 		}
@@ -67,6 +207,12 @@ namespace XS {
 		using CommandContext = std::vector<std::string>;
 		using CommandFunc = void (*)( Client &client, const CommandContext &context );
 		static std::unordered_map<std::string, CommandFunc> clientCommands{
+			{ "acct_create", Cmd_CreateAccount },
+			{ "acct_info", Cmd_AccountInfo },
+			{ "acct_login", Cmd_Login },
+			{ "acct_logout", Cmd_Logout },
+			{ "char_create", Cmd_CreateCharacter },
+			{ "char_select", Cmd_SelectCharacter },
 			{ "ping", Cmd_Ping },
 			{ "say", Cmd_Say },
 		};
@@ -259,6 +405,8 @@ namespace XS {
 			RegisterCvars();
 			RegisterCommands();
 
+			Network::Init();
+
 			serverConsole = new ServerConsole();
 
 			ServerGame::Init();
@@ -268,6 +416,8 @@ namespace XS {
 			ServerGame::Shutdown();
 
 			delete serverConsole;
+
+			Network::Shutdown();
 		}
 
 		static void GenerateNetworkState( void ) {

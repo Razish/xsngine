@@ -2,20 +2,24 @@
 #include <vector>
 #include <string>
 #include <unordered_map>
+#include <limits>
 
 #include "XSCommon/XSCommon.h"
-
-#define XS_QUEST_INTERNALS
 #include "XSServer/XSQuest.h"
-#undef XS_QUEST_INTERNALS
 
 namespace XS {
 
-	static std::vector<Quest *> quests;
+	static std::vector<Quest *> quests; // indexed by QuestIDs
 	static std::unordered_map<std::string, QuestID> questIDs;
 	QuestID Quest::numQuests = 0u;
+	const QuestID Quest::invalidID = std::numeric_limits<QuestID>::max();
 
-	Quest *Quest::GetFromString( std::string &str ) {
+	Quest::Quest() {
+		// ...
+	}
+
+	// public, static
+	const Quest *Quest::GetFromString( std::string &str ) {
 		auto it = questIDs.find( str );
 		if ( it == questIDs.end() ) {
 			// lazy initialise
@@ -26,7 +30,8 @@ namespace XS {
 		return GetFromID( it->second );
 	}
 
-	Quest *Quest::GetFromID( QuestID id ) {
+	// public, static
+	const Quest *Quest::GetFromID( QuestID id ) {
 		return quests[id];
 	}
 

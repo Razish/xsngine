@@ -3,6 +3,7 @@
 #include <unordered_map>
 
 #include "XSNetwork/XSNetwork.h"
+#include "XSServer/XSAccount.h"
 #include "XSServer/XSCharacter.h"
 
 namespace XS {
@@ -16,6 +17,8 @@ namespace XS {
 
 		public:
 			Network::Connection &connection;
+			Account				*account;
+			Character			*character;
 
 			// don't allow default instantiation
 			Client() = delete;
@@ -34,8 +37,22 @@ namespace XS {
 				const char *msg
 			) const;
 
-			std::vector<Character>	 characters;
-			Character				*currentCharacter;
+			// start using a new character
+			// this will handle "logging out" of the current character etc
+			void SelectCharacter(
+				Character *newCharacter
+			);
+
+			// log into the specified account
+			Account::LoginError Login(
+				const char *name,
+				const char *password
+			);
+
+			// log out of the current account
+			void Logout(
+				void
+			);
 
 		};
 

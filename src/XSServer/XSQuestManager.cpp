@@ -11,12 +11,16 @@ namespace XS {
 		if ( it != activeQuests.end() ) {
 			// found it, remove it
 			activeQuests.erase( it );
+			if ( currentQuest == id ) {
+				currentQuest = Quest::invalidID;
+			}
 
 			//TODO: network packet( removed quest X )
 
 			return true;
 		}
 
+		SDL_assert( currentQuest != id && "not tracking the current/active quest?" );
 		return false;
 	}
 
