@@ -224,7 +224,7 @@ namespace XS {
 				}
 
 				for ( const auto &arg : context ) {
-					console.Print( PrintLevel::Normal, "  arg: %s, len: %i\n",
+					console.Print( PrintLevel::Debug, "  arg: %s, len: %i\n",
 						arg.c_str(), arg.length()
 					);
 				}
