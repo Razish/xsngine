@@ -1,32 +1,99 @@
 #pragma once
 
-#include <string>
+#include <vector>
 
 namespace XS {
 
-	// these are enumerated on load and tied to an artist/tool defined name
-	using QuestID = uint32_t;
-
-	// a Quest does not contain an ID, but they are addressed by ID
-	// a Quest serves as a template/factory for all QuestInstance objects to be generated from, using ideas inspired by
-	//	the ECS concept
-	class Quest {
-
-	private:
-		static QuestID numQuests;
+	// an QuestDefinition is a template for all derived QuestInstance objects
+	class QuestDefinition {
 
 	public:
-		static const QuestID invalidID;
+		using ID = uint32_t;
 
-		Quest();
+	private:
+		ID	privateID;
 
-		static const Quest *GetFromString(
-			std::string &str
-		) XS_WARN_UNUSED_RESULT;
+		static ID	numQuestDefinitions;
 
-		static const Quest *GetFromID(
-			QuestID id
-		) XS_WARN_UNUSED_RESULT;
+	public:
+		const ID	&id;
+
+		static const ID	invalidID;
+
+		QuestDefinition();
+		~QuestDefinition();
+
+		static QuestDefinition *Find(
+			ID definitionID
+		);
+
+	};
+
+	class QuestInstance;
+
+	// a QuestComponent stores a const reference to the QuestInstance it belongs to / will act upon
+	// from there we can get to the QuestDefinition if we must
+	class QuestComponent {
+		friend class QuestInstance;
+
+	public:
+		using ID = uint32_t;
+
+	private:
+		ID	privateID;
+
+		static ID	numQuestComponents;
+
+	public:
+		const ID			&id;
+		const QuestInstance	&instance;
+
+		static const ID	invalidID;
+
+		// don't allow default instantiation
+		QuestComponent() = delete;
+		QuestComponent( const QuestComponent& ) = delete;
+		QuestComponent& operator=( const QuestComponent& ) = delete;
+
+		QuestComponent(
+			QuestInstance &parentInstance
+		);
+		~QuestComponent();
+
+		static QuestComponent *Find(
+			ID componentID
+		);
+
+	};
+
+	// each QuestInstance has a list of ItemComponent objects (inspired by the ECS concept) that are defined by the
+	//	Item template
+	class QuestInstance {
+		friend class QuestComponent;
+
+	public:
+		using ID = uint32_t;
+
+	private:
+		ID	privateID;
+
+		static ID	numQuestInstances;
+
+	public:
+		const ID						&id;
+		const QuestDefinition			&definition;
+		std::vector<QuestComponent *>	 components;
+
+		static const ID	invalidID;
+
+		QuestInstance(
+			const QuestDefinition &questDefinition
+		);
+		~QuestInstance();
+
+		static QuestInstance *Find(
+			ID instanceID
+		);
 
 	};
 

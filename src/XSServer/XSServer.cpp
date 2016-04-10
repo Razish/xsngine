@@ -82,8 +82,8 @@ namespace XS {
 				client.Print(
 					String::Format( "    numQuests: %i\n", character->quests.activeQuests.size() ).c_str()
 				);
-				for ( QuestID questID : character->quests.activeQuests ) {
-					//const Quest *quest = Quest::GetFromID( questID );
+				for ( QuestInstance::ID questID : character->quests.activeQuests ) {
+					//const QuestInstance *quest = QuestInstance::GetFromID( questID );
 					client.Print(
 						String::Format( "      quest %i:\n", questID ).c_str()
 					);

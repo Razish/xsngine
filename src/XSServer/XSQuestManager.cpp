@@ -6,17 +6,19 @@
 
 namespace XS {
 
-	bool QuestManager::Drop( QuestID id ) {
+	bool QuestManager::Drop( QuestInstance::ID id ) {
 		auto it = std::find( activeQuests.begin(), activeQuests.end(), id );
 		if ( it != activeQuests.end() ) {
 			// found it, remove it
-			activeQuests.erase( it );
 			if ( currentQuest == id ) {
-				currentQuest = Quest::invalidID;
+				currentQuest = QuestInstance::invalidID;
 			}
 
 			//TODO: network packet( removed quest X )
 
+			//TODO: clean up quest data
+
+			activeQuests.erase( it );
 			return true;
 		}
 

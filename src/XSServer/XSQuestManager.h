@@ -10,12 +10,12 @@ namespace XS {
 		// ...
 
 	public:
-		std::vector<QuestID> activeQuests;
-		QuestID currentQuest = Quest::invalidID;
+		std::vector<QuestInstance::ID> activeQuests;
+		QuestInstance::ID currentQuest = QuestInstance::invalidID;
 
 		// drop quest with the specific id
 		bool Drop(
-			QuestID id
+			QuestInstance::ID id
 		);
 
 	};
