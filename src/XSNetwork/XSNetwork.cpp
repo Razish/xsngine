@@ -122,7 +122,7 @@ namespace XS {
 			}
 		}
 
-		bool Connection::ChangeState( Connection::State newState, bool network ) {
+		bool Connection::ChangeState( Connection::State newState, bool doNetwork ) {
 			if ( state == newState ) {
 				// nothing to do
 				return false;
@@ -147,7 +147,7 @@ namespace XS {
 				Connection::StateToString( newState )
 			);
 
-			if ( network ) {
+			if ( doNetwork ) {
 				ByteBuffer stateBuffer;
 				if ( stateBuffer.Write<State>( newState ) != ByteBuffer::Error::Success ) {
 					// ...

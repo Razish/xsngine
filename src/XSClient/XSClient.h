@@ -66,10 +66,10 @@ namespace XS {
 			bool down
 		);
 
-		// handle a mouse motion event if menu is visible
+		// handle a keyboard event if menu is visible
 		// returns true if menu caught the event
-		bool MouseMotionEvent(
-			const struct MouseMotionEvent &ev
+		bool KeyboardEvent(
+			const struct KeyboardEvent &ev
 		);
 
 		// handle a mouse button event if menu is visible
@@ -78,10 +78,16 @@ namespace XS {
 			const struct MouseButtonEvent &ev
 		);
 
-		// handle a keyboard event if menu is visible
+		// handle a mouse motion event if menu is visible
 		// returns true if menu caught the event
-		void KeyboardEvent(
-			const struct KeyboardEvent &ev
+		bool MouseMotionEvent(
+			const struct MouseMotionEvent &ev
+		);
+
+		// handle a mouse wheel event if menu is visible
+		// returns true if menu caught the event
+		bool MouseWheelEvent(
+			const struct MouseWheelEvent &ev
 		);
 
 		// toggle visibility of the console, locking or releasing mouse control

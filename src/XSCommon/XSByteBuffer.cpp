@@ -49,7 +49,7 @@ namespace XS {
 
 	void ByteBuffer::DumpToFile( const char *path ) const {
 		File f( path, FileMode::Write );
-		if ( !f.open ) {
+		if ( !f.isOpen ) {
 			return;
 		}
 

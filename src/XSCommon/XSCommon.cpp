@@ -108,7 +108,7 @@ namespace XS {
 			const char *cfg = com_dedicated->GetBool() ? DEFAULT_CONFIG_SERVER : DEFAULT_CONFIG;
 			const File f( cfg, FileMode::Read );
 
-			if ( f.open ) {
+			if ( f.isOpen ) {
 				char *buffer = new char[f.length];
 					f.Read( reinterpret_cast<uint8_t *>(buffer) );
 
@@ -144,7 +144,7 @@ namespace XS {
 			}
 
 			const File f( cfg, FileMode::Write );
-			if ( !f.open ) {
+			if ( !f.isOpen ) {
 				console.Print( PrintLevel::Normal, "Failed to write config! (%s)\n", cfg );
 				return;
 			}

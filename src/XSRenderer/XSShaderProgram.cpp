@@ -135,7 +135,7 @@ namespace XS {
 			}
 
 			const File f( path, FileMode::Read );
-			if ( !f.open ) {
+			if ( !f.isOpen ) {
 				throw( XSError( String::Format( "Shader(): Could not open file \"%s\"", name ).c_str() ) );
 			}
 

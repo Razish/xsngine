@@ -382,17 +382,27 @@ namespace XS {
 			return true;
 		}
 
-		void MouseMotionEvent( const struct MouseMotionEvent &ev ) {
+		bool KeyboardEvent( const struct KeyboardEvent &ev ) {
+			return false;
+		}
+
+		bool MouseButtonEvent( const struct MouseButtonEvent &ev ) {
+			return false;
+		}
+
+		bool MouseMotionEvent( const struct MouseMotionEvent &ev ) {
 			vector3 delta = { static_cast<real32_t>( ev.y ), static_cast<real32_t>( ev.x ), 0.0f };
 
 			delta *= Client::Input::m_sensitivity->GetReal32();
 
 			clgState.viewAngles += delta;
 			clgState.viewDelta += delta;
+
+			return false;
 		}
 
-		void MouseButtonEvent( const struct MouseButtonEvent &ev ) {
-			// ...
+		bool MouseWheelEvent( const struct MouseWheelEvent &ev ) {
+			return false;
 		}
 
 	} // namespace ClientGame

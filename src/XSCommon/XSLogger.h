@@ -12,7 +12,7 @@ namespace XS {
 		std::vector<std::string>	queue;
 		File						*f = nullptr;
 		std::string					filename = "";
-		bool						timestamp = false;
+		bool						addTimestamp = false;
 
 		// write queued messages out to file once we have one open
 		void PrintQueued(
@@ -32,7 +32,7 @@ namespace XS {
 		Logger& operator=( const Logger& ) = delete;
 
 		Logger( const char *logFilename, bool addTimestamp = true )
-		: f( nullptr ), filename( logFilename ), timestamp( addTimestamp )
+		: f( nullptr ), filename( logFilename ), addTimestamp( addTimestamp )
 		{
 		}
 

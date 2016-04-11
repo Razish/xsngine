@@ -39,17 +39,27 @@ namespace XS {
 		// received a network packet
 		bool ReceivePacket(
 			const RakNet::Packet *packet
-		);
+		) XS_WARN_UNUSED_RESULT;
 
 		// ???
-		void MouseMotionEvent(
-			const struct MouseMotionEvent &ev
-		);
+		bool KeyboardEvent(
+			const struct KeyboardEvent &ev
+		) XS_WARN_UNUSED_RESULT;
 
 		// ???
-		void MouseButtonEvent(
+		bool MouseButtonEvent(
 			const struct MouseButtonEvent &ev
-		);
+		) XS_WARN_UNUSED_RESULT;
+
+		// ???
+		bool MouseMotionEvent(
+			const struct MouseMotionEvent &ev
+		) XS_WARN_UNUSED_RESULT;
+
+		// ???
+		bool MouseWheelEvent(
+			const struct MouseWheelEvent &ev
+		) XS_WARN_UNUSED_RESULT;
 
 	} // namespace ClientGame
 

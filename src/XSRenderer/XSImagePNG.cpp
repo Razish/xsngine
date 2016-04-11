@@ -324,7 +324,7 @@ namespace XS {
 			uint8_t *out = nullptr;
 
 			const File f( filename, FileMode::ReadBinary );
-			if ( !f.open ) {
+			if ( !f.isOpen ) {
 				console.Print( PrintLevel::Normal, "Could not open PNG file \"%s\" for reading\n", filename );
 				return nullptr;
 			}
@@ -350,7 +350,7 @@ namespace XS {
 
 		bool WritePNG( const char *filename, uint8_t *pixels, int w, int h, int numChannels ) {
 			File f( filename, FileMode::WriteBinary );
-			if ( !f.open ) {
+			if ( !f.isOpen ) {
 				console.Print( PrintLevel::Normal, "Could not open PNG file \"%s\" for writing\n", filename );
 				return false;
 			}

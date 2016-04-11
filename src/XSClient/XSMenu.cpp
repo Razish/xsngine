@@ -23,7 +23,7 @@ namespace XS {
 		: view( view )
 		{
 			const File f( fileName );
-			if ( !f.open ) {
+			if ( !f.isOpen ) {
 				return;
 			}
 
@@ -185,14 +185,34 @@ namespace XS {
 			// ...
 
 			// second pass: fill with elements
-			for ( auto element : elements ) {
+			for ( auto *element : elements ) {
 				element->Paint();
 			}
 
 			// third pass: special cases such as tooltips
-			for ( auto element : elements ) {
+			for ( auto *element : elements ) {
 				element->DrawTooltip();
 			}
+		}
+
+		bool Menu::KeyboardEvent( const struct KeyboardEvent &ev ) {
+			const real32_t cursorX = Client::cursorPos[0];
+			const real32_t cursorY = Client::cursorPos[1];
+			const real32_t menuX = position[0];
+			const real32_t menuY = position[1];
+			const real32_t menuW = size[0];
+			const real32_t menuH = size[1];
+			if ( cursorX > menuX && cursorX < (menuX + menuW)
+				&& cursorY > menuY && cursorY < (menuY + menuH) )
+			{
+				// pass it down the chain
+				for ( auto *element : elements ) {
+					XS_UNUSED const bool result = element->KeyboardEvent( ev );
+				}
+				return true;
+			}
+
+			return false;
 		}
 
 		bool Menu::MouseButtonEvent( const struct MouseButtonEvent &ev ) {
@@ -206,17 +226,16 @@ namespace XS {
 				&& cursorY > menuY && cursorY < (menuY + menuH) )
 			{
 				// pass it down the chain
-				for ( auto element : elements ) {
-					element->MouseButtonEvent( ev );
+				for ( auto *element : elements ) {
+					XS_UNUSED const bool result = element->MouseButtonEvent( ev );
 				}
 				return true;
 			}
-			else {
-				return false;
-			}
+
+			return false;
 		}
 
-		bool Menu::MouseMotionEvent( void ) {
+		bool Menu::MouseMotionEvent( const struct MouseMotionEvent &ev ) {
 			const real32_t cursorX = Client::cursorPos[0];
 			const real32_t cursorY = Client::cursorPos[1];
 			const real32_t menuX = position[0];
@@ -227,11 +246,32 @@ namespace XS {
 				&& cursorY > menuY && cursorY < (menuY + menuH) )
 			{
 				// pass it down the chain
-				for ( auto element : elements ) {
-					element->MouseMotionEvent();
+				for ( auto *element : elements ) {
+					XS_UNUSED const bool result = element->MouseMotionEvent( ev );
 				}
 				return true;
 			}
+
+			return false;
+		}
+
+		bool Menu::MouseWheelEvent( const struct MouseWheelEvent &ev ) {
+			const real32_t cursorX = Client::cursorPos[0];
+			const real32_t cursorY = Client::cursorPos[1];
+			const real32_t menuX = position[0];
+			const real32_t menuY = position[1];
+			const real32_t menuW = size[0];
+			const real32_t menuH = size[1];
+			if ( cursorX > menuX && cursorX < (menuX + menuW)
+				&& cursorY > menuY && cursorY < (menuY + menuH) )
+			{
+				// pass it down the chain
+				for ( auto *element : elements ) {
+					XS_UNUSED const bool result = element->MouseWheelEvent( ev );
+				}
+				return true;
+			}
+
 			return false;
 		}
 

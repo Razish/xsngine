@@ -23,7 +23,7 @@ namespace XS {
 		std::string out;
 
 		// create timestamp
-		if ( timestamp ) {
+		if ( addTimestamp ) {
 			char buf[128];
 			time_t rawtime;
 			time( &rawtime );
@@ -39,7 +39,7 @@ namespace XS {
 		else {
 			// haven't opened the file yet, see if filesystem is available
 			f = new File( filename.c_str(), FileMode::Append );
-			if ( f->open ) {
+			if ( f->isOpen ) {
 				// success, print what we've missed so far
 				Queue( out );
 				PrintQueued();

@@ -152,9 +152,10 @@ namespace XS {
 			) const;
 
 			// change the connection state and send a notifying packet
+			// returns true if the change was valid
 			bool ChangeState(
 				State newState,
-				bool network = false
+				bool doNetwork = false
 			);
 
 		};

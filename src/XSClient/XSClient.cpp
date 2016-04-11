@@ -111,68 +111,107 @@ namespace XS {
 			Command::AddCommand( "reloadMenu", Cmd_ReloadMenu );
 		}
 
-		bool MouseMotionEvent( const struct MouseMotionEvent &ev ) {
-			cursorPos[0] += ev.x / static_cast<real32_t>( Renderer::rdState.window.width );
-			cursorPos[1] += ev.y / static_cast<real32_t>( Renderer::rdState.window.height );
-
-			// clamp the cursor coordinates to screen-space
-			if ( cursorPos[0] < 0.0f ) {
-				cursorPos[0] = 0.0f;
-			}
-			else if ( cursorPos[0] > 1.0f ) {
-				cursorPos[0] = 1.0f;
-			}
-			if ( cursorPos[1] < 0.0f ) {
-				cursorPos[1] = 0.0f;
-			}
-			else if ( cursorPos[1] > 1.0f ) {
-				cursorPos[1] = 1.0f;
-			}
-
-			if ( menu->isOpen ) {
-				menu->MouseMotionEvent( ev );
-				return true;
-			}
-
-			else if ( !clientConsole || !clientConsole->IsVisible() ) {
-				ClientGame::MouseMotionEvent( ev );
-			}
-
-			return false;
-		}
-
-		bool MouseButtonEvent( const struct MouseButtonEvent &ev ) {
-			if ( menu->isOpen ) {
-				menu->MouseButtonEvent( ev );
-				return true;
-			}
-
-			ClientGame::MouseButtonEvent( ev );
-
-			return false;
-		}
-
-		void KeyboardEvent( const struct KeyboardEvent &ev ) {
-			// hardcoded console short-circuit
+		bool KeyboardEvent( const struct KeyboardEvent &ev ) {
 			if ( clientConsole ) {
+				// hardcoded console short-circuit
 				if ( ev.down && ev.key == SDLK_BACKQUOTE ) {
 					clientConsole->Toggle();
-					return;
+					return true;
 				}
 				else if ( clientConsole->KeyboardEvent( ev ) ) {
-					return;
+					return true;
 				}
 			}
 
 			// let the menu consume key events
 			if ( menu->isOpen ) {
-				menu->KeyboardEvent( ev );
-				return;
+				if ( menu->KeyboardEvent( ev ) ) {
+					return true;
+				}
 			}
 
 			// fall through to gamecode
+			//FIXME: move to ClientGame::KeyboardEvent
 			keystate[ev.key] = ev.down;
 			ExecuteBind( ev );
+
+			return true;
+		}
+
+		bool MouseButtonEvent( const struct MouseButtonEvent &ev ) {
+			if ( clientConsole ) {
+				if ( clientConsole->MouseButtonEvent( ev ) ) {
+					return true;
+				}
+			}
+
+			if ( menu->isOpen ) {
+				if ( menu->MouseButtonEvent( ev ) ) {
+					return true;
+				}
+			}
+
+			if ( ClientGame::MouseButtonEvent( ev ) ) {
+				return true;
+			}
+
+			return false;
+		}
+
+		bool MouseMotionEvent( const struct MouseMotionEvent &ev ) {
+			if ( clientConsole ) {
+				if ( clientConsole->MouseMotionEvent( ev ) ) {
+					return true;
+				}
+			}
+
+			if ( menu->isOpen ) {
+				cursorPos[0] += ev.x / static_cast<real32_t>( Renderer::rdState.window.width );
+				cursorPos[1] += ev.y / static_cast<real32_t>( Renderer::rdState.window.height );
+
+				// clamp the cursor coordinates to screen-space
+				if ( cursorPos[0] < 0.0f ) {
+					cursorPos[0] = 0.0f;
+				}
+				else if ( cursorPos[0] > 1.0f ) {
+					cursorPos[0] = 1.0f;
+				}
+				if ( cursorPos[1] < 0.0f ) {
+					cursorPos[1] = 0.0f;
+				}
+				else if ( cursorPos[1] > 1.0f ) {
+					cursorPos[1] = 1.0f;
+				}
+				if ( menu->MouseMotionEvent( ev ) ) {
+					return true;
+				}
+			}
+
+			if ( ClientGame::MouseMotionEvent( ev ) ) {
+				return true;
+			}
+
+			return false;
+		}
+
+		bool MouseWheelEvent( const struct MouseWheelEvent &ev ) {
+			if ( clientConsole ) {
+				if ( clientConsole->MouseWheelEvent( ev ) ) {
+					return true;
+				}
+			}
+
+			if ( menu->isOpen ) {
+				if ( menu->MouseWheelEvent( ev ) ) {
+					return true;
+				}
+			}
+
+			if ( ClientGame::MouseWheelEvent( ev ) ) {
+				return true;
+			}
+
+			return false;
 		}
 
 		void Init( void ) {

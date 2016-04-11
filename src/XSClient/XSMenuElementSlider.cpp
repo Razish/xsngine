@@ -331,17 +331,25 @@ namespace XS {
 			}
 		}
 
-		void MenuElementSlider::MouseButtonEvent( const struct MouseButtonEvent &ev ) {
+		bool MenuElementSlider::KeyboardEvent( const struct KeyboardEvent &ev ) {
 			if ( properties.decorative ) {
-				return;
+				return false;
+			}
+
+			return false;
+		}
+
+		bool MenuElementSlider::MouseButtonEvent( const struct MouseButtonEvent &ev ) {
+			if ( properties.decorative ) {
+				return false;
 			}
 
 			if ( !MouseWithinBounds( Client::cursorPos ) ) {
-				return;
+				return false;
 			}
 			Cvar *cvar = Cvar::Get( cvarName );
 			if ( !cvar ) {
-				return;
+				return false;
 			}
 
 			if ( ev.pressed && (ev.button == SDL_BUTTON_LEFT) ) {
@@ -352,18 +360,23 @@ namespace XS {
 
 				UpdateValue( f );
 				updatingValue = true;
+				return true;
 			}
 			else {
+				//FIXME: can we move updatingValue outside this scope?
 				updatingValue = false;
 				if ( !postExecCommand.empty() ) {
 					Command::Append( postExecCommand.c_str() );
+					return true;
 				}
 			}
+
+			return false;
 		}
 
-		void MenuElementSlider::MouseMotionEvent( void ) {
+		bool MenuElementSlider::MouseMotionEvent( const struct MouseMotionEvent &ev ) {
 			if ( properties.decorative ) {
-				return;
+				return false;
 			}
 
 			if ( MouseWithinBounds( Client::cursorPos ) ) {
@@ -382,7 +395,7 @@ namespace XS {
 					}
 				}
 				updatingValue = false;
-				return;
+				return false;
 			}
 
 			if ( updatingValue ) {
@@ -393,6 +406,16 @@ namespace XS {
 
 				UpdateValue( f );
 			}
+
+			return false;
+		}
+
+		bool MenuElementSlider::MouseWheelEvent( const struct MouseWheelEvent &ev ) {
+			if ( properties.decorative ) {
+				return false;
+			}
+
+			return false;
 		}
 
 	} // namespace Client

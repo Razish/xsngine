@@ -14,6 +14,7 @@ namespace XS {
 	namespace Client {
 
 		class MenuElementSlider : public MenuElement {
+
 		private:
 			struct {
 				Renderer::Material	*thumb = nullptr;
@@ -68,15 +69,26 @@ namespace XS {
 				void
 			);
 
+			// handle a keyboard event
+			bool KeyboardEvent(
+				const struct KeyboardEvent &ev
+			) XS_WARN_UNUSED_RESULT;
+
 			// handle a mouse button event
-			void MouseButtonEvent(
+			bool MouseButtonEvent(
 				const struct MouseButtonEvent &ev
-			);
+			) XS_WARN_UNUSED_RESULT;
 
 			// handle a mouse motion event
-			void MouseMotionEvent(
-				void
-			);
+			bool MouseMotionEvent(
+				const struct MouseMotionEvent &ev
+			) XS_WARN_UNUSED_RESULT;
+
+			// handle a mouse wheel event
+			bool MouseWheelEvent(
+				const struct MouseWheelEvent &ev
+			) XS_WARN_UNUSED_RESULT;
+
 		};
 
 	} // namespace Client

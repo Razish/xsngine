@@ -72,15 +72,25 @@ namespace XS {
 				void
 			);
 
+			// handle a keyboard event
+			virtual bool KeyboardEvent(
+				const struct KeyboardEvent &ev
+			) XS_WARN_UNUSED_RESULT = 0;
+
 			// handle a mouse button event
-			virtual void MouseButtonEvent(
+			virtual bool MouseButtonEvent(
 				const struct MouseButtonEvent &ev
-			) = 0;
+			) XS_WARN_UNUSED_RESULT = 0;
 
 			// handle a mouse motion event
-			virtual void MouseMotionEvent(
-				void
-			) = 0;
+			virtual bool MouseMotionEvent(
+				const struct MouseMotionEvent &ev
+			) XS_WARN_UNUSED_RESULT = 0;
+
+			// handle a mouse wheel event
+			virtual bool MouseWheelEvent(
+				const struct MouseWheelEvent &ev
+			) XS_WARN_UNUSED_RESULT = 0;
 
 		};
 

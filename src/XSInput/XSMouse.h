@@ -17,23 +17,25 @@ namespace XS {
 
 			// lock mouse to screen and only recieve relative mouse movement, or behave like a regular window
 			void CaptureMouse(
-				bool capture
+				bool doCapture
 			);
 
 			// pass input events to the client system (console -> menus -> binds/ingame)
-			void MouseWheelEvent(
-				const struct MouseWheelEvent &ev
-			);
 
 			// ???
-			void MouseButtonEvent(
+			bool MouseButtonEvent(
 				const struct MouseButtonEvent &ev
-			);
+			) XS_WARN_UNUSED_RESULT;
 
 			// ???
-			void MouseMotionEvent(
+			bool MouseMotionEvent(
 				const struct MouseMotionEvent &ev
-			);
+			) XS_WARN_UNUSED_RESULT;
+
+			// ???
+			bool MouseWheelEvent(
+				const struct MouseWheelEvent &ev
+			) XS_WARN_UNUSED_RESULT;
 
 			// ???
 			void CalculateMouseMotion(
