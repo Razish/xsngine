@@ -300,26 +300,56 @@ namespace XS {
 			);
 		}
 
-		void MenuElementButton::MouseButtonEvent( const struct MouseButtonEvent &ev ) {
+		bool MenuElementButton::KeyboardEvent( const struct KeyboardEvent &ev ) {
 			if ( properties.decorative ) {
-				return;
+				return false;
 			}
 
 			if ( !MouseWithinBounds( Client::cursorPos ) ) {
-				return;
+				return false;
 			}
 
-			if ( ev.pressed && (ev.button == SDL_BUTTON_LEFT) ) {
+			if ( ev.down && ev.key == SDLK_RETURN ) {
 				Command::Append( cmd.c_str() );
+				return true;
 			}
+
+			return false;
 		}
 
-		void MenuElementButton::MouseMotionEvent( void ) {
+		bool MenuElementButton::MouseButtonEvent( const struct MouseButtonEvent &ev ) {
 			if ( properties.decorative ) {
-				return;
+				return false;
+			}
+
+			if ( !MouseWithinBounds( Client::cursorPos ) ) {
+				return false;
+			}
+
+			if ( ev.pressed && ev.button == SDL_BUTTON_LEFT ) {
+				Command::Append( cmd.c_str() );
+				return true;
+			}
+
+			return false;
+		}
+
+		bool MenuElementButton::MouseMotionEvent( const struct MouseMotionEvent &ev ) {
+			if ( properties.decorative ) {
+				return false;
 			}
 
 			//TODO: highlighting buttons or such
+
+			return false;
+		}
+
+		bool MenuElementButton::MouseWheelEvent( const struct MouseWheelEvent &ev ) {
+			if ( properties.decorative ) {
+				return false;
+			}
+
+			return false;
 		}
 
 	} // namespace Client

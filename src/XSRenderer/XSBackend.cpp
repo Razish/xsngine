@@ -20,8 +20,9 @@ namespace XS {
 			GLuint defaultVao = 0u;
 			GLuint defaultPbo = 0u;
 
+			//FIXME: attach Set function with const ref for reading?
 			static struct State {
-				bool wireFrame;
+				bool wireframeEnabled;
 			} rdbState = {};
 
 			static void RegisterCvars( void ) {
@@ -73,12 +74,12 @@ namespace XS {
 			}
 
 			void ToggleWireframe( bool on ) {
-				rdbState.wireFrame = on;
+				rdbState.wireframeEnabled = on;
 				glPolygonMode( GL_FRONT_AND_BACK, on ? GL_LINE : GL_FILL );
 			}
 
 			bool GetWireframe( void ) {
-				return rdbState.wireFrame;
+				return rdbState.wireframeEnabled;
 			}
 
 			void ClearBuffer( bool clearColour, bool clearDepth, const vector4 &colour ) {

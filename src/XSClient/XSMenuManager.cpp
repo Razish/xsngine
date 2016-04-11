@@ -60,7 +60,7 @@ namespace XS {
 		}
 
 		// retrieve the top-most menu
-		const Menu *MenuManager::GetCurrentMenu( void ) const {
+		Menu *MenuManager::GetCurrentMenu( void ) const {
 			return stack.back();
 		}
 
@@ -109,43 +109,65 @@ namespace XS {
 
 		// paint all menus to the screen
 		void MenuManager::PaintMenus( void ) {
-			for ( auto menu : stack ) {
+			for ( auto *menu : stack ) {
 				menu->Paint();
 			}
 		}
 
 		// pass a keyboard event to the top-most menu
-		void MenuManager::KeyboardEvent( const struct KeyboardEvent &ev ) {
-			//const Menu *menu = GetCurrentMenu();
+		bool MenuManager::KeyboardEvent( const struct KeyboardEvent &ev ) {
+			Menu *menu = GetCurrentMenu();
+			if ( !menu ) {
+				return false;
+			}
 			if ( ev.down && ev.key == SDLK_ESCAPE ) {
+				// hardcoded key to close the top-most menu
 				PopMenu();
-			//	menu = nullptr;
+				return true;
 			}
-			/*
-			if ( menu ) {
-				menu->KeyboardEvent( ev );
-			}
-			*/
-		}
-
-		// pass a mouse motion event to the menu
-		void MenuManager::MouseMotionEvent( const struct MouseMotionEvent &ev ) {
-			for ( auto it = stack.rbegin(); it != stack.rend(); ++it ) {
-				Menu *menu = *it;
-				if ( menu->MouseMotionEvent() ) {
-					break;
+			else {
+				if ( menu->KeyboardEvent( ev ) ) {
+					return true;
 				}
 			}
+
+			return false;
 		}
 
-		// pass a mouse button event to the menu
-		void MenuManager::MouseButtonEvent( const struct MouseButtonEvent &ev ) {
+		// pass a mouse button event to the top-most menu
+		bool MenuManager::MouseButtonEvent( const struct MouseButtonEvent &ev ) {
 			for ( auto it = stack.rbegin(); it != stack.rend(); ++it ) {
 				Menu *menu = *it;
 				if ( menu->MouseButtonEvent( ev ) ) {
-					break;
+					return true;
 				}
 			}
+
+			return false;
+		}
+
+		// pass a mouse motion event to the menu
+		bool MenuManager::MouseMotionEvent( const struct MouseMotionEvent &ev ) {
+			for ( auto it = stack.rbegin(); it != stack.rend(); ++it ) {
+				Menu *menu = *it;
+				if ( menu->MouseMotionEvent( ev ) ) {
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		// pass a mouse wheel event to the menu
+		bool MenuManager::MouseWheelEvent( const struct MouseWheelEvent &ev ) {
+			for ( auto it = stack.rbegin(); it != stack.rend(); ++it ) {
+				Menu *menu = *it;
+				if ( menu->MouseWheelEvent( ev ) ) {
+					return true;
+				}
+			}
+
+			return false;
 		}
 
 	} // namespace Client

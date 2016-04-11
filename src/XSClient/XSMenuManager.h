@@ -15,6 +15,7 @@ namespace XS {
 	namespace Client {
 
 		class MenuManager {
+
 		private:
 			// currently open menus
 			std::vector<Menu *>	stack;
@@ -34,6 +35,8 @@ namespace XS {
 			uint32_t cursorHeight = 0u;
 
 		public:
+			const bool	&isOpen;
+
 			// don't allow default instantiation
 			MenuManager() = delete;
 			MenuManager( const MenuManager& ) = delete;
@@ -51,7 +54,7 @@ namespace XS {
 			);
 
 			// retrieve the top-most menu
-			const Menu *GetCurrentMenu(
+			Menu *GetCurrentMenu(
 				void
 			) const XS_WARN_UNUSED_RESULT;
 
@@ -81,21 +84,25 @@ namespace XS {
 			);
 
 			// pass a keyboard event to the top-most menu
-			void KeyboardEvent(
+			bool KeyboardEvent(
 				const struct KeyboardEvent &ev
-			);
-
-			// pass a mouse motion event to the menu
-			void MouseMotionEvent(
-				const struct MouseMotionEvent &ev
-			);
+			) XS_WARN_UNUSED_RESULT;
 
 			// pass a mouse button event to the top-most menu
-			void MouseButtonEvent(
+			bool MouseButtonEvent(
 				const struct MouseButtonEvent &ev
-			);
+			) XS_WARN_UNUSED_RESULT;
 
-			const bool	&isOpen;
+			// pass a mouse motion event to the menu
+			bool MouseMotionEvent(
+				const struct MouseMotionEvent &ev
+			) XS_WARN_UNUSED_RESULT;
+
+			// pass a mouse wheel event to the menu
+			bool MouseWheelEvent(
+				const struct MouseWheelEvent &ev
+			) XS_WARN_UNUSED_RESULT;
+
 		};
 
 	} // namespace Client

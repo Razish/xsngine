@@ -191,7 +191,7 @@ namespace XS {
 		}
 
 		void Init( void ) {
-			rdState.valid = true;
+			rdState.isValid = true;
 
 			RegisterCvars();
 
@@ -304,7 +304,7 @@ namespace XS {
 			SDL_assert( context && "Failed to create OpenGL context on window" );
 
 			SDL_GL_MakeCurrent( window, context );
-			rdState.window.valid = true;
+			rdState.window.isValid = true;
 			rdState.window.width = static_cast<uint32_t>( width );
 			rdState.window.height = static_cast<uint32_t>( height );
 			rdState.window.aspectRatio = vid_width->GetReal64() / vid_height->GetReal64();

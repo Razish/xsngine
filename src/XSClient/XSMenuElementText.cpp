@@ -217,21 +217,36 @@ namespace XS {
 			);
 		}
 
-		void MenuElementText::MouseButtonEvent( const struct MouseButtonEvent &ev ) {
-			// hmm...this is kind of redundant :^)
+		bool MenuElementText::KeyboardEvent( const struct KeyboardEvent &ev ) {
 			if ( properties.decorative ) {
-				return;
+				return false;
 			}
 
-			// ...
+			return false;
 		}
 
-		void MenuElementText::MouseMotionEvent( void ) {
+		bool MenuElementText::MouseButtonEvent( const struct MouseButtonEvent &ev ) {
 			if ( properties.decorative ) {
-				return;
+				return false;
 			}
 
-			// ...
+			return false;
+		}
+
+		bool MenuElementText::MouseMotionEvent( const struct MouseMotionEvent &ev ) {
+			if ( properties.decorative ) {
+				return false;
+			}
+
+			return false;
+		}
+
+		bool MenuElementText::MouseWheelEvent( const struct MouseWheelEvent &ev ) {
+			if ( properties.decorative ) {
+				return false;
+			}
+
+			return false;
 		}
 
 	} // namespace Client

@@ -27,11 +27,11 @@ namespace XS {
 
 		extern struct RendererState {
 
-			bool valid;
+			bool isValid;
 
 			struct Window {
 
-				bool		valid;
+				bool		isValid;
 
 				uint32_t	width;
 				uint32_t	height;

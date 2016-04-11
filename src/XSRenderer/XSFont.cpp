@@ -52,7 +52,7 @@ namespace XS {
 			FT_Face face = nullptr;
 
 			const File ttf( file.c_str(), FileMode::ReadBinary );
-			if ( !ttf.open ) {
+			if ( !ttf.isOpen ) {
 				console.Print( PrintLevel::Normal, "WARNING: Could not load font file \"%s\"\n", ttf.path );
 				return;
 			}

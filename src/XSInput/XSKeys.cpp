@@ -155,18 +155,19 @@ namespace XS {
 			for ( const KeyMap &km : keymap ) {
 				if ( km.keycode == keycode ) {
 					// return the actual printable character, taking into account shift + capslock
-					bool shift = false;
+					bool shiftEnabled = false;
 
+					//FIXME: this is not sub-frame accurate
 					if ( keystate[SDLK_LSHIFT] || keystate[SDLK_RSHIFT] ) {
-						shift = !shift;
+						shiftEnabled = !shiftEnabled;
 					}
 
-					const bool capsLock = !!(SDL_GetModState() & KMOD_CAPS);
-					if ( capsLock && km.keycode >= 'a' && km.keycode <= 'z' ) {
-						shift = !shift;
+					const bool capsLockEnabled = !!(SDL_GetModState() & KMOD_CAPS);
+					if ( capsLockEnabled && km.keycode >= 'a' && km.keycode <= 'z' ) {
+						shiftEnabled = !shiftEnabled;
 					}
 
-					return shift ? km.shifted : km.printable;
+					return shiftEnabled ? km.shifted : km.printable;
 				}
 			}
 			return '\0';

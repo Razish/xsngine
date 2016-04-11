@@ -26,14 +26,14 @@ namespace XS {
 		bool		pressed;
 	};
 
-	struct MouseWheelEvent {
-		bool		up;
-		uint32_t	amount;
-	};
-
 	struct MouseMotionEvent {
 		int32_t		x;
 		int32_t		y;
+	};
+
+	struct MouseWheelEvent {
+		bool		up;
+		uint32_t	amount;
 	};
 
 	struct XSEvent {
@@ -47,8 +47,8 @@ namespace XS {
 		union {
 			KeyboardEvent		keyboard;
 			MouseButtonEvent	mouseButton;
-			MouseWheelEvent		mouseWheel;
 			MouseMotionEvent	mouseMotion;
+			MouseWheelEvent		mouseWheel;
 		};
 
 		XSEvent( EventType eventType )

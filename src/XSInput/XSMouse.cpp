@@ -27,30 +27,34 @@ namespace XS {
 
 			static bool captureMouse = false;
 
-			void CaptureMouse( bool capture ) {
-				captureMouse = capture;
+			void CaptureMouse( bool doCapture ) {
+				captureMouse = doCapture;
 
 				SDL_SetRelativeMouseMode( captureMouse ? SDL_TRUE : SDL_FALSE );
 			}
 
-			void MouseWheelEvent( const struct MouseWheelEvent &ev ) {
-				if ( clientConsole ) {
-					clientConsole->MouseWheelEvent( ev );
-				}
-			}
-
-			void MouseButtonEvent( const struct MouseButtonEvent &ev ) {
+			bool MouseButtonEvent( const struct MouseButtonEvent &ev ) {
 				if ( Client::MouseButtonEvent( ev ) ) {
-					return;
+					return true;
 				}
+
+				return false;
 			}
 
-			// called directly from input polling
-			void MouseMotionEvent( const struct MouseMotionEvent &ev ) {
-				// see if the client (menu) handled the mouse movement
+			bool MouseMotionEvent( const struct MouseMotionEvent &ev ) {
 				if ( Client::MouseMotionEvent( ev ) ) {
-					return;
+					return true;
 				}
+
+				return false;
+			}
+
+			bool MouseWheelEvent( const struct MouseWheelEvent &ev ) {
+				if ( Client::MouseWheelEvent( ev ) ) {
+					return true;
+				}
+
+				return false;
 			}
 
 		} // namespace Input

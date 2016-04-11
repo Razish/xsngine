@@ -49,7 +49,7 @@ namespace XS {
 			model->handle = numRegistered++;
 
 			const File f( path, FileMode::ReadBinary );
-			if ( !f.open ) {
+			if ( !f.isOpen ) {
 				console.Print( PrintLevel::Normal, "Failed to load model '%s', returning invalid handle\n",
 					model->modelPath.c_str()
 				);

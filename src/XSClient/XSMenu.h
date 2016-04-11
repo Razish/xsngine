@@ -12,6 +12,7 @@ namespace XS {
 		class MenuElement;
 
 		class Menu {
+
 			friend class MenuManager;
 
 		private:
@@ -40,13 +41,22 @@ namespace XS {
 				void
 			);
 
+			bool KeyboardEvent(
+				const struct KeyboardEvent &ev
+			) XS_WARN_UNUSED_RESULT;
+
 			bool MouseButtonEvent(
 				const struct MouseButtonEvent &ev
-			);
+			) XS_WARN_UNUSED_RESULT;
 
 			bool MouseMotionEvent(
-				void
-			);
+				const struct MouseMotionEvent &ev
+			) XS_WARN_UNUSED_RESULT;
+
+			bool MouseWheelEvent(
+				const struct MouseWheelEvent &ev
+			) XS_WARN_UNUSED_RESULT;
+
 		};
 
 	} // namespace Client

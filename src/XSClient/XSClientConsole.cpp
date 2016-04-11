@@ -28,15 +28,11 @@ namespace XS {
 		}
 
 		void ClientConsole::Toggle( void ) {
-			if ( visible ) {
+			if ( isVisible ) {
 				input->Clear();
 			}
-			visible = !visible;
-			Input::CaptureMouse( !visible );
-		}
-
-		bool ClientConsole::IsVisible( void ) const {
-			return visible;
+			privateIsVisible = !privateIsVisible;
+			Input::CaptureMouse( !isVisible );
 		}
 
 		// negative for down, positive for up
@@ -55,7 +51,7 @@ namespace XS {
 		}
 
 		bool ClientConsole::KeyboardEvent( const struct KeyboardEvent &ev ) {
-			if ( !visible ) {
+			if ( !isVisible ) {
 				return false;
 			}
 
@@ -74,18 +70,44 @@ namespace XS {
 			return true;
 		}
 
-		void ClientConsole::MouseWheelEvent( const struct MouseWheelEvent &ev ) {
+		bool ClientConsole::MouseButtonEvent( const struct MouseButtonEvent &ev ) {
+			if ( !isVisible ) {
+				return false;
+			}
+
+			// ...
+
+			return true;
+		}
+
+		bool ClientConsole::MouseMotionEvent( const struct MouseMotionEvent &ev ) {
+			if ( !isVisible ) {
+				return false;
+			}
+
+			// ...
+
+			return true;
+		}
+
+		bool ClientConsole::MouseWheelEvent( const struct MouseWheelEvent &ev ) {
+			if ( !isVisible ) {
+				return false;
+			}
+
 			if ( ev.up ) {
 				Scroll( ev.amount );
 			}
 			else {
 				Scroll ( ev.amount * -1 );
 			}
+
+			return true;
 		}
 
 		ClientConsole::ClientConsole( Console *consoleInstance )
-		: console( consoleInstance ), visible( false ), scrollAmount( 0 ), lineCount( 24u ),
-			font( nullptr )
+		: console( consoleInstance ), privateIsVisible( false ), scrollAmount( 0 ), lineCount( 24u ), font( nullptr ),
+			isVisible( privateIsVisible )
 		{
 			con_fontSize = Cvar::Create( "con_fontSize", "16",
 				"Size of the console font", CVAR_ARCHIVE
@@ -139,7 +161,7 @@ namespace XS {
 		}
 
 		void ClientConsole::Draw( void ) {
-			if ( !visible || !view ) {
+			if ( !isVisible || !view ) {
 				return;
 			}
 

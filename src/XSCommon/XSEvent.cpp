@@ -51,21 +51,22 @@ namespace XS {
 			while ( !events.empty() ) {
 				const XSEvent &ev = events.front();
 
+				bool result = false;
 				switch ( ev.type ) {
 				case EventType::Keyboard: {
-					Client::KeyboardEvent( ev.keyboard );
+					result = Client::KeyboardEvent( ev.keyboard );
 				} break;
 
 				case EventType::MouseButton: {
-					Client::Input::MouseButtonEvent( ev.mouseButton );
-				} break;
-
-				case EventType::MouseWheel: {
-					Client::Input::MouseWheelEvent( ev.mouseWheel );
+					result = Client::Input::MouseButtonEvent( ev.mouseButton );
 				} break;
 
 				case EventType::MouseMotion: {
-					Client::Input::MouseMotionEvent( ev.mouseMotion );
+					result = Client::Input::MouseMotionEvent( ev.mouseMotion );
+				} break;
+
+				case EventType::MouseWheel: {
+					result = Client::Input::MouseWheelEvent( ev.mouseWheel );
 				} break;
 
 				default: {
