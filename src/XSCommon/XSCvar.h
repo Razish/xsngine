@@ -94,56 +94,70 @@ namespace XS {
 			const std::string &value,
 			bool initial = false
 		);
+
 		bool Set(
 			const char *value,
 			bool initial = false
 		);
+
 		bool Set(
 			const int32_t value,
 			bool initial = false
 		);
+
 		bool Set(
 			const uint32_t value,
 			bool initial = false
 		);
+
 		bool Set(
 			const real32_t value,
 			bool initial = false
 		);
+
 		bool Set(
 			const bool value,
 			bool initial = false
 		);
 
 		// retrieve a value for the cvar at the given index (e.g. index 1 for "640 480" will be "480"
-		inline const std::string &GetDefaultString( void ) const XS_WARN_UNUSED_RESULT {
+		const std::string &GetDefaultString( void ) const XS_WARN_UNUSED_RESULT {
 			return defaultStr;
 		}
-		inline const std::string &GetFullString( void ) const XS_WARN_UNUSED_RESULT {
+
+		const std::string &GetFullString( void ) const XS_WARN_UNUSED_RESULT {
 			return fullString;
 		}
-		inline const char *GetFullCString( void ) const XS_WARN_UNUSED_RESULT {
+
+		const char *GetFullCString( void ) const XS_WARN_UNUSED_RESULT {
 			return fullString.c_str();
 		}
-		inline const std::string &GetString( size_t index = 0u ) const XS_WARN_UNUSED_RESULT {
+
+		const std::string &GetString( size_t index = 0u ) const XS_WARN_UNUSED_RESULT {
 			return values[index].str;
 		}
-		inline const char *GetCString( size_t index = 0u ) const XS_WARN_UNUSED_RESULT {
+
+		const char *GetCString( size_t index = 0u ) const XS_WARN_UNUSED_RESULT {
 			return values[index].str.c_str();
 		}
-		inline int32_t GetInt32( size_t index = 0u ) const XS_WARN_UNUSED_RESULT {
+
+		int32_t GetInt32( size_t index = 0u ) const XS_WARN_UNUSED_RESULT {
 			return values[index].int32;
 		}
-		inline uint32_t GetUInt32( size_t index = 0u ) const XS_WARN_UNUSED_RESULT {
+
+		uint32_t GetUInt32( size_t index = 0u ) const XS_WARN_UNUSED_RESULT {
 			return values[index].uint32;
 		}
-		inline real32_t GetReal32( size_t index = 0u ) const XS_WARN_UNUSED_RESULT {
+
+		real32_t GetReal32( size_t index = 0u ) const XS_WARN_UNUSED_RESULT {
 			return values[index].real32;
 		}
-		inline real64_t GetReal64( size_t index = 0u ) const XS_WARN_UNUSED_RESULT {
+
+		real64_t GetReal64( size_t index = 0u ) const XS_WARN_UNUSED_RESULT {
 			return values[index].real64;
 		}
-		inline bool GetBool( size_t index = 0u ) const XS_WARN_UNUSED_RESULT {
+
+		bool GetBool( size_t index = 0u ) const XS_WARN_UNUSED_RESULT {
 			return values[index].boolean;
 		}
 	};

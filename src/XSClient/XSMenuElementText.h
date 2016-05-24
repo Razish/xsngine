@@ -16,28 +16,31 @@ namespace XS {
 		class MenuElementText : public MenuElement {
 
 		private:
-			struct {
-				Renderer::Font		*font = nullptr;
-			} assets;
+			struct Data {
+				Renderer::Font	*font;
 
-			std::string		text;
-			uint16_t		pointSize = 16u;
+				Data()
+				:	font( nullptr )
+				{
+				}
+			} data;
 
-			struct Properties : public MenuElement::Properties {
-				bool			centered = false;
-				bool			vertical = false;
+		public:
+			struct Properties {
+				bool			centered;
+				uint16_t		pointSize;
+				std::string		text;
+				bool			vertical;
 
 				Properties()
-				: MenuElement::Properties() {
+				:	centered( false ),
+					pointSize( 16u ),
+					text( "" ),
+					vertical( false )
+				{
 				}
 			} properties;
 
-			void ParseProperties(
-				TokenParser *parser,
-				const char *fileName
-			);
-
-		public:
 			// don't allow default instantiation
 			MenuElementText() = delete;
 			MenuElementText( const MenuElementText& ) = delete;

@@ -10,8 +10,11 @@ namespace XS {
 		// constructor
 		Perlin::Perlin( real64_t inPersistence, real64_t inFrequency, real64_t inAmplitude, int32_t inOctaves,
 			int32_t inRandomSeed )
-		: persistence( privatePersistence ), frequency( privateFrequency ), amplitude( privateAmplitude ),
-			octaves( privateOctaves ), randomSeed( privateRandomSeed )
+		:	persistence( privatePersistence ),
+			frequency( privateFrequency ),
+			amplitude( privateAmplitude ),
+			octaves( privateOctaves ),
+			randomSeed( privateRandomSeed )
 		{
 			Set( inPersistence, inFrequency, inAmplitude, inOctaves, inRandomSeed );
 		}

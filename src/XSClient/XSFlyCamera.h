@@ -7,9 +7,11 @@ namespace XS {
 	namespace ClientGame {
 
 		class FlyCamera : public BaseCamera {
+
 		public:
-			inline FlyCamera( const Renderer::View &view, real32_t speed )
-			: BaseCamera( view, glm::vec3() ), flySpeed( speed )
+			FlyCamera( const Renderer::View &view, real32_t speed )
+			:	BaseCamera( view, glm::vec3() ),
+				flySpeed( speed )
 			{
 			}
 
@@ -23,14 +25,17 @@ namespace XS {
 			void HandleKeyboardInput(
 				real64_t dt
 			);
+
 			void HandleMouseInput(
 				real64_t dt
 			);
+
 			void CalculateRotation(
 				real64_t dt,
 				real64_t xOffset,
 				real64_t yOffset
 			);
+
 		};
 
 	} // namespace ClientGame

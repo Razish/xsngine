@@ -421,6 +421,16 @@ namespace XS {
 			}
 #endif
 
+			GLenum lastError = glGetError();
+			if ( lastError != GL_NO_ERROR ) {
+				console.Print( PrintLevel::Developer, "Unhandled OpenGL errors for this frame:\n", lastError );
+				int i = 1;
+				do {
+					console.Print( PrintLevel::Developer, "  %i: %i\n", i++, lastError );
+					lastError = glGetError();
+				} while ( lastError );
+			}
+
 			SDL_GL_SwapWindow( window );
 		}
 

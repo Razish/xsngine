@@ -569,6 +569,7 @@ files = [
 	'XSCommon/XSFile.cpp',
 	'XSCommon/XSFileXMF.cpp',
 	'XSCommon/XSLogger.cpp',
+	'XSCommon/XSMatrix.cpp',
 	'XSCommon/XSMessageBuffer.cpp',
 	'XSCommon/XSModule.cpp',
 	'XSCommon/XSString.cpp',

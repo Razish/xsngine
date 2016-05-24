@@ -16,45 +16,54 @@ namespace XS {
 
 	namespace Client {
 
-		// a MenuElement is an abstract base class for more derived/specialised types and as such should have no (or
-		//	minimal) data attached to it
-		// currently there is some metadata as-well as tooltip data
+		// a MenuElement is intended to be extended by more specialised element types, but does not enforce this
+		// each MenuElement has an associated parent Menu
 		class MenuElement {
-			friend class Menu;
 
 		private:
 			// ...
 
-		protected:
+		public:
+			const Menu		&parent;
+
+			// common properties
+			struct Common {
+				bool			decorative;
+				bool			hidden;
+				std::string		name;
+				vector2			position;
+
+				Common()
+				:	decorative( false ),
+					hidden( false ),
+					name( "" ),
+					position( vector2{ 0.0f, 0.0f } )
+				{
+				}
+			} common;
+
+			struct Tooltip {
+				Renderer::Font	*font;
+				vector2			 lastMousePos;
+				real64_t		 lastMouseTime;
+				bool			 mouseHovering;
+				uint16_t		 pointSize;
+				std::string		 text;
+
+				Tooltip()
+				:	font( nullptr ),
+					lastMousePos( vector2{ 0.0f, 0.0f } ),
+					lastMouseTime( 0.0 ),
+					mouseHovering( false ),
+					pointSize( 16u ),
+					text( "" )
+				{
+				}
+			} tooltip;
+
 			MenuElement(
 				const Menu &parent
 			);
-
-			const Menu		&parent;
-			vector2			 position;
-			std::string		 name;
-
-			// abstract base class for properties
-			struct Properties {
-				bool			hidden = false;
-				bool			decorative = false;
-			};
-
-			struct Tooltip {
-				Renderer::Font	*font = nullptr;
-				uint16_t		 pointSize = 16u;
-				std::string		 text = "";
-				bool			 mouseHovering = false;
-				real64_t		 lastMouseTime = 0.0;
-				vector2			 lastMousePos;
-			} tooltip;
-
-		public:
-			// determine whether or not events should be consumed by this element
-			bool MouseWithinBounds(
-				const vector2 &mousePos,
-				const vector2 &size
-			) const;
 
 			// paint the element on the screen
 			virtual void Paint(

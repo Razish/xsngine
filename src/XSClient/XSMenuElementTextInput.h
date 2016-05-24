@@ -13,70 +13,61 @@ namespace XS {
 
 	namespace Client {
 
-		class MenuElementSlider : public MenuElement {
+		class MenuElementTextInput : public MenuElement {
+			friend class MenuElementButton;
 
 		private:
+			void Clear(
+				void
+			);
+
+		protected:
 			struct Data {
-				Renderer::Material	*bar;
-				Renderer::Material	*thumb;
-				bool				 updatingValue;
+				Renderer::Material	*background;
+				uint32_t			 cursorPos;
+				Renderer::Font		*font;
+				std::string			 inputText;
+				uint32_t			 numChars;
 
 				Data()
-				:	bar( nullptr ),
-					thumb( nullptr ),
-					updatingValue( false )
+				:	background( nullptr ),
+					cursorPos( 0u ),
+					font( nullptr ),
+					inputText( "" ),
+					numChars( 0u )
 				{
 				}
 			} data;
 
-			// ???
-			void UpdateValue(
-				real32_t frac
-			);
-
 		public:
 			struct Properties {
 				bool			centered;
-				std::string		cvarName;
-				bool			integral;
-				std::string		postExecCommand;
 				vector2			size;
-				bool			vertical;
-
-				struct Range {
-					real32_t bottom;
-					real32_t top;
-
-					Range()
-					:	bottom( 0.0 ),
-						top( 1.0 )
-					{
-					}
-				} range;
+				std::string		texture;
+				uint16_t		pointSize;
 
 				Properties()
 				:	centered( false ),
-					cvarName( "" ),
-					integral( false ),
-					postExecCommand( "" ),
-					size( { 0.0f, 0.0f } ),
-					vertical( false )
+					size( vector2{ 0.0f, 0.0f } ),
+					texture( "" ),
+					pointSize( 16u )
 				{
 				}
 			} properties;
 
 			// don't allow default instantiation
-			MenuElementSlider() = delete;
-			MenuElementSlider( const MenuElementSlider& ) = delete;
-			MenuElementSlider& operator=( const MenuElementSlider& ) = delete;
+			MenuElementTextInput() = delete;
+			MenuElementTextInput( const MenuElementTextInput& ) = delete;
+			MenuElementTextInput& operator=( const MenuElementTextInput& ) = delete;
 
-			MenuElementSlider(
+			MenuElementTextInput(
 				const Menu &parent,
 				TokenParser *parser,
 				const char *fileName
 			);
 
-			// draw the slider
+
+			// draw the text
 			void Paint(
 				void
 			);

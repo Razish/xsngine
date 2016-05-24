@@ -204,19 +204,19 @@ namespace XS {
 	}
 
 	bool Cvar::Set( const int32_t value, bool initial ) {
-		return Set( String::Format( "%i", value ), initial );
+		return Set( String::Format( "%i", value ).c_str(), initial );
 	}
 
 	bool Cvar::Set( const uint32_t value, bool initial ) {
-		return Set( String::Format( "%u", value ), initial );
+		return Set( String::Format( "%u", value ).c_str(), initial );
 	}
 
 	bool Cvar::Set( const real32_t value, bool initial ) {
-		return Set( String::Format( "%f", value ), initial );
+		return Set( String::Format( "%f", value ).c_str(), initial );
 	}
 
 	bool Cvar::Set( const bool value, bool initial ) {
-		return Set( String::Format( "%i", !!value ), initial ); // good enough
+		return Set( String::Format( "%i", !!value ).c_str(), initial ); // good enough
 	}
 
 } // namespace XS

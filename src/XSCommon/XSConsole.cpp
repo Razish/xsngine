@@ -22,7 +22,7 @@ namespace XS {
 	Console console = {};
 
 	Console::Console()
-	: indentation( 0u )
+	:	indentation( 0u )
 	{
 		buffer = new MessageBuffer( "console.log" );
 	}

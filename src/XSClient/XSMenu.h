@@ -18,13 +18,14 @@ namespace XS {
 		private:
 			static uint32_t				 version;
 
+		public:
 			std::string					 name;
 			vector2						 position; // top-left
 			vector2						 size; // width/height
 			//TODO: don't store these as pointers
+			//TODO: if all elements have a name, store as associative array?
 			std::vector<MenuElement *>	 elements;
-
-		public:
+			MenuElement					*selectedElement;
 			const Renderer::View		&view;
 
 			// don't allow default instantiation
@@ -40,6 +41,10 @@ namespace XS {
 			void Paint(
 				void
 			);
+
+			MenuElement *Find(
+				const char *name
+			) const XS_WARN_UNUSED_RESULT;
 
 			bool KeyboardEvent(
 				const struct KeyboardEvent &ev

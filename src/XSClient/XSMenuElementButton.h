@@ -16,35 +16,37 @@ namespace XS {
 		class MenuElementButton : public MenuElement {
 
 		private:
-			struct {
-				Renderer::Material	*background = nullptr;
-				Renderer::Font		*font = nullptr;
-			} assets;
+			struct Data {
+				Renderer::Material	*background;
+				Renderer::Font		*font;
 
-			vector2			size;
-			std::string		texture;
-			std::string		cmd;
-			std::string		text;
-			uint16_t		pointSize = 16u;
+				Data()
+				:	background( nullptr ),
+					font( nullptr )
+				{
+				}
+			} data;
 
-			struct Properties : public MenuElement::Properties {
-				bool			centered = false;
+		public:
+			struct Properties {
+				bool			centered;
+				std::string		cmd;
+				uint16_t		pointSize;
+				vector2			size;
+				std::string		text;
+				std::string		texture;
 
 				Properties()
-				: MenuElement::Properties() {
+				:	centered( false ),
+					cmd( "" ),
+					pointSize( 16u ),
+					size( vector2{ 0.0f, 0.0f } ),
+					text( "" ),
+					texture( "" )
+				{
 				}
 			} properties;
 
-			bool MouseWithinBounds(
-				const vector2 &mousePos
-			) const XS_WARN_UNUSED_RESULT;
-
-			void ParseProperties(
-				TokenParser *parser,
-				const char *fileName
-			);
-
-		public:
 			// don't allow default instantiation
 			MenuElementButton() = delete;
 			MenuElementButton( const MenuElementButton& ) = delete;

@@ -17,7 +17,7 @@ namespace XS {
 	namespace Client {
 
 		MenuElement::MenuElement( const Menu &parent )
-		: parent( parent )
+		:	parent( parent )
 		{
 		}
 
@@ -91,9 +91,9 @@ namespace XS {
 		}
 
 		void MenuElement::DrawTooltip( void ) {
-			#if 0
+		#if 0
 			//FIXME: re-implement after redesigning menu elements
-			if ( properties.hidden ) {
+			if ( common.hidden ) {
 				return;
 			}
 
@@ -118,7 +118,7 @@ namespace XS {
 					&colour
 				);
 			}
-			#endif
+		#endif
 		}
 
 	} // namespace Client

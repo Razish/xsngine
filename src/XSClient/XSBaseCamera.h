@@ -19,6 +19,7 @@ namespace XS {
 	namespace ClientGame {
 
 		class BaseCamera {
+
 		public:
 			// don't allow default instantiation
 			BaseCamera() = delete;
@@ -29,6 +30,7 @@ namespace XS {
 				const Renderer::View &view,
 				const glm::vec3 &position
 			);
+
 			BaseCamera(
 				const Renderer::View &view,
 				const glm::mat4 &transform
@@ -38,7 +40,7 @@ namespace XS {
 				real64_t dt
 			) = 0;
 
-			inline const glm::mat4 &GetTransform( void ) const {
+			const glm::mat4 &GetTransform( void ) const {
 				return worldTransform;
 			};
 
@@ -46,9 +48,10 @@ namespace XS {
 				const glm::mat4 &transform
 			);
 
-			inline glm::vec3 GetPosition( void ) const {
+			glm::vec3 GetPosition( void ) const {
 				return worldTransform[3].xyz();
 			}
+
 			void SetPosition(
 				const glm::vec3 &position
 			);
@@ -71,17 +74,19 @@ namespace XS {
 				real32_t far = 4000.0f
 			);
 
-			inline const glm::mat4 &GetProjection( void ) const {
+			const glm::mat4 &GetProjection( void ) const {
 				return projectionTransform;
 			}
-			inline const glm::mat4 &GetView( void ) const {
+
+			const glm::mat4 &GetView( void ) const {
 				return viewTransform;
 			}
-			inline const glm::mat4 &GetProjectionView( void ) const {
+
+			const glm::mat4 &GetProjectionView( void ) const {
 				return projectionViewTransform;
 			}
 
-			inline bool GetPerspectiveSet() const {
+			bool GetPerspectiveSet() const {
 				return perspectiveSet;
 			}
 
@@ -97,6 +102,7 @@ namespace XS {
 			glm::mat4				 worldTransform;
 
 			bool					 perspectiveSet; //FIXME: hide?
+
 		};
 
 	} // namespace ClientGame

@@ -106,7 +106,11 @@ namespace XS {
 		}
 
 		ClientConsole::ClientConsole( Console *consoleInstance )
-		: console( consoleInstance ), privateIsVisible( false ), scrollAmount( 0 ), lineCount( 24u ), font( nullptr ),
+		:	console( consoleInstance ),
+			privateIsVisible( false ),
+			scrollAmount( 0 ),
+			lineCount( 24u ),
+			font( nullptr ),
 			isVisible( privateIsVisible )
 		{
 			con_fontSize = Cvar::Create( "con_fontSize", "16",

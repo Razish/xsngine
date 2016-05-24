@@ -8,13 +8,13 @@ namespace XS {
 
 	// write-only buffer
 	ByteBuffer::ByteBuffer()
-	: reading( false )
+	:	reading( false )
 	{
 	}
 
 	// read-only buffer
 	ByteBuffer::ByteBuffer( const void *data, size_t dataLen )
-	: reading( true )
+	:	reading( true )
 	{
 		Resize( dataLen );
 		std::memcpy( &buffer[0], data, dataLen );

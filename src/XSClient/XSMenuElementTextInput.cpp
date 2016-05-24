@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include <SDL2/SDL.h>
 
 #include "XSCommon/XSCommon.h"
@@ -8,8 +10,8 @@
 #include "XSCommon/XSColours.h"
 #include "XSCommon/XSEvent.h"
 #include "XSClient/XSClient.h"
-#include "XSClient/XSMenuElementButton.h"
 #include "XSClient/XSMenuElementTextInput.h"
+#include "XSInput/XSKeys.h"
 #include "XSRenderer/XSMaterial.h"
 #include "XSRenderer/XSImagePNG.h"
 #include "XSRenderer/XSInternalFormat.h"
@@ -21,13 +23,20 @@ namespace XS {
 
 	namespace Client {
 
-		MenuElementButton::MenuElementButton( const Menu &parent, TokenParser *parser, const char *fileName )
+		void MenuElementTextInput::Clear( void ) {
+			// clear the current state (input line, cursor position, etc)
+			data.inputText.clear();
+			data.numChars = 0u;
+			data.cursorPos = 0u;
+		}
+
+		MenuElementTextInput::MenuElementTextInput( const Menu &parent, TokenParser *parser, const char *fileName )
 		:	MenuElement( parent )
 		{
 			const char *tok = nullptr;
 			if ( parser->ParseString( &tok ) || String::CompareCase( tok, "{" ) ) {
 				console.Print( PrintLevel::Normal,
-					"%s missing opening brace when parsing button menu element from %s:%i\n",
+					"%s missing opening brace when parsing text input menu element from %s:%i\n",
 					XS_FUNCTION,
 					fileName,
 					parser->GetCurrentLine()
@@ -36,7 +45,7 @@ namespace XS {
 			}
 
 			while ( true ) {
-				// see if we reached the end of the button definition
+				// see if we reached the end of the text input definition
 				if ( parser->ParseString( &tok ) || !String::CompareCase( tok, "}" ) ) {
 					break;
 				}
@@ -45,7 +54,7 @@ namespace XS {
 				else if ( !String::Compare( tok, "name" ) ) {
 					if ( parser->ParseString( &tok ) ) {
 						console.Print( PrintLevel::Normal,
-							"%s missing name definition when parsing button menu element from %s:%i\n",
+							"%s missing name definition when parsing text input menu element from %s:%i\n",
 							XS_FUNCTION,
 							fileName,
 							parser->GetCurrentLine()
@@ -62,7 +71,7 @@ namespace XS {
 					real32_t x, y;
 					if ( parser->ParseReal32( &x ) || parser->ParseReal32( &y ) ) {
 						console.Print( PrintLevel::Normal,
-							"%s missing position definition when parsing button menu element from %s:%i\n",
+							"%s missing position definition when parsing text input menu element from %s:%i\n",
 							XS_FUNCTION,
 							fileName,
 							parser->GetCurrentLine()
@@ -80,7 +89,7 @@ namespace XS {
 					real32_t w, h;
 					if ( parser->ParseReal32( &w ) || parser->ParseReal32( &h ) ) {
 						console.Print( PrintLevel::Normal,
-							"%s missing size definition when parsing button menu element from %s:%i\n",
+							"%s missing size definition when parsing text input menu element from %s:%i\n",
 							XS_FUNCTION,
 							fileName,
 							parser->GetCurrentLine()
@@ -97,7 +106,7 @@ namespace XS {
 				else if ( !String::Compare( tok, "texture" ) ) {
 					if ( parser->ParseString( &tok ) ) {
 						console.Print( PrintLevel::Normal,
-							"%s missing texture definition when parsing button menu element from %s:%i\n",
+							"%s missing texture definition when parsing text input menu element from %s:%i\n",
 							XS_FUNCTION,
 							fileName,
 							parser->GetCurrentLine()
@@ -112,30 +121,11 @@ namespace XS {
 					parser->SkipLine();
 				}
 
-				// command
-				else if ( !String::Compare( tok, "cmd" ) ) {
-					if ( parser->ParseString( &tok ) ) {
-						console.Print( PrintLevel::Normal,
-							"%s missing command definition when parsing button menu element from %s:%i\n",
-							XS_FUNCTION,
-							fileName,
-							parser->GetCurrentLine()
-						);
-						parser->SkipLine();
-						continue;
-					}
-					else {
-						properties.cmd = tok;
-					}
-
-					parser->SkipLine();
-				}
-
 				// font + size
 				else if ( !String::Compare( tok, "font" ) ) {
 					if ( parser->ParseString( &tok ) ) {
 						console.Print( PrintLevel::Normal,
-							"%s missing font definition when parsing button menu element from %s:%i\n",
+							"%s missing font definition when parsing text input menu element from %s:%i\n",
 							XS_FUNCTION,
 							fileName,
 							parser->GetCurrentLine()
@@ -150,7 +140,7 @@ namespace XS {
 					uint32_t tmpPointSize;
 					if ( parser->ParseUInt32( &tmpPointSize ) ) {
 						console.Print( PrintLevel::Normal,
-							"%s missing font size definition when parsing button menu element from %s:%i\n",
+							"%s missing font size definition when parsing text input menu element from %s:%i\n",
 							XS_FUNCTION,
 							fileName,
 							parser->GetCurrentLine()
@@ -158,25 +148,6 @@ namespace XS {
 					}
 					else {
 						properties.pointSize = static_cast<uint16_t>( tmpPointSize );
-					}
-
-					parser->SkipLine();
-				}
-
-				// text to display
-				else if ( !String::Compare( tok, "text" ) ) {
-					if ( parser->ParseString( &tok ) ) {
-						console.Print( PrintLevel::Normal,
-							"%s missing text definition when parsing button menu element from %s:%i\n",
-							XS_FUNCTION,
-							fileName,
-							parser->GetCurrentLine()
-						);
-						parser->SkipLine();
-						continue;
-					}
-					else {
-						properties.text = tok;
 					}
 
 					parser->SkipLine();
@@ -190,7 +161,7 @@ namespace XS {
 			}
 		}
 
-		void MenuElementButton::Paint( void ) {
+		void MenuElementTextInput::Paint( void ) {
 			if ( common.hidden ) {
 				return;
 			}
@@ -233,52 +204,95 @@ namespace XS {
 				data.background
 			);
 
-			const size_t textLen = properties.text.length();
+			if ( data.inputText.empty() ) {
+				return;
+			}
+			const size_t textLen = data.inputText.length();
 			real32_t textWidth = 0.0f;
 			for ( size_t i = 0u; i < textLen; i++ ) {
-				textWidth += data.font->GetGlyphWidth( properties.text[i], properties.pointSize );
+				textWidth += data.font->GetGlyphWidth( data.inputText[i], properties.pointSize );
 			}
 			const vector2 textSize = {
 				textWidth,
 				data.font->lineHeight[properties.pointSize]
 			};
-			const vector2 bgMidPoint = {
-				topLeft[0] + ((properties.size[0] * parent.view.width) / 2.0f),
-				topLeft[1] + ((properties.size[1] * parent.view.height) / 2.0f)
-			};
 
-			// draw the text in the middle of the button
+			// draw the text
 			data.font->Draw(
-				bgMidPoint - (textSize / 2.0f),
-				properties.text,
+				properties.centered
+					? topLeft - (textSize / 2.0f)
+					: topLeft,
+				data.inputText,
 				properties.pointSize,
-				&colourTable[ColourIndex(COLOUR_RED)]
+				&colourTable[ColourIndex(COLOUR_WHITE)]
 			);
 		}
 
-		bool MenuElementButton::KeyboardEvent( const struct KeyboardEvent &ev ) {
+		bool MenuElementTextInput::KeyboardEvent( const struct KeyboardEvent &ev ) {
 			if ( common.decorative ) {
 				return false;
 			}
 
-			const bool mouseWithinBounds = vector2::PointWithinBounds(
-				properties.centered ? common.position - properties.size / 2.0f : common.position,
-				Client::cursorPos,
-				properties.size
-			);
-			if ( !mouseWithinBounds ) {
-				return false;
+			if ( !ev.down ) {
+				return true;
 			}
 
-			if ( ev.down && ev.key == SDLK_RETURN ) {
-				Command::Append( properties.cmd.c_str() );
-				return true;
+			char c = GetPrintableCharForKeycode( ev.key );
+			if ( c >= 0x20 ) {
+				// insert a character at the cursor and move the cursor along
+				data.inputText.insert( data.cursorPos, 1, c );
+				data.numChars++;
+				data.cursorPos++;
+			}
+			else if ( ev.key == SDLK_BACKSPACE ) {
+				// remove the character before the cursor
+				if ( data.cursorPos != 0u ) {
+					data.inputText.erase( data.cursorPos - 1, 1 );
+					data.numChars--;
+					data.cursorPos--;
+				}
+			}
+			else if ( ev.key == SDLK_DELETE ) {
+				// remove the character after the cursor
+				if ( data.cursorPos != data.inputText.length() ) {
+					data.inputText.erase( data.cursorPos, 1 );
+					data.numChars--;
+				}
+			}
+			else if ( ev.key == SDLK_RETURN ) {
+				// commit the current line to history, pass it to the command buffer and print it to console
+
+				// no action to take if it's empty...
+				if ( data.inputText.empty() ) {
+					return true;
+				}
+
+				// clear the state
+				Clear();
+			}
+			else if ( ev.key == SDLK_LEFT ) {
+				// move cursor left
+				if ( data.cursorPos > 0 ) {
+					data.cursorPos--;
+				}
+			}
+			else if ( ev.key == SDLK_RIGHT ) {
+				// move cursor right
+				if ( data.cursorPos < data.numChars ) {
+					data.cursorPos++;
+				}
+			}
+			else if ( ev.key == SDLK_UP ) {
+				//TODO: home?
+			}
+			else if ( ev.key == SDLK_DOWN ) {
+				//TODO: end?
 			}
 
 			return false;
 		}
 
-		bool MenuElementButton::MouseButtonEvent( const struct MouseButtonEvent &ev ) {
+		bool MenuElementTextInput::MouseButtonEvent( const struct MouseButtonEvent &ev ) {
 			if ( common.decorative ) {
 				return false;
 			}
@@ -293,59 +307,22 @@ namespace XS {
 			}
 
 			if ( ev.pressed && ev.button == SDL_BUTTON_LEFT ) {
-				// replace all tokens starting with $ with the data from the MenuElementTextInput
-				std::vector<std::string> tokens;
-				String::Split( properties.cmd, ' ', tokens );
-				for ( auto &token : tokens ) {
-					if ( token[0] == '$' ) {
-						const char *toFind = token.c_str() + 1;
-						auto *found = parent.Find( toFind );
-						if ( found ) {
-							auto *inputElement = dynamic_cast<MenuElementTextInput *>( found );
-							if ( inputElement ) {
-								if ( inputElement->data.inputText.empty() ) {
-									console.Print( PrintLevel::Debug, "%s(%s): input element \"%s\" is empty\n",
-										XS_FUNCTION,
-										common.name.c_str(),
-										found->common.name.c_str()
-									);
-									continue;
-								}
-								token = inputElement->data.inputText;
-								continue;
-							}
-						}
-						else {
-							console.Print( PrintLevel::Debug, "%s(%s): could not find input element named \"%s\"\n",
-								XS_FUNCTION,
-								common.name.c_str(),
-								toFind
-							);
-						}
-					}
-				}
-
-				// execute the associated command
-				std::string finalCmd;
-				String::Join( tokens, " ", finalCmd );
-				Command::Append( finalCmd.c_str() );
+				//TODO: advanced text selection
 				return true;
 			}
 
 			return false;
 		}
 
-		bool MenuElementButton::MouseMotionEvent( const struct MouseMotionEvent &ev ) {
+		bool MenuElementTextInput::MouseMotionEvent( const struct MouseMotionEvent &ev ) {
 			if ( common.decorative ) {
 				return false;
 			}
 
-			//TODO: highlighting buttons or such
-
 			return false;
 		}
 
-		bool MenuElementButton::MouseWheelEvent( const struct MouseWheelEvent &ev ) {
+		bool MenuElementTextInput::MouseWheelEvent( const struct MouseWheelEvent &ev ) {
 			if ( common.decorative ) {
 				return false;
 			}
