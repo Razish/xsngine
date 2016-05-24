@@ -41,7 +41,7 @@ namespace XS {
 
 			model = models[path] = new Model();
 
-			console.Print( PrintLevel::Debug, "%s loaded '%s' for the first time\n",
+			console.Print( PrintLevel::Debug, "%s loaded \"%s\" for the first time\n",
 				XS_FUNCTION,
 				path
 			);
@@ -50,7 +50,7 @@ namespace XS {
 
 			const File f( path, FileMode::ReadBinary );
 			if ( !f.isOpen ) {
-				console.Print( PrintLevel::Normal, "Failed to load model '%s', returning invalid handle\n",
+				console.Print( PrintLevel::Normal, "Failed to load model \"%s\", returning invalid handle\n",
 					model->modelPath.c_str()
 				);
 				return invalidHandle;
@@ -94,14 +94,14 @@ namespace XS {
 			if ( model ) {
 				model->refCount--;
 				if ( !model->refCount ) {
-					console.Print( PrintLevel::Normal, "%s removed last model for '%s'\n",
+					console.Print( PrintLevel::Normal, "%s removed last model for \"%s\"\n",
 						XS_FUNCTION,
 						modelPath.c_str()
 					);
 					models[modelPath] = nullptr;
 				}
 				else {
-					console.Print( PrintLevel::Normal, "%s removing model '%s'\n",
+					console.Print( PrintLevel::Normal, "%s removing model \"%s\"\n",
 						XS_FUNCTION,
 						modelPath.c_str()
 					);
@@ -109,7 +109,7 @@ namespace XS {
 			}
 			else if ( !modelPath.empty() ) {
 				SDL_assert( !"could not find model" );
-				console.Print( PrintLevel::Normal, "%s could not find model for '%s'\n",
+				console.Print( PrintLevel::Normal, "%s could not find model for \"%s\"\n",
 					XS_FUNCTION,
 					modelPath.c_str()
 				);

@@ -337,7 +337,7 @@ namespace XS {
 
 				if ( connection.state != Network::Connection::State::Active ) {
 					console.Print( PrintLevel::Developer,
-						"client cmd from GUID %" PRIX64 " ignored during connection state %s\n",
+						"client cmd from GUID %" PRIX64 " ignored during connection state \"%s\"\n",
 						guid, connection.StateToString( connection.state )
 					);
 					break;

@@ -85,7 +85,7 @@ namespace XS {
 			uint8_t *atlas = new uint8_t[atlasSize];
 			std::memset( atlas, 0u, atlasSize );
 
-			console.Print( PrintLevel::Developer, "Generating font atlas for '%s' (%i %ix%i)\n",
+			console.Print( PrintLevel::Developer, "Generating font atlas for \"%s\" (%i %ix%i)\n",
 				name.c_str(),
 				pointSize,
 				maxCellSize * charsPerLine,
@@ -328,7 +328,7 @@ namespace XS {
 				return font;
 			}
 
-			console.Print( PrintLevel::Developer, "Generating new font '%s'\n",
+			console.Print( PrintLevel::Developer, "Generating new font \"%s\"\n",
 				name
 			);
 			font = fonts[name] = new Font( name );

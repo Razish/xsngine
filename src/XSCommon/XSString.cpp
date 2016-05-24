@@ -164,10 +164,12 @@ namespace XS {
 		void Join( const std::vector<std::string> &strings, const std::string &separator, std::string &out ) {
 			std::stringstream ss;
 
-			const auto &end = strings.end();
-			for ( const auto &it : strings ) {
-				ss << it;
-				if ( it != *end ) {
+			const size_t numStrings = strings.size();
+			const size_t last = numStrings - 1;
+			for ( size_t i = 0; i < numStrings; ++i ) {
+				ss << strings[i];
+
+				if ( i != last ) {
 					ss << separator;
 				}
 			}

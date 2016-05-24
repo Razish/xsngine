@@ -24,18 +24,18 @@ namespace XS {
 		MessageBuffer	*buffer;
 
 		Console();
-		inline ~Console() {
+		~Console() {
 			delete buffer;
 		}
 
 		// modify the indentation level for future prints
 		// called by an Indent object
-		inline void Indent( int32_t level ) {
+		void Indent( int32_t level ) {
 			indentation += level;
 		}
 
 		// clear the contents of the console buffer
-		inline void Clear( void ) {
+		void Clear( void ) {
 			if ( buffer ) {
 				buffer->Clear();
 			}
@@ -62,14 +62,14 @@ namespace XS {
 		Indent& operator=( const Indent& ) = delete;
 
 		// set the indent level
-		inline Indent( int32_t indentLevel )
-		: level( indentLevel )
+		Indent( int32_t indentLevel )
+		:	level( indentLevel )
 		{
 			console.Indent( level );
 		}
 
 		// revert the indent level
-		inline ~Indent() {
+		~Indent() {
 			console.Indent( -level );
 		}
 	};

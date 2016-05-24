@@ -20,14 +20,15 @@ namespace XS {
 	namespace ClientGame {
 
 		BaseCamera::BaseCamera( const Renderer::View &view, const glm::vec3 &position )
-		: view( view )
+		:	view( view )
 		{
 			worldTransform[3] = glm::vec4( position, 1.0 );
 			perspectiveSet = false;
 		}
 
 		BaseCamera::BaseCamera( const Renderer::View &view, const glm::mat4 &transform )
-		: view( view ), worldTransform( transform )
+		:	view( view ),
+			worldTransform( transform )
 		{
 			UpdateProjectionViewTransform();
 		}

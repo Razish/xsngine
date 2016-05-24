@@ -100,7 +100,7 @@ namespace XS {
 		static void Cmd_ReloadMenu( const CommandContext &context ) {
 			delete menu;
 			menu = new MenuManager( *hudView );
-			menu->RegisterMenu( "menus/settings.xmenu" );
+			menu->RegisterMenu( "menus/main.xmenu" );
 		}
 
 		static void RegisterCommands( void ) {
@@ -223,8 +223,9 @@ namespace XS {
 			// hud
 			hudView = new Renderer::View( 0u, 0u, true );
 			menu = new MenuManager( *hudView );
+			menu->RegisterMenu( "menus/main.xmenu" );
 			menu->RegisterMenu( "menus/settings.xmenu" );
-		//	menu->OpenMenu( "settings" );
+			menu->OpenMenu( "main" );
 
 			// console
 			clientConsole = new ClientConsole( &console );

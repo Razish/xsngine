@@ -4,23 +4,36 @@
 
 namespace XS {
 
-	//TODO: unit test precision at different ranges (and double conversion/promotion?)
-	static bool flcmp( const real32_t &f1, const real32_t &f2, const real32_t epsilon = 0.00001f )
-		XS_WARN_UNUSED_RESULT;
-	static bool flcmp( const real32_t &f1, const real32_t &f2, const real32_t epsilon ) {
-		const real32_t delta = std::abs( f2 - f1 );
+	bool flcmp(
+		const real32_t &f1,
+		const real32_t &f2,
+		const real32_t epsilon = 0.00001f
+	) XS_WARN_UNUSED_RESULT;
 
-		return delta < epsilon;
-	}
-	static bool dblcmp( const real64_t &f1, const real64_t &f2, const real64_t epsilon = 0.000000000000001 )
-		XS_WARN_UNUSED_RESULT;
-	static bool dblcmp( const real64_t &f1, const real64_t &f2, const real64_t epsilon ) {
-		const real64_t delta = std::abs( f2 - f1 );
+	bool dblcmp(
+		const real64_t &f1,
+		const real64_t &f2,
+		const real64_t epsilon = 0.000000000000001
+	) XS_WARN_UNUSED_RESULT;
 
-		return delta < epsilon;
-	}
+	// ???
+	template<typename T>
+	T XS_WARN_UNUSED_RESULT ma(
+		const T &a,
+		real32_t scale,
+		const T &b
+	);
+
+	// linear interpolation
+	template<typename T>
+	T XS_WARN_UNUSED_RESULT lerp(
+		const T &a,
+		real32_t scale,
+		const T &b
+	);
 
 	struct vector2 {
+
 		real32_t data[2];
 
 		// string representation of the vector
@@ -28,142 +41,128 @@ namespace XS {
 			void
 		) const XS_WARN_UNUSED_RESULT;
 
-		// access operators
-		inline const real32_t& operator[]( const size_t idx ) const {
-			return data[idx];
-		}
-		inline real32_t& operator[]( const size_t idx ) {
-			return data[idx];
-		}
+		// access operator (r/o)
+		const real32_t& operator[](
+			const size_t idx
+		) const;
+
+		// access operator (r/w)
+		real32_t& operator[](
+			const size_t idx
+		);
 
 		// clear
-		inline void clear( void ) {
-			data[0] = 0.0f;
-			data[1] = 0.0f;
-		}
+		void clear(
+			void
+		);
 
 		// compare
-		static inline bool compare( const vector2 &lhs, const vector2 &rhs ) XS_WARN_UNUSED_RESULT {
-			return (flcmp( lhs[0], rhs[0] ) && flcmp( lhs[1], rhs[1] ));
-		}
+		static bool compare(
+			const vector2 &lhs,
+			const vector2 &rhs
+		) XS_WARN_UNUSED_RESULT;
 
-		// ???
-		inline bool compare( const vector2 &rhs ) const XS_WARN_UNUSED_RESULT {
-			return (flcmp( data[0], rhs[0] ) && flcmp( data[1], rhs[1] ));
-		}
+		// compare
+		bool compare(
+			const vector2 &rhs
+		) const XS_WARN_UNUSED_RESULT;
 
-		// ???
-		inline bool operator==( const vector2 &rhs ) {
-			return compare( rhs );
-		}
+		// compare
+		bool operator==(
+			const vector2 &rhs
+		);
 
 		// addition
-		inline vector2 operator+( const vector2 &rhs ) const {
-			return vector2{ data[0] + rhs[0], data[1] + rhs[1] };
-		}
+		vector2 operator+(
+			const vector2 &rhs
+		) const;
 
-		// ???
-        inline vector2& operator+=( const vector2& rhs ) {
-			data[0] += rhs[0];
-			data[1] += rhs[1];
-			return *this;
-		}
+		// addition
+		vector2& operator+=(
+			const vector2& rhs
+		);
 
 		// subtraction
-		inline vector2 operator-( const vector2 &rhs ) const {
-			return vector2{ data[0] - rhs[0], data[1] - rhs[1] };
-		}
+		vector2 operator-(
+			const vector2 &rhs
+		) const;
 
-		// ???
-        inline vector2& operator-=( const vector2& rhs ) {
-			data[0] -= rhs[0];
-			data[1] -= rhs[1];
-			return *this;
-		}
+		// subtraction
+		vector2& operator-=(
+			const vector2& rhs
+		);
 
 		// increment
-		inline void increment( void ) {
-			data[0] += 1.0f;
-			data[1] += 1.0f;
-		}
+		void increment(
+			void
+		);
 
 		// decrement
-		inline void decrement( void ) {
-			data[0] -= 1.0f;
-			data[1] -= 1.0f;
-		}
+		void decrement(
+			void
+		);
 
 		// inverse
-		inline void inverse( void ) {
-			data[0] = -data[0];
-			data[1] = -data[1];
-		}
+		void inverse(
+			void
+		);
 
-		// ???
-		static inline vector2 inverse( const vector2 &in ) XS_WARN_UNUSED_RESULT {
-			return vector2{ -in[0], -in[1] };
-		}
+		// inverse
+		static vector2 inverse(
+			const vector2 &in
+		) XS_WARN_UNUSED_RESULT;
 
 		// scalar multiplication
-		inline vector2 operator*( const real32_t scalar ) const XS_WARN_UNUSED_RESULT {
-			return vector2{ data[0] * scalar, data[1] * scalar };
-		}
+		vector2 operator*(
+			const real32_t scalar
+		) const XS_WARN_UNUSED_RESULT;
 
-		// ???
-		inline vector2& operator*=( const real32_t scalar ) {
-			data[0] *= scalar;
-			data[1] *= scalar;
-			return *this;
-		}
+		// scalar multiplication
+		vector2& operator*=(
+			const real32_t scalar
+		);
 
 		// vector multiplication
-		inline vector2 operator*( const vector2 &rhs ) const {
-			return vector2{ data[0] * rhs[0], data[1] * rhs[1] };
-		}
+		vector2 operator*(
+			const vector2 &rhs
+		) const;
 
-		// ???
-		inline vector2& operator*=( const vector2 &rhs ) {
-			data[0] *= rhs[0];
-			data[1] *= rhs[1];
-			return *this;
-		}
+		// vector multiplication
+		vector2& operator*=(
+			const vector2 &rhs
+		);
 
 		// scalar division
-		inline vector2 operator/( const real32_t divisor ) const {
-			return vector2{ data[0] / divisor, data[1] / divisor };
-		}
+		vector2 operator/(
+			const real32_t divisor
+		) const;
 
-		// ???
-		inline vector2& operator/=( const real32_t divisor ) {
-			data[0] /= divisor;
-			data[1] /= divisor;
-			return *this;
-		}
+		// scalar division
+		vector2& operator/=(
+			const real32_t divisor
+		);
 
 		// vector division
-		inline vector2 operator/( const vector2 &rhs ) const {
-			return vector2{ data[0] / rhs[0], data[1] / rhs[1] };
-		}
+		vector2 operator/(
+			const vector2 &rhs
+		) const;
 
-		// ???
-		inline vector2& operator/=( const vector2 &rhs ) {
-			data[0] /= rhs[0];
-			data[1] /= rhs[1];
-			return *this;
-		}
+		// vector division
+		vector2& operator/=(
+			const vector2 &rhs
+		);
 
-		// ???
-		static inline vector2 ma( const vector2 &a, real32_t scale, const vector2 &b ) XS_WARN_UNUSED_RESULT {
-			return a + b*scale;
-		}
+		// point within bounds
+		static bool PointWithinBounds(
+			const vector2 &mins,
+			const vector2 &point,
+			const vector2 &size
+		);
 
-		// linear interpolation
-		static inline vector2 lerp( const vector2 &a, real32_t scale, const vector2 &b ) XS_WARN_UNUSED_RESULT {
-			return a + (b-a)*scale;
-		}
 	};
 
 	struct pvector2 {
+
 		real64_t data[2];
 
 		// string representation of the vector
@@ -171,144 +170,128 @@ namespace XS {
 			void
 		) const XS_WARN_UNUSED_RESULT;
 
-		// access operators
-		inline const real64_t& operator[]( const size_t idx ) const {
-			return data[idx];
-		}
-		inline real64_t& operator[]( const size_t idx ) {
-			return data[idx];
-		}
+		// access operator (r/o)
+		const real64_t& operator[](
+			const size_t idx
+		) const;
+
+		// access operator (r/w)
+		real64_t& operator[](
+			const size_t idx
+		);
 
 		// clear
-		inline void clear( void ) {
-			data[0] = 0.0;
-			data[1] = 0.0;
-		}
+		void clear(
+			void
+		);
 
 		// compare
-		static inline bool compare( const pvector2 &lhs, const pvector2 &rhs ) XS_WARN_UNUSED_RESULT {
-			return (dblcmp( lhs[0], rhs[0] ) && dblcmp( lhs[1], rhs[1] ));
-		}
+		static bool compare(
+			const pvector2 &lhs,
+			const pvector2 &rhs
+		) XS_WARN_UNUSED_RESULT;
 
-		// ???
-		inline bool compare( const pvector2 &rhs ) const XS_WARN_UNUSED_RESULT {
-			return (dblcmp( data[0], rhs[0] ) && dblcmp( data[1], rhs[1] ));
-		}
+		// compare
+		bool compare(
+			const pvector2 &rhs
+		) const XS_WARN_UNUSED_RESULT;
 
-		// ???
-		inline bool operator==( const pvector2 &rhs ) {
-			return compare( rhs );
-		}
+		// compare
+		bool operator==(
+			const pvector2 &rhs
+		);
 
 		// addition
-		inline pvector2 operator+( const pvector2 &rhs ) const {
-			return pvector2{ data[0] + rhs[0], data[1] + rhs[1] };
-		}
+		pvector2 operator+(
+			const pvector2 &rhs
+		) const;
 
-		// ???
-        inline pvector2& operator+=( const pvector2& rhs ) {
-			data[0] += rhs[0];
-			data[1] += rhs[1];
-			return *this;
-		}
+		// addition
+		pvector2& operator+=(
+			const pvector2& rhs
+		);
 
 		// subtraction
-		inline pvector2 operator-( const pvector2 &rhs ) const {
-			return pvector2{ data[0] - rhs[0], data[1] - rhs[1] };
-		}
+		pvector2 operator-(
+			const pvector2 &rhs
+		) const;
 
-		// ???
-        inline pvector2& operator-=( const pvector2& rhs ) {
-			data[0] -= rhs[0];
-			data[1] -= rhs[1];
-			return *this;
-		}
+		// subtraction
+		pvector2& operator-=(
+			const pvector2& rhs
+		);
 
 		// increment
-		inline void increment( void ) {
-			data[0] += 1.0;
-			data[1] += 1.0;
-		}
+		void increment(
+			void
+		);
 
 		// decrement
-		inline void decrement( void ) {
-			data[0] -= 1.0;
-			data[1] -= 1.0;
-		}
+		void decrement(
+			void
+		);
 
 		// inverse
-		inline void inverse( void ) {
-			data[0] = -data[0];
-			data[1] = -data[1];
-		}
+		void inverse(
+			void
+		);
 
-		// ???
-		static inline pvector2 inverse( const pvector2 &in ) XS_WARN_UNUSED_RESULT {
-			pvector2 result = { -in[0], -in[1] };
-			return result;
-		}
+		// inverse
+		static pvector2 inverse(
+			const pvector2 &in
+		) XS_WARN_UNUSED_RESULT;
 
 		// scalar multiplication
-		inline pvector2 operator*( const real64_t scalar ) const {
-			pvector2 result = { data[0] * scalar, data[1] * scalar };
-			return result;
-		}
+		pvector2 operator*(
+			const real64_t scalar
+		) const;
 
-		// ???
-		inline pvector2& operator*=( const real64_t scalar ) {
-			data[0] *= scalar;
-			data[1] *= scalar;
-			return *this;
-		}
+		// scalar multiplication
+		pvector2& operator*=(
+			const real64_t scalar
+		);
 
 		// vector multiplication
-		inline pvector2 operator*( const pvector2 &rhs ) const {
-			return pvector2{ data[0] * rhs[0], data[1] * rhs[1] };
-		}
+		pvector2 operator*(
+			const pvector2 &rhs
+		) const;
 
-		// ???
-		inline pvector2& operator*=( const pvector2 &rhs ) {
-			data[0] *= rhs[0];
-			data[1] *= rhs[1];
-			return *this;
-		}
+		// vector multiplication
+		pvector2& operator*=(
+			const pvector2 &rhs
+		);
 
 		// scalar division
-		inline pvector2 operator/( const real64_t divisor ) const {
-			return pvector2{ data[0] / divisor, data[1] / divisor };
-		}
+		pvector2 operator/(
+			const real64_t divisor
+		) const;
 
-		// ???
-		inline pvector2& operator/=( const real64_t divisor ) {
-			data[0] /= divisor;
-			data[1] /= divisor;
-			return *this;
-		}
+		// scalar division
+		pvector2& operator/=(
+			const real64_t divisor
+		);
 
 		// vector division
-		inline pvector2 operator/( const pvector2 &rhs ) const {
-			return pvector2{ data[0] / rhs[0], data[1] / rhs[1] };
-		}
+		pvector2 operator/(
+			const pvector2 &rhs
+		) const;
 
-		// ???
-		inline pvector2& operator/=( const pvector2 &rhs ) {
-			data[0] /= rhs[0];
-			data[1] /= rhs[1];
-			return *this;
-		}
+		// vector division
+		pvector2& operator/=(
+			const pvector2 &rhs
+		);
 
-		// ???
-		static inline pvector2 ma( const pvector2 &a, real64_t scale, const pvector2 &b ) XS_WARN_UNUSED_RESULT {
-			return a + b*scale;
-		}
+		// point within bounds
+		static bool PointWithinBounds(
+			const pvector2 &mins,
+			const pvector2 &point,
+			const pvector2 &size
+		);
 
-		// linear interpolation
-		static inline pvector2 lerp( const pvector2 &a, real64_t scale, const pvector2 &b ) XS_WARN_UNUSED_RESULT {
-			return a + (b-a)*scale;
-		}
 	};
 
 	struct vector3 {
+
 		real32_t data[3];
 
 		// string representation of the vector
@@ -316,239 +299,201 @@ namespace XS {
 			void
 		) const XS_WARN_UNUSED_RESULT;
 
-		// access operators
-		inline const real32_t& operator[]( const size_t idx ) const {
-			return data[idx];
-		}
-		inline real32_t& operator[]( const size_t idx ) {
-			return data[idx];
-		}
+		// access operator (r/o)
+		const real32_t& operator[](
+			const size_t idx
+		) const;
+
+		// access opeartor (r/w)
+		real32_t& operator[](
+			const size_t idx
+		);
 
 		// clear
-		inline void clear( void ) {
-			data[0] = 0.0f;
-			data[1] = 0.0f;
-			data[2] = 0.0f;
-		}
+		void clear(
+			void
+		);
 
 		// compare
-		static inline bool compare( const vector3 &lhs, const vector3 &rhs ) XS_WARN_UNUSED_RESULT {
-			return (flcmp( lhs[0], rhs[0] ) && flcmp( lhs[1], rhs[1] ) && flcmp( lhs[2], rhs[2] ));
-		}
+		static bool compare(
+			const vector3 &lhs,
+			const vector3 &rhs
+		) XS_WARN_UNUSED_RESULT;
 
-		// ???
-		inline bool compare( const vector3 &rhs ) const XS_WARN_UNUSED_RESULT {
-			return (flcmp( data[0], rhs[0] ) && flcmp( data[1], rhs[1] ) && flcmp( data[2], rhs[2] ));
-		}
+		// compare
+		bool compare(
+			const vector3 &rhs
+		) const XS_WARN_UNUSED_RESULT;
 
-		// ???
-		inline bool operator==( const vector3 &rhs ) {
-			return compare( rhs );
-		}
+		// compare
+		bool operator==(
+			const vector3 &rhs
+		);
 
 		// addition
-		inline vector3 operator+( const vector3 &rhs ) const {
-			return vector3{ data[0] + rhs[0], data[1] + rhs[1], data[2] + rhs[2] };
-		}
+		vector3 operator+(
+			const vector3 &rhs
+		) const;
 
-		// ???
-        inline vector3& operator+=( const vector3& rhs ) {
-			data[0] += rhs[0];
-			data[1] += rhs[1];
-			data[2] += rhs[2];
-			return *this;
-		}
+		// addition
+		vector3& operator+=(
+			const vector3& rhs
+		);
 
 		// subtraction
-		inline vector3 operator-( const vector3 &rhs ) const {
-			return vector3{ data[0] - rhs[0], data[1] - rhs[1], data[2] - rhs[2] };
-		}
+		vector3 operator-(
+			const vector3 &rhs
+		) const;
 
-		// ???
-        inline vector3& operator-=( const vector3& rhs ) {
-			data[0] -= rhs[0];
-			data[1] -= rhs[1];
-			data[2] -= rhs[2];
-			return *this;
-		}
+		// subtraction
+		vector3& operator-=(
+			const vector3& rhs
+		);
 
 		// increment
-		inline void increment( void ) {
-			data[0] += 1.0f;
-			data[1] += 1.0f;
-			data[2] += 1.0f;
-		}
+		void increment(
+			void
+		);
 
 		// decrement
-		inline void decrement( void ) {
-			data[0] -= 1.0f;
-			data[1] -= 1.0f;
-			data[2] -= 1.0f;
-		}
+		void decrement(
+			void
+		);
 
 		// inverse
-		inline void inverse( void ) {
-			data[0] = -data[0];
-			data[1] = -data[1];
-			data[2] = -data[2];
-		}
+		void inverse(
+			void
+		);
 
-		// ???
-		static inline vector3 inverse( const vector3 &in ) XS_WARN_UNUSED_RESULT {
-			return vector3{ -in[0], -in[1], -in[2] };
-		}
+		// inverse
+		static vector3 inverse(
+			const vector3 &in
+		) XS_WARN_UNUSED_RESULT;
 
 		// scalar multiplication
-		inline vector3 operator*( const real32_t scalar ) const {
-			return vector3{ data[0] * scalar, data[1] * scalar, data[1] * scalar };
-		}
+		vector3 operator*(
+			const real32_t scalar
+		) const;
 
-		// ???
-		inline vector3& operator*=( const real32_t scalar ) {
-			data[0] *= scalar;
-			data[1] *= scalar;
-			data[2] *= scalar;
-			return *this;
-		}
+		// scalar multiplication
+		vector3& operator*=(
+			const real32_t scalar
+		);
 
 		// vector multiplication
-		inline vector3 operator*( const vector3 &rhs ) const {
-			return vector3{ data[0] * rhs[0], data[1] * rhs[1], data[2] * rhs[2] };
-		}
+		vector3 operator*(
+			const vector3 &rhs
+		) const;
 
-		// ???
-		inline vector3& operator*=( const vector3 &rhs ) {
-			data[0] *= rhs[0];
-			data[1] *= rhs[1];
-			data[2] *= rhs[2];
-			return *this;
-		}
+		// vector multiplication
+		vector3& operator*=(
+			const vector3 &rhs
+		);
 
 		// scalar division
-		inline vector3 operator/( const real32_t divisor ) const {
-			return vector3{ data[0] / divisor, data[1] / divisor, data[2] / divisor };
-		}
+		vector3 operator/(
+			const real32_t divisor
+		) const;
 
-		// ???
-		inline vector3& operator/=( const real32_t divisor ) {
-			data[0] /= divisor;
-			data[1] /= divisor;
-			data[2] /= divisor;
-			return *this;
-		}
+		// scalar division
+		vector3& operator/=(
+			const real32_t divisor
+		);
 
 		// vector division
-		inline vector3 operator/( const vector3 &rhs ) const {
-			return vector3{ data[0] / rhs[0], data[1] / rhs[1], data[2] / rhs[2] };
-		}
+		vector3 operator/(
+			const vector3 &rhs
+		) const;
 
-		// ???
-		inline vector3& operator/=( const vector3 &rhs ) {
-			data[0] /= rhs[0];
-			data[1] /= rhs[1];
-			data[2] /= rhs[2];
-			return *this;
-		}
-
-		// ???
-		static inline vector3 ma( const vector3 &a, real32_t scale, const vector3 &b ) XS_WARN_UNUSED_RESULT {
-			return a + b*scale;
-		}
-
-		// linear interpolation
-		static inline vector3 lerp( const vector3 &a, real32_t scale, const vector3 &b ) XS_WARN_UNUSED_RESULT {
-			return a + (b-a)*scale;
-		}
+		// vector division
+		vector3& operator/=(
+			const vector3 &rhs
+		);
 
 		// length
-		inline real32_t length( void ) const XS_WARN_UNUSED_RESULT {
-			return sqrtf( data[0]*data[0] + data[1]*data[1] + data[2]*data[2] );
-		}
-		static inline real32_t length( const vector3 &vec ) XS_WARN_UNUSED_RESULT {
-			return sqrtf( vec[0]*vec[0] + vec[1]*vec[1] + vec[2]*vec[2] );
-		}
+		real32_t length(
+			void
+		) const XS_WARN_UNUSED_RESULT;
+
+		// length
+		static real32_t length(
+			const vector3 &vec
+		) XS_WARN_UNUSED_RESULT;
 
 		// length squared
-		inline real32_t lengthSquared( void ) const XS_WARN_UNUSED_RESULT {
-			return data[0]*data[0] + data[1]*data[1] + data[2]*data[2];
-		}
-		static inline real32_t lengthSquared( const vector3 &vec ) XS_WARN_UNUSED_RESULT {
-			return vec[0]*vec[0] + vec[1]*vec[1] + vec[2]*vec[2];
-		}
+		real32_t lengthSquared(
+			void
+		) const XS_WARN_UNUSED_RESULT;
+
+		// length squared
+		static real32_t lengthSquared(
+			const vector3 &vec
+		) XS_WARN_UNUSED_RESULT;
 
 		// distance
-		static inline real32_t distance( const vector3 &a, const vector3 &b ) XS_WARN_UNUSED_RESULT {
-			return length( a - b );
-		}
+		static real32_t distance(
+			const vector3 &a,
+			const vector3 &b
+		) XS_WARN_UNUSED_RESULT;
 
-		// ???
-		static inline real32_t distanceSquared( const vector3 &a, const vector3 &b ) XS_WARN_UNUSED_RESULT {
-			return lengthSquared( a - b );
-		}
+		// distance squared
+		static real32_t distanceSquared(
+			const vector3 &a,
+			const vector3 &b
+		) XS_WARN_UNUSED_RESULT;
 
 		// normalise
 		// does not check that length != 0
 		// does not return length
-		inline void normaliseFast( void ) {
-			*this *= 1.0f / length();
-		}
+		void normaliseFast(
+			void
+		);
 
-		// ???
-		inline real32_t normalise( void ) {
-			real32_t length = this->length();
+		// normalise
+		real32_t normalise(
+			void
+		);
 
-			//TODO: validate this form improves gcc's ability to optimise
-			//	alternatively
-			if ( length ) {
-				real32_t iLength = 1.0f / length;
-				*this *= iLength;
-			}
+		// normalise
+		static vector3 normalise(
+			const vector3 &vec
+		) XS_WARN_UNUSED_RESULT;
 
-			return length;
-		}
+		// dot product
+		static real32_t dot(
+			const vector3 &a,
+			const vector3 &b
+		) XS_WARN_UNUSED_RESULT;
 
-		// ???
-		static inline vector3 normalise( const vector3 &vec ) XS_WARN_UNUSED_RESULT {
-			vector3 result = vec;
+		// dot product
+		real32_t dot(
+			const vector3 &vec
+		) const XS_WARN_UNUSED_RESULT;
 
-			real32_t length = result.length();
-			if ( length ) {
-				// written this way to aid compiler optimsation, it can substitute for intrinsics easier like this
-				real32_t recip = 1.0f / length;
-				result *= recip;
-			}
+		// cross product
+		static vector3 cross(
+			const vector3 &a,
+			const vector3 &b
+		) XS_WARN_UNUSED_RESULT;
 
-			return result;
-		}
+		// cross product
+		vector3 cross(
+			const vector3 &v
+		) const XS_WARN_UNUSED_RESULT;
 
-		// dot
-		static inline real32_t dot( const vector3 &a, const vector3 &b ) XS_WARN_UNUSED_RESULT {
-			return a[0]*b[0] + a[1]*b[1] + a[2]*b[2];
-		}
-
-		// ???
-		inline real32_t dot( const vector3 &vec ) const XS_WARN_UNUSED_RESULT {
-			return data[0]*vec[0] + data[1]*vec[1] + data[2]*vec[2];
-		}
-
-		// cross
-		static inline vector3 cross( const vector3 &a, const vector3 &b ) XS_WARN_UNUSED_RESULT {
-			return vector3{
-				(a[1]*b[2]) - (a[2]*b[1]),
-				(a[2]*b[0]) - (a[0]*b[2]),
-				(a[0]*b[1]) - (a[1]*b[0])
-			};
-		}
-
-		// ???
-		inline vector3 cross( const vector3 &v ) const XS_WARN_UNUSED_RESULT {
-			return cross( *this, v );
-		}
+		// point within bounds
+		static bool PointWithinBounds(
+			const vector3 &mins,
+			const vector3 &point,
+			const vector3 &size
+		);
 
 		//TODO: snap?
+
 	};
 
 	struct pvector3 {
+
 		real64_t data[3];
 
 		// string representation of the vector
@@ -556,219 +501,195 @@ namespace XS {
 			void
 		) const XS_WARN_UNUSED_RESULT;
 
-		// access operators
-		inline const real64_t& operator[]( const size_t idx ) const {
-			return data[idx];
-		}
-		inline real64_t& operator[]( const size_t idx ) {
-			return data[idx];
-		}
+		// access operators (r/o)
+		const real64_t& operator[](
+			const size_t idx
+		) const;
+
+		// access operator (r/w)
+		real64_t& operator[](
+			const size_t idx
+		);
 
 		// clear
-		inline void clear( void ) {
-			data[0] = 0.0;
-			data[1] = 0.0;
-			data[2] = 0.0;
-		}
+		void clear(
+			void
+		);
 
 		// compare
-		static inline bool compare( const pvector3 &lhs, const pvector3 &rhs ) XS_WARN_UNUSED_RESULT {
-			return (dblcmp( lhs[0], rhs[0] ) && flcmp( lhs[1], rhs[1] ) && flcmp( lhs[2], rhs[2] ));
-		}
+		static bool compare(
+			const pvector3 &lhs,
+			const pvector3 &rhs
+		) XS_WARN_UNUSED_RESULT;
 
-		// ???
-		inline bool compare( const pvector3 &rhs ) const XS_WARN_UNUSED_RESULT {
-			return (dblcmp( data[0], rhs[0] ) && flcmp( data[1], rhs[1] ) && flcmp( data[2], rhs[2] ));
-		}
+		// compare
+		bool compare(
+			const pvector3 &rhs
+		) const XS_WARN_UNUSED_RESULT;
 
-		// ???
-		inline bool operator==( const pvector3 &rhs ) {
-			return compare( rhs );
-		}
+		// compare
+		bool operator==(
+			const pvector3 &rhs
+		);
 
 		// addition
-		inline pvector3 operator+( const pvector3 &rhs ) const {
-			return pvector3{ data[0] + rhs[0], data[1] + rhs[1], data[2] + rhs[2] };
-		}
+		pvector3 operator+(
+			const pvector3 &rhs
+		) const;
 
-		// ???
-        inline pvector3& operator+=( const pvector3 &rhs ) {
-			data[0] += rhs[0];
-			data[1] += rhs[1];
-			data[2] += rhs[2];
-			return *this;
-		}
+		// addition
+		pvector3& operator+=(
+			const pvector3 &rhs
+		);
 
 		// subtraction
-		inline pvector3 operator-( const pvector3 &rhs ) const {
-			return pvector3{ data[0] - rhs[0], data[1] - rhs[1], data[2] - rhs[2] };
-		}
+		pvector3 operator-(
+			const pvector3 &rhs
+		) const;
 
-		// ???
-        inline pvector3& operator-=( const pvector3& rhs ) {
-			data[0] -= rhs[0];
-			data[1] -= rhs[1];
-			data[2] -= rhs[2];
-			return *this;
-		}
+		// subtraction
+		pvector3& operator-=(
+			const pvector3& rhs
+		);
 
 		// increment
-		inline void increment( void ) {
-			data[0] += 1.0;
-			data[1] += 1.0;
-			data[2] += 1.0;
-		}
+		void increment(
+			void
+		);
 
 		// decrement
-		inline void decrement( void ) {
-			data[0] -= 1.0;
-			data[1] -= 1.0;
-			data[2] -= 1.0;
-		}
+		void decrement(
+			void
+		);
 
 		// inverse
-		inline void inverse( void ) {
-			data[0] = -data[0];
-			data[1] = -data[1];
-			data[2] = -data[2];
-		}
+		void inverse(
+			void
+		);
 
-		// ???
-		static inline pvector3 inverse( const pvector3 &in ) XS_WARN_UNUSED_RESULT {
-			return pvector3{ -in[0], -in[1], -in[2] };
-		}
+		// inverse
+		static pvector3 inverse(
+			const pvector3 &in
+		) XS_WARN_UNUSED_RESULT;
 
 		// scalar multiplication
-		inline pvector3 operator*( const real64_t scalar ) const {
-			return pvector3{ data[0] * scalar, data[1] * scalar, data[2] * scalar };
-		}
+		pvector3 operator*(
+			const real64_t scalar
+		) const;
 
-		// ???
-		inline pvector3& operator*=( const real64_t scalar ) {
-			data[0] *= scalar;
-			data[1] *= scalar;
-			data[2] *= scalar;
-			return *this;
-		}
+		// scalar multiplication
+		pvector3& operator*=(
+			const real64_t scalar
+		);
 
 		// vector multiplication
-		inline pvector3 operator*( const pvector3 &rhs ) const {
-			return pvector3{ data[0] * rhs[0], data[1] * rhs[1], data[2] * rhs[2] };
-		}
+		pvector3 operator*(
+			const pvector3 &rhs
+		) const;
 
-		// ???
-		inline pvector3& operator*=( const pvector3 &rhs ) {
-			data[0] *= rhs[0];
-			data[1] *= rhs[1];
-			data[2] *= rhs[2];
-			return *this;
-		}
+		// vector multiplication
+		pvector3& operator*=(
+			const pvector3 &rhs
+		);
 
 		// scalar division
-		inline pvector3 operator/( const real64_t divisor ) const {
-			return pvector3{ data[0] / divisor, data[1] / divisor, data[2] / divisor };
-		}
-		inline pvector3& operator/=( const real64_t divisor ) {
-			data[0] /= divisor;
-			data[1] /= divisor;
-			data[2] /= divisor;
-			return *this;
-		}
+		pvector3 operator/(
+			const real64_t divisor
+		) const;
+
+		// scalar division
+		pvector3& operator/=(
+			const real64_t divisor
+		);
 
 		// vector division
-		inline pvector3 operator/( const pvector3 &rhs ) const {
-			return pvector3{ data[0] / rhs[0], data[1] / rhs[1], data[2] / rhs[2] };
-		}
-		inline pvector3& operator/=( const pvector3 &rhs ) {
-			data[0] /= rhs[0];
-			data[1] /= rhs[1];
-			data[2] /= rhs[2];
-			return *this;
-		}
+		pvector3 operator/(
+			const pvector3 &rhs
+		) const;
 
-		// ???
-		static inline pvector3 ma( const pvector3 &a, real64_t scale, const pvector3 &b ) XS_WARN_UNUSED_RESULT {
-			return a + b*scale;
-		}
-
-		// linear interpolation
-		static inline pvector3 lerp( const pvector3 &a, real64_t scale, const pvector3 &b ) XS_WARN_UNUSED_RESULT {
-			return a + (b-a)*scale;
-		}
+		// vector division
+		pvector3& operator/=(
+			const pvector3 &rhs
+		);
 
 		// length
-		inline real64_t length( void ) const XS_WARN_UNUSED_RESULT {
-			return sqrt( data[0]*data[0] + data[1]*data[1] + data[2]*data[2] );
-		}
-		static inline real64_t length( const pvector3 &vec ) XS_WARN_UNUSED_RESULT {
-			return vec.length();
-		}
+		real64_t length(
+			void
+		) const XS_WARN_UNUSED_RESULT;
+
+		// length
+		static real64_t length(
+			const pvector3 &vec
+		) XS_WARN_UNUSED_RESULT;
 
 		// length squared
-		inline real64_t lengthSquared( void ) const XS_WARN_UNUSED_RESULT {
-			return data[0]*data[0] + data[1]*data[1] + data[2]*data[2];
-		}
-		static inline real64_t lengthSquared( const pvector3 &vec ) XS_WARN_UNUSED_RESULT {
-			return vec.lengthSquared();
-		}
+		real64_t lengthSquared(
+			void
+		) const XS_WARN_UNUSED_RESULT;
+
+		// length squared
+		static real64_t lengthSquared(
+			const pvector3 &vec
+		) XS_WARN_UNUSED_RESULT;
 
 		// distance
-		static inline real64_t distance( const pvector3 &a, const pvector3 &b ) XS_WARN_UNUSED_RESULT {
-			return length( a - b );
-		}
-		static inline real64_t distanceSquared( const pvector3 &a, const pvector3 &b ) XS_WARN_UNUSED_RESULT {
-			return lengthSquared( a - b );
-		}
+		static real64_t distance(
+			const pvector3 &a,
+			const pvector3 &b
+		) XS_WARN_UNUSED_RESULT;
+
+		// distance squared
+		static real64_t distanceSquared(
+			const pvector3 &a,
+			const pvector3 &b
+		) XS_WARN_UNUSED_RESULT;
 
 		// normalise
 		// does not check that length != 0
 		// does not return length
-		inline void normaliseFast( void ) {
-			*this *= 1.0 / length();
-		}
-		inline real64_t normalise( void ) {
-			real64_t length = this->length();
+		void normaliseFast(
+			void
+		);
 
-			if ( length ) {
-				real64_t iLength = 1.0 / length;
-				*this *= iLength;
-			}
+		// normalise
+		real64_t normalise(
+			void
+		);
 
-			return length;
-		}
-		static inline pvector3 normalise( const pvector3 &vec ) {
-			pvector3 result = vec;
-
-			real64_t length = result.length();
-			if ( length ) {
-				real64_t iLength = 1.0f / length;
-				result *= iLength;
-			}
-
-			return result;
-		}
+		// normalise
+		static pvector3 normalise(
+			const pvector3 &vec
+		);
 
 		// dot
-		inline real64_t dot( const pvector3 &vec ) const XS_WARN_UNUSED_RESULT {
-			return data[0]*vec[0] + data[1]*vec[1] + data[1]*vec[2];
-		}
+		real64_t dot(
+			const pvector3 &vec
+		) const XS_WARN_UNUSED_RESULT;
 
 		// cross
-		static inline pvector3 cross( const pvector3 &a, const pvector3 &b ) XS_WARN_UNUSED_RESULT {
-			return pvector3{
-				(a[1]*b[2]) - (a[2]*b[1]),
-				(a[2]*b[0]) - (a[0]*b[2]),
-				(a[0]*b[1]) - (a[1]*b[0])
-			};
-		}
-		inline pvector3 cross( const pvector3 &v ) const XS_WARN_UNUSED_RESULT {
-			return cross( *this, v );
-		}
+		static pvector3 cross(
+			const pvector3 &a,
+			const pvector3 &b
+		) XS_WARN_UNUSED_RESULT;
+
+		// cross
+		pvector3 cross(
+			const pvector3 &v
+		) const XS_WARN_UNUSED_RESULT;
+
+		// point within bounds
+		static bool PointWithinBounds(
+			const pvector3 &mins,
+			const pvector3 &point,
+			const pvector3 &size
+		);
 
 		//TODO: snap?
+
 	};
 
 	struct vector4 {
+
 		real32_t data[4];
 
 		// string representation of the vector
@@ -776,141 +697,117 @@ namespace XS {
 			void
 		) const XS_WARN_UNUSED_RESULT;
 
-		// access operators
-		inline const real32_t& operator[]( const size_t idx ) const {
-			return data[idx];
-		}
-		inline real32_t& operator[]( const size_t idx ) {
-			return data[idx];
-		}
+		// access operator (r/o)
+		const real32_t& operator[](
+			const size_t idx
+		) const;
+
+		// access operator (r/w)
+		real32_t& operator[](
+			const size_t idx
+		);
 
 		// clear
-		inline void clear( void ) {
-			data[0] = 0.0f;
-			data[1] = 0.0f;
-			data[2] = 0.0f;
-			data[3] = 0.0f;
-		}
+		void clear(
+			void
+		);
 
 		// compare
-		static inline bool compare( const vector4 &lhs, const vector4 &rhs ) XS_WARN_UNUSED_RESULT {
-			return (flcmp( lhs[0], rhs[0] ) && flcmp( lhs[1], rhs[1] ) && flcmp( lhs[2], rhs[2] ) && flcmp( lhs[3], rhs[3] ));
-		}
-		inline bool compare( const vector4 &rhs ) const XS_WARN_UNUSED_RESULT {
-			return (flcmp( data[0], rhs[0] ) && flcmp( data[1], rhs[1] ) && flcmp( data[2], rhs[2] ) && flcmp( data[3], rhs[3] ));
-		}
-		inline bool operator==( const vector4 &rhs ) const {
-			return compare( rhs );
-		}
+		static bool compare(
+			const vector4 &lhs,
+			const vector4 &rhs
+		) XS_WARN_UNUSED_RESULT;
+
+		// compare
+		bool compare(
+			const vector4 &rhs
+		) const XS_WARN_UNUSED_RESULT;
+
+		// compare
+		bool operator==(
+			const vector4 &rhs
+		) const;
 
 		// addition
-		inline vector4 operator+( const vector4 &rhs ) const {
-			return vector4{ data[0] + rhs[0], data[1] + rhs[1], data[2] + rhs[2], data[3] + rhs[3] };
-		}
-        inline vector4& operator+=( const vector4& rhs ) {
-			data[0] += rhs[0];
-			data[1] += rhs[1];
-			data[2] += rhs[2];
-			data[3] += rhs[3];
-			return *this;
-		}
+		vector4 operator+(
+			const vector4 &rhs
+		) const;
+
+		// addition
+		vector4& operator+=(
+			const vector4& rhs
+		);
 
 		// subtraction
-		inline vector4 operator-( const vector4 &rhs ) const {
-			return vector4{ data[0] - rhs[0], data[1] - rhs[1], data[2] - rhs[2], data[3] - rhs[3] };
-		}
-        inline vector4& operator-=( const vector4& rhs ) {
-			data[0] -= rhs[0];
-			data[1] -= rhs[1];
-			data[2] -= rhs[2];
-			data[3] -= rhs[3];
-			return *this;
-		}
+		vector4 operator-(
+			const vector4 &rhs
+		) const;
+
+		// subtraction
+		vector4& operator-=(
+			const vector4& rhs
+		);
 
 		// increment
-		inline void increment( void ) {
-			data[0] += 1.0f;
-			data[1] += 1.0f;
-			data[2] += 1.0f;
-			data[3] += 1.0f;
-		}
+		void increment(
+			void
+		);
 
 		// decrement
-		inline void decrement( void ) {
-			data[0] -= 1.0f;
-			data[1] -= 1.0f;
-			data[2] -= 1.0f;
-			data[3] -= 1.0f;
-		}
+		void decrement(
+			void
+		);
 
 		// inverse
-		inline void inverse( void ) {
-			data[0] = -data[0];
-			data[1] = -data[1];
-			data[2] = -data[2];
-			data[3] = -data[3];
-		}
-		static inline vector4 inverse( const vector4 &in ) XS_WARN_UNUSED_RESULT {
-			return vector4{ -in[0], -in[1], -in[2], -in[3] };
-		}
+		void inverse(
+			void
+		);
+
+		// inverse
+		static vector4 inverse(
+			const vector4 &in
+		) XS_WARN_UNUSED_RESULT;
 
 		// scalar multiplication
-		inline vector4 operator*( const real32_t scalar ) const {
-			return vector4{ data[0] * scalar, data[1] * scalar, data[2] * scalar, data[3] * scalar };
-		}
-		inline vector4& operator*=( const real32_t scalar ) {
-			data[0] *= scalar;
-			data[1] *= scalar;
-			data[2] *= scalar;
-			data[3] *= scalar;
-			return *this;
-		}
+		vector4 operator*(
+			const real32_t scalar
+		) const;
+
+		// scalar multiplication
+		vector4& operator*=(
+			const real32_t scalar
+		);
 
 		// vector multiplication
-		inline vector4 operator*( const vector4 &rhs ) const {
-			return vector4{ data[0] * rhs[0], data[1] * rhs[1], data[2] * rhs[2], data[3] * rhs[3] };
-		}
-		inline vector4& operator*=( const vector4 &rhs ) {
-			data[0] *= rhs[0];
-			data[1] *= rhs[1];
-			data[2] *= rhs[2];
-			data[3] *= rhs[3];
-			return *this;
-		}
+		vector4 operator*(
+			const vector4 &rhs
+		) const;
+
+		// vector multiplication
+		vector4& operator*=(
+			const vector4 &rhs
+		);
 
 		// scalar division
-		inline vector4 operator/( const real32_t divisor ) const {
-			return vector4{ data[0] / divisor, data[1] / divisor, data[2] / divisor, data[3] / divisor };
-		}
-		inline vector4& operator/=( const real32_t divisor ) {
-			data[0] /= divisor;
-			data[1] /= divisor;
-			data[2] /= divisor;
-			data[3] /= divisor;
-			return *this;
-		}
+		vector4 operator/(
+			const real32_t divisor
+		) const;
+
+		// scalar division
+		vector4& operator/=(
+			const real32_t divisor
+		);
 
 		// vector division
-		inline vector4 operator/( const vector4 &rhs ) const {
-			return vector4{ data[0] / rhs[0], data[1] / rhs[1], data[2] / rhs[2], data[3] / rhs[3] };
-		}
-		inline vector4& operator/=( const vector4 &rhs ) {
-			data[0] /= rhs[0];
-			data[1] /= rhs[1];
-			data[2] /= rhs[2];
-			data[3] /= rhs[3];
-			return *this;
-		}
+		vector4 operator/(
+			const vector4 &rhs
+		) const;
 
-		// ???
-		static inline vector4 ma( const vector4 &a, real32_t scale, const vector4 &b ) XS_WARN_UNUSED_RESULT {
-			return a + b*scale;
-		}
+		// vector division
+		vector4& operator/=(
+			const vector4 &rhs
+		);
 
-		// linear interpolation
-		static inline vector4 lerp( const vector4 &a, real32_t scale, const vector4 &b ) XS_WARN_UNUSED_RESULT {
-			return a + (b-a)*scale;
-		}
 	};
 
 } // namespace XS

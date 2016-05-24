@@ -15,7 +15,8 @@ namespace XS {
 	namespace Client {
 
 		MenuManager::MenuManager( const Renderer::View &view )
-		: view( view ), isOpen( privateIsOpen )
+		:	view( view ),
+			isOpen( privateIsOpen )
 		{
 			privateIsOpen = false;
 
@@ -76,11 +77,15 @@ namespace XS {
 
 		// push a menu onto the stack
 		void MenuManager::OpenMenu( const char *menuName ) {
+			if ( !menuName || !menuName[0] ) {
+				return;
+			}
+
 			Menu *menu = menus[menuName];
 			if ( menu ) {
 				stack.push_back( menu );
+				privateIsOpen = true;
 			}
-			privateIsOpen = true;
 		}
 
 		// pop a menu from the stack

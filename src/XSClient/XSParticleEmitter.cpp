@@ -33,7 +33,11 @@ namespace XS {
 	namespace ClientGame {
 
 		ParticleEmitter::ParticleEmitter( uint32_t count, uint32_t life, const char *textureName )
-		: pool( count ), numParticles( 0u ), count( count ), life( life ), emitTime( 0.0 )
+		:	pool( count ),
+			numParticles( 0u ),
+			count( count ),
+			life( life ),
+			emitTime( 0.0 )
 		{
 			console.Print( PrintLevel::Normal, "%s\n",
 				XS_FUNCTION_VERBOSE

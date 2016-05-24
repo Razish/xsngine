@@ -12,15 +12,17 @@
 #include "XSClient/XSMenuElementButton.h"
 #include "XSClient/XSMenuElementSlider.h"
 #include "XSClient/XSMenuElementText.h"
+#include "XSClient/XSMenuElementTextInput.h"
 
 namespace XS {
 
 	namespace Client {
 
-		uint32_t Menu::version = 3u;
+		uint32_t Menu::version = 4u;
 
 		Menu::Menu( const Renderer::View &view, const char *fileName )
-		: view( view )
+		:	selectedElement( nullptr ),
+			view( view )
 		{
 			const File f( fileName );
 			if ( !f.isOpen ) {
@@ -117,6 +119,7 @@ namespace XS {
 							size[1] = h;
 						}
 					}
+					//TODO: automate element creation
 					else if ( !String::Compare( token, "button" ) ) {
 						if ( element ) {
 							console.Print( PrintLevel::Normal,
@@ -168,6 +171,23 @@ namespace XS {
 
 						parser->SkipLine();
 					}
+					else if ( !String::Compare( token, "textinput" ) ) {
+						if ( element ) {
+							console.Print( PrintLevel::Normal,
+								"%s tried to parse text input menu element in %s:%i whilst parsing another element\n",
+								XS_FUNCTION,
+								parser->GetCurrentLine(),
+								fileName
+							);
+							break;
+						}
+
+						element = new MenuElementTextInput( *this, parser, fileName );
+						elements.push_back( element );
+						element = nullptr;
+
+						parser->SkipLine();
+					}
 					else {
 						parser->SkipLine();
 					}
@@ -195,20 +215,19 @@ namespace XS {
 			}
 		}
 
-		bool Menu::KeyboardEvent( const struct KeyboardEvent &ev ) {
-			const real32_t cursorX = Client::cursorPos[0];
-			const real32_t cursorY = Client::cursorPos[1];
-			const real32_t menuX = position[0];
-			const real32_t menuY = position[1];
-			const real32_t menuW = size[0];
-			const real32_t menuH = size[1];
-			if ( cursorX > menuX && cursorX < (menuX + menuW)
-				&& cursorY > menuY && cursorY < (menuY + menuH) )
-			{
-				// pass it down the chain
-				for ( auto *element : elements ) {
-					XS_UNUSED const bool result = element->KeyboardEvent( ev );
+		MenuElement *Menu::Find( const char *elementName ) const {
+			for ( auto *element : elements ) {
+				if ( !String::CompareCase( element->common.name.c_str(), elementName ) ) {
+					return element;
 				}
+			}
+
+			return nullptr;
+		}
+
+		bool Menu::KeyboardEvent( const struct KeyboardEvent &ev ) {
+			if ( selectedElement ) {
+				XS_UNUSED const bool result = selectedElement->KeyboardEvent( ev );
 				return true;
 			}
 
@@ -222,13 +241,21 @@ namespace XS {
 			const real32_t menuY = position[1];
 			const real32_t menuW = size[0];
 			const real32_t menuH = size[1];
+			MenuElement *newSelection = (ev.pressed && ev.button == SDL_BUTTON_LEFT)
+				? nullptr
+				: selectedElement;
 			if ( cursorX > menuX && cursorX < (menuX + menuW)
 				&& cursorY > menuY && cursorY < (menuY + menuH) )
 			{
 				// pass it down the chain
 				for ( auto *element : elements ) {
-					XS_UNUSED const bool result = element->MouseButtonEvent( ev );
+					if ( element->MouseButtonEvent( ev ) ) {
+						newSelection = element;
+					}
 				}
+
+				// this can be a newly selected element, or unselecting the current element
+				selectedElement = newSelection;
 				return true;
 			}
 

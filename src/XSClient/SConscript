@@ -18,6 +18,7 @@ files = [
 	'XSClient/XSMenuElementButton.cpp',
 	'XSClient/XSMenuElementSlider.cpp',
 	'XSClient/XSMenuElementText.cpp',
+	'XSClient/XSMenuElementTextInput.cpp',
 	'XSClient/XSMenuManager.cpp',
 	'XSClient/XSParticleEmitter.cpp',
 	'XSClient/XSPerlin.cpp',

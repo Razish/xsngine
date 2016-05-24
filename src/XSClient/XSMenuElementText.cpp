@@ -21,45 +21,10 @@ namespace XS {
 
 	namespace Client {
 
-		void MenuElementText::ParseProperties( TokenParser *parser, const char *fileName ) {
-			const char *tok = nullptr;
-			if ( parser->ParseString( &tok ) || String::CompareCase( tok, "{" ) ) {
-				console.Print( PrintLevel::Normal,
-					"%s missing opening brace when parsing properties for text menu element from %s:%i\n",
-					XS_FUNCTION,
-					fileName,
-					parser->GetCurrentLine()
-				);
-				return;
-			}
-
-			while ( true ) {
-				// see if we reached the end of the text definition
-				if ( parser->ParseString( &tok ) || !String::CompareCase( tok, "}" ) ) {
-					break;
-				}
-
-				// centered
-				else if ( !String::Compare( tok, "centered" ) ) {
-					properties.centered = true;
-					parser->SkipLine();
-				}
-
-				// vertical
-				else if ( !String::Compare( tok, "vertical" ) ) {
-					properties.vertical = true;
-					parser->SkipLine();
-				}
-			}
-		}
-
 		MenuElementText::MenuElementText( const Menu &parent, TokenParser *parser, const char *fileName )
-		: MenuElement( parent ), text( "" ), pointSize( 0u )
+		:	MenuElement( parent )
 		{
-			std::memset( static_cast<void *>( &properties ), 0, sizeof(properties) );
-			std::memset( &assets, 0, sizeof(assets) );
-
-			properties.decorative = true;
+			common.decorative = true;
 
 			const char *tok = nullptr;
 			if ( parser->ParseString( &tok ) || String::CompareCase( tok, "{" ) ) {
@@ -78,12 +43,6 @@ namespace XS {
 					break;
 				}
 
-				// properties
-				else if ( !String::Compare( tok, "properties" ) ) {
-					ParseProperties( parser, fileName );
-					parser->SkipLine();
-				}
-
 				// name
 				else if ( !String::Compare( tok, "name" ) ) {
 					if ( parser->ParseString( &tok ) ) {
@@ -95,7 +54,7 @@ namespace XS {
 						);
 					}
 					else {
-						name = tok;
+						common.name = tok;
 					}
 					parser->SkipLine();
 				}
@@ -112,8 +71,8 @@ namespace XS {
 						);
 					}
 					else {
-						position[0] = x;
-						position[1] = y;
+						common.position[0] = x;
+						common.position[1] = y;
 					}
 					parser->SkipLine();
 				}
@@ -131,7 +90,7 @@ namespace XS {
 						continue;
 					}
 					else {
-						assets.font = Renderer::Font::Register( tok );
+						data.font = Renderer::Font::Register( tok );
 					}
 
 					uint32_t tmpPointSize;
@@ -144,7 +103,7 @@ namespace XS {
 						);
 					}
 					else {
-						pointSize = static_cast<uint16_t>( tmpPointSize );
+						properties.pointSize = static_cast<uint16_t>( tmpPointSize );
 					}
 
 					parser->SkipLine();
@@ -162,63 +121,75 @@ namespace XS {
 						continue;
 					}
 					else {
-						text = tok;
+						properties.text = tok;
 					}
 
+					parser->SkipLine();
+				}
+
+				// centered
+				else if ( !String::Compare( tok, "centered" ) ) {
+					properties.centered = true;
+					parser->SkipLine();
+				}
+
+				// vertical
+				else if ( !String::Compare( tok, "vertical" ) ) {
+					properties.vertical = true;
 					parser->SkipLine();
 				}
 			}
 		}
 
 		void MenuElementText::Paint( void ) {
-			if ( properties.hidden ) {
+			if ( common.hidden ) {
 				return;
 			}
 
-			if ( text.empty() ) {
+			if ( properties.text.empty() ) {
 				return;
 			}
 
 			const vector2 topLeft = {
-				position[0] * parent.view.width,
-				position[1] * parent.view.height
+				common.position[0] * parent.view.width,
+				common.position[1] * parent.view.height
 			};
 
 			std::string displayText;
-			if ( text[0] == '$' ) {
-				Cvar *cv = Cvar::Get( text.substr( 1 ) );
+			if ( properties.text[0] == '$' ) {
+				const Cvar *cv = Cvar::Get( properties.text.substr( 1 ) );
 				if ( !cv ) {
 					return;
 				}
 				displayText = cv->GetFullString();
 			}
 			else {
-				displayText = text;
+				displayText = properties.text;
 			}
 
 			const size_t textLen = displayText.length();
 			real32_t textWidth = 0.0f;
 			for ( size_t i = 0u; i < textLen; i++ ) {
-				textWidth += assets.font->GetGlyphWidth( displayText[i], pointSize );
+				textWidth += data.font->GetGlyphWidth( displayText[i], properties.pointSize );
 			}
 			const vector2 textSize = {
 				textWidth,
-				assets.font->lineHeight[pointSize]
+				data.font->lineHeight[properties.pointSize]
 			};
 
 			// draw the text
-			assets.font->Draw(
+			data.font->Draw(
 				properties.centered
 					? topLeft - (textSize / 2.0f)
 					: topLeft,
 				displayText,
-				pointSize,
+				properties.pointSize,
 				&colourTable[ColourIndex(COLOUR_WHITE)]
 			);
 		}
 
 		bool MenuElementText::KeyboardEvent( const struct KeyboardEvent &ev ) {
-			if ( properties.decorative ) {
+			if ( common.decorative ) {
 				return false;
 			}
 
@@ -226,7 +197,7 @@ namespace XS {
 		}
 
 		bool MenuElementText::MouseButtonEvent( const struct MouseButtonEvent &ev ) {
-			if ( properties.decorative ) {
+			if ( common.decorative ) {
 				return false;
 			}
 
@@ -234,7 +205,7 @@ namespace XS {
 		}
 
 		bool MenuElementText::MouseMotionEvent( const struct MouseMotionEvent &ev ) {
-			if ( properties.decorative ) {
+			if ( common.decorative ) {
 				return false;
 			}
 
@@ -242,7 +213,7 @@ namespace XS {
 		}
 
 		bool MenuElementText::MouseWheelEvent( const struct MouseWheelEvent &ev ) {
-			if ( properties.decorative ) {
+			if ( common.decorative ) {
 				return false;
 			}
 
