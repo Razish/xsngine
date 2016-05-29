@@ -8,6 +8,7 @@
 #include "XSCommon/XSGlobals.h"
 #include "XSCommon/XSCvar.h"
 #include "XSCommon/XSError.h"
+#include "XSCommon/XSColours.h"
 #include "XSRenderer/XSRenderer.h"
 #include "XSRenderer/XSFont.h"
 #include "XSRenderer/XSShaderProgram.h"
@@ -221,7 +222,7 @@ namespace XS {
 					fd.t[0], // t0
 					fd.s[1], // s1
 					fd.t[1], // t1
-					colour,
+					colour ? *colour : colourTable[ColourIndex( COLOUR_WHITE )],
 					material[pointSize]
 				);
 

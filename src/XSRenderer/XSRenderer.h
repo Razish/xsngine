@@ -112,7 +112,7 @@ namespace XS {
 			real32_t t1,
 			real32_t s2,
 			real32_t t2,
-			const vector4 *colour,
+			const vector4 &colour,
 			const Material *material
 		);
 

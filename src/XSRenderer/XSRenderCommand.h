@@ -26,7 +26,7 @@ namespace XS {
 			vector2 pos;
 			vector2 size;
 			vector2 st1, st2;
-			const vector4	*colour;
+			vector4 colour;
 			const Material	*material;
 
 		};

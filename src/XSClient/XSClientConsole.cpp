@@ -171,10 +171,11 @@ namespace XS {
 
 			view->Bind();
 
+			const vector4 consoleColour{ 0.0f, 0.0f, 0.0f, 0.5f };
 			Renderer::DrawQuad(
 				0, 0, view->width, view->height / 2,
 				0.0f, 0.0f, 1.0f, 1.0f,
-				&colourTable[ColourIndex( COLOUR_BLACK )],
+				consoleColour,
 				nullptr
 			);
 

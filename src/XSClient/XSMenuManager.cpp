@@ -107,7 +107,7 @@ namespace XS {
 				realPos[0], realPos[1],
 				cursorWidth / 4.0f, cursorHeight / 4.0f,
 				0.0f, 0.0f, 1.0f, 1.0f,
-				&colourTable[ColourIndex( COLOUR_WHITE )],
+				colourTable[ColourIndex( COLOUR_WHITE )],
 				assets.cursor
 			);
 		}

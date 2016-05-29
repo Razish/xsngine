@@ -131,10 +131,6 @@ namespace XS {
 
 			vector2 vertices[4] = {};
 			vector2 texcoords[4] = {};
-			vector4 colour = colourTable[ColourIndex( COLOUR_WHITE )];
-			if ( cmd.colour ) {
-				colour = *cmd.colour;
-			}
 
 			// Top-left
 			vertices[0][0]	= cmd.pos[0];
@@ -168,10 +164,10 @@ namespace XS {
 				*vertexBuffer++ = vertices[i][1];
 				*vertexBuffer++ = texcoords[i][0];
 				*vertexBuffer++ = texcoords[i][1];
-				*vertexBuffer++ = colour[0];
-				*vertexBuffer++ = colour[1];
-				*vertexBuffer++ = colour[2];
-				*vertexBuffer++ = colour[3];
+				*vertexBuffer++ = cmd.colour[0];
+				*vertexBuffer++ = cmd.colour[1];
+				*vertexBuffer++ = cmd.colour[2];
+				*vertexBuffer++ = cmd.colour[3];
 			}
 			quadsVertexBuffer->Unmap();
 

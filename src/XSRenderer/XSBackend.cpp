@@ -6,8 +6,6 @@
 #include "XSRenderer/XSBackend.h"
 #include "XSRenderer/XSScreenshot.h"
 
-//#define USE_FBO
-
 namespace XS {
 
 	namespace Renderer {
@@ -93,11 +91,6 @@ namespace XS {
 					bits |= GL_DEPTH_BUFFER_BIT;
 				}
 
-#ifdef USE_FBO
-#else
-				glClear( bits );
-#endif
-
 				if ( clearColour ) {
 					glClearColor( colour[0], colour[1], colour[2], colour[3] );
 				}
@@ -105,6 +98,8 @@ namespace XS {
 				if ( clearDepth ) {
 					glClearDepth( 1.0f );
 				}
+
+				glClear( bits );
 			}
 
 			void ToggleDepthTest( bool enabled ) {

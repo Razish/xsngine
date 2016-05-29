@@ -25,9 +25,6 @@
 //#include <OpenCL/cl_gl_ext.h>
 #endif
 
-#define USE_FBO
-#define FBO_COMPOSITE
-
 // ARB_debug_output causes a crash due to a driver bug on Nvidia GTX 680 driver versions [350.12, 353.82]
 //	targeting OpenGL 3.1 core profile
 //#define RENDERER_DEBUG_OUTPUT
@@ -54,9 +51,7 @@ namespace XS {
 		static std::vector<View *> views;
 		static View *currentView = nullptr;
 
-#ifdef FBO_COMPOSITE
 		static ShaderProgram *compositeShader = nullptr;
-#endif
 
 	#ifdef RENDERER_DEBUG_OUTPUT
 		static const char *GLErrSeverityToString( GLenum severity ) {
@@ -218,7 +213,6 @@ namespace XS {
 
 			ShaderProgram::Init();
 
-#ifdef FBO_COMPOSITE
 			// create composite shader
 			static const VertexAttribute attributes[] = {
 				{ 0, "in_Position" },
@@ -228,7 +222,6 @@ namespace XS {
 			if ( !compositeShader ) {
 				compositeShader = new ShaderProgram( "composite", "composite", attributes, ARRAY_LEN( attributes ) );
 			}
-#endif
 
 			Font::Init();
 
@@ -354,11 +347,7 @@ namespace XS {
 				r_clear->GetReal32( 3 )
 			};
 
-#ifdef USE_FBO
 			Backend::SetBlendFunction( Backend::BlendFunc::SourceAlpha, Backend::BlendFunc::OneMinusSourceAlpha );
-#else
-			Backend::ClearBuffer( true, true, clearColour );
-#endif
 
 			for ( auto *view : views ) {
 				if ( r_skipRender->GetInt32() & (1 << static_cast<uint32_t>( view->is2D )) ) {
@@ -368,9 +357,7 @@ namespace XS {
 				// bind the view's FBO
 				view->Bind();
 
-#ifdef USE_FBO
-				Backend::ClearBuffer( true, true, vector4{ 0.0f, 0.0f, 0.0f, 1.0f } );
-#endif
+				Backend::ClearBuffer( true, true, vector4{ 0.0f, 0.0f, 0.0f, 0.0f } );
 
 				view->PreRender( dt );
 				while ( !view->renderCommands.empty() ) {
@@ -383,19 +370,17 @@ namespace XS {
 				view->PostRender( dt );
 			}
 
-#ifdef USE_FBO
 			Framebuffer::BindDefault();
 			Backend::ClearBuffer( true, true, clearColour );
-			Backend::SetBlendFunction( Backend::BlendFunc::One, Backend::BlendFunc::One );
+			Backend::SetBlendFunction( Backend::BlendFunc::SourceAlpha, Backend::BlendFunc::OneMinusSourceAlpha );
 
 			for ( const auto &view : views ) {
-#ifdef FBO_COMPOSITE
 				Material compositeMaterial = {};
 				compositeMaterial.shaderProgram = compositeShader;
 
 				Material::SamplerBinding colourBinding = {};
 					colourBinding.unit = 0;
-				//	colourBinding.uniform = "u_viewTexture";
+					colourBinding.uniform = "u_sceneTexture";
 					colourBinding.texture = const_cast<Texture *>( view->fbo->colourTextures[0] );
 				compositeMaterial.samplerBindings.push_back( colourBinding );
 
@@ -409,17 +394,9 @@ namespace XS {
 					cmd.st2[0] = 1.0f;
 					cmd.st2[1] = 0.0f;
 					cmd.material = &compositeMaterial;
-					cmd.colour = nullptr;
+					cmd.colour = vector4{ 1.0f, 1.0f, 1.0f, 1.0f };
 				DrawQuad( cmd );
-#else
-				Framebuffer::BlitColour(
-					view->fbo, nullptr, // from, to
-					view->width, view->height, // source dimensions
-					state.window.width, state.window.height // dest dimensions
-				);
-#endif
 			}
-#endif
 
 			GLenum lastError = glGetError();
 			if ( lastError != GL_NO_ERROR ) {
@@ -461,7 +438,7 @@ namespace XS {
 		}
 
 		void DrawQuad( real32_t x, real32_t y, real32_t w, real32_t h, real32_t s1, real32_t t1, real32_t s2,
-			real32_t t2, const vector4 *colour, const Material *material )
+			real32_t t2, const vector4 &colour, const Material *material )
 		{
 			AssertView();
 
@@ -474,7 +451,7 @@ namespace XS {
 			cmd.drawQuad.st1[1] = t1;
 			cmd.drawQuad.st2[0] = s2;
 			cmd.drawQuad.st2[1] = t2;
-			cmd.drawQuad.colour = colour;
+			std::memcpy( &cmd.drawQuad.colour, &colour, sizeof(colour) );
 			cmd.drawQuad.material = material;
 
 			currentView->renderCommands.push( cmd );
