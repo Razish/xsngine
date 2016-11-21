@@ -234,7 +234,7 @@ namespace XS {
 				topLeft[0], topLeft[1],
 				barWidth, barHeight,
 				0.0f, 0.0f, 1.0f, 1.0f,
-				&colourTable[ColourIndex( COLOUR_WHITE )],
+				colourTable[ColourIndex( COLOUR_WHITE )],
 				data.bar
 			);
 
@@ -249,7 +249,7 @@ namespace XS {
 					topLeft[0] + (barWidth * f) - (thumbSize / 2.0f), topLeft[1],
 					thumbSize, thumbSize,
 					0.0f, 0.0f, 1.0f, 1.0f,
-					&colourTable[ColourIndex( COLOUR_GREY )],
+					colourTable[ColourIndex( COLOUR_GREY )],
 					data.thumb
 				);
 
@@ -262,7 +262,7 @@ namespace XS {
 					topLeft[0] + (barWidth * f) - (thumbSize / 2.0f), topLeft[1],
 					thumbSize, thumbSize,
 					0.0f, 0.0f, 1.0f, 1.0f,
-					&colourTable[ColourIndex( COLOUR_WHITE )],
+					colourTable[ColourIndex( COLOUR_WHITE )],
 					data.thumb
 				);
 			}

@@ -51,7 +51,7 @@ namespace XS {
 			while ( !events.empty() ) {
 				const XSEvent &ev = events.front();
 
-				bool result = false;
+				bool XS_UNUSED result = false;
 				switch ( ev.type ) {
 				case EventType::Keyboard: {
 					result = Client::KeyboardEvent( ev.keyboard );

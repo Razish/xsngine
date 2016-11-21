@@ -229,7 +229,7 @@ namespace XS {
 				topLeft[0], topLeft[1],
 				bgWidth, bgHeight,
 				0.0f, 0.0f, 1.0f, 1.0f,
-				&colourTable[ColourIndex( COLOUR_WHITE )],
+				colourTable[ColourIndex( COLOUR_WHITE )],
 				data.background
 			);
 
