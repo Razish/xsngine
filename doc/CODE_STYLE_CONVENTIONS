@@ -1,3 +1,5 @@
+version 0.2.0
+
 Table of contents:
 	0.	COMPILER / ENVIRONMENT ASSUMPTIONS
 	1.	SPACING / INDENTATION / LINE WRAPPING
@@ -238,9 +240,9 @@ Variables and functions shall use en-GB spelling.
 4.	SCOPING / NAMESPACE
 
 Never use 'using namespace xxx'
-This includes 'using namespace std' and 'using namespace XS'
+This includes 'using namespace std'
 
-All engine code shall be encapsulated in the XS namespace, followed by the module namespace (e.g. XS::File::Read())
+All engine code shall be encapsulated in the module namespace (e.g. File::Read())
 
 Namespaces begin with upper case
 
@@ -250,7 +252,7 @@ Namespaces begin with upper case
 
 Classes shall be stylised as such:
 
-	// XSCommon/XSFoo.h
+	// Common/Foo.h
 
 	using FooID = uint32_t; // unique identifiers for each Foo
 
@@ -285,8 +287,8 @@ Classes shall be stylised as such:
 
 	};
 
-	// XSCommon/XSFoo.cpp
-	#include "XSCommon/XSFoo.h"
+	// Common/Foo.cpp
+	#include "Common/Foo.h"
 
 	int Foo::staticBar = 1337;
 
@@ -423,14 +425,12 @@ Use sign specifier when defining literals to be used for bit values and such
 
 File names should follow this convention...
 
-	XSRenderer/XSRenderCommand.h
-	XSRenderer/XSRenderCommand.cpp
+	Renderer/RenderCommand.h
+	Renderer/RenderCommand.cpp
 
-	namespace XS {
-		namespace Renderer {
-			class RenderCommand {
-			};
-		}
+	namespace Renderer {
+		class RenderCommand {
+		};
 	}
 
 
