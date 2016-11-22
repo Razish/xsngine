@@ -1,13 +1,9 @@
 #include "XSCommon/XSCommon.h"
 #include "XSPhysics/XSPhysicsActor.h"
 
-namespace XS {
+namespace Physics {
 
-	namespace Physics {
+	RigidActor::RigidActor( VolumeType type ) {
+	}
 
-		RigidActor::RigidActor( VolumeType type ) {
-		}
-
-	} // namespace Physics
-
-} // namespace XS
+} // namespace Physics

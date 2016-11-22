@@ -15,30 +15,26 @@
 	#pragma GCC diagnostic pop
 #endif
 
-namespace XS {
+namespace Renderer {
 
-	namespace Renderer {
+	class Particle {
 
-		class Particle {
+	public:
+		Particle();
 
-		public:
-			Particle();
+		int32_t		life = 0; // in milliseconds
+		glm::vec3	position{ 0.0f, 0.0f, 0.0f };
+		glm::vec3	velocity{ 0.0f, 1.0f, 0.0f };
+		real64_t	size = 1.0f; // square
+		glm::vec4	colour{ 1.0f, 1.0f, 1.0f, 1.0f };
 
-			int32_t		life = 0; // in milliseconds
-			glm::vec3	position{ 0.0f, 0.0f, 0.0f };
-			glm::vec3	velocity{ 0.0f, 1.0f, 0.0f };
-			real64_t	size = 1.0f; // square
-			glm::vec4	colour{ 1.0f, 1.0f, 1.0f, 1.0f };
+		matrix4		transform;
 
-			matrix4		transform;
+		// returns false if particle should be killed
+		bool Update(
+			real64_t dt
+		);
 
-			// returns false if particle should be killed
-			bool Update(
-				real64_t dt
-			);
+	};
 
-		};
-
-	} // namespace Renderer
-
-} // namespace XS
+} // namespace Renderer

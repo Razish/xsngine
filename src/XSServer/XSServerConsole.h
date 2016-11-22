@@ -4,67 +4,63 @@
 #include <termios.h>
 #endif
 
-namespace XS {
+namespace Server {
 
-	namespace Server {
+	extern class ServerConsole {
 
-		extern class ServerConsole {
+	private:
+		static const char *promptText; // = "tty] ";
+	#if defined(XS_OS_LINUX) || defined(XS_OS_MAC)
+		static int ec_erase;
+		static int ec_eof;
+	#endif
 
-		private:
-			static const char *promptText; // = "tty] ";
-		#if defined(XS_OS_LINUX) || defined(XS_OS_MAC)
-			static int ec_erase;
-			static int ec_eof;
-		#endif
+		struct {
 
-			struct {
+			char buffer[1024];
+			size_t head = 0u;
 
-				char buffer[1024];
-				size_t head = 0u;
+		} input;
 
-			} input;
+	#if defined(XS_OS_LINUX) || defined(XS_OS_MAC)
+		struct termios tc;
+	#elif defined(XS_OS_WINDOWS)
+		void	*hInput;
+		void	*hOutput;
+		void	*hError;
+	#endif
 
-		#if defined(XS_OS_LINUX) || defined(XS_OS_MAC)
-			struct termios tc;
-		#elif defined(XS_OS_WINDOWS)
-			void	*hInput;
-			void	*hOutput;
-			void	*hError;
-		#endif
+		void Open(
+			void
+		);
 
-			void Open(
-				void
-			);
+		void FlushInput(
+			void
+		) const;
 
-			void FlushInput(
-				void
-			) const;
+		void Backspace(
+			void
+		) const;
 
-			void Backspace(
-				void
-			) const;
+	#if defined(XS_OS_WINDOWS)
+		void Show(
+			void
+		);
+	#endif
 
-		#if defined(XS_OS_WINDOWS)
-			void Show(
-				void
-			);
-		#endif
+		void Close(
+			void
+		);
 
-			void Close(
-				void
-			);
+	public:
+		ServerConsole();
 
-		public:
-			ServerConsole();
+		const char *Read(
+			void
+		) XS_WARN_UNUSED_RESULT;
 
-			const char *Read(
-				void
-			) XS_WARN_UNUSED_RESULT;
+		~ServerConsole();
 
-			~ServerConsole();
+	} *serverConsole;
 
-		} *serverConsole;
-
-	} // namespace Server
-
-} // namespace XS
+} // namespace Server

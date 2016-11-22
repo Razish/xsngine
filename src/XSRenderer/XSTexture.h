@@ -2,55 +2,51 @@
 
 #include "XSRenderer/XSInternalFormat.h"
 
-namespace XS {
+namespace Renderer {
 
-	namespace Renderer {
+	const uint32_t maxTextures = 256u;
+	const uint32_t maxTextureUnits = 16u;
 
-		const uint32_t maxTextures = 256u;
-		const uint32_t maxTextureUnits = 16u;
+	class Texture {
 
-		class Texture {
+	public:
+		using ID = unsigned int; // GLuint
 
-		public:
-			using ID = unsigned int; // GLuint
+	private:
+		static const Texture	*lastUsedTexture[maxTextureUnits];
+		static int				 lastUsedTextureUnit;
 
-		private:
-			static const Texture	*lastUsedTexture[maxTextureUnits];
-			static int				 lastUsedTextureUnit;
+	public:
+		ID	id;
 
-		public:
-			ID	id;
+		// don't allow default instantiation
+		Texture() = delete;
+		Texture( const Texture& ) = delete;
+		Texture& operator=( const Texture& ) = delete;
 
-			// don't allow default instantiation
-			Texture() = delete;
-			Texture( const Texture& ) = delete;
-			Texture& operator=( const Texture& ) = delete;
+		static void Init(
+			void
+		);
 
-			static void Init(
-				void
-			);
+		static void Shutdown(
+			void
+		);
 
-			static void Shutdown(
-				void
-			);
+		// create a texture
+		Texture(
+			uint32_t width,
+			uint32_t height,
+			InternalFormat internalFormat = InternalFormat::RGBA8,
+			const uint8_t *data = nullptr
+		);
 
-			// create a texture
-			Texture(
-				uint32_t width,
-				uint32_t height,
-				InternalFormat internalFormat = InternalFormat::RGBA8,
-				const uint8_t *data = nullptr
-			);
+		~Texture();
 
-			~Texture();
+		// bind the current texture to the specified unit for subsequent rendering
+		void Bind(
+			int unit
+		) const;
 
-			// bind the current texture to the specified unit for subsequent rendering
-			void Bind(
-				int unit
-			) const;
+	};
 
-		};
-
-	} // namespace Renderer
-
-} // namespace XS
+} // namespace Renderer

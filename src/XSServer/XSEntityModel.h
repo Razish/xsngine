@@ -4,35 +4,31 @@
 
 #include "XSServer/XSEntity.h"
 
-namespace XS {
+class ByteBuffer;
 
-	class ByteBuffer;
+namespace ServerGame {
 
-	namespace ServerGame {
+	class EntityModel : public Entity {
 
-		class EntityModel : public Entity {
+	public:
+		using ModelID = uint32_t;
 
-		public:
-			using ModelID = uint32_t;
+	private:
+		//TODO: invalidID/invalidIndex
+		ModelID		modelIndex = std::numeric_limits<ModelID>::max();
+		std::string	modelPath;
 
-		private:
-			//TODO: invalidID/invalidIndex
-			ModelID		modelIndex = std::numeric_limits<ModelID>::max();
-			std::string	modelPath;
+	public:
+		EntityModel();
 
-		public:
-			EntityModel();
+		void Update(
+			real64_t dt
+		);
 
-			void Update(
-				real64_t dt
-			);
+		ByteBuffer::Error Serialise(
+			ByteBuffer *buffer
+		) const XS_WARN_UNUSED_RESULT;
 
-			ByteBuffer::Error Serialise(
-				ByteBuffer *buffer
-			) const XS_WARN_UNUSED_RESULT;
+	};
 
-		};
-
-	} // namespace ServerGame
-
-} // namespace XS
+} // namespace ServerGame

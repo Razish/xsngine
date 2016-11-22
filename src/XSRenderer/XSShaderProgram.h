@@ -2,150 +2,146 @@
 
 #include <vector>
 
-namespace XS {
+namespace Renderer {
 
-	namespace Renderer {
+	// forward declarations
+	struct VertexAttribute;
 
-		// forward declarations
-		struct VertexAttribute;
+	enum class ShaderType {
+		Vertex,
+		Geometry,
+		Fragment,
+	};
 
-		enum class ShaderType {
-			Vertex,
-			Geometry,
-			Fragment,
-		};
+	class Shader {
 
-		class Shader {
+	private:
+		int			id;
+		ShaderType	type;
 
-		private:
-			int			id;
-			ShaderType	type;
+		// ???
+		void Create(
+			const char	*path,
+			const char	*source,
+			ShaderType	 shaderType
+		);
 
-			// ???
-			void Create(
-				const char	*path,
-				const char	*source,
-				ShaderType	 shaderType
-			);
+	public:
+		friend class ShaderProgram;
 
-		public:
-			friend class ShaderProgram;
+		// don't allow default instantiation
+		Shader() = delete;
+		Shader( const Shader& ) = delete;
+		Shader& operator=( const Shader& ) = delete;
 
-			// don't allow default instantiation
-			Shader() = delete;
-			Shader( const Shader& ) = delete;
-			Shader& operator=( const Shader& ) = delete;
+		Shader(
+			ShaderType shaderType,
+			const char *name
+		);
 
-			Shader(
-				ShaderType shaderType,
-				const char *name
-			);
+		~Shader();
 
-			~Shader();
+	};
 
-		};
+	// a ShaderProgram has a list of type ProgramVariable for uniforms
+	struct ProgramVariable {
 
-		// a ShaderProgram has a list of type ProgramVariable for uniforms
-		struct ProgramVariable {
+		const char		*name = nullptr;
+		int				 location = 0;
 
-			const char		*name = nullptr;
-			int				 location = 0;
-
-		};
+	};
 
 
-		class ShaderProgram {
+	class ShaderProgram {
 
-		private:
-			static const ShaderProgram	*tmpBindProgram;
+	private:
+		static const ShaderProgram	*tmpBindProgram;
 
-			uint32_t						id;
-			std::vector<ProgramVariable>	uniforms;
+		uint32_t						id;
+		std::vector<ProgramVariable>	uniforms;
 
-			// ???
-			ProgramVariable &GetUniform(
-				const char *name
-			);
+		// ???
+		ProgramVariable &GetUniform(
+			const char *name
+		);
 
-			// ???
-			void CheckBind(
-				void
-			);
+		// ???
+		void CheckBind(
+			void
+		);
 
-			// ???
-			void CheckUnbind(
-				void
-			);
+		// ???
+		void CheckUnbind(
+			void
+		);
 
-		public:
-			static const ShaderProgram *lastProgramUsed;
+	public:
+		static const ShaderProgram *lastProgramUsed;
 
-			// ???
-			static void Init(
-				void
-			);
+		// ???
+		static void Init(
+			void
+		);
 
-			// create a ShaderProgram with a vertex shader and/or a fragment shader and specify default attributes
-			//TODO: geometry shader?
-			ShaderProgram(
-				const char *vertexShaderName,
-				const char *fragmentShaderName,
-				const VertexAttribute *attributes,
-				int numAttributes
-			);
+		// create a ShaderProgram with a vertex shader and/or a fragment shader and specify default attributes
+		//TODO: geometry shader?
+		ShaderProgram(
+			const char *vertexShaderName,
+			const char *fragmentShaderName,
+			const VertexAttribute *attributes,
+			int numAttributes
+		);
 
-			~ShaderProgram();
+		~ShaderProgram();
 
-			// compile and link the ShaderProgram
-			void Link(
-				void
-			) const;
+		// compile and link the ShaderProgram
+		void Link(
+			void
+		) const;
 
-			// use this ShaderProgram for subsequent rendering
-			void Bind(
-				void
-			) const;
+		// use this ShaderProgram for subsequent rendering
+		void Bind(
+			void
+		) const;
 
-			// set the specified uniform variable's value
-			//TODO: variadic arguments?
-			void SetUniform1(
-				const char *name,
-				int i
-			);
-			void SetUniform1(
-				const char *name,
-				real32_t f
-			);
-			void SetUniform1(
-				const char *name,
-				const real32_t *m
-			);
-			void SetUniform2(
-				const char *name,
-				real32_t f1,
-				real32_t f2
-			);
-			void SetUniform3(
-				const char *name,
-				real32_t f1,
-				real32_t f2,
-				real32_t f3
-			);
-			void SetUniform4(
-				const char *name,
-				real32_t f1,
-				real32_t f2,
-				real32_t f3,
-				real32_t f4
-			);
+		// set the specified uniform variable's value
+		//TODO: variadic arguments?
+		void SetUniform1(
+			const char *name,
+			int i
+		);
+		void SetUniform1(
+			const char *name,
+			real32_t f
+		);
+		void SetUniform1(
+			const char *name,
+			const real32_t *m
+		);
+		void SetUniform2(
+			const char *name,
+			real32_t f1,
+			real32_t f2
+		);
+		void SetUniform3(
+			const char *name,
+			real32_t f1,
+			real32_t f2,
+			real32_t f3
+		);
+		void SetUniform4(
+			const char *name,
+			real32_t f1,
+			real32_t f2,
+			real32_t f3,
+			real32_t f4
+		);
 
-			// ???
-			static uint32_t GetCurrentProgram(
-				void
-			);
+		// ???
+		static uint32_t GetCurrentProgram(
+			void
+		);
 
-		};
+	};
 
-	} // namespace Renderer
-
-} // namespace XS
+} // namespace Renderer

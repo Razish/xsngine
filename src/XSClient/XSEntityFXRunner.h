@@ -2,27 +2,23 @@
 
 #include "XSClient/XSEntity.h"
 
-namespace XS {
+namespace ClientGame {
 
-	namespace ClientGame {
+	class ParticleEmitter;
 
-		class ParticleEmitter;
+	class EntityFXRunner : public Entity {
+	private:
 
-		class EntityFXRunner : public Entity {
-		private:
+	public:
+		uint32_t count;
+		uint32_t life;
 
-		public:
-			uint32_t count;
-			uint32_t life;
+		EntityFXRunner();
 
-			EntityFXRunner();
+		void Update(
+			real64_t dt
+		);
 
-			void Update(
-				real64_t dt
-			);
+	};
 
-		};
-
-	} // namespace ClientGame
-
-} // namespace XS
+} // namespace ClientGame

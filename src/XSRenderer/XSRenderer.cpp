@@ -29,456 +29,452 @@
 //	targeting OpenGL 3.1 core profile
 //#define RENDERER_DEBUG_OUTPUT
 
-namespace XS {
+namespace Renderer {
 
-	namespace Renderer {
+	RendererState rdState = {};
 
-		RendererState rdState = {};
+	static SDL_Window *window = nullptr;
+	static SDL_GLContext context;
 
-		static SDL_Window *window = nullptr;
-		static SDL_GLContext context;
+	static Cvar *r_clear = nullptr;
+	Cvar *r_debug = nullptr;
+	Cvar *r_fastPath = nullptr;
+	static Cvar *r_multisample = nullptr;
+	static Cvar *r_skipRender = nullptr;
+	static Cvar *r_swapInterval = nullptr;
+	static Cvar *vid_height = nullptr;
+	static Cvar *vid_noBorder = nullptr;
+	static Cvar *vid_width = nullptr;
 
-		static Cvar *r_clear = nullptr;
-		Cvar *r_debug = nullptr;
-		Cvar *r_fastPath = nullptr;
-		static Cvar *r_multisample = nullptr;
-		static Cvar *r_skipRender = nullptr;
-		static Cvar *r_swapInterval = nullptr;
-		static Cvar *vid_height = nullptr;
-		static Cvar *vid_noBorder = nullptr;
-		static Cvar *vid_width = nullptr;
+	static std::vector<View *> views;
+	static View *currentView = nullptr;
 
-		static std::vector<View *> views;
-		static View *currentView = nullptr;
+	static ShaderProgram *compositeShader = nullptr;
 
-		static ShaderProgram *compositeShader = nullptr;
+#ifdef RENDERER_DEBUG_OUTPUT
+	static const char *GLErrSeverityToString( GLenum severity ) {
+		switch ( severity ) {
+		case GL_DEBUG_SEVERITY_HIGH_ARB: {
+			return "High";
+		} break;
+
+		case GL_DEBUG_SEVERITY_MEDIUM_ARB: {
+			return "Medium";
+		} break;
+
+		case GL_DEBUG_SEVERITY_LOW_ARB: {
+			return "Low";
+		} break;
+
+		default: {
+			return "?";
+		} break;
+		}
+	}
+
+	static const char *GLErrSourceToString( GLenum source ) {
+		switch ( source ) {
+		case GL_DEBUG_SOURCE_API_ARB: {
+			return "API";
+		} break;
+
+		case GL_DEBUG_SOURCE_WINDOW_SYSTEM_ARB: {
+			return "WS";
+		} break;
+
+		case GL_DEBUG_SOURCE_SHADER_COMPILER_ARB: {
+			return "GLSL";
+		} break;
+
+		case GL_DEBUG_SOURCE_THIRD_PARTY_ARB: {
+			return "3rd";
+		} break;
+
+		case GL_DEBUG_SOURCE_APPLICATION_ARB: {
+			return "App";
+		} break;
+
+		case GL_DEBUG_SOURCE_OTHER_ARB: {
+			return "Other";
+		} break;
+
+		default: {
+			return "?";
+		} break;
+		}
+	}
+
+	static const char *GLErrTypeToString( GLenum type ) {
+		switch ( type ) {
+		case GL_DEBUG_TYPE_ERROR_ARB: {
+			return "Error";
+		} break;
+
+		case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR_ARB: {
+			return "Deprecated";
+		} break;
+
+		case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR_ARB: {
+			return "UB";
+		} break;
+
+		case GL_DEBUG_TYPE_PORTABILITY_ARB: {
+			return "Portability";
+		} break;
+
+		case GL_DEBUG_TYPE_PERFORMANCE_ARB: {
+			return "Performance";
+		} break;
+
+		case GL_DEBUG_TYPE_OTHER_ARB: {
+			return "Other";
+		} break;
+
+		default: {
+			return "?";
+		} break;
+		}
+	}
+
+	static void OnGLError( GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length,
+		const GLchar *message, GLvoid *userParam )
+	{
+		const int level = r_debug->GetInt32();
+		if ( !level || (level == 1 && type == GL_DEBUG_TYPE_PERFORMANCE_ARB) ) {
+			return;
+		}
+
+		console.Print( PrintLevel::Normal, "[%s] [%s] %s: %s\n",
+			GLErrSeverityToString( severity ),
+			GLErrSourceToString( source ),
+			GLErrTypeToString( type ),
+			message
+		);
+	}
+#endif // RENDERER_DEBUG_OUTPUT
+
+	static void RegisterCvars( void ) {
+		r_clear = Cvar::Create( "r_clear", "0.1607 0.1921 0.2039 1.0",
+			"Colour of the backbuffer", CVAR_ARCHIVE
+		);
+		r_debug = Cvar::Create( "r_debug", "0",
+			"Enable debugging information", CVAR_ARCHIVE
+		);
+		r_fastPath = Cvar::Create( "r_fastPath", XS_DEBUG_BUILD ? "0" : "1",
+			"Use stable but slow, or unstable but fast render paths", CVAR_ARCHIVE
+		);
+		r_multisample = Cvar::Create( "r_multisample", "2",
+			"Multisample Anti-Aliasing (MSAA) level", CVAR_ARCHIVE
+		);
+		r_skipRender = Cvar::Create( "r_skipRender", "0",
+			"1 - skip 3D views, 2 - skip 2D views, 3 - skip all views", CVAR_ARCHIVE
+		);
+		r_swapInterval = Cvar::Create( "r_swapInterval", "0",
+			"Enable vertical sync", CVAR_ARCHIVE
+		);
+		vid_height = Cvar::Create( "vid_height", "720",
+			"Window height", CVAR_ARCHIVE
+		);
+		vid_noBorder = Cvar::Create( "vid_noBorder", "0",
+			"Disable window border", CVAR_ARCHIVE
+		);
+		vid_width = Cvar::Create( "vid_width", "1280",
+			"Window width", CVAR_ARCHIVE
+		);
+	}
+
+	void Init( void ) {
+		rdState.isValid = true;
+
+		RegisterCvars();
+
+		CreateDisplay();
+
+		glewExperimental = GL_TRUE;
+		GLenum error = glewInit();
+		if ( error != GLEW_OK ) {
+			throw( XSError( String::Format( "Failed to initialise GLEW: %s\n",
+				glewGetErrorString( error ) ).c_str() ) );
+		}
 
 	#ifdef RENDERER_DEBUG_OUTPUT
-		static const char *GLErrSeverityToString( GLenum severity ) {
-			switch ( severity ) {
-			case GL_DEBUG_SEVERITY_HIGH_ARB: {
-				return "High";
-			} break;
+		if ( GLEW_ARB_debug_output ) {
+			glEnable( GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB );
+			glDebugMessageCallbackARB( OnGLError, nullptr );
+		}
+	#endif
 
-			case GL_DEBUG_SEVERITY_MEDIUM_ARB: {
-				return "Medium";
-			} break;
+		Backend::Init();
 
-			case GL_DEBUG_SEVERITY_LOW_ARB: {
-				return "Low";
-			} break;
+		//FIXME: make these TextureManager/ShaderManager?
+		Texture::Init();
 
-			default: {
-				return "?";
-			} break;
-			}
+		ShaderProgram::Init();
+
+		// create composite shader
+		static const VertexAttribute attributes[] = {
+			{ 0, "in_Position" },
+			{ 1, "in_TexCoord" },
+			{ 2, "in_Colour" },
+		};
+		if ( !compositeShader ) {
+			compositeShader = new ShaderProgram( "composite", "composite", attributes, ARRAY_LEN( attributes ) );
 		}
 
-		static const char *GLErrSourceToString( GLenum source ) {
-			switch ( source ) {
-			case GL_DEBUG_SOURCE_API_ARB: {
-				return "API";
-			} break;
+		Font::Init();
 
-			case GL_DEBUG_SOURCE_WINDOW_SYSTEM_ARB: {
-				return "WS";
-			} break;
+		RenderCommand::Init();
 
-			case GL_DEBUG_SOURCE_SHADER_COMPILER_ARB: {
-				return "GLSL";
-			} break;
+		glViewport( 0, 0, rdState.window.width, rdState.window.height );
+	}
 
-			case GL_DEBUG_SOURCE_THIRD_PARTY_ARB: {
-				return "3rd";
-			} break;
+	void Shutdown( void ) {
+		console.Print( PrintLevel::Normal, "Shutting down renderer...\n" );
 
-			case GL_DEBUG_SOURCE_APPLICATION_ARB: {
-				return "App";
-			} break;
+		RenderCommand::Shutdown();
+		Font::Shutdown();
+		//ShaderProgram::Shutdown();
+		Texture::Shutdown();
+		Backend::Shutdown();
 
-			case GL_DEBUG_SOURCE_OTHER_ARB: {
-				return "Other";
-			} break;
+		DestroyDisplay();
+	}
 
-			default: {
-				return "?";
-			} break;
-			}
+	void CreateDisplay( void ) {
+		Uint32 windowFlags = SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI;
+
+		if ( SDL_Init( SDL_INIT_VIDEO ) != 0 ) {
+			return;
 		}
 
-		static const char *GLErrTypeToString( GLenum type ) {
-			switch ( type ) {
-			case GL_DEBUG_TYPE_ERROR_ARB: {
-				return "Error";
-			} break;
-
-			case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR_ARB: {
-				return "Deprecated";
-			} break;
-
-			case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR_ARB: {
-				return "UB";
-			} break;
-
-			case GL_DEBUG_TYPE_PORTABILITY_ARB: {
-				return "Portability";
-			} break;
-
-			case GL_DEBUG_TYPE_PERFORMANCE_ARB: {
-				return "Performance";
-			} break;
-
-			case GL_DEBUG_TYPE_OTHER_ARB: {
-				return "Other";
-			} break;
-
-			default: {
-				return "?";
-			} break;
-			}
+		if ( vid_noBorder->GetBool() ) {
+			windowFlags |= SDL_WINDOW_BORDERLESS;
 		}
 
-		static void OnGLError( GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length,
-			const GLchar *message, GLvoid *userParam )
-		{
-			const int level = r_debug->GetInt32();
-			if ( !level || (level == 1 && type == GL_DEBUG_TYPE_PERFORMANCE_ARB) ) {
-				return;
-			}
-
-			console.Print( PrintLevel::Normal, "[%s] [%s] %s: %s\n",
-				GLErrSeverityToString( severity ),
-				GLErrSourceToString( source ),
-				GLErrTypeToString( type ),
-				message
-			);
-		}
-	#endif // RENDERER_DEBUG_OUTPUT
-
-		static void RegisterCvars( void ) {
-			r_clear = Cvar::Create( "r_clear", "0.1607 0.1921 0.2039 1.0",
-				"Colour of the backbuffer", CVAR_ARCHIVE
-			);
-			r_debug = Cvar::Create( "r_debug", "0",
-				"Enable debugging information", CVAR_ARCHIVE
-			);
-			r_fastPath = Cvar::Create( "r_fastPath", XS_DEBUG_BUILD ? "0" : "1",
-				"Use stable but slow, or unstable but fast render paths", CVAR_ARCHIVE
-			);
-			r_multisample = Cvar::Create( "r_multisample", "2",
-				"Multisample Anti-Aliasing (MSAA) level", CVAR_ARCHIVE
-			);
-			r_skipRender = Cvar::Create( "r_skipRender", "0",
-				"1 - skip 3D views, 2 - skip 2D views, 3 - skip all views", CVAR_ARCHIVE
-			);
-			r_swapInterval = Cvar::Create( "r_swapInterval", "0",
-				"Enable vertical sync", CVAR_ARCHIVE
-			);
-			vid_height = Cvar::Create( "vid_height", "720",
-				"Window height", CVAR_ARCHIVE
-			);
-			vid_noBorder = Cvar::Create( "vid_noBorder", "0",
-				"Disable window border", CVAR_ARCHIVE
-			);
-			vid_width = Cvar::Create( "vid_width", "1280",
-				"Window width", CVAR_ARCHIVE
-			);
-		}
-
-		void Init( void ) {
-			rdState.isValid = true;
-
-			RegisterCvars();
-
-			CreateDisplay();
-
-			glewExperimental = GL_TRUE;
-			GLenum error = glewInit();
-			if ( error != GLEW_OK ) {
-				throw( XSError( String::Format( "Failed to initialise GLEW: %s\n",
-					glewGetErrorString( error ) ).c_str() ) );
-			}
-
-		#ifdef RENDERER_DEBUG_OUTPUT
-			if ( GLEW_ARB_debug_output ) {
-				glEnable( GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB );
-				glDebugMessageCallbackARB( OnGLError, nullptr );
-			}
-		#endif
-
-			Backend::Init();
-
-			//FIXME: make these TextureManager/ShaderManager?
-			Texture::Init();
-
-			ShaderProgram::Init();
-
-			// create composite shader
-			static const VertexAttribute attributes[] = {
-				{ 0, "in_Position" },
-				{ 1, "in_TexCoord" },
-				{ 2, "in_Colour" },
-			};
-			if ( !compositeShader ) {
-				compositeShader = new ShaderProgram( "composite", "composite", attributes, ARRAY_LEN( attributes ) );
-			}
-
-			Font::Init();
-
-			RenderCommand::Init();
-
-			glViewport( 0, 0, rdState.window.width, rdState.window.height );
-		}
-
-		void Shutdown( void ) {
-			console.Print( PrintLevel::Normal, "Shutting down renderer...\n" );
-
-			RenderCommand::Shutdown();
-			Font::Shutdown();
-			//ShaderProgram::Shutdown();
-			Texture::Shutdown();
-			Backend::Shutdown();
-
-			DestroyDisplay();
-		}
-
-		void CreateDisplay( void ) {
-			Uint32 windowFlags = SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI;
-
-			if ( SDL_Init( SDL_INIT_VIDEO ) != 0 ) {
-				return;
-			}
-
-			if ( vid_noBorder->GetBool() ) {
-				windowFlags |= SDL_WINDOW_BORDERLESS;
-			}
-
-			// targeting OpenGL 3.1 core
-			SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 3 );
-			SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 1 );
-			SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE );
-			uint32_t contextFlags = SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG;
-			if ( Common::com_developer->GetBool() ) {
-				contextFlags |= SDL_GL_CONTEXT_DEBUG_FLAG;
-			}
-#ifdef _DEBUG
+		// targeting OpenGL 3.1 core
+		SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 3 );
+		SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 1 );
+		SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE );
+		uint32_t contextFlags = SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG;
+		if ( Common::com_developer->GetBool() ) {
 			contextFlags |= SDL_GL_CONTEXT_DEBUG_FLAG;
+		}
+#ifdef _DEBUG
+		contextFlags |= SDL_GL_CONTEXT_DEBUG_FLAG;
 #endif
-			SDL_GL_SetAttribute( SDL_GL_CONTEXT_FLAGS, contextFlags );
+		SDL_GL_SetAttribute( SDL_GL_CONTEXT_FLAGS, contextFlags );
 
-			int multisample = r_multisample->GetInt32();
-			if ( multisample > 0 ) {
-				SDL_GL_SetAttribute( SDL_GL_MULTISAMPLEBUFFERS, 1 );
-				//TODO: find the highest significant bit to ensure samples^2
-				SDL_GL_SetAttribute( SDL_GL_MULTISAMPLESAMPLES, multisample );
-			}
-			else {
-				SDL_GL_SetAttribute( SDL_GL_MULTISAMPLEBUFFERS, 0 );
-			}
-
-			int32_t width = vid_width->GetInt32();
-			int32_t height = vid_height->GetInt32();
-			window = SDL_CreateWindow(
-				WINDOW_TITLE,
-				SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-				width, height,
-				windowFlags
-			);
-			SDL_assert( window && "Failed to create window" );
-
-			// when creating a fullscreen window, the actual width/height may not be what was requested
-			// certain drawing code relies on knowing the width/height of the display, so we'll update it with the
-			//      proper values
-			SDL_GetWindowSize( window, &width, &height );
-			vid_width->Set( width );
-			vid_height->Set( height );
-
-			context = SDL_GL_CreateContext( window );
-			SDL_assert( context && "Failed to create OpenGL context on window" );
-
-			SDL_GL_MakeCurrent( window, context );
-			rdState.window.isValid = true;
-			rdState.window.width = static_cast<uint32_t>( width );
-			rdState.window.height = static_cast<uint32_t>( height );
-			rdState.window.aspectRatio = vid_width->GetReal64() / vid_height->GetReal64();
-
-			SDL_GL_SetSwapInterval( r_swapInterval->GetInt32() );
-		#if defined(XS_OS_MAC)
-			//TODO: force vsync flag in CGL, seems to only have an Obj-C API?
-			/*
-			CGLContextObj cglContext = CGLGetCurrentContext();
-			if ( cglContext ) {
-				// ...
-			}
-			*/
-		#endif
-
-			rdState.driver.vendor = reinterpret_cast<const char *>( glGetString( GL_VENDOR ) );
-			rdState.driver.renderer = reinterpret_cast<const char *>( glGetString( GL_RENDERER ) );
-			rdState.driver.coreVersion = reinterpret_cast<const char *>( glGetString( GL_VERSION ) );
-			rdState.driver.shaderVersion = reinterpret_cast<const char *>( glGetString( GL_SHADING_LANGUAGE_VERSION ) );
-
-			console.Print( PrintLevel::Normal, "OpenGL device: %s %s\n",
-				rdState.driver.vendor,
-				rdState.driver.renderer
-			);
-			console.Print( PrintLevel::Normal, "OpenGL version: %s with GLSL %s\n",
-				rdState.driver.coreVersion,
-				rdState.driver.shaderVersion
-			);
+		int multisample = r_multisample->GetInt32();
+		if ( multisample > 0 ) {
+			SDL_GL_SetAttribute( SDL_GL_MULTISAMPLEBUFFERS, 1 );
+			//TODO: find the highest significant bit to ensure samples^2
+			SDL_GL_SetAttribute( SDL_GL_MULTISAMPLESAMPLES, multisample );
+		}
+		else {
+			SDL_GL_SetAttribute( SDL_GL_MULTISAMPLEBUFFERS, 0 );
 		}
 
-		void DestroyDisplay( void ) {
-			SDL_GL_DeleteContext( context );
-			context = nullptr;
+		int32_t width = vid_width->GetInt32();
+		int32_t height = vid_height->GetInt32();
+		window = SDL_CreateWindow(
+			WINDOW_TITLE,
+			SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+			width, height,
+			windowFlags
+		);
+		SDL_assert( window && "Failed to create window" );
 
-			SDL_DestroyWindow( window );
-			window = nullptr;
-			rdState.window = {};
+		// when creating a fullscreen window, the actual width/height may not be what was requested
+		// certain drawing code relies on knowing the width/height of the display, so we'll update it with the
+		//      proper values
+		SDL_GetWindowSize( window, &width, &height );
+		vid_width->Set( width );
+		vid_height->Set( height );
 
-			SDL_Quit();
+		context = SDL_GL_CreateContext( window );
+		SDL_assert( context && "Failed to create OpenGL context on window" );
+
+		SDL_GL_MakeCurrent( window, context );
+		rdState.window.isValid = true;
+		rdState.window.width = static_cast<uint32_t>( width );
+		rdState.window.height = static_cast<uint32_t>( height );
+		rdState.window.aspectRatio = vid_width->GetReal64() / vid_height->GetReal64();
+
+		SDL_GL_SetSwapInterval( r_swapInterval->GetInt32() );
+	#if defined(XS_OS_MAC)
+		//TODO: force vsync flag in CGL, seems to only have an Obj-C API?
+		/*
+		CGLContextObj cglContext = CGLGetCurrentContext();
+		if ( cglContext ) {
+			// ...
 		}
+		*/
+	#endif
 
-		void Update( real64_t dt ) {
-			const vector4 clearColour = {
-				r_clear->GetReal32( 0 ),
-				r_clear->GetReal32( 1 ),
-				r_clear->GetReal32( 2 ),
-				r_clear->GetReal32( 3 )
-			};
+		rdState.driver.vendor = reinterpret_cast<const char *>( glGetString( GL_VENDOR ) );
+		rdState.driver.renderer = reinterpret_cast<const char *>( glGetString( GL_RENDERER ) );
+		rdState.driver.coreVersion = reinterpret_cast<const char *>( glGetString( GL_VERSION ) );
+		rdState.driver.shaderVersion = reinterpret_cast<const char *>( glGetString( GL_SHADING_LANGUAGE_VERSION ) );
 
-			Backend::SetBlendFunction( Backend::BlendFunc::SourceAlpha, Backend::BlendFunc::OneMinusSourceAlpha );
+		console.Print( PrintLevel::Normal, "OpenGL device: %s %s\n",
+			rdState.driver.vendor,
+			rdState.driver.renderer
+		);
+		console.Print( PrintLevel::Normal, "OpenGL version: %s with GLSL %s\n",
+			rdState.driver.coreVersion,
+			rdState.driver.shaderVersion
+		);
+	}
 
-			for ( auto *view : views ) {
-				if ( r_skipRender->GetInt32() & (1 << static_cast<uint32_t>( view->is2D )) ) {
-					continue;
-				}
+	void DestroyDisplay( void ) {
+		SDL_GL_DeleteContext( context );
+		context = nullptr;
 
-				// bind the view's FBO
-				view->Bind();
+		SDL_DestroyWindow( window );
+		window = nullptr;
+		rdState.window = {};
 
-				Backend::ClearBuffer( true, true, vector4{ 0.0f, 0.0f, 0.0f, 0.0f } );
+		SDL_Quit();
+	}
 
-				view->PreRender( dt );
-				while ( !view->renderCommands.empty() ) {
-					const auto &cmd = view->renderCommands.front();
+	void Update( real64_t dt ) {
+		const vector4 clearColour = {
+			r_clear->GetReal32( 0 ),
+			r_clear->GetReal32( 1 ),
+			r_clear->GetReal32( 2 ),
+			r_clear->GetReal32( 3 )
+		};
 
-					cmd.Execute();
+		Backend::SetBlendFunction( Backend::BlendFunc::SourceAlpha, Backend::BlendFunc::OneMinusSourceAlpha );
 
-					view->renderCommands.pop();
-				}
-				view->PostRender( dt );
+		for ( auto *view : views ) {
+			if ( r_skipRender->GetInt32() & (1 << static_cast<uint32_t>( view->is2D )) ) {
+				continue;
 			}
 
-			Framebuffer::BindDefault();
-			Backend::ClearBuffer( true, true, clearColour );
-			Backend::SetBlendFunction( Backend::BlendFunc::SourceAlpha, Backend::BlendFunc::OneMinusSourceAlpha );
+			// bind the view's FBO
+			view->Bind();
 
-			for ( const auto &view : views ) {
-				Material compositeMaterial = {};
-				compositeMaterial.shaderProgram = compositeShader;
+			Backend::ClearBuffer( true, true, vector4{ 0.0f, 0.0f, 0.0f, 0.0f } );
 
-				Material::SamplerBinding colourBinding = {};
-					colourBinding.unit = 0;
-					colourBinding.uniform = "u_sceneTexture";
-					colourBinding.texture = const_cast<Texture *>( view->fbo->colourTextures[0] );
-				compositeMaterial.samplerBindings.push_back( colourBinding );
+			view->PreRender( dt );
+			while ( !view->renderCommands.empty() ) {
+				const auto &cmd = view->renderCommands.front();
 
-				DrawQuadCommand cmd = {};
-					cmd.pos[0] = -1.0f;
-					cmd.pos[1] = 1.0f;
-					cmd.size[0] = 2.0f;
-					cmd.size[1] = -2.0f;
-					cmd.st1[0] = 0.0f;
-					cmd.st1[1] = 1.0f;
-					cmd.st2[0] = 1.0f;
-					cmd.st2[1] = 0.0f;
-					cmd.material = &compositeMaterial;
-					cmd.colour = vector4{ 1.0f, 1.0f, 1.0f, 1.0f };
-				DrawQuad( cmd );
+				cmd.Execute();
+
+				view->renderCommands.pop();
 			}
-
-			GLenum lastError = glGetError();
-			if ( lastError != GL_NO_ERROR ) {
-				console.Print( PrintLevel::Developer, "Unhandled OpenGL errors for this frame:\n", lastError );
-				int i = 1;
-				do {
-					console.Print( PrintLevel::Developer, "  %i: %i\n", i++, lastError );
-					lastError = glGetError();
-				} while ( lastError );
-			}
-
-			SDL_GL_SwapWindow( window );
+			view->PostRender( dt );
 		}
 
-		void RegisterView( View *view ) {
-			auto it = std::find( views.begin(), views.end(), view );
-			if ( it == views.end() ) {
-				views.push_back( view );
-			}
+		Framebuffer::BindDefault();
+		Backend::ClearBuffer( true, true, clearColour );
+		Backend::SetBlendFunction( Backend::BlendFunc::SourceAlpha, Backend::BlendFunc::OneMinusSourceAlpha );
+
+		for ( const auto &view : views ) {
+			Material compositeMaterial = {};
+			compositeMaterial.shaderProgram = compositeShader;
+
+			Material::SamplerBinding colourBinding = {};
+				colourBinding.unit = 0;
+				colourBinding.uniform = "u_sceneTexture";
+				colourBinding.texture = const_cast<Texture *>( view->fbo->colourTextures[0] );
+			compositeMaterial.samplerBindings.push_back( colourBinding );
+
+			DrawQuadCommand cmd = {};
+				cmd.pos[0] = -1.0f;
+				cmd.pos[1] = 1.0f;
+				cmd.size[0] = 2.0f;
+				cmd.size[1] = -2.0f;
+				cmd.st1[0] = 0.0f;
+				cmd.st1[1] = 1.0f;
+				cmd.st2[0] = 1.0f;
+				cmd.st2[1] = 0.0f;
+				cmd.material = &compositeMaterial;
+				cmd.colour = vector4{ 1.0f, 1.0f, 1.0f, 1.0f };
+			DrawQuad( cmd );
 		}
 
-		void SetCurrentView( View *view ) {
-			currentView = view;
+		GLenum lastError = glGetError();
+		if ( lastError != GL_NO_ERROR ) {
+			console.Print( PrintLevel::Developer, "Unhandled OpenGL errors for this frame:\n", lastError );
+			int i = 1;
+			do {
+				console.Print( PrintLevel::Developer, "  %i: %i\n", i++, lastError );
+				lastError = glGetError();
+			} while ( lastError );
 		}
 
-		const View *GetCurrentView( void ) {
-			return currentView;
+		SDL_GL_SwapWindow( window );
+	}
+
+	void RegisterView( View *view ) {
+		auto it = std::find( views.begin(), views.end(), view );
+		if ( it == views.end() ) {
+			views.push_back( view );
 		}
+	}
 
-		static void AssertView( void ) {
-			//FIXME: should we attempt to unbind views at any point? only for debug builds or !r_fastPath?
-			// at the moment, this will only occur on the first render call to an unbound view, which almost never
-			//	happens
-			if ( !currentView ) {
-				//FIXME: should this policy really be a fatal error?
-				// can't we just log the message and skip the render step
-				throw( XSError( "Attempted to issue render command without binding a view" ) );
-			}
+	void SetCurrentView( View *view ) {
+		currentView = view;
+	}
+
+	const View *GetCurrentView( void ) {
+		return currentView;
+	}
+
+	static void AssertView( void ) {
+		//FIXME: should we attempt to unbind views at any point? only for debug builds or !r_fastPath?
+		// at the moment, this will only occur on the first render call to an unbound view, which almost never
+		//	happens
+		if ( !currentView ) {
+			//FIXME: should this policy really be a fatal error?
+			// can't we just log the message and skip the render step
+			throw( XSError( "Attempted to issue render command without binding a view" ) );
 		}
+	}
 
-		void DrawQuad( real32_t x, real32_t y, real32_t w, real32_t h, real32_t s1, real32_t t1, real32_t s2,
-			real32_t t2, const vector4 &colour, const Material *material )
-		{
-			AssertView();
+	void DrawQuad( real32_t x, real32_t y, real32_t w, real32_t h, real32_t s1, real32_t t1, real32_t s2,
+		real32_t t2, const vector4 &colour, const Material *material )
+	{
+		AssertView();
 
-			RenderCommand cmd( CommandType::DrawQuad );
-			cmd.drawQuad.pos[0] = x;
-			cmd.drawQuad.pos[1] = y;
-			cmd.drawQuad.size[0] = w;
-			cmd.drawQuad.size[1] = h;
-			cmd.drawQuad.st1[0] = s1;
-			cmd.drawQuad.st1[1] = t1;
-			cmd.drawQuad.st2[0] = s2;
-			cmd.drawQuad.st2[1] = t2;
-			std::memcpy( &cmd.drawQuad.colour, &colour, sizeof(colour) );
-			cmd.drawQuad.material = material;
+		RenderCommand cmd( CommandType::DrawQuad );
+		cmd.drawQuad.pos[0] = x;
+		cmd.drawQuad.pos[1] = y;
+		cmd.drawQuad.size[0] = w;
+		cmd.drawQuad.size[1] = h;
+		cmd.drawQuad.st1[0] = s1;
+		cmd.drawQuad.st1[1] = t1;
+		cmd.drawQuad.st2[0] = s2;
+		cmd.drawQuad.st2[1] = t2;
+		std::memcpy( &cmd.drawQuad.colour, &colour, sizeof(colour) );
+		cmd.drawQuad.material = material;
 
-			currentView->renderCommands.push( cmd );
-		}
+		currentView->renderCommands.push( cmd );
+	}
 
-		void DrawModel( const Model *model, const RenderInfo &info ) {
-			AssertView();
+	void DrawModel( const Model *model, const RenderInfo &info ) {
+		AssertView();
 
-			RenderCommand cmd( CommandType::DrawModel );
-			cmd.drawModel.model = model;
-			cmd.drawModel.info = info;
-			currentView->renderCommands.push( cmd );
-		}
+		RenderCommand cmd( CommandType::DrawModel );
+		cmd.drawModel.model = model;
+		cmd.drawModel.info = info;
+		currentView->renderCommands.push( cmd );
+	}
 
-		void DrawParticles( const Backend::Buffer *vbo, const Backend::Buffer *ibo, const Material *material,
-			size_t count )
-		{
-			AssertView();
+	void DrawParticles( const Backend::Buffer *vbo, const Backend::Buffer *ibo, const Material *material,
+		size_t count )
+	{
+		AssertView();
 
-			RenderCommand cmd( CommandType::DrawParticles );
-			cmd.drawParticles.vbo = vbo;
-			cmd.drawParticles.ibo = ibo;
-			cmd.drawParticles.material = material;
-			cmd.drawParticles.count = count;
-			currentView->renderCommands.push( cmd );
-		}
+		RenderCommand cmd( CommandType::DrawParticles );
+		cmd.drawParticles.vbo = vbo;
+		cmd.drawParticles.ibo = ibo;
+		cmd.drawParticles.material = material;
+		cmd.drawParticles.count = count;
+		currentView->renderCommands.push( cmd );
+	}
 
-	} // namespace Renderer
-
-} // namespace XS
+} // namespace Renderer

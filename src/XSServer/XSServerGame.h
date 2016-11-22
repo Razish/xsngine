@@ -6,41 +6,37 @@
 #include "XSNetwork/XSNetwork.h"
 #include "XSServer/XSEntity.h"
 
-namespace XS {
+namespace ServerGame {
 
-	namespace ServerGame {
+	extern struct GameState {
 
-		extern struct GameState {
+		std::list<Entity *>		entities;
 
-			std::list<Entity *>		entities;
+		struct NetworkState {
+			std::vector<Entity::ID>		removedEntities; // removed this frame, notify client
+		} net;
 
-			struct NetworkState {
-				std::vector<Entity::ID>		removedEntities; // removed this frame, notify client
-			} net;
+	} svgState;
 
-		} svgState;
+	// initialise the ServerGame
+	void Init(
+		void
+	);
 
-		// initialise the ServerGame
-		void Init(
-			void
-		);
+	// ???
+	void Shutdown(
+		void
+	);
 
-		// ???
-		void Shutdown(
-			void
-		);
+	// run a frame, simulate entities
+	void RunFrame(
+		real64_t dt
+	);
 
-		// run a frame, simulate entities
-		void RunFrame(
-			real64_t dt
-		);
+	// ???
+	void Connect(
+		const char *ip,
+		Network::GUID guid
+	);
 
-		// ???
-		void Connect(
-			const char *ip,
-			Network::GUID guid
-		);
-
-	} // namespace ServerGame
-
-} // namespace XS
+} // namespace ServerGame

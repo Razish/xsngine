@@ -15,50 +15,46 @@
 
 //#define MOUSE_SMOOTHING
 
-namespace XS {
+namespace Client {
 
-	namespace Client {
+	// input events will accumulate throughout the frame, and the final mouse movement (i.e. affecting viewangles)
+	//	will be calculated when a movement command is generated (taking into account smoothing, acceleration,
+	//	sensitivity)
 
-		// input events will accumulate throughout the frame, and the final mouse movement (i.e. affecting viewangles)
-		//	will be calculated when a movement command is generated (taking into account smoothing, acceleration,
-		//	sensitivity)
+	namespace Input {
 
-		namespace Input {
+		static bool captureMouse = false;
 
-			static bool captureMouse = false;
+		void CaptureMouse( bool doCapture ) {
+			captureMouse = doCapture;
 
-			void CaptureMouse( bool doCapture ) {
-				captureMouse = doCapture;
+			SDL_SetRelativeMouseMode( captureMouse ? SDL_TRUE : SDL_FALSE );
+		}
 
-				SDL_SetRelativeMouseMode( captureMouse ? SDL_TRUE : SDL_FALSE );
+		bool MouseButtonEvent( const struct MouseButtonEvent &ev ) {
+			if ( Client::MouseButtonEvent( ev ) ) {
+				return true;
 			}
 
-			bool MouseButtonEvent( const struct MouseButtonEvent &ev ) {
-				if ( Client::MouseButtonEvent( ev ) ) {
-					return true;
-				}
+			return false;
+		}
 
-				return false;
+		bool MouseMotionEvent( const struct MouseMotionEvent &ev ) {
+			if ( Client::MouseMotionEvent( ev ) ) {
+				return true;
 			}
 
-			bool MouseMotionEvent( const struct MouseMotionEvent &ev ) {
-				if ( Client::MouseMotionEvent( ev ) ) {
-					return true;
-				}
+			return false;
+		}
 
-				return false;
+		bool MouseWheelEvent( const struct MouseWheelEvent &ev ) {
+			if ( Client::MouseWheelEvent( ev ) ) {
+				return true;
 			}
 
-			bool MouseWheelEvent( const struct MouseWheelEvent &ev ) {
-				if ( Client::MouseWheelEvent( ev ) ) {
-					return true;
-				}
+			return false;
+		}
 
-				return false;
-			}
+	} // namespace Input
 
-		} // namespace Input
-
-	} // namespace Client
-
-} // namespace XS
+} // namespace Client

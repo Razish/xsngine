@@ -4,29 +4,25 @@
 
 #include "XSServer/XSServerGame.h"
 
-namespace XS {
+class ByteBuffer;
 
-	class ByteBuffer;
+namespace ServerGame {
 
-	namespace ServerGame {
+	struct Baseline {
 
-		struct Baseline {
+		GameState	state;
 
-			GameState	state;
+	};
 
-		};
+	extern struct NetworkState {
 
-		extern struct NetworkState {
+		std::unordered_map<Network::GUID, Baseline *>	baseLines; // per Client, key is client's GUID
 
-			std::unordered_map<Network::GUID, Baseline *>	baseLines; // per Client, key is client's GUID
+	} net;
 
-		} net;
+	// ???
+	void GenerateSnapshot(
+		ByteBuffer *buffer
+	);
 
-		// ???
-		void GenerateSnapshot(
-			ByteBuffer *buffer
-		);
-
-	} // namespace ServerGame
-
-} // namespace XS
+} // namespace ServerGame

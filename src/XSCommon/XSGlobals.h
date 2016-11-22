@@ -1,18 +1,14 @@
 #pragma once
 
-namespace XS {
+class Cvar;
+class Timer;
 
-	class Cvar;
-	class Timer;
+namespace Common {
 
-	namespace Common {
+	extern Cvar *com_dedicated;
+	extern Cvar *com_developer;
+	extern Cvar *com_path;
 
-		extern Cvar *com_dedicated;
-		extern Cvar *com_developer;
-		extern Cvar *com_path;
+	extern Timer *gameTimer;
 
-		extern Timer *gameTimer;
-
-	} // namespace Common
-
-} // namespace XS
+} // namespace Common

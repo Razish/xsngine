@@ -1,12 +1,8 @@
 #include "XSCommon/XSCommon.h"
 #include "XSClient/XSClientGameState.h"
 
-namespace XS {
+namespace ClientGame {
 
-	namespace ClientGame {
+	GameState clgState = {};
 
-		GameState clgState = {};
-
-	} // namespace ClientGame
-
-} // namespace XS
+} // namespace ClientGame

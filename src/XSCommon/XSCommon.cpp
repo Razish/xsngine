@@ -18,161 +18,155 @@
 #include "XSRenderer/XSRenderer.h"
 #include "XSServer/XSServer.h"
 
-namespace XS {
+namespace Common {
 
-	namespace Common {
+	#define DEFAULT_CONFIG			"cfg/xsn.cfg"
+	#define DEFAULT_CONFIG_SERVER	"cfg/xsn_server.cfg"
 
-		#define DEFAULT_CONFIG			"cfg/xsn.cfg"
-		#define DEFAULT_CONFIG_SERVER	"cfg/xsn_server.cfg"
+	static Cvar *com_busyWait = nullptr;
+	Cvar *com_dedicated = nullptr;
+	Cvar *com_developer = nullptr;
+	static Cvar *com_framerate = nullptr;
+	static Cvar *com_profile = nullptr;
+	static Cvar *r_framerate = nullptr;
 
-		static Cvar *com_busyWait = nullptr;
-		Cvar *com_dedicated = nullptr;
-		Cvar *com_developer = nullptr;
-		static Cvar *com_framerate = nullptr;
-		static Cvar *com_profile = nullptr;
-		static Cvar *r_framerate = nullptr;
+	static void RegisterCvars( void ) {
+		const Cvar * XS_UNUSED dummyCvar;
+		dummyCvar = Cvar::Create( "com_date", __DATE__,
+			"Compilation date", CVAR_READONLY
+		);
+		com_busyWait = Cvar::Create( "com_busyWait", "0",
+			"Regulate FPS by spinning in a loop", CVAR_ARCHIVE
+		);
+		com_dedicated = Cvar::Create( "com_dedicated", "0",
+			"True if running a dedicated server", CVAR_INIT
+		);
+		com_developer = Cvar::Create( "com_developer", XS_DEBUG_BUILD ? "1" : "0",
+			"Developer mode", CVAR_NONE
+		);
+		com_framerate = Cvar::Create( "com_framerate", "10",
+			"Game tick rate", CVAR_ARCHIVE
+		);
+		com_profile = Cvar::Create( "com_profile", "0",
+			"Print timing statistics", CVAR_NONE
+		);
+		dummyCvar = Cvar::Create( "com_revision", XS_REVISION,
+			"git revision", CVAR_READONLY
+		);
+		r_framerate = Cvar::Create( "r_framerate", "120",
+			"Render framerate", CVAR_ARCHIVE
+		);
+	}
 
-		static void RegisterCvars( void ) {
-			const Cvar * XS_UNUSED dummyCvar;
-			dummyCvar = Cvar::Create( "com_date", __DATE__,
-				"Compilation date", CVAR_READONLY
-			);
-			com_busyWait = Cvar::Create( "com_busyWait", "0",
-				"Regulate FPS by spinning in a loop", CVAR_ARCHIVE
-			);
-			com_dedicated = Cvar::Create( "com_dedicated", "0",
-				"True if running a dedicated server", CVAR_INIT
-			);
-			com_developer = Cvar::Create( "com_developer", XS_DEBUG_BUILD ? "1" : "0",
-				"Developer mode", CVAR_NONE
-			);
-			com_framerate = Cvar::Create( "com_framerate", "10",
-				"Game tick rate", CVAR_ARCHIVE
-			);
-			com_profile = Cvar::Create( "com_profile", "0",
-				"Print timing statistics", CVAR_NONE
-			);
-			dummyCvar = Cvar::Create( "com_revision", XS_REVISION,
-				"git revision", CVAR_READONLY
-			);
-			r_framerate = Cvar::Create( "r_framerate", "120",
-				"Render framerate", CVAR_ARCHIVE
-			);
+	static void ParseCommandLine( int32_t argc, char **argv ) {
+		std::string commandLine;
+
+		// concatenate argv[] to commandLine
+		for ( int32_t i = 1; i < argc; i++ ) {
+			const bool containsSpaces = strchr( argv[i], ' ' ) != nullptr;
+
+			if ( containsSpaces ) {
+				commandLine += "\"";
+			}
+
+			commandLine += argv[i];
+
+			if ( containsSpaces ) {
+				commandLine += "\"";
+			}
+
+			commandLine += " ";
 		}
 
-		static void ParseCommandLine( int32_t argc, char **argv ) {
-			std::string commandLine;
+		// split up commandLine by +
+		//	+set x y +set herp derp
+		// becomes
+		//	set x y
+		//	set herp derp
+		// then append it to the command buffer
+		const char delimiter = '+';
+		const size_t start = commandLine.find( delimiter );
+		if ( start == std::string::npos ) {
+			return;
+		}
+		Command::Append( &commandLine[start + 1], delimiter );
 
-			// concatenate argv[] to commandLine
-			for ( int32_t i = 1; i < argc; i++ ) {
-				const bool containsSpaces = strchr( argv[i], ' ' ) != nullptr;
+	#ifdef _DEBUG
+		console.Print( PrintLevel::Normal, "Startup parameters:\n" );
+		Indent indent( 1 );
+		std::vector<std::string> args;
+		String::Split( &commandLine[start + 1], delimiter, args );
+		for ( const auto &arg : args ) {
+			console.Print( PrintLevel::Normal, "%s\n", arg.c_str() );
+		}
+	#endif
+	}
 
-				if ( containsSpaces ) {
-					commandLine += "\"";
+	static void LoadConfig( void ) {
+		const char *cfg = com_dedicated->GetBool() ? DEFAULT_CONFIG_SERVER : DEFAULT_CONFIG;
+		const File f( cfg, FileMode::Read );
+
+		if ( f.isOpen ) {
+			char *buffer = new char[f.length];
+				f.Read( reinterpret_cast<uint8_t *>(buffer) );
+
+				// normalise line endings
+				for ( long i = 0; i < f.length; i++ ) {
+					if ( buffer[i] == '\r' ) {
+						buffer[i] = '\n';
+					}
 				}
 
-				commandLine += argv[i];
-
-				if ( containsSpaces ) {
-					commandLine += "\"";
+				Command::ExecuteBuffer(); // flush buffer before we issue commands
+				char *current = strtok( buffer, "\n" );
+				while ( current ) {
+					Command::Append( current );
+					Command::ExecuteBuffer();
+					current = strtok( nullptr, "\n" );
 				}
+			delete[] buffer;
+		}
+	}
 
-				commandLine += " ";
-			}
-
-			// split up commandLine by +
-			//	+set x y +set herp derp
-			// becomes
-			//	set x y
-			//	set herp derp
-			// then append it to the command buffer
-			const char delimiter = '+';
-			const size_t start = commandLine.find( delimiter );
-			if ( start == std::string::npos ) {
-				return;
-			}
-			Command::Append( &commandLine[start + 1], delimiter );
-
-		#ifdef _DEBUG
-			console.Print( PrintLevel::Normal, "Startup parameters:\n" );
-			Indent indent( 1 );
-			std::vector<std::string> args;
-			String::Split( &commandLine[start + 1], delimiter, args );
-			for ( const auto &arg : args ) {
-				console.Print( PrintLevel::Normal, "%s\n", arg.c_str() );
-			}
-		#endif
+	static void WriteConfig( const char *cfg = nullptr ) {
+		std::string str = "";
+		Cvar::WriteCvars( str );
+		const bool dedicated = com_dedicated->GetBool();
+		if ( !dedicated ) {
+			Client::WriteBinds( str );
 		}
 
-		static void LoadConfig( void ) {
-			const char *cfg = com_dedicated->GetBool() ? DEFAULT_CONFIG_SERVER : DEFAULT_CONFIG;
-			const File f( cfg, FileMode::Read );
-
-			if ( f.isOpen ) {
-				char *buffer = new char[f.length];
-					f.Read( reinterpret_cast<uint8_t *>(buffer) );
-
-					// normalise line endings
-					for ( long i = 0; i < f.length; i++ ) {
-						if ( buffer[i] == '\r' ) {
-							buffer[i] = '\n';
-						}
-					}
-
-					Command::ExecuteBuffer(); // flush buffer before we issue commands
-					char *current = strtok( buffer, "\n" );
-					while ( current ) {
-						Command::Append( current );
-						Command::ExecuteBuffer();
-						current = strtok( nullptr, "\n" );
-					}
-				delete[] buffer;
-			}
+		// default config if none specified
+		if ( !cfg ) {
+			cfg = dedicated ? DEFAULT_CONFIG_SERVER : DEFAULT_CONFIG;
 		}
 
-		static void WriteConfig( const char *cfg = nullptr ) {
-			std::string str = "";
-			Cvar::WriteCvars( str );
-			const bool dedicated = com_dedicated->GetBool();
-			if ( !dedicated ) {
-				Client::WriteBinds( str );
-			}
-
-			// default config if none specified
-			if ( !cfg ) {
-				cfg = dedicated ? DEFAULT_CONFIG_SERVER : DEFAULT_CONFIG;
-			}
-
-			const File f( cfg, FileMode::Write );
-			if ( !f.isOpen ) {
-				console.Print( PrintLevel::Normal, "Failed to write config! (%s)\n", cfg );
-				return;
-			}
-
-			f.AppendString( str.c_str() );
+		const File f( cfg, FileMode::Write );
+		if ( !f.isOpen ) {
+			console.Print( PrintLevel::Normal, "Failed to write config! (%s)\n", cfg );
+			return;
 		}
 
-		static void Cmd_WriteConfig( const CommandContext &context ) {
-			const char *cfg = nullptr;
-			if ( context.size() ) {
-				 cfg = context[0].c_str();
-			 }
+		f.AppendString( str.c_str() );
+	}
 
-			WriteConfig( cfg );
-		}
+	static void Cmd_WriteConfig( const CommandContext &context ) {
+		const char *cfg = nullptr;
+		if ( context.size() ) {
+			 cfg = context[0].c_str();
+		 }
 
-		Timer *gameTimer = nullptr;
+		WriteConfig( cfg );
+	}
 
-	} // namespace Common
+	Timer *gameTimer = nullptr;
 
-} // namespace XS
+} // namespace Common
 
-static XS::Timer globalTimer;
+static Timer globalTimer;
 
 //FIXME: function try block
 int main( int argc, char **argv ) try {
-	using namespace XS; // main() must be in global scope
-
 	srand( time( nullptr ) );
 
 	// critical initialisation
@@ -360,8 +354,7 @@ int main( int argc, char **argv ) try {
 	}
 }
 
-catch( const XS::XSError &e ) {
-	using namespace XS;
+catch( const XSError &e ) {
 
 	const bool profile = Common::com_profile->GetBool();
 	const bool dedicated = Common::com_dedicated->GetBool();

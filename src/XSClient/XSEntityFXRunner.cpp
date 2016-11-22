@@ -3,18 +3,14 @@
 #include "XSClient/XSEntityFXRunner.h"
 #include "XSClient/XSParticleEmitter.h"
 
-namespace XS {
+namespace ClientGame {
 
-	namespace ClientGame {
+	EntityFXRunner::EntityFXRunner() {
+		type = EntityType::FXRunner;
+	}
 
-		EntityFXRunner::EntityFXRunner() {
-			type = EntityType::FXRunner;
-		}
+	void EntityFXRunner::Update( real64_t dt ) {
+		Entity::Update( dt );
+	}
 
-		void EntityFXRunner::Update( real64_t dt ) {
-			Entity::Update( dt );
-		}
-
-	} // namespace ClientGame
-
-} // namespace XS
+} // namespace ClientGame

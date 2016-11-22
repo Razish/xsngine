@@ -1,16 +1,12 @@
 #pragma once
 
-namespace XS {
+namespace Renderer {
 
-	namespace Renderer {
+	struct VertexAttribute {
 
-		struct VertexAttribute {
+		int			 location;
+		const char	*name;
 
-			int			 location;
-			const char	*name;
+	};
 
-		};
-
-	} // namespace Renderer
-
-} // namespace XS
+} // namespace Renderer

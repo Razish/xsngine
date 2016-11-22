@@ -5,16 +5,12 @@
 #include "XSCommon/XSCommon.h"
 #include "XSClient/XSResources.h"
 
-namespace XS {
+namespace ClientGame {
 
-	namespace ClientGame {
+	static std::unordered_map<ResourceID, std::string> resources;
 
-		static std::unordered_map<ResourceID, std::string> resources;
+	const char *GetResourceName( ResourceID id ) {
+		return resources[id].c_str();
+	}
 
-		const char *GetResourceName( ResourceID id ) {
-			return resources[id].c_str();
-		}
-
-	} // namespace ClientGame
-
-} // namespace XS
+} // namespace ClientGame

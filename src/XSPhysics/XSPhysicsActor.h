@@ -3,53 +3,49 @@
 #include "XSCommon/XSVector.h"
 #include "XSCommon/XSMatrix.h"
 
-namespace XS {
+namespace Physics {
 
-	namespace Physics {
+	enum class VolumeType : uint32_t {
+		OBB,
+		Sphere,
+	};
 
-		enum class VolumeType : uint32_t {
-			OBB,
-			Sphere,
-		};
+	struct OrientedBoundingBoxVolume {
 
-		struct OrientedBoundingBoxVolume {
+		vector3		mins;
+		vector3		maxs;
+		matrix4		transform;
 
-			vector3		mins;
-			vector3		maxs;
-			matrix4		transform;
+	};
 
-		};
+	struct SphereVolume {
 
-		struct SphereVolume {
+		real32_t	radius;
 
-			real32_t	radius;
+	};
 
-		};
+	struct Actor {
 
-		struct Actor {
+		VolumeType	type;
 
-			VolumeType	type;
+		union VolumeData {
+			OrientedBoundingBoxVolume obb;
+			SphereVolume sphere;
+		} volume;
 
-			union VolumeData {
-				OrientedBoundingBoxVolume obb;
-				SphereVolume sphere;
-			} volume;
+	};
 
-		};
+	struct RigidActor : public Actor {
 
-		struct RigidActor : public Actor {
+		RigidActor(
+			VolumeType type
+		);
 
-			RigidActor(
-				VolumeType type
-			);
+		// don't allow default instantiation
+		RigidActor() = delete;
+		RigidActor( const RigidActor& ) = delete;
+		RigidActor& operator=( const RigidActor& ) = delete;
 
-			// don't allow default instantiation
-			RigidActor() = delete;
-			RigidActor( const RigidActor& ) = delete;
-			RigidActor& operator=( const RigidActor& ) = delete;
+	};
 
-		};
-
-	} // namespace Physics
-
-} // namespace XS
+} // namespace Physics

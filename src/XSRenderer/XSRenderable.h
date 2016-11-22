@@ -2,52 +2,48 @@
 
 #include "XSCommon/XSVector.h"
 
-namespace XS {
+namespace Renderer {
 
-	namespace Renderer {
+	class Renderable;
 
-		class Renderable;
+	struct RenderInfo {
 
-		struct RenderInfo {
+		uint32_t	 handle;
+		vector3		 worldPos;
 
-			uint32_t	 handle;
-			vector3		 worldPos;
+	};
 
-		};
+	// base class implemented by e.g. Model, Particle
+	class Renderable {
 
-		// base class implemented by e.g. Model, Particle
-		class Renderable {
+	public:
+		using Handle = uint32_t;
+		static Handle			numRegistered;
+		static const Handle	invalidHandle;
 
-		public:
-			using Handle = uint32_t;
-			static Handle			numRegistered;
-			static const Handle	invalidHandle;
+		Handle			handle;
 
-			Handle			handle;
+		Renderable();
+		~Renderable();
 
-			Renderable();
-			~Renderable();
+		static Renderable *Get(
+			Handle handle
+		);
 
-			static Renderable *Get(
-				Handle handle
-			);
+		// register a renderable
+		Handle Register(
+			const char *path
+		);
 
-			// register a renderable
-			Handle Register(
-				const char *path
-			);
+		// issue draw command to renderer
+		virtual void Draw(
+			const RenderInfo &info
+		) const;
 
-			// issue draw command to renderer
-			virtual void Draw(
-				const RenderInfo &info
-			) const;
+		// generic update e.g. for particle emitters
+		void Update(
+			real64_t dt
+		);
+	};
 
-			// generic update e.g. for particle emitters
-			void Update(
-				real64_t dt
-			);
-		};
-
-	} // namespace Renderer
-
-} // namespace XS
+} // namespace Renderer

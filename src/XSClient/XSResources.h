@@ -1,16 +1,12 @@
 #pragma once
 
-namespace XS {
+namespace ClientGame {
 
-	namespace ClientGame {
+	using ResourceID = uint32_t;
 
-		using ResourceID = uint32_t;
+	// ???
+	const char *GetResourceName(
+		ResourceID id
+	) XS_WARN_UNUSED_RESULT;
 
-		// ???
-		const char *GetResourceName(
-			ResourceID id
-		) XS_WARN_UNUSED_RESULT;
-
-	} // namespace ClientGame
-
-} // namespace XS
+} // namespace ClientGame

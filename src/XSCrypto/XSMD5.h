@@ -1,16 +1,12 @@
 #pragma once
 
-namespace XS {
+namespace Crypto {
 
-	namespace Crypto {
+	// compute the MD5 for the given buffer
+	void ChecksumMD5(
+		const char *in,
+		size_t inLen,
+		char out[16]
+	);
 
-		// compute the MD5 for the given buffer
-		void ChecksumMD5(
-			const char *in,
-			size_t inLen,
-			char out[16]
-		);
-
-	} // namespace Crypto
-
-} // namespace XS
+} // namespace Crypto

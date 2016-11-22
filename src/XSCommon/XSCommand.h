@@ -3,35 +3,31 @@
 #include <vector>
 #include <string>
 
-namespace XS {
+using CommandContext = std::vector<std::string>;
+using CommandFunc = void (*)( const CommandContext &context );
 
-	using CommandContext = std::vector<std::string>;
-	using CommandFunc = void (*)( const CommandContext &context );
+namespace Command {
 
-	namespace Command {
+	// initialise the command system
+	void Init(
+		void
+	);
 
-		// initialise the command system
-		void Init(
-			void
-		);
+	// associate a console command with a function
+	bool AddCommand(
+		const char *name,
+		CommandFunc cmd
+	);
 
-		// associate a console command with a function
-		bool AddCommand(
-			const char *name,
-			CommandFunc cmd
-		);
+	// append text to the command buffer to be executed in a batch
+	void Append(
+		const char *str,
+		char delimiter = ';'
+	);
 
-		// append text to the command buffer to be executed in a batch
-		void Append(
-			const char *str,
-			char delimiter = ';'
-		);
+	// execute queued commands in the buffer
+	void ExecuteBuffer(
+		void
+	);
 
-		// execute queued commands in the buffer
-		void ExecuteBuffer(
-			void
-		);
-
-	} // namespace Command
-
-} // namespace XS
+} // namespace Command

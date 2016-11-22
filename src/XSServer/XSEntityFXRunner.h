@@ -2,33 +2,29 @@
 
 #include "XSServer/XSEntity.h"
 
-namespace XS {
+class ByteBuffer;
 
-	class ByteBuffer;
+namespace ServerGame {
 
-	namespace ServerGame {
+	class EntityFXRunner : public Entity {
 
-		class EntityFXRunner : public Entity {
+	private:
+		// ...
 
-		private:
-			// ...
+	public:
+		uint32_t count;
+		uint32_t life;
 
-		public:
-			uint32_t count;
-			uint32_t life;
+		EntityFXRunner();
 
-			EntityFXRunner();
+		void Update(
+			real64_t dt
+		);
 
-			void Update(
-				real64_t dt
-			);
+		ByteBuffer::Error Serialise(
+			ByteBuffer *buffer
+		) const XS_WARN_UNUSED_RESULT;
 
-			ByteBuffer::Error Serialise(
-				ByteBuffer *buffer
-			) const XS_WARN_UNUSED_RESULT;
+	};
 
-		};
-
-	} // namespace ServerGame
-
-} // namespace XS
+} // namespace ServerGame

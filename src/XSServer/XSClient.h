@@ -4,39 +4,35 @@
 
 #include "XSNetwork/XSNetwork.h"
 
-namespace XS {
+namespace Server {
 
-	namespace Server {
+	class Client {
 
-		class Client {
+	private:
+		// ...
 
-		private:
-			// ...
+	public:
+		Network::Connection &connection;
 
-		public:
-			Network::Connection &connection;
+		// don't allow default instantiation
+		Client() = delete;
+		Client( const Client& ) = delete;
+		Client& operator=( const Client& ) = delete;
 
-			// don't allow default instantiation
-			Client() = delete;
-			Client( const Client& ) = delete;
-			Client& operator=( const Client& ) = delete;
+		// this also tracks it via clients[Client::connection::guid]
+		Client( Network::Connection &connection );
 
-			// this also tracks it via clients[Client::connection::guid]
-			Client( Network::Connection &connection );
+		// this removes the [Client::connection::guid] association and invalidates iterators
+		~Client();
 
-			// this removes the [Client::connection::guid] association and invalidates iterators
-			~Client();
+		// print a message to the client's console
+		// note: does not insert a line-feed at the end!
+		void Print(
+			const char *msg
+		) const;
 
-			// print a message to the client's console
-			// note: does not insert a line-feed at the end!
-			void Print(
-				const char *msg
-			) const;
+	};
 
-		};
+	extern std::unordered_map<Network::GUID, Client *> clients;
 
-		extern std::unordered_map<Network::GUID, Client *> clients;
-
-	} // namespace Server
-
-} // namespace XS
+} // namespace Server

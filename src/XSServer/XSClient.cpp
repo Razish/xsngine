@@ -11,31 +11,27 @@
 #include "XSServer/XSServer.h"
 #include "XSServer/XSResources.h"
 
-namespace XS {
+namespace Server {
 
-	namespace Server {
+	std::unordered_map<Network::GUID, Client *> clients;
 
-		std::unordered_map<Network::GUID, Client *> clients;
+	Client::Client( Network::Connection &connection )
+	: connection( connection )
+	{
+		clients[connection.guid] = this;
+	}
 
-		Client::Client( Network::Connection &connection )
-		: connection( connection )
-		{
-			clients[connection.guid] = this;
+	Client::~Client() {
+		clients[connection.guid] = nullptr;
+	}
+
+	void Client::Print( const char *msg ) const {
+		ByteBuffer msgBuffer;
+		if ( msgBuffer.WriteString( msg ) == ByteBuffer::Error::Success ) {
+			Network::XSPacket msgPacket( Network::ID_XS_SV2CL_PRINT );
+			msgPacket.data = msgBuffer.GetMemory( &msgPacket.dataLen );
+			connection.Send( msgPacket );
 		}
+	}
 
-		Client::~Client() {
-			clients[connection.guid] = nullptr;
-		}
-
-		void Client::Print( const char *msg ) const {
-			ByteBuffer msgBuffer;
-			if ( msgBuffer.WriteString( msg ) == ByteBuffer::Error::Success ) {
-				Network::XSPacket msgPacket( Network::ID_XS_SV2CL_PRINT );
-				msgPacket.data = msgBuffer.GetMemory( &msgPacket.dataLen );
-				connection.Send( msgPacket );
-			}
-		}
-
-	} // namespace ServerGame
-
-} // namespace XS
+} // namespace ServerGame

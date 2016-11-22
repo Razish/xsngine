@@ -1,4 +1,4 @@
-		#pragma once
+#pragma once
 
 #if defined(XS_OS_WINDOWS)
 	#define WIN32_LEAN_AND_MEAN
@@ -13,45 +13,41 @@
 	#include <sys/time.h>
 #endif
 
-namespace XS {
+#if defined(XS_OS_WINDOWS)
+	using TimeValue = LARGE_INTEGER;
+#elif defined(XS_OS_LINUX) || defined(XS_OS_MAC)
+	using TimeValue = struct timeval;
+#endif
 
-	#if defined(XS_OS_WINDOWS)
-		using TimeValue = LARGE_INTEGER;
-	#elif defined(XS_OS_LINUX) || defined(XS_OS_MAC)
-		using TimeValue = struct timeval;
-	#endif
+enum class TimerResolution {
+	Seconds,
+	Milliseconds,
+	Microseconds,
+};
 
-	enum class TimerResolution {
-		Seconds,
-		Milliseconds,
-		Microseconds,
-	};
+class Timer {
 
-	class Timer {
+private:
+	TimeValue	start;
+	TimeValue	stop;
 
-	private:
-		TimeValue	start;
-		TimeValue	stop;
+public:
+	Timer();
 
-	public:
-		Timer();
+	// start timing
+	void Start(
+		void
+	);
 
-		// start timing
-		void Start(
-			void
-		);
+	// stop timing
+	void Stop(
+		void
+	);
 
-		// stop timing
-		void Stop(
-			void
-		);
+	// get the current elapsed time, optionally resetting the timer to the current time
+	real64_t GetTiming(
+		bool restart = false,
+		TimerResolution resolution = TimerResolution::Microseconds
+	) XS_WARN_UNUSED_RESULT;
 
-		// get the current elapsed time, optionally resetting the timer to the current time
-		real64_t GetTiming(
-			bool restart = false,
-			TimerResolution resolution = TimerResolution::Microseconds
-		) XS_WARN_UNUSED_RESULT;
-
-	};
-
-} // namespace XS
+};

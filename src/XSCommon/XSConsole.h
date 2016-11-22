@@ -2,76 +2,72 @@
 
 #include "XSCommon/XSMessageBuffer.h"
 
-namespace XS {
+enum class PrintLevel {
+	Normal,
+	Debug,
+	Developer,
+};
 
-	enum class PrintLevel {
-		Normal,
-		Debug,
-		Developer,
-	};
+extern class Console {
 
-	extern class Console {
+private:
+	// append a line to the list, accounting for split lines
+	void Append(
+		const char *text,
+		bool multiLine
+	);
 
-	private:
-		// append a line to the list, accounting for split lines
-		void Append(
-			const char *text,
-			bool multiLine
-		);
+public:
+	int32_t			indentation;
+	MessageBuffer	*buffer;
 
-	public:
-		int32_t			indentation;
-		MessageBuffer	*buffer;
+	Console();
+	~Console() {
+		delete buffer;
+	}
 
-		Console();
-		~Console() {
-			delete buffer;
+	// modify the indentation level for future prints
+	// called by an Indent object
+	void Indent( int32_t level ) {
+		indentation += level;
+	}
+
+	// clear the contents of the console buffer
+	void Clear( void ) {
+		if ( buffer ) {
+			buffer->Clear();
 		}
+	}
 
-		// modify the indentation level for future prints
-		// called by an Indent object
-		void Indent( int32_t level ) {
-			indentation += level;
-		}
+	// print a line to the console buffer
+	void Print(
+		PrintLevel printLevel,
+		const char *fmt,
+		...
+	);
 
-		// clear the contents of the console buffer
-		void Clear( void ) {
-			if ( buffer ) {
-				buffer->Clear();
-			}
-		}
+} console;
 
-		// print a line to the console buffer
-		void Print(
-			PrintLevel printLevel,
-			const char *fmt,
-			...
-		);
+// Instantiate a local (stack-level) Indent object to indent subsequent console prints
+class Indent {
+private:
+	int32_t		level;
 
-	} console;
+public:
+	// don't allow default instantiation
+	Indent() = delete;
+	Indent( const Indent& ) = delete;
+	Indent& operator=( const Indent& ) = delete;
 
-	// Instantiate a local (stack-level) Indent object to indent subsequent console prints
-	class Indent {
-	private:
-		int32_t		level;
+	// set the indent level
+	Indent( int32_t indentLevel )
+	:	level( indentLevel )
+	{
+		console.Indent( level );
+	}
 
-	public:
-		// don't allow default instantiation
-		Indent() = delete;
-		Indent( const Indent& ) = delete;
-		Indent& operator=( const Indent& ) = delete;
-
-		// set the indent level
-		Indent( int32_t indentLevel )
-		:	level( indentLevel )
-		{
-			console.Indent( level );
-		}
-
-		// revert the indent level
-		~Indent() {
-			console.Indent( -level );
-		}
-	};
-
-} // namespace XS
+	// revert the indent level
+	~Indent() {
+		console.Indent( -level );
+	}
+};

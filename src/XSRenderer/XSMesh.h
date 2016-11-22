@@ -3,49 +3,45 @@
 #include <vector>
 #include "XSCommon/XSVector.h"
 
-namespace XS {
+namespace Renderer {
 
-	namespace Renderer {
+	struct Material;
+	class ShaderProgram;
+	class Texture;
 
-		struct Material;
-		class ShaderProgram;
-		class Texture;
+	namespace Backend {
+		class Buffer;
+	} // namespace Backend
 
-		namespace Backend {
-			class Buffer;
-		} // namespace Backend
+	struct Mesh {
 
-		struct Mesh {
+		bool					 uploaded = false;
+		bool					 materialCreated = false;
 
-			bool					 uploaded = false;
-			bool					 materialCreated = false;
+		std::vector<vector3>	 vertices;
+		std::vector<vector3>	 normals;
+		std::vector<vector2>	 UVs;
+		std::vector<uint32_t>	 indices;
 
-			std::vector<vector3>	 vertices;
-			std::vector<vector3>	 normals;
-			std::vector<vector2>	 UVs;
-			std::vector<uint32_t>	 indices;
+		Backend::Buffer			*vertexBuffer = nullptr;
+		Backend::Buffer			*indexBuffer = nullptr;
 
-			Backend::Buffer			*vertexBuffer = nullptr;
-			Backend::Buffer			*indexBuffer = nullptr;
+		ShaderProgram			*shader = nullptr;
+		Material				*material = nullptr;
+		Texture					*texture = nullptr;
 
-			ShaderProgram			*shader = nullptr;
-			Material				*material = nullptr;
-			Texture					*texture = nullptr;
+		// create material before uploading
+		void CreateMaterial(
+			void
+		);
 
-			// create material before uploading
-			void CreateMaterial(
-				void
-			);
+		// upload mesh to GPU
+		void Upload(
+			void
+		);
 
-			// upload mesh to GPU
-			void Upload(
-				void
-			);
+		~Mesh();
 
-			~Mesh();
+	};
 
-		};
-
-	} // namespace Renderer
-
-} // namespace XS
+} // namespace Renderer

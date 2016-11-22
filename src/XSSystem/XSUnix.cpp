@@ -10,92 +10,88 @@
 #include "XSCommon/XSCvar.h"
 #include "XSSystem/XSOS.h"
 
-namespace XS {
+namespace OS {
 
-	namespace OS {
+	void GetCurrentWorkingDirectory( char *cwd, size_t bufferLen ) {
+		SDL_assert( cwd && "OS::GetCurrentWorkingDirectory called with invalid parameters" );
+		if ( getcwd( cwd, (int)bufferLen - 1 ) == nullptr ) {
+			cwd[0] = '\0';
+		}
+		//TODO: determine cause of failure via errno
+		cwd[FILENAME_MAX - 1] = '\0';
+	}
 
-		void GetCurrentWorkingDirectory( char *cwd, size_t bufferLen ) {
-			SDL_assert( cwd && "OS::GetCurrentWorkingDirectory called with invalid parameters" );
-			if ( getcwd( cwd, (int)bufferLen - 1 ) == nullptr ) {
-				cwd[0] = '\0';
-			}
-			//TODO: determine cause of failure via errno
-			cwd[FILENAME_MAX - 1] = '\0';
+	bool GetFileTime( const char *path, int32_t *outTime ) {
+		SDL_assert( path && outTime && "OS::GetFileTime called with invalid parameters" );
+		struct stat buf;
+
+		if ( stat( path, &buf ) ) {
+			*outTime = 0;
+			return false;
 		}
 
-		bool GetFileTime( const char *path, int32_t *outTime ) {
-			SDL_assert( path && outTime && "OS::GetFileTime called with invalid parameters" );
-			struct stat buf;
+		long int modifiedTime = buf.st_mtime;
+		*outTime = static_cast<int32_t>( modifiedTime );
 
-			if ( stat( path, &buf ) ) {
-				*outTime = 0;
+		return true;
+	}
+
+	uint32_t GetPathMax( void ) {
+		long result = pathconf( "/", _PC_PATH_MAX );
+		if ( result < 0 ) {
+			result = std::min( _POSIX_PATH_MAX, PATH_MAX );
+		}
+		return result;
+	}
+
+	bool MkDir( const char *path ) {
+		SDL_assert( path && "OS::MkDir called with invalid parameters" );
+		if ( mkdir( path, S_IRWXU | S_IXGRP | S_IRGRP ) ) {
+			if ( errno != EEXIST ) {
+				console.Print( PrintLevel::Debug, "%s(%s): %s\n", XS_FUNCTION, path, strerror( errno ) );
 				return false;
 			}
-
-			long int modifiedTime = buf.st_mtime;
-			*outTime = static_cast<int32_t>( modifiedTime );
-
-			return true;
 		}
 
-		uint32_t GetPathMax( void ) {
-			long result = pathconf( "/", _PC_PATH_MAX );
-			if ( result < 0 ) {
-				result = std::min( _POSIX_PATH_MAX, PATH_MAX );
-			}
-			return result;
+		return true;
+	}
+
+	bool ResolvePath( char *outPath, const char *inPath, size_t pathLen ) {
+		SDL_assert( outPath && inPath && "OS::ResolvePath called with invalid parameters" );
+
+		if ( !Stat( inPath ) || !realpath( inPath, outPath ) ) {
+			console.Print( PrintLevel::Developer, "Could not resolve path: \"%s\" (%s)\n",
+				inPath,
+				strerror( errno )
+			);
+			outPath[0] = '\0';
+
+			return false;
 		}
 
-		bool MkDir( const char *path ) {
-			SDL_assert( path && "OS::MkDir called with invalid parameters" );
-			if ( mkdir( path, S_IRWXU | S_IXGRP | S_IRGRP ) ) {
-				if ( errno != EEXIST ) {
-					console.Print( PrintLevel::Debug, "%s(%s): %s\n", XS_FUNCTION, path, strerror( errno ) );
-					return false;
-				}
-			}
+		return true;
+	}
 
-			return true;
+	bool RmDir( const char *path ) {
+		rmdir( path );
+		return true;
+	}
+
+	bool RmFile( const char *path ) {
+		remove( path );
+		return true;
+	}
+
+	bool Stat( const char *path ) {
+		struct stat buf;
+
+		if ( stat( path, &buf ) ) {
+			return false;
 		}
 
-		bool ResolvePath( char *outPath, const char *inPath, size_t pathLen ) {
-			SDL_assert( outPath && inPath && "OS::ResolvePath called with invalid parameters" );
+		return true;
+	}
 
-			if ( !Stat( inPath ) || !realpath( inPath, outPath ) ) {
-				console.Print( PrintLevel::Developer, "Could not resolve path: \"%s\" (%s)\n",
-					inPath,
-					strerror( errno )
-				);
-				outPath[0] = '\0';
-
-				return false;
-			}
-
-			return true;
-		}
-
-		bool RmDir( const char *path ) {
-			rmdir( path );
-			return true;
-		}
-
-		bool RmFile( const char *path ) {
-			remove( path );
-			return true;
-		}
-
-		bool Stat( const char *path ) {
-			struct stat buf;
-
-			if ( stat( path, &buf ) ) {
-				return false;
-			}
-
-			return true;
-		}
-
-	} // namespace OS
-
-} // namespace XS
+} // namespace OS
 
 #endif

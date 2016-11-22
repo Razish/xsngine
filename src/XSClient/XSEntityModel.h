@@ -2,22 +2,18 @@
 
 #include "XSClient/XSEntity.h"
 
-namespace XS {
+namespace ClientGame {
 
-	namespace ClientGame {
+	class EntityModel : public Entity {
+	private:
 
-		class EntityModel : public Entity {
-		private:
+	public:
+		EntityModel();
 
-		public:
-			EntityModel();
+		void Update(
+			real64_t dt
+		);
 
-			void Update(
-				real64_t dt
-			);
+	};
 
-		};
-
-	} // namespace ClientGame
-
-} // namespace XS
+} // namespace ClientGame
