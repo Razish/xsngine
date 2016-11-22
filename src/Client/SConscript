@@ -1,0 +1,32 @@
+Import( '*' )
+
+# environment
+env.VariantDir( build_dir, '#', duplicate = 0 )
+client_env = env.Clone()
+
+# sources
+files = [
+	'Client/BaseCamera.cpp',
+	'Client/ClientGame.cpp',
+	'Client/ClientGameState.cpp',
+	'Client/FlyCamera.cpp',
+	'Client/Entity.cpp',
+	'Client/EntityFXRunner.cpp',
+	'Client/EntityModel.cpp',
+	'Client/Menu.cpp',
+	'Client/MenuElement.cpp',
+	'Client/MenuElementButton.cpp',
+	'Client/MenuElementSlider.cpp',
+	'Client/MenuElementText.cpp',
+	'Client/MenuElementTextInput.cpp',
+	'Client/MenuManager.cpp',
+	'Client/ParticleEmitter.cpp',
+	'Client/Perlin.cpp',
+	'Client/Resources.cpp',
+	'Client/Terrain.cpp'
+]
+files = [build_dir + f for f in files]
+
+# targets
+result = client_env.StaticLibrary( build_dir + 'Client' + arch, files )
+Return( "result" )

@@ -1,0 +1,21 @@
+Import( '*' )
+
+# environment
+env.VariantDir( build_dir, '#', duplicate = 0 )
+server_env = env.Clone()
+
+# sources
+files = [
+	'Server/Client.cpp',
+	'Server/Entity.cpp',
+	'Server/EntityFXRunner.cpp',
+	'Server/EntityModel.cpp',
+	'Server/Netcode.cpp',
+	'Server/Resources.cpp',
+	'Server/ServerGame.cpp',
+]
+files = [build_dir + f for f in files]
+
+# targets
+result = server_env.StaticLibrary( build_dir + 'Server' + arch, files )
+Return( "result" )
