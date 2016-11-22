@@ -3,16 +3,14 @@
 #include <string>
 #include <vector>
 
+#include "XSRenderer/XSBuffer.h"
+#include "XSRenderer/XSTexture.h"
+
 namespace XS {
 
 	namespace Renderer {
 
-		namespace Backend {
-			class Buffer;
-		} // namespace Backend
-
 		class ShaderProgram;
-		class Texture;
 
 		const uint32_t MF_NONE		= 0x00000000u;
 		const uint32_t MF_WIREFRAME	= 0x00000001u;
@@ -31,6 +29,11 @@ namespace XS {
 
 				int				 index;
 				Backend::Buffer	*buffer;
+
+				~BufferBinding() {
+					delete buffer;
+					buffer = nullptr;
+				}
 
 			};
 

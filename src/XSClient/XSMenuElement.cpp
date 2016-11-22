@@ -19,6 +19,10 @@ namespace XS {
 		MenuElement::MenuElement( const Menu &parent )
 		:	parent( parent )
 		{
+			// ...
+		}
+		MenuElement::~MenuElement() {
+			// ...
 		}
 
 		void MenuElement::ParseTooltip( TokenParser *parser, const char *fileName ) {

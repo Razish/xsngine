@@ -42,7 +42,15 @@ namespace XS {
 		}
 
 		MenuManager::~MenuManager() {
+			if ( assets.cursor ) {
+				for ( auto binding : assets.cursor->samplerBindings ) {
+					delete binding.texture;
+				}
+			}
 			delete assets.cursor;
+			for ( auto it = menus.begin(); it != menus.end(); it = menus.erase( it ) ) {
+				delete it->second;
+			}
 		}
 
 		// load a menu from disk
@@ -51,6 +59,7 @@ namespace XS {
 			Menu *menu = new Menu( view, fileName );
 
 			if ( menu->name.empty() ) {
+				delete menu;
 				return false;
 			}
 

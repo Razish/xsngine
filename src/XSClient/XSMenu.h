@@ -37,6 +37,7 @@ namespace XS {
 				const Renderer::View &view,
 				const char *fileName
 			);
+			~Menu();
 
 			void Paint(
 				void

@@ -48,6 +48,8 @@ namespace XS {
 							XS_FUNCTION,
 							fileName
 						);
+						delete parser;
+						delete[] buffer;
 						return;
 					}
 					if ( ui != Menu::version ) {
@@ -58,6 +60,8 @@ namespace XS {
 							ui,
 							Menu::version
 						);
+						delete parser;
+						delete[] buffer;
 						return;
 					}
 				}
@@ -66,6 +70,8 @@ namespace XS {
 						XS_FUNCTION,
 						fileName
 					);
+					delete parser;
+					delete[] buffer;
 					return;
 				}
 
@@ -194,8 +200,14 @@ namespace XS {
 				}
 
 				delete parser;
-
 			delete[] buffer;
+		}
+
+		Menu::~Menu() {
+			for ( auto *element : elements ) {
+				delete element;
+			}
+			elements.clear();
 		}
 
 		void Menu::Paint( void ) {

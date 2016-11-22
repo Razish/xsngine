@@ -111,6 +111,11 @@ namespace XS {
 		Texture::~Texture() {
 			glDeleteTextures( 1, &id );
 
+			for ( uint32_t i = 0u; i < maxTextureUnits; i++ ) {
+				if ( lastUsedTexture[i] == this ) {
+					lastUsedTexture[i] = nullptr;
+				}
+			}
 			auto it = std::find( textures.begin(), textures.end(), this );
 			textures.erase( it );
 		}

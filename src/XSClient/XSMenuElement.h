@@ -64,6 +64,7 @@ namespace XS {
 			MenuElement(
 				const Menu &parent
 			);
+			virtual ~MenuElement();
 
 			// paint the element on the screen
 			virtual void Paint(

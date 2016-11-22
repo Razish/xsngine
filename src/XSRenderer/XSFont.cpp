@@ -125,14 +125,15 @@ namespace XS {
 				const size_t yOffset = row * maxCellSize; // vertical position
 
 				// calculate glyph metrics
-				FontData &fd = data[c][pointSize];
-				fd.pixelSize = vector2{ static_cast<real32_t>( glyphWidth ), static_cast<real32_t>( glyphHeight ) };
+				uint8_t uc = static_cast<uint8_t>(c);
+				FontData *fd = &data[uc][pointSize];
+				fd->pixelSize = vector2{ static_cast<real32_t>( glyphWidth ), static_cast<real32_t>( glyphHeight ) };
 				const real32_t stScale = 16.0f * maxCellSize;
-				fd.s = vector2{ colPos, colPos + (static_cast<real32_t>( glyphWidth ) / stScale) };
-				fd.t = vector2{ rowPos, rowPos + (static_cast<real32_t>( glyphHeight ) / stScale) };
-				fd.advance = static_cast<real32_t>( slot->advance.x ) / 64.0f;
-				fd.offset[0] = static_cast<real32_t>( slot->metrics.horiBearingX ) / 64.0f;
-				fd.offset[1] = lineHeight[pointSize] + -(static_cast<real32_t>( slot->metrics.horiBearingY ) / 64.0f);
+				fd->s = vector2{ colPos, colPos + (static_cast<real32_t>( glyphWidth ) / stScale) };
+				fd->t = vector2{ rowPos, rowPos + (static_cast<real32_t>( glyphHeight ) / stScale) };
+				fd->advance = static_cast<real32_t>( slot->advance.x ) / 64.0f;
+				fd->offset[0] = static_cast<real32_t>( slot->metrics.horiBearingX ) / 64.0f;
+				fd->offset[1] = lineHeight[pointSize] + -(static_cast<real32_t>( slot->metrics.horiBearingY ) / 64.0f);
 
 				if ( !bitmap.buffer ) {
 					FT_Done_Glyph( glyph );
@@ -203,7 +204,8 @@ namespace XS {
 
 			for ( size_t i = 0; i < len; i++ ) {
 				const char c = text[i];
-				const FontData &fd = data[c][pointSize];
+				const uint8_t uc = static_cast<uint8_t>(c);
+				const FontData &fd = data[uc][pointSize];
 
 				// check for overflow
 				//FIXME: this is more a concern of the View being rendered to, not the size of the window
@@ -256,7 +258,8 @@ namespace XS {
 
 			for ( const char c : text ) {
 				SDL_assert( c != '\0' );
-				const FontData &fd = data[c][pointSize];
+				const uint8_t uc = static_cast<uint8_t>(c);
+				const FontData &fd = data[uc][pointSize];
 
 				// check for overflow
 				//FIXME: this is more a concern of the View being rendered to, not the size of the window
@@ -282,7 +285,8 @@ namespace XS {
 
 		real32_t Font::GetGlyphWidth( char c, uint16_t pointSize ) {
 			RenderGlyphs( pointSize );
-			const FontData &fd = data[c][pointSize];
+			const uint8_t uc = static_cast<uint8_t>(c);
+			const FontData &fd = data[uc][pointSize];
 			return fd.advance;
 		}
 

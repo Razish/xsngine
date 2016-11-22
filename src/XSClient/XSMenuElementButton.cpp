@@ -215,7 +215,7 @@ namespace XS {
 				material->shaderProgram = Renderer::quadProgram;
 
 				data.background = material;
-				delete bgData;
+				delete[] bgData;
 			}
 
 			const real32_t bgWidth = properties.size[0] * parent.view.width;
