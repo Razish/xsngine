@@ -1,37 +1,37 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="XSSystem">
+    <Filter Include="System">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
     </Filter>
-    <Filter Include="XSCommon">
+    <Filter Include="Common">
       <UniqueIdentifier>{b9f5a31d-b6c1-49e5-a5c8-28c7bcd5d8fd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="XSClient">
+    <Filter Include="Client">
       <UniqueIdentifier>{9e090e70-283b-4fad-9444-b8a034ec8970}</UniqueIdentifier>
     </Filter>
-    <Filter Include="XSRenderer">
+    <Filter Include="Renderer">
       <UniqueIdentifier>{55285326-3198-45d6-96db-6e3608ec1eec}</UniqueIdentifier>
     </Filter>
-    <Filter Include="XSCrypto">
+    <Filter Include="Crypto">
       <UniqueIdentifier>{8a578197-3872-4319-b5b5-8bd729267239}</UniqueIdentifier>
     </Filter>
-    <Filter Include="XSInput">
+    <Filter Include="Input">
       <UniqueIdentifier>{a4194aae-ee3f-4b04-98c7-b5b394a6d91b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="XSNetwork">
+    <Filter Include="Network">
       <UniqueIdentifier>{da324153-809f-4740-b49e-81446edfa947}</UniqueIdentifier>
     </Filter>
-    <Filter Include="XSServer">
+    <Filter Include="Server">
       <UniqueIdentifier>{901ec2dd-5ee7-44da-8d21-ccb39a356787}</UniqueIdentifier>
     </Filter>
     <Filter Include="zlib">
       <UniqueIdentifier>{fb07b91b-5f98-4e66-b107-7fbab5d78af8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="XSShared">
+    <Filter Include="Shared">
       <UniqueIdentifier>{e80e0207-3b4e-454b-ba9b-525cdb840729}</UniqueIdentifier>
     </Filter>
-    <Filter Include="XSPhysics">
+    <Filter Include="Physics">
       <UniqueIdentifier>{1f095370-af3a-422b-86ec-21099f9c3484}</UniqueIdentifier>
     </Filter>
     <Filter Include="SDL2">
@@ -45,227 +45,227 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="XSClient\XSClient.cpp">
-      <Filter>XSClient</Filter>
+    <ClCompile Include="Client\Client.cpp">
+      <Filter>Client</Filter>
     </ClCompile>
-    <ClCompile Include="XSClient\XSClientConsole.cpp">
-      <Filter>XSClient</Filter>
+    <ClCompile Include="Client\ClientConsole.cpp">
+      <Filter>Client</Filter>
     </ClCompile>
-    <ClCompile Include="XSClient\XSClientGame.cpp">
-      <Filter>XSClient</Filter>
+    <ClCompile Include="Client\ClientGame.cpp">
+      <Filter>Client</Filter>
     </ClCompile>
-    <ClCompile Include="XSCommon\XSColours.cpp">
-      <Filter>XSCommon</Filter>
+    <ClCompile Include="Common\Colours.cpp">
+      <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="XSCommon\XSCommand.cpp">
-      <Filter>XSCommon</Filter>
+    <ClCompile Include="Common\Command.cpp">
+      <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="XSCommon\XSCommon.cpp">
-      <Filter>XSCommon</Filter>
+    <ClCompile Include="Common\Common.cpp">
+      <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="XSCommon\XSConsole.cpp">
-      <Filter>XSCommon</Filter>
+    <ClCompile Include="Common\Console.cpp">
+      <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="XSCommon\XSCvar.cpp">
-      <Filter>XSCommon</Filter>
+    <ClCompile Include="Common\Cvar.cpp">
+      <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="XSCommon\XSEvent.cpp">
-      <Filter>XSCommon</Filter>
+    <ClCompile Include="Common\Event.cpp">
+      <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="XSCommon\XSFile.cpp">
-      <Filter>XSCommon</Filter>
+    <ClCompile Include="Common\File.cpp">
+      <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="XSCommon\XSLogger.cpp">
-      <Filter>XSCommon</Filter>
+    <ClCompile Include="Common\Logger.cpp">
+      <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="XSCommon\XSMatrix.cpp">
-      <Filter>XSCommon</Filter>
+    <ClCompile Include="Common\Matrix.cpp">
+      <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="XSCommon\XSMessageBuffer.cpp">
-      <Filter>XSCommon</Filter>
+    <ClCompile Include="Common\MessageBuffer.cpp">
+      <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="XSCommon\XSModule.cpp">
-      <Filter>XSCommon</Filter>
+    <ClCompile Include="Common\Module.cpp">
+      <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="XSCommon\XSString.cpp">
-      <Filter>XSCommon</Filter>
+    <ClCompile Include="Common\String.cpp">
+      <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="XSCommon\XSTimer.cpp">
-      <Filter>XSCommon</Filter>
+    <ClCompile Include="Common\Timer.cpp">
+      <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="XSCommon\XSTokenParser.cpp">
-      <Filter>XSCommon</Filter>
+    <ClCompile Include="Common\TokenParser.cpp">
+      <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="XSCommon\XSVector.cpp">
-      <Filter>XSCommon</Filter>
+    <ClCompile Include="Common\Vector.cpp">
+      <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="XSCrypto\XSMD5.cpp">
-      <Filter>XSCrypto</Filter>
+    <ClCompile Include="Crypto\MD5.cpp">
+      <Filter>Crypto</Filter>
     </ClCompile>
-    <ClCompile Include="XSInput\XSInput.cpp">
-      <Filter>XSInput</Filter>
+    <ClCompile Include="Input\Input.cpp">
+      <Filter>Input</Filter>
     </ClCompile>
-    <ClCompile Include="XSInput\XSInputField.cpp">
-      <Filter>XSInput</Filter>
+    <ClCompile Include="Input\InputField.cpp">
+      <Filter>Input</Filter>
     </ClCompile>
-    <ClCompile Include="XSInput\XSKeys.cpp">
-      <Filter>XSInput</Filter>
+    <ClCompile Include="Input\Keys.cpp">
+      <Filter>Input</Filter>
     </ClCompile>
-    <ClCompile Include="XSRenderer\XSBackend.cpp">
-      <Filter>XSRenderer</Filter>
+    <ClCompile Include="Renderer\Backend.cpp">
+      <Filter>Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="XSRenderer\XSBuffer.cpp">
-      <Filter>XSRenderer</Filter>
+    <ClCompile Include="Renderer\Buffer.cpp">
+      <Filter>Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="XSRenderer\XSFont.cpp">
-      <Filter>XSRenderer</Filter>
+    <ClCompile Include="Renderer\Font.cpp">
+      <Filter>Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="XSRenderer\XSFramebuffer.cpp">
-      <Filter>XSRenderer</Filter>
+    <ClCompile Include="Renderer\Framebuffer.cpp">
+      <Filter>Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="XSRenderer\XSImagePNG.cpp">
-      <Filter>XSRenderer</Filter>
+    <ClCompile Include="Renderer\ImagePNG.cpp">
+      <Filter>Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="XSRenderer\XSInternalFormat.cpp">
-      <Filter>XSRenderer</Filter>
+    <ClCompile Include="Renderer\InternalFormat.cpp">
+      <Filter>Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="XSRenderer\XSMaterial.cpp">
-      <Filter>XSRenderer</Filter>
+    <ClCompile Include="Renderer\Material.cpp">
+      <Filter>Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="XSRenderer\XSMesh.cpp">
-      <Filter>XSRenderer</Filter>
+    <ClCompile Include="Renderer\Mesh.cpp">
+      <Filter>Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="XSRenderer\XSModel.cpp">
-      <Filter>XSRenderer</Filter>
+    <ClCompile Include="Renderer\Model.cpp">
+      <Filter>Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="XSRenderer\XSModelObj.cpp">
-      <Filter>XSRenderer</Filter>
+    <ClCompile Include="Renderer\ModelObj.cpp">
+      <Filter>Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="XSRenderer\XSRenderable.cpp">
-      <Filter>XSRenderer</Filter>
+    <ClCompile Include="Renderer\Renderable.cpp">
+      <Filter>Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="XSRenderer\XSRenderCommand.cpp">
-      <Filter>XSRenderer</Filter>
+    <ClCompile Include="Renderer\RenderCommand.cpp">
+      <Filter>Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="XSRenderer\XSRenderer.cpp">
-      <Filter>XSRenderer</Filter>
+    <ClCompile Include="Renderer\Renderer.cpp">
+      <Filter>Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="XSRenderer\XSScreenshot.cpp">
-      <Filter>XSRenderer</Filter>
+    <ClCompile Include="Renderer\Screenshot.cpp">
+      <Filter>Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="XSRenderer\XSShaderProgram.cpp">
-      <Filter>XSRenderer</Filter>
+    <ClCompile Include="Renderer\ShaderProgram.cpp">
+      <Filter>Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="XSRenderer\XSTexture.cpp">
-      <Filter>XSRenderer</Filter>
+    <ClCompile Include="Renderer\Texture.cpp">
+      <Filter>Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="XSRenderer\XSView.cpp">
-      <Filter>XSRenderer</Filter>
+    <ClCompile Include="Renderer\View.cpp">
+      <Filter>Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="XSSystem\XSWindows.cpp">
-      <Filter>XSSystem</Filter>
+    <ClCompile Include="System\Windows.cpp">
+      <Filter>System</Filter>
     </ClCompile>
-    <ClCompile Include="XSClient\XSBaseCamera.cpp">
-      <Filter>XSClient</Filter>
+    <ClCompile Include="Client\BaseCamera.cpp">
+      <Filter>Client</Filter>
     </ClCompile>
-    <ClCompile Include="XSClient\XSFlyCamera.cpp">
-      <Filter>XSClient</Filter>
+    <ClCompile Include="Client\FlyCamera.cpp">
+      <Filter>Client</Filter>
     </ClCompile>
-    <ClCompile Include="XSInput\XSMouse.cpp">
-      <Filter>XSInput</Filter>
+    <ClCompile Include="Input\Mouse.cpp">
+      <Filter>Input</Filter>
     </ClCompile>
-    <ClCompile Include="XSSystem\XSUnix.cpp">
-      <Filter>XSSystem</Filter>
+    <ClCompile Include="System\Unix.cpp">
+      <Filter>System</Filter>
     </ClCompile>
-    <ClCompile Include="XSRenderer\XSModelXMF.cpp">
-      <Filter>XSRenderer</Filter>
+    <ClCompile Include="Renderer\ModelXMF.cpp">
+      <Filter>Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="XSClient\XSTerrain.cpp">
-      <Filter>XSClient</Filter>
+    <ClCompile Include="Client\Terrain.cpp">
+      <Filter>Client</Filter>
     </ClCompile>
-    <ClCompile Include="XSClient\XSPerlin.cpp">
-      <Filter>XSClient</Filter>
+    <ClCompile Include="Client\Perlin.cpp">
+      <Filter>Client</Filter>
     </ClCompile>
-    <ClCompile Include="XSClient\XSMenu.cpp">
-      <Filter>XSClient</Filter>
+    <ClCompile Include="Client\Menu.cpp">
+      <Filter>Client</Filter>
     </ClCompile>
-    <ClCompile Include="XSClient\XSMenuElement.cpp">
-      <Filter>XSClient</Filter>
+    <ClCompile Include="Client\MenuElement.cpp">
+      <Filter>Client</Filter>
     </ClCompile>
-    <ClCompile Include="XSClient\XSMenuElementSlider.cpp">
-      <Filter>XSClient</Filter>
+    <ClCompile Include="Client\MenuElementSlider.cpp">
+      <Filter>Client</Filter>
     </ClCompile>
-    <ClCompile Include="XSClient\XSMenuManager.cpp">
-      <Filter>XSClient</Filter>
+    <ClCompile Include="Client\MenuManager.cpp">
+      <Filter>Client</Filter>
     </ClCompile>
-    <ClCompile Include="XSServer\XSServer.cpp">
-      <Filter>XSServer</Filter>
+    <ClCompile Include="Server\Server.cpp">
+      <Filter>Server</Filter>
     </ClCompile>
-    <ClCompile Include="XSServer\XSServerConsole.cpp">
-      <Filter>XSServer</Filter>
+    <ClCompile Include="Server\ServerConsole.cpp">
+      <Filter>Server</Filter>
     </ClCompile>
-    <ClCompile Include="XSServer\XSServerGame.cpp">
-      <Filter>XSServer</Filter>
+    <ClCompile Include="Server\ServerGame.cpp">
+      <Filter>Server</Filter>
     </ClCompile>
-    <ClCompile Include="XSClient\XSClientGameState.cpp">
-      <Filter>XSClient</Filter>
+    <ClCompile Include="Client\ClientGameState.cpp">
+      <Filter>Client</Filter>
     </ClCompile>
-    <ClCompile Include="XSClient\XSEntity.cpp">
-      <Filter>XSClient</Filter>
+    <ClCompile Include="Client\Entity.cpp">
+      <Filter>Client</Filter>
     </ClCompile>
-    <ClCompile Include="XSClient\XSMenuElementButton.cpp">
-      <Filter>XSClient</Filter>
+    <ClCompile Include="Client\MenuElementButton.cpp">
+      <Filter>Client</Filter>
     </ClCompile>
-    <ClCompile Include="XSClient\XSMenuElementText.cpp">
-      <Filter>XSClient</Filter>
+    <ClCompile Include="Client\MenuElementText.cpp">
+      <Filter>Client</Filter>
     </ClCompile>
-    <ClCompile Include="XSNetwork\XSNetwork.cpp">
-      <Filter>XSNetwork</Filter>
+    <ClCompile Include="Network\Network.cpp">
+      <Filter>Network</Filter>
     </ClCompile>
-    <ClCompile Include="XSClient\XSParticleEmitter.cpp">
-      <Filter>XSClient</Filter>
+    <ClCompile Include="Client\ParticleEmitter.cpp">
+      <Filter>Client</Filter>
     </ClCompile>
-    <ClCompile Include="XSRenderer\XSParticle.cpp">
-      <Filter>XSRenderer</Filter>
+    <ClCompile Include="Renderer\Particle.cpp">
+      <Filter>Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="XSServer\XSEntity.cpp">
-      <Filter>XSServer</Filter>
+    <ClCompile Include="Server\Entity.cpp">
+      <Filter>Server</Filter>
     </ClCompile>
-    <ClCompile Include="XSServer\XSClient.cpp">
-      <Filter>XSServer</Filter>
+    <ClCompile Include="Server\Client.cpp">
+      <Filter>Server</Filter>
     </ClCompile>
-    <ClCompile Include="XSServer\XSEntityFXRunner.cpp">
-      <Filter>XSServer</Filter>
+    <ClCompile Include="Server\EntityFXRunner.cpp">
+      <Filter>Server</Filter>
     </ClCompile>
-    <ClCompile Include="XSServer\XSEntityModel.cpp">
-      <Filter>XSServer</Filter>
+    <ClCompile Include="Server\EntityModel.cpp">
+      <Filter>Server</Filter>
     </ClCompile>
-    <ClCompile Include="XSServer\XSNetcode.cpp">
-      <Filter>XSServer</Filter>
+    <ClCompile Include="Server\Netcode.cpp">
+      <Filter>Server</Filter>
     </ClCompile>
-    <ClCompile Include="XSServer\XSResources.cpp">
-      <Filter>XSServer</Filter>
+    <ClCompile Include="Server\Resources.cpp">
+      <Filter>Server</Filter>
     </ClCompile>
-    <ClCompile Include="XSPhysics\XSPhysicsActor.cpp">
-      <Filter>XSPhysics</Filter>
+    <ClCompile Include="Physics\PhysicsActor.cpp">
+      <Filter>Physics</Filter>
     </ClCompile>
-    <ClCompile Include="XSPhysics\XSPhysicsSolver.cpp">
-      <Filter>XSPhysics</Filter>
+    <ClCompile Include="Physics\PhysicsSolver.cpp">
+      <Filter>Physics</Filter>
     </ClCompile>
-    <ClCompile Include="XSCommon\XSByteBuffer.cpp">
-      <Filter>XSCommon</Filter>
+    <ClCompile Include="Common\ByteBuffer.cpp">
+      <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="XSCommon\XSFileXMF.cpp">
-      <Filter>XSCommon</Filter>
+    <ClCompile Include="Common\FileXMF.cpp">
+      <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="XSClient\XSEntityFXRunner.cpp">
-      <Filter>XSClient</Filter>
+    <ClCompile Include="Client\EntityFXRunner.cpp">
+      <Filter>Client</Filter>
     </ClCompile>
-    <ClCompile Include="XSClient\XSEntityModel.cpp">
-      <Filter>XSClient</Filter>
+    <ClCompile Include="Client\EntityModel.cpp">
+      <Filter>Client</Filter>
     </ClCompile>
-    <ClCompile Include="XSClient\XSResources.cpp">
-      <Filter>XSClient</Filter>
+    <ClCompile Include="Client\Resources.cpp">
+      <Filter>Client</Filter>
     </ClCompile>
     <ClCompile Include="RakNet\_FindFirst.cpp">
       <Filter>RakNet</Filter>
@@ -599,200 +599,200 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="XSClient\XSClient.h">
-      <Filter>XSClient</Filter>
+    <ClInclude Include="Client\Client.h">
+      <Filter>Client</Filter>
     </ClInclude>
-    <ClInclude Include="XSCommon\XSColours.h">
-      <Filter>XSCommon</Filter>
+    <ClInclude Include="Common\Colours.h">
+      <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="XSCommon\XSCommand.h">
-      <Filter>XSCommon</Filter>
+    <ClInclude Include="Common\Command.h">
+      <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="XSCommon\XSCommon.h">
-      <Filter>XSCommon</Filter>
+    <ClInclude Include="Common\Common.h">
+      <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="XSCommon\XSConsole.h">
-      <Filter>XSCommon</Filter>
+    <ClInclude Include="Common\Console.h">
+      <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="XSCommon\XSCvar.h">
-      <Filter>XSCommon</Filter>
+    <ClInclude Include="Common\Cvar.h">
+      <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="XSCommon\xserror.h">
-      <Filter>XSCommon</Filter>
+    <ClInclude Include="Common\error.h">
+      <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="XSCommon\XSEvent.h">
-      <Filter>XSCommon</Filter>
+    <ClInclude Include="Common\Event.h">
+      <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="XSCommon\XSFile.h">
-      <Filter>XSCommon</Filter>
+    <ClInclude Include="Common\File.h">
+      <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="XSCommon\XSGlobals.h">
-      <Filter>XSCommon</Filter>
+    <ClInclude Include="Common\Globals.h">
+      <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="XSCommon\XSLogger.h">
-      <Filter>XSCommon</Filter>
+    <ClInclude Include="Common\Logger.h">
+      <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="XSCommon\XSMatrix.h">
-      <Filter>XSCommon</Filter>
+    <ClInclude Include="Common\Matrix.h">
+      <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="XSCommon\XSMessageBuffer.h">
-      <Filter>XSCommon</Filter>
+    <ClInclude Include="Common\MessageBuffer.h">
+      <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="XSCommon\XSModule.h">
-      <Filter>XSCommon</Filter>
+    <ClInclude Include="Common\Module.h">
+      <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="XSCommon\XSString.h">
-      <Filter>XSCommon</Filter>
+    <ClInclude Include="Common\String.h">
+      <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="XSCommon\XSTimer.h">
-      <Filter>XSCommon</Filter>
+    <ClInclude Include="Common\Timer.h">
+      <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="XSCommon\XSTokenParser.h">
-      <Filter>XSCommon</Filter>
+    <ClInclude Include="Common\TokenParser.h">
+      <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="XSCommon\XSVector.h">
-      <Filter>XSCommon</Filter>
+    <ClInclude Include="Common\Vector.h">
+      <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="XSCrypto\XSMD5.h">
-      <Filter>XSCrypto</Filter>
+    <ClInclude Include="Crypto\MD5.h">
+      <Filter>Crypto</Filter>
     </ClInclude>
-    <ClInclude Include="XSInput\XSInput.h">
-      <Filter>XSInput</Filter>
+    <ClInclude Include="Input\Input.h">
+      <Filter>Input</Filter>
     </ClInclude>
-    <ClInclude Include="XSInput\XSInputField.h">
-      <Filter>XSInput</Filter>
+    <ClInclude Include="Input\InputField.h">
+      <Filter>Input</Filter>
     </ClInclude>
-    <ClInclude Include="XSInput\XSKeys.h">
-      <Filter>XSInput</Filter>
+    <ClInclude Include="Input\Keys.h">
+      <Filter>Input</Filter>
     </ClInclude>
-    <ClInclude Include="XSRenderer\XSBackend.h">
-      <Filter>XSRenderer</Filter>
+    <ClInclude Include="Renderer\Backend.h">
+      <Filter>Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="XSRenderer\XSBuffer.h">
-      <Filter>XSRenderer</Filter>
+    <ClInclude Include="Renderer\Buffer.h">
+      <Filter>Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="XSRenderer\XSFont.h">
-      <Filter>XSRenderer</Filter>
+    <ClInclude Include="Renderer\Font.h">
+      <Filter>Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="XSRenderer\XSFramebuffer.h">
-      <Filter>XSRenderer</Filter>
+    <ClInclude Include="Renderer\Framebuffer.h">
+      <Filter>Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="XSRenderer\XSImagePNG.h">
-      <Filter>XSRenderer</Filter>
+    <ClInclude Include="Renderer\ImagePNG.h">
+      <Filter>Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="XSRenderer\XSInternalFormat.h">
-      <Filter>XSRenderer</Filter>
+    <ClInclude Include="Renderer\InternalFormat.h">
+      <Filter>Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="XSRenderer\XSMaterial.h">
-      <Filter>XSRenderer</Filter>
+    <ClInclude Include="Renderer\Material.h">
+      <Filter>Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="XSRenderer\XSMesh.h">
-      <Filter>XSRenderer</Filter>
+    <ClInclude Include="Renderer\Mesh.h">
+      <Filter>Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="XSRenderer\XSModel.h">
-      <Filter>XSRenderer</Filter>
+    <ClInclude Include="Renderer\Model.h">
+      <Filter>Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="XSRenderer\XSModelObj.h">
-      <Filter>XSRenderer</Filter>
+    <ClInclude Include="Renderer\ModelObj.h">
+      <Filter>Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="XSRenderer\XSRenderable.h">
-      <Filter>XSRenderer</Filter>
+    <ClInclude Include="Renderer\Renderable.h">
+      <Filter>Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="XSRenderer\XSRenderCommand.h">
-      <Filter>XSRenderer</Filter>
+    <ClInclude Include="Renderer\RenderCommand.h">
+      <Filter>Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="XSRenderer\XSRenderer.h">
-      <Filter>XSRenderer</Filter>
+    <ClInclude Include="Renderer\Renderer.h">
+      <Filter>Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="XSRenderer\XSScreenshot.h">
-      <Filter>XSRenderer</Filter>
+    <ClInclude Include="Renderer\Screenshot.h">
+      <Filter>Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="XSRenderer\XSShaderProgram.h">
-      <Filter>XSRenderer</Filter>
+    <ClInclude Include="Renderer\ShaderProgram.h">
+      <Filter>Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="XSRenderer\XSTexture.h">
-      <Filter>XSRenderer</Filter>
+    <ClInclude Include="Renderer\Texture.h">
+      <Filter>Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="XSRenderer\XSVertexAttributes.h">
-      <Filter>XSRenderer</Filter>
+    <ClInclude Include="Renderer\VertexAttributes.h">
+      <Filter>Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="XSRenderer\XSView.h">
-      <Filter>XSRenderer</Filter>
+    <ClInclude Include="Renderer\View.h">
+      <Filter>Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="XSSystem\XSOS.h">
-      <Filter>XSSystem</Filter>
+    <ClInclude Include="System\OS.h">
+      <Filter>System</Filter>
     </ClInclude>
-    <ClInclude Include="XSSystem\XSPlatform.h">
-      <Filter>XSSystem</Filter>
+    <ClInclude Include="System\Platform.h">
+      <Filter>System</Filter>
     </ClInclude>
-    <ClInclude Include="XSClient\XSBaseCamera.h">
-      <Filter>XSClient</Filter>
+    <ClInclude Include="Client\BaseCamera.h">
+      <Filter>Client</Filter>
     </ClInclude>
-    <ClInclude Include="XSClient\XSFlyCamera.h">
-      <Filter>XSClient</Filter>
+    <ClInclude Include="Client\FlyCamera.h">
+      <Filter>Client</Filter>
     </ClInclude>
-    <ClInclude Include="XSInput\XSMouse.h">
-      <Filter>XSInput</Filter>
+    <ClInclude Include="Input\Mouse.h">
+      <Filter>Input</Filter>
     </ClInclude>
-    <ClInclude Include="XSClient\XSClientConsole.h">
-      <Filter>XSClient</Filter>
+    <ClInclude Include="Client\ClientConsole.h">
+      <Filter>Client</Filter>
     </ClInclude>
-    <ClInclude Include="XSClient\XSClientGame.h">
-      <Filter>XSClient</Filter>
+    <ClInclude Include="Client\ClientGame.h">
+      <Filter>Client</Filter>
     </ClInclude>
-    <ClInclude Include="XSRenderer\XSModelXMF.h">
-      <Filter>XSRenderer</Filter>
+    <ClInclude Include="Renderer\ModelXMF.h">
+      <Filter>Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="XSClient\XSTerrain.h">
-      <Filter>XSClient</Filter>
+    <ClInclude Include="Client\Terrain.h">
+      <Filter>Client</Filter>
     </ClInclude>
-    <ClInclude Include="XSClient\XSPerlin.h">
-      <Filter>XSClient</Filter>
+    <ClInclude Include="Client\Perlin.h">
+      <Filter>Client</Filter>
     </ClInclude>
-    <ClInclude Include="XSClient\XSMenu.h">
-      <Filter>XSClient</Filter>
+    <ClInclude Include="Client\Menu.h">
+      <Filter>Client</Filter>
     </ClInclude>
-    <ClInclude Include="XSClient\XSMenuElement.h">
-      <Filter>XSClient</Filter>
+    <ClInclude Include="Client\MenuElement.h">
+      <Filter>Client</Filter>
     </ClInclude>
-    <ClInclude Include="XSClient\XSMenuElementSlider.h">
-      <Filter>XSClient</Filter>
+    <ClInclude Include="Client\MenuElementSlider.h">
+      <Filter>Client</Filter>
     </ClInclude>
-    <ClInclude Include="XSClient\XSMenuManager.h">
-      <Filter>XSClient</Filter>
+    <ClInclude Include="Client\MenuManager.h">
+      <Filter>Client</Filter>
     </ClInclude>
-    <ClInclude Include="XSServer\XSServer.h">
-      <Filter>XSServer</Filter>
+    <ClInclude Include="Server\Server.h">
+      <Filter>Server</Filter>
     </ClInclude>
-    <ClInclude Include="XSServer\XSServerConsole.h">
-      <Filter>XSServer</Filter>
+    <ClInclude Include="Server\ServerConsole.h">
+      <Filter>Server</Filter>
     </ClInclude>
-    <ClInclude Include="XSServer\XSServerGame.h">
-      <Filter>XSServer</Filter>
+    <ClInclude Include="Server\ServerGame.h">
+      <Filter>Server</Filter>
     </ClInclude>
-    <ClInclude Include="XSClient\XSClientGameState.h">
-      <Filter>XSClient</Filter>
+    <ClInclude Include="Client\ClientGameState.h">
+      <Filter>Client</Filter>
     </ClInclude>
-    <ClInclude Include="XSClient\XSEntity.h">
-      <Filter>XSClient</Filter>
+    <ClInclude Include="Client\Entity.h">
+      <Filter>Client</Filter>
     </ClInclude>
-    <ClInclude Include="XSClient\XSMenuElementButton.h">
-      <Filter>XSClient</Filter>
+    <ClInclude Include="Client\MenuElementButton.h">
+      <Filter>Client</Filter>
     </ClInclude>
-    <ClInclude Include="XSClient\XSMenuElementText.h">
-      <Filter>XSClient</Filter>
+    <ClInclude Include="Client\MenuElementText.h">
+      <Filter>Client</Filter>
     </ClInclude>
-    <ClInclude Include="XSNetwork\XSNetwork.h">
-      <Filter>XSNetwork</Filter>
+    <ClInclude Include="Network\Network.h">
+      <Filter>Network</Filter>
     </ClInclude>
-    <ClInclude Include="XSClient\XSParticleEmitter.h">
-      <Filter>XSClient</Filter>
+    <ClInclude Include="Client\ParticleEmitter.h">
+      <Filter>Client</Filter>
     </ClInclude>
-    <ClInclude Include="XSRenderer\XSParticle.h">
-      <Filter>XSRenderer</Filter>
+    <ClInclude Include="Renderer\Particle.h">
+      <Filter>Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="XSServer\XSEntity.h">
-      <Filter>XSServer</Filter>
+    <ClInclude Include="Server\Entity.h">
+      <Filter>Server</Filter>
     </ClInclude>
     <ClInclude Include="zlib\crc32.h">
       <Filter>zlib</Filter>
@@ -827,41 +827,41 @@
     <ClInclude Include="zlib\zutil.h">
       <Filter>zlib</Filter>
     </ClInclude>
-    <ClInclude Include="XSShared\XSEntityTypes.h">
-      <Filter>XSShared</Filter>
+    <ClInclude Include="Shared\EntityTypes.h">
+      <Filter>Shared</Filter>
     </ClInclude>
-    <ClInclude Include="XSServer\XSClient.h">
-      <Filter>XSServer</Filter>
+    <ClInclude Include="Server\Client.h">
+      <Filter>Server</Filter>
     </ClInclude>
-    <ClInclude Include="XSServer\XSEntityFXRunner.h">
-      <Filter>XSServer</Filter>
+    <ClInclude Include="Server\EntityFXRunner.h">
+      <Filter>Server</Filter>
     </ClInclude>
-    <ClInclude Include="XSServer\XSEntityModel.h">
-      <Filter>XSServer</Filter>
+    <ClInclude Include="Server\EntityModel.h">
+      <Filter>Server</Filter>
     </ClInclude>
-    <ClInclude Include="XSServer\XSNetcode.h">
-      <Filter>XSServer</Filter>
+    <ClInclude Include="Server\Netcode.h">
+      <Filter>Server</Filter>
     </ClInclude>
-    <ClInclude Include="XSServer\XSResources.h">
-      <Filter>XSServer</Filter>
+    <ClInclude Include="Server\Resources.h">
+      <Filter>Server</Filter>
     </ClInclude>
-    <ClInclude Include="XSPhysics\XSPhysicsActor.h">
-      <Filter>XSPhysics</Filter>
+    <ClInclude Include="Physics\PhysicsActor.h">
+      <Filter>Physics</Filter>
     </ClInclude>
-    <ClInclude Include="XSCommon\XSByteBuffer.h">
-      <Filter>XSCommon</Filter>
+    <ClInclude Include="Common\ByteBuffer.h">
+      <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="XSCommon\XSFileXMF.h">
-      <Filter>XSCommon</Filter>
+    <ClInclude Include="Common\FileXMF.h">
+      <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="XSClient\XSEntityFXRunner.h">
-      <Filter>XSClient</Filter>
+    <ClInclude Include="Client\EntityFXRunner.h">
+      <Filter>Client</Filter>
     </ClInclude>
-    <ClInclude Include="XSClient\XSEntityModel.h">
-      <Filter>XSClient</Filter>
+    <ClInclude Include="Client\EntityModel.h">
+      <Filter>Client</Filter>
     </ClInclude>
-    <ClInclude Include="XSClient\XSResources.h">
-      <Filter>XSClient</Filter>
+    <ClInclude Include="Client\Resources.h">
+      <Filter>Client</Filter>
     </ClInclude>
     <ClInclude Include="SDL2\begin_code.h">
       <Filter>SDL2</Filter>
@@ -1541,11 +1541,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="SConstruct" />
-    <None Include="XSClient\SConscript">
-      <Filter>XSClient</Filter>
+    <None Include="Client\SConscript">
+      <Filter>Client</Filter>
     </None>
-    <None Include="XSServer\SConscript">
-      <Filter>XSServer</Filter>
+    <None Include="Server\SConscript">
+      <Filter>Server</Filter>
     </None>
     <None Include="RakNet\SConscript">
       <Filter>RakNet</Filter>
